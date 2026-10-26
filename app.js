@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const SUPABASE_URL='https://cmtxsjlehjworqypbxjz.supabaseClient.co';
+const SUPABASE_URL='https://cmtxsjlehjworqypbxjz.supabase.co';
 const SUPABASE_KEY='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const statusText={pending:'قيد المراجعة',approved:'تمت الموافقة',rejected:'مرفوض'};

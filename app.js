@@ -19,6 +19,40 @@ async function renderOrders(){const user=await currentUser();if(!user){$('#order
 async function openRobuxPackages(){const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||''));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal hidden';document.body.appendChild(modal)}modal.innerHTML='<div class="package-box"><button class="package-close" data-close-packages>×</button><span class="eyebrow">ROBLOX</span><h2>باقات Robux</h2><p class="package-subtitle">عدد الباقات المتاحة: '+robux.length+'</p><p class="package-subtitle">اختار الباقة، وبعدها اكتب اسم حساب Roblox للدفع من المحفظة.</p><div class="package-grid">'+robux.map(p=>'<button class="robux-package" data-robux="'+p.id+'"><span class="robux-icon">◆</span><span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small></span></button>').join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.remove('hidden')}
 function closeRobuxPackages(){const m=$('#robuxModal');if(m)m.classList.add('hidden')}
 async function selectPackage(id){const p=products.find(x=>x.id===id);if(!p)return;const box=$('#purchaseBox');box.innerHTML='<form id="purchaseForm" class="topup-form"><h3>'+escapeHtml(p.name)+' — '+Number(p.price).toFixed(2)+' د.ل</h3><label for="robloxUsername">اسم المستخدم في Roblox</label><div class="roblox-verify-row"><input id="robloxUsername" type="text" minlength="3" maxlength="40" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="مثال: Player123" required><button id="verifyRobloxBtn" class="btn btn-soft" type="button">تحقق</button></div><div id="robloxVerifyResult" class="roblox-verify-result" aria-live="polite"></div><button id="submitRobloxPurchase" class="btn btn-primary full-width" type="submit" disabled>تأكد من الحساب أولاً</button><p class="form-note">تحقق من صورة الحساب واسم المستخدم قبل الشراء. لا نطلب كلمة مرور Roblox أو رمز الدخول.</p><p class="form-note">المبلغ ينخصم من المحفظة فور إنشاء الطلب، والتنفيذ يكون بعد مراجعة الإدارة.</p></form>';let verifiedUsername='';let verifiedUserId='';const input=$('#robloxUsername'),verifyBtn=$('#verifyRobloxBtn'),result=$('#robloxVerifyResult'),submit=$('#submitRobloxPurchase');input.addEventListener('input',()=>{verifiedUsername='';verifiedUserId='';submit.disabled=true;submit.textContent='تأكد من الحساب أولاً';result.innerHTML='';});verifyBtn.addEventListener('click',async()=>{const username=input.value.trim();if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){result.textContent='اكتب اسم مستخدم Roblox صحيح (3 إلى 20 حرفاً أو رقماً أو _).';result.className='roblox-verify-result error';return}verifyBtn.disabled=true;verifyBtn.textContent='جاري التحقق…';result.className='roblox-verify-result';result.textContent='جاري البحث عن الحساب في Roblox…';try{const {data:lookup,error:lookupError}=await supabaseClient.functions.invoke('roblox-user-lookup',{body:{username}});if(lookupError)throw new Error('تعذر الاتصال بخدمة التحقق. حدّث الصفحة وحاول مرة ثانية.');if(lookup?.error)throw new Error(lookup.error==='roblox_lookup_unavailable'?'خدمة Roblox لا تستجيب حالياً. جرّب بعد شوية.':'تعذر التحقق من الحساب حالياً.');if(!lookup?.found){result.textContent='ما لقيناش حساب بهذا الاسم. راجع اسم المستخدم وحاول من جديد.';result.className='roblox-verify-result error';return}const account={id:lookup.id,name:lookup.name,displayName:lookup.displayName};const avatar=lookup.avatar||'';verifiedUsername=account.name;verifiedUserId=String(account.id);result.innerHTML='<div class="roblox-profile-card">'+(avatar?'<img src="'+escapeHtml(avatar)+'" alt="صورة حساب Roblox" class="roblox-avatar">':'<div class="roblox-avatar-placeholder">R</div>')+'<div class="roblox-profile-info"><strong>'+escapeHtml(account.displayName||account.name)+'</strong><span>@'+escapeHtml(account.name)+'</span><small>تم العثور على الحساب ✓</small></div></div><p class="form-note">تأكد أن هذه صورة واسم حسابك قبل المتابعة.</p>';result.className='roblox-verify-result success';submit.disabled=false;submit.textContent='تأكيد الشراء من المحفظة';}catch(err){result.textContent=err.message||'تعذر التحقق حالياً. حاول مرة ثانية.';result.className='roblox-verify-result error'}finally{verifyBtn.disabled=false;verifyBtn.textContent='تحقق'}});$('#purchaseForm').addEventListener('submit',async e=>{e.preventDefault();if(!verifiedUsername||!verifiedUserId||input.value.trim().toLowerCase()!==verifiedUsername.toLowerCase()){toast('تحقق من حساب Roblox أولاً');return}const user=await currentUser();if(!user){closeRobuxPackages();switchView('account');toast('سجّل دخولك أولاً');return}const {error}=await supabaseClient.rpc('create_purchase_order',{p_product_id:p.id,p_roblox_username:verifiedUsername});if(error){toast(error.message.includes('insufficient_balance')?'رصيدك ما يكفيش للباقة.':error.message.includes('not_authenticated')?'سجّل دخولك أولاً.':'تعذر إنشاء الطلب.');return}closeRobuxPackages();await renderWallet();await renderOrders();toast('تم إنشاء طلب '+p.name+' وخصم المبلغ من المحفظة.');})}
+
+function openPasswordRecovery(){
+  let modal=$('#passwordRecoveryModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='passwordRecoveryModal';
+    modal.className='package-modal';
+    modal.innerHTML='<div class="package-box"><span class="eyebrow">ACCOUNT SECURITY</span><h2>تغيير كلمة المرور</h2><p class="package-subtitle">اكتب كلمة المرور الجديدة لحسابك.</p><form id="passwordRecoveryForm" class="topup-form"><label for="recoveryPassword">كلمة المرور الجديدة</label><input id="recoveryPassword" type="password" minlength="6" autocomplete="new-password" required placeholder="6 أحرف على الأقل"><label for="recoveryPasswordConfirm">تأكيد كلمة المرور</label><input id="recoveryPasswordConfirm" type="password" minlength="6" autocomplete="new-password" required placeholder="أعد كتابة كلمة المرور"><p id="passwordRecoveryStatus" class="form-note" role="status" aria-live="polite"></p><button id="saveRecoveryPassword" class="btn btn-primary full-width" type="submit">حفظ كلمة المرور</button></form></div>';
+    document.body.appendChild(modal);
+    $('#passwordRecoveryForm').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const password=$('#recoveryPassword').value;
+      const confirm=$('#recoveryPasswordConfirm').value;
+      const status=$('#passwordRecoveryStatus');
+      const submit=$('#saveRecoveryPassword');
+      if(password.length<6){status.textContent='كلمة المرور لازم تكون 6 أحرف على الأقل.';return}
+      if(password!==confirm){status.textContent='كلمتا المرور مش متطابقتين.';return}
+      submit.disabled=true;submit.textContent='جاري الحفظ…';status.textContent='جاري تحديث كلمة المرور…';
+      try{
+        const {error}=await supabaseClient.auth.updateUser({password});
+        if(error)throw error;
+        status.textContent='تم تغيير كلمة المرور بنجاح. تقدر تسجّل الدخول الآن.';
+        $('#authPassword').value='';
+        setTimeout(()=>{modal.classList.add('hidden');switchView('account');toast('تم تغيير كلمة المرور بنجاح')},1200);
+      }catch(err){status.textContent='تعذر تغيير كلمة المرور: '+(err.message||'حاول مرة ثانية.')}
+      finally{submit.disabled=false;submit.textContent='حفظ كلمة المرور'}
+    });
+  }
+  modal.classList.remove('hidden');
+}
+supabaseClient.auth.onAuthStateChange((event)=>{
+  if(event==='PASSWORD_RECOVERY') openPasswordRecovery();
+});
+
 const ADMIN_EMAIL='mommedmmkk@gmail.com';
 const ADMIN_REVIEW_URL=SUPABASE_URL+'/functions/v1/admin-topup-review';
 async function adminRequest(method,body){const {data:{session}}=await supabaseClient.auth.getSession();if(!session?.access_token)throw new Error('سجّل دخولك أولاً');const res=await fetch(ADMIN_REVIEW_URL,{method,headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.details||data.error||'تعذر الاتصال بلوحة الإدارة');return data}

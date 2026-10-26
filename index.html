@@ -6,7 +6,7 @@
 <title>L1017n | متجر الألعاب والشحن</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4"><link rel="stylesheet" href="packages.css?v=2">
+<link rel="stylesheet" href="styles.css?v=5"><link rel="stylesheet" href="packages.css?v=2">
 </head>
 <body>
 <header class="topbar"><a class="brand" href="#" data-view="home"><span class="brand-mark">L</span><span><b>L1017n</b><small>متجر الألعاب الرقمي</small></span></a><nav class="desktop-nav"><button data-view="home" class="nav-link active">الرئيسية</button><button data-view="store" class="nav-link">المتجر</button><button data-view="wallet" class="nav-link">المحفظة</button><button data-view="orders" class="nav-link">طلباتي</button></nav><button class="btn btn-outline" id="accountBtn">حسابي ↗</button></header>
@@ -20,6 +20,7 @@
 <section class="section hidden" id="ordersView"><div class="section-head"><div><span class="eyebrow">ORDER TRACKING</span><h2>طلباتي</h2><p>طلبات الشراء والشحن المرتبطة بحسابك.</p></div></div><div id="ordersList" class="panel history-panel"></div></section>
 <section class="section hidden" id="accountView"><div class="section-head"><div><span class="eyebrow">ACCOUNT</span><h2>حسابي</h2><p>سجّل دخولك بالبريد الإلكتروني بدون كلمة مرور.</p></div></div><div class="panel account-panel"><div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">بنرسل لك رابط دخول على بريدك الإلكتروني، وبعدها تقدر تستخدم المحفظة وتتابع طلباتك من أي جهاز.</p><form id="authForm"><input id="authEmail" type="email" placeholder="name@example.com" required><button class="btn btn-primary full-width" type="submit">إرسال رابط الدخول</button></form><button class="btn btn-soft hidden" id="logoutBtn" type="button">تسجيل الخروج</button><button class="btn btn-soft" data-view="wallet">افتح المحفظة</button></div></section>
 </main>
+<section class="section leaderboard-section" id="leaderboardView"><div class="section-head"><div><span class="eyebrow">COMMUNITY RANKING</span><h2>ترتيب المتسوقين</h2><p>من بداية المتجر إلى اليوم · نقطة لكل دينار من المشتريات المكتملة.</p></div><button class="text-button" id="refreshLeaderboard" type="button">تحديث الترتيب ↻</button></div><div class="panel leaderboard-panel"><div class="leaderboard-privacy">🔒 ما يظهرش إلا الاسم المستعار والنقاط، ومشاركتك اختيارية من إعدادات حسابك.</div><div id="leaderboardList"><p class="muted">جاري تحميل الترتيب…</p></div></div></section>
 <footer><a class="brand" href="#"><span class="brand-mark">L</span><span><b>L1017n</b><small>متجرك الرقمي</small></span></a><span>© <span id="year"></span> L1017n. صنع بحب في ليبيا.</span><span class="footer-status"><i></i> المتجر متصل بقاعدة البيانات</span></footer>
 <nav class="mobile-nav"><button data-view="home" class="active"><span>⌂</span>الرئيسية</button><button data-view="store"><span>▦</span>المتجر</button><button data-view="wallet"><span>◈</span>المحفظة</button><button data-view="orders"><span>≡</span>طلباتي</button></nav>
 <div class="toast" id="toast" role="status"></div>
@@ -39,7 +40,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=15';
+      var s=document.createElement('script');s.src='app.js?v=16';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

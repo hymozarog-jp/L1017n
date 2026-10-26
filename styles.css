@@ -118,3 +118,25 @@
 
 /* Leaderboard prize banner */
 .leaderboard-prize{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:16px;border:1px solid #f3ba2f66;border-radius:15px;background:linear-gradient(110deg,#f3ba2f18,#f3ba2f05)}.leaderboard-prize-icon{display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:13px;background:#f3ba2f1f;font-size:27px}.leaderboard-prize strong{display:block;color:#f3ba2f;font-size:16px}.leaderboard-prize p{margin:4px 0 0;color:var(--text);font-size:14px}.leaderboard-prize p b{color:#f3ba2f}
+
+/* Featured game cards */
+#productGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.game-category-card{overflow:hidden;border-radius:28px!important;background:#111923!important;border:1px solid #ffffff18!important}
+.game-category-button{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:inherit;cursor:pointer}
+.game-category-art{height:clamp(210px,34vw,350px);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;isolation:isolate}
+.game-category-art:before,.game-category-art:after{content:"";position:absolute;inset:0;z-index:-1}
+.fortnite-category-art{background:radial-gradient(ellipse at 72% 25%,#ffdb7a 0,transparent 19%),radial-gradient(ellipse at 28% 22%,#31c7ff 0,transparent 30%),linear-gradient(145deg,#061c55 0%,#4724a4 48%,#ef6d3a 100%)}
+.fortnite-category-art:before{background:linear-gradient(160deg,transparent 30%,#07101dcc 100%),repeating-linear-gradient(125deg,transparent 0 35px,#ffffff0a 36px 38px)}
+.fortnite-category-art:after{inset:auto -10% -30% -10%;height:58%;background:linear-gradient(130deg,#152e59,#07111d);clip-path:polygon(0 35%,18% 0,38% 37%,58% 8%,78% 28%,100% 0,100% 100%,0 100%)}
+.roblox-game-art{background:radial-gradient(ellipse at 70% 20%,#ffdf66 0,transparent 25%),radial-gradient(ellipse at 20% 75%,#e84c8a 0,transparent 30%),linear-gradient(145deg,#04a7ef,#1454cb 52%,#5529a9)}
+.roblox-game-art:before{background:linear-gradient(145deg,transparent 35%,#07101dcc 100%),repeating-linear-gradient(45deg,transparent 0 38px,#ffffff12 39px 42px)}
+.game-art-kicker{position:absolute;top:18px;left:18px;font-size:10px;font-weight:900;letter-spacing:2px;color:#ffffffb8}
+.fortnite-art-logo,.roblox-game-logo{font-weight:1000;font-size:clamp(30px,6vw,66px);letter-spacing:-2px;color:white;text-shadow:0 5px 0 #0008,0 12px 30px #0008;text-align:center}
+.fortnite-art-logo{transform:rotate(-4deg)}
+.roblox-game-logo{background:#ffffff12;padding:8px 15px;border:2px solid #ffffff70;border-radius:10px;transform:rotate(3deg)}
+.game-art-subtitle{margin-top:12px;padding:5px 12px;border-radius:99px;background:#07101dbb;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px}
+.game-category-info{border-top:6px solid #ffc900;background:linear-gradient(180deg,#202a36,#111720);padding:16px 18px 20px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.game-category-info h3{margin:0;font-size:clamp(17px,2.8vw,24px);font-weight:900;color:#fff}
+.game-category-info span{font-size:12px;color:#e8c46a;white-space:nowrap}
+.game-category-button:active{transform:scale(.985)}
+@media(max-width:520px){#productGrid{gap:12px}.game-category-art{height:220px}.game-category-info{padding:13px 10px;display:block}.game-category-info h3{font-size:17px}.game-category-info span{display:block;margin-top:7px;font-size:11px}.game-art-kicker{top:12px;left:10px;font-size:8px}.fortnite-art-logo,.roblox-game-logo{font-size:clamp(25px,7vw,38px)}}

@@ -42,3 +42,14 @@
 .mobile-nav button span{font-size:11px;white-space:nowrap}
 .wallet-icon{stroke-width:1.7}
 @media(max-width:380px){.mobile-nav button span{font-size:10px}.mobile-nav button{gap:3px}}
+
+.admin-dashboard{margin-top:28px;padding:20px;border:1px solid var(--line,#26372f);border-radius:18px;background:rgba(12,25,19,.75);text-align:right}
+.admin-dashboard .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.admin-dashboard h3{margin:4px 0;font-size:1.25rem}
+.admin-dashboard .section-head p{margin:4px 0;color:var(--muted,#9eafa5)}
+.admin-request{align-items:flex-start;gap:14px;padding:18px 0}
+.admin-request-details{display:grid;gap:7px;min-width:0}
+.admin-request-details small{overflow-wrap:anywhere;color:var(--muted,#9eafa5)}
+.admin-request-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.admin-request-actions .btn{font-size:.88rem;padding:9px 12px}
+@media(max-width:520px){.admin-dashboard{padding:14px}.admin-request{flex-direction:column}.admin-request-actions .btn{flex:1}}

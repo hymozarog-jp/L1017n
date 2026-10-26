@@ -103,3 +103,100 @@ async function renderLeaderboardProfile(){const panel=$('.account-panel');if(!pa
 async function saveLeaderboardProfile(e){e.preventDefault();const user=await currentUser();if(!user){toast('سجّل دخولك أولاً');return}const nickname=$('#leaderboardNickname').value.trim(),visible=$('#leaderboardVisible').checked;if(nickname.length<3||nickname.length>24){toast('الاسم المستعار لازم يكون بين 3 و24 حرف');return}const {error}=await supabaseClient.from('leaderboard_profiles').upsert({user_id:user.id,nickname,public_visible:visible,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error){$('#leaderboardProfileStatus').textContent=error.code==='23505'?'الاسم المستعار مستخدم؛ اختار اسم ثاني.':'تعذر حفظ الإعدادات. حاول باسم مستعار مختلف.';return}$('#leaderboardProfileStatus').textContent=visible?'تم الحفظ، وبيظهر اسمك المستعار بعد وجود مشتريات مكتملة.':'تم الحفظ، ومشاركتك في الترتيب متوقفة.';await renderAccount();await loadLeaderboard();toast('تم حفظ إعدادات الترتيب')}
 $('#refreshLeaderboard')?.addEventListener('click',loadLeaderboard);
 loadLeaderboard();
+
+
+/* Secure store admin dashboard */
+function adminNotePrompt(){return window.prompt('ملاحظة للإدارة (اختياري):','')||''}
+async function openAdminDashboard(){
+  const user=await currentUser();
+  if(!user){toast('سجّل دخولك أولاً');switchView('account');return}
+  const {data:admin,error}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
+  if(error||!admin){toast('هذا الحساب لا يملك صلاحية الإدارة');return}
+  ['#homeView','#storeView','.wallet-promo','.steps-section','#walletView','#ordersView','#accountView','#leaderboardView'].forEach(s=>{const n=$(s);if(n)n.classList.add('hidden')});
+  $('#adminView').classList.remove('hidden');
+  $$('[data-view]').forEach(b=>b.classList.remove('active'));
+  await loadAdminDashboard();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+async function refreshAdminAccess(){
+  const user=await currentUser();
+  const btn=$('#openAdminDashboard');
+  if(!btn)return;
+  let allowed=false;
+  if(user){const {data}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();allowed=!!data}
+  btn.classList.toggle('hidden',!allowed);
+  if(allowed)btn.onclick=openAdminDashboard;
+}
+function adminItem(title,sub,amount,id,status,actions,note){
+  return '<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(title)+'</b><small>'+escapeHtml(sub)+'</small><small>رقم الطلب: '+escapeHtml(String(id).slice(0,8).toUpperCase())+(note?' · ملاحظة: '+escapeHtml(note):'')+'</small><div class="admin-request-actions">'+actions+'</div></div><div><b>'+Number(amount||0).toFixed(2)+' د.ل</b><div><span class="status '+(status==='pending'||status==='paid_pending_fulfillment'?'pending':status==='approved'||status==='completed'?'approved':'rejected')+'">'+escapeHtml(statusText[status]||orderStatusText[status]||status)+'</span></div></div></article>'
+}
+async function loadAdminDashboard(){
+  $('#adminStatus').innerHTML='<p class="muted">جاري التحقق من صلاحيات الإدارة…</p>';
+  const user=await currentUser();
+  if(!user){$('#adminStatus').innerHTML='<p>سجّل دخولك أولاً.</p>';$('#adminContent').classList.add('hidden');return}
+  const {data:admin,error:adminError}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
+  if(adminError||!admin){$('#adminStatus').innerHTML='<p>ما عندكش صلاحية الوصول للوحة الإدارة.</p>';$('#adminContent').classList.add('hidden');return}
+  $('#adminStatus').innerHTML='<p>تم التحقق من صلاحيات الإدارة للحساب: <b>'+escapeHtml(user.email)+'</b></p>';
+  $('#adminContent').classList.remove('hidden');
+  const [topups,orders,productResult]=await Promise.all([
+    supabaseClient.from('topup_requests').select('id,user_id,amount,method,phone,transfer_reference,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
+    supabaseClient.from('purchase_orders').select('id,user_id,product_name,total_amount,roblox_username,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
+    supabaseClient.from('products').select('*').order('sort_order')
+  ]);
+  if(topups.error)$('#adminTopups').innerHTML='<p class="muted">تعذر تحميل طلبات الشحن: '+escapeHtml(topups.error.message)+'</p>';
+  else $('#adminTopups').innerHTML=topups.data?.length?topups.data.map(x=>adminItem('شحن '+(x.method==='libyana'?'ليبيانا':'المدار')+' · '+x.amount+' د.ل','الهاتف: '+(x.phone||'—')+' · رقم العملية: '+(x.transfer_reference||'—')+' · المستخدم: '+x.user_id,x.amount,x.id,x.status,x.status==='pending'?'<button class="btn btn-primary" data-topup-action="approved" data-id="'+x.id+'">موافقة وإضافة الرصيد</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+x.id+'">رفض الطلب</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شحن.</p>';
+  if(orders.error)$('#adminPurchases').innerHTML='<p class="muted">تعذر تحميل طلبات الشراء: '+escapeHtml(orders.error.message)+'</p>';
+  else $('#adminPurchases').innerHTML=orders.data?.length?orders.data.map(x=>adminItem(x.product_name+' · '+x.total_amount+' د.ل','Roblox: @'+x.roblox_username+' · المستخدم: '+x.user_id,x.total_amount,x.id,x.status,x.status==='paid_pending_fulfillment'?'<button class="btn btn-primary" data-order-action="completed" data-id="'+x.id+'">تأكيد التنفيذ</button><button class="btn btn-soft" data-order-action="rejected" data-id="'+x.id+'">رفض وإرجاع الرصيد</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شراء.</p>';
+  if(productResult.error)$('#adminProducts').innerHTML='<p class="muted">تعذر تحميل المنتجات: '+escapeHtml(productResult.error.message)+'</p>';
+  else $('#adminProducts').innerHTML=productResult.data?.length?productResult.data.map(p=>'<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(p.name)+'</b><small>المعرّف: '+escapeHtml(p.product_key)+' · اللعبة: '+escapeHtml(p.game||'—')+' · الكمية: '+Number(p.amount||0)+'</small><small>'+(p.active?'ظاهر في المتجر':'مخفي')+' · الترتيب: '+Number(p.sort_order||0)+'</small><div class="admin-request-actions"><button class="btn btn-soft" data-product-edit="'+p.id+'">تعديل</button></div></div><b>'+Number(p.price||0).toFixed(2)+' د.ل</b></article>').join(''):'<p class="muted">ما فيش منتجات حالياً.</p>';
+}
+async function reviewTopup(id,decision){
+  const note=adminNotePrompt();
+  const {error}=await supabaseClient.rpc('admin_review_topup',{p_request_id:id,p_decision:decision,p_admin_note:note});
+  if(error){toast(error.message==='topup_already_reviewed'?'تمت مراجعة الطلب من قبل.':('تعذر تحديث طلب الشحن: '+error.message));return}
+  toast(decision==='approved'?'تم اعتماد الشحن وإضافة الرصيد.':'تم رفض طلب الشحن.');
+  await loadAdminDashboard();
+}
+async function reviewPurchase(id,decision){
+  const note=adminNotePrompt();
+  if(decision==='rejected'&&!window.confirm('تأكيد رفض الطلب وإرجاع المبلغ إلى محفظة المستخدم؟'))return;
+  const {error}=await supabaseClient.rpc('admin_review_purchase',{p_order_id:id,p_decision:decision,p_admin_note:note});
+  if(error){toast('تعذر تحديث طلب الشراء: '+error.message);return}
+  toast(decision==='completed'?'تم تأكيد تنفيذ الطلب.':'تم رفض الطلب وإرجاع الرصيد.');
+  await loadAdminDashboard();
+}
+function clearAdminProductForm(){
+  $('#adminProductForm').reset();$('#adminProductId').value='';$('#adminProductSort').value='0';$('#adminProductActive').checked=true;
+}
+async function saveAdminProduct(e){
+  e.preventDefault();
+  const id=$('#adminProductId').value;
+  const item={product_key:$('#adminProductKey').value.trim(),name:$('#adminProductName').value.trim(),game:$('#adminProductGame').value.trim()||null,amount:Number($('#adminProductAmount').value),price:Number($('#adminProductPrice').value),sort_order:Number($('#adminProductSort').value||0),description:$('#adminProductDescription').value.trim()||null,active:$('#adminProductActive').checked};
+  if(!item.product_key||!item.name||!Number.isFinite(item.amount)||item.amount<1||!Number.isFinite(item.price)||item.price<=0){toast('راجع اسم المنتج والكمية والسعر');return}
+  const query=id?supabaseClient.from('products').update(item).eq('id',id):supabaseClient.from('products').insert(item);
+  const {error}=await query;
+  if(error){toast('تعذر حفظ المنتج: '+error.message);return}
+  toast('تم حفظ المنتج بنجاح');clearAdminProductForm();await loadProducts();await loadAdminDashboard();
+}
+function editAdminProduct(id){
+  const btn=$('[data-product-edit="'+CSS.escape(id)+'"]');if(!btn)return;
+  const cards=[...$('#adminProducts').querySelectorAll('[data-product-edit]')];
+  const index=cards.findIndex(b=>b.dataset.productEdit===id);
+  if(index<0)return;
+  supabaseClient.from('products').select('*').eq('id',id).single().then(({data,error})=>{
+    if(error||!data){toast('تعذر تحميل المنتج');return}
+    $('#adminProductId').value=data.id;$('#adminProductKey').value=data.product_key||'';$('#adminProductName').value=data.name||'';$('#adminProductGame').value=data.game||'';$('#adminProductAmount').value=data.amount||1;$('#adminProductPrice').value=data.price||'';$('#adminProductSort').value=data.sort_order||0;$('#adminProductDescription').value=data.description||'';$('#adminProductActive').checked=!!data.active;
+    $('#adminProductForm').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
+$('#openAdminDashboard')?.addEventListener('click',openAdminDashboard);
+$('#refreshAdmin')?.addEventListener('click',loadAdminDashboard);
+$('#cancelAdminProductEdit')?.addEventListener('click',clearAdminProductForm);
+$('#adminProductForm')?.addEventListener('submit',saveAdminProduct);
+$('#adminView')?.addEventListener('click',e=>{
+  const topup=e.target.closest('[data-topup-action]');if(topup){reviewTopup(topup.dataset.id,topup.dataset.topupAction);return}
+  const order=e.target.closest('[data-order-action]');if(order){reviewPurchase(order.dataset.id,order.dataset.orderAction);return}
+  const product=e.target.closest('[data-product-edit]');if(product)editAdminProduct(product.dataset.productEdit);
+});
+supabaseClient.auth.onAuthStateChange(()=>{setTimeout(refreshAdminAccess,0)});
+setTimeout(refreshAdminAccess,0);

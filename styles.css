@@ -32,3 +32,13 @@
 @media(max-width:390px){.hero-art{min-height:290px}.game-card{min-height:220px}.game-card-bottom b{font-size:17px}.roblox-diamond{width:56px;height:56px}.roblox-visual b{font-size:22px!important}}
 
 .leaderboard-section{padding-top:28px}.leaderboard-panel{padding:22px}.leaderboard-privacy{padding:12px 14px;margin-bottom:16px;border:1px solid var(--line);border-radius:13px;color:var(--muted);font-size:13px;line-height:1.8}.leaderboard-rows{display:grid;gap:9px}.leaderboard-row{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:#ffffff04}.leaderboard-rank{font-weight:700;color:var(--green);font-size:17px;text-align:center}.leaderboard-name{font-weight:600;overflow-wrap:anywhere}.leaderboard-points{font-size:13px;color:var(--green);white-space:nowrap}.leaderboard-profile-form{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:12px}.leaderboard-profile-form h3{margin:0}.leaderboard-profile-form .transfer-confirm{display:flex;align-items:center;gap:10px}.leaderboard-profile-form .transfer-confirm input{width:auto}.leaderboard-profile-form .form-note{line-height:1.8}@media(max-width:480px){.leaderboard-row{grid-template-columns:38px 1fr;gap:8px}.leaderboard-points{grid-column:2}}
+
+/* Navigation icons: clean line icons instead of text symbols */
+.nav-icon{width:21px;height:21px;display:inline-block;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.desktop-nav .nav-link{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.mobile-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mobile-nav button{display:flex;align-items:center;justify-content:center;gap:5px;flex-direction:column;min-width:0}
+.mobile-nav button .nav-icon{width:22px;height:22px}
+.mobile-nav button span{font-size:11px;white-space:nowrap}
+.wallet-icon{stroke-width:1.7}
+@media(max-width:380px){.mobile-nav button span{font-size:10px}.mobile-nav button{gap:3px}}

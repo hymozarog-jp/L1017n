@@ -24,6 +24,7 @@
   <div class="section-head"><div><span class="eyebrow">ADMIN CONTROL</span><h2>لوحة إدارة المتجر</h2><p>إدارة طلبات الشحن والشراء والمنتجات.</p></div><button class="btn btn-soft" id="refreshAdmin" type="button">تحديث البيانات ↻</button></div>
   <div id="adminStatus" class="panel"><p class="muted">جاري التحقق من صلاحيات الإدارة…</p></div>
   <div id="adminContent" class="hidden">
+    <section class="admin-dashboard"><div class="section-head"><div><h3>مخزون الروبوكس</h3><p>الكمية الإجمالية المتاحة للبيع. تُخصم كمية الباقة عند إنشاء الطلب وتُعاد إذا رُفض الطلب.</p></div></div><div class="admin-stock-control"><label for="adminRobuxStock">كمية Robux المتوفرة</label><input id="adminRobuxStock" type="number" min="0" step="1" value="1000"><button class="btn btn-primary" id="saveAdminRobuxStock" type="button">حفظ المخزون</button></div></section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشحن</h3><p>اعتماد الطلب يضيف الرصيد مرة واحدة فقط.</p></div></div><div id="adminTopups"><p class="muted">جاري التحميل…</p></div></section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشراء</h3><p>رفض الطلب يرجّع المبلغ للمحفظة تلقائياً.</p></div></div><div id="adminPurchases"><p class="muted">جاري التحميل…</p></div></section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>المنتجات والباقات</h3><p>إضافة المنتجات وتعديل الأسعار أو إخفاء الباقات.</p></div></div>
@@ -65,7 +66,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=43';
+      var s=document.createElement('script');s.src='app.js?v=44';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

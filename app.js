@@ -91,7 +91,7 @@ async function loadLeaderboard(){
     if(ordersError)throw ordersError;
     const totals=new Map(profiles.map(p=>[p.user_id,{nickname:p.nickname,points:0}]));
     (orders||[]).forEach(o=>{const item=totals.get(o.user_id);if(item)item.points+=Number(o.total_amount)||0});
-    const ranked=[...totals.values()].filter(p=>p.points>0).sort((a,b)=>b.points-a.points);
+    const ranked=[...totals.values()].sort((a,b)=>b.points-a.points);
     if(!ranked.length){list.innerHTML='<p class="muted">ما فيش مشتريات مكتملة للمشاركين حتى الآن.</p>';return}
     list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>'<div class="leaderboard-row"><span class="leaderboard-rank">'+(i+1)+'</span><span class="leaderboard-nickname">'+escapeHtml(p.nickname)+'</span><strong class="leaderboard-points">'+Math.round(p.points).toLocaleString('ar-LY')+' نقطة</strong></div>').join('')+'</div>';
   }catch(error){

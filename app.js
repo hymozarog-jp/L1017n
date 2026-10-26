@@ -11,7 +11,32 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function currentUser(){const {data:{user}}=await supabaseClient.auth.getUser();return user}
 async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data)robuxAvailable=Number(inventoryResult.data.robux_available)||0;renderProducts()}
-function renderProducts(){const g=$('#productGrid');const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||''));g.innerHTML='<article class="product-card game-category-card fortnite-category-card"><button class="game-category-button" data-game-category="fortnite" aria-label="فورت نايت"><div class="game-category-art fortnite-category-art"><span class="game-art-kicker">L1017N GAMING</span><div class="fortnite-art-logo">FORTNITE</div><span class="game-art-subtitle">BATTLE ROYALE</span></div><div class="game-category-info"><h3>فورت نايت</h3><span>عرض القسم ←</span></div></button></article><article class="product-card game-category-card roblox-game-card"><button class="game-category-button" data-product="roblox" aria-label="عرض باقات روبلوكس"><div class="game-category-art roblox-game-art"><span class="game-art-kicker">L1017N GAMING</span><div class="roblox-game-logo">ROBLOX</div><span class="game-art-subtitle">ROBUX STORE</span></div><div class="game-category-info"><h3>روبلوكس</h3><span>'+robux.length+' باقات · دخول ←</span></div></button></article>'}
+function renderProducts(){
+  const g = $('#productGrid');
+  if (!g) return;
+  const robux = products.filter(p => String(p.game || '').toLowerCase() === 'roblox' || /robux|روبوكس/i.test(p.name || ''));
+  g.innerHTML = `
+    <article class="product-card game-category-card fortnite-category-card">
+      <button class="game-category-button" data-game-category="fortnite" aria-label="فورت نايت">
+        <div class="game-category-art fortnite-category-art">
+          <span class="game-art-kicker">L1017N GAMING</span>
+          <div class="fortnite-art-logo">FORTNITE</div>
+          <span class="game-art-subtitle">BATTLE ROYALE</span>
+        </div>
+        <div class="game-category-info"><h3>فورت نايت</h3><span>عرض القسم ←</span></div>
+      </button>
+    </article>
+    <article class="product-card game-category-card roblox-game-card">
+      <button class="game-category-button" data-product="roblox" aria-label="عرض باقات روبلوكس">
+        <div class="game-category-art roblox-game-art">
+          <span class="game-art-kicker">L1017N GAMING</span>
+          <div class="roblox-game-logo">ROBLOX</div>
+          <span class="game-art-subtitle">ROBUX STORE</span>
+        </div>
+        <div class="game-category-info"><h3>روبلوكس</h3><span>${robux.length} باقات · دخول ←</span></div>
+      </button>
+    </article>`;
+}
 function switchView(view){const map={home:['#homeView','#storeView','.wallet-promo','.steps-section'],store:['#storeView'],wallet:['#walletView'],orders:['#ordersView'],account:['#accountView'],leaderboard:['#leaderboardView']};const sections=['#homeView','#storeView','.wallet-promo','.steps-section','#walletView','#ordersView','#accountView','#leaderboardView','#adminView'];sections.forEach(s=>{const n=$(s);if(n)n.classList.add('hidden')});(map[view]||map.home).forEach(s=>{const n=$(s);if(n)n.classList.remove('hidden')});$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='wallet')renderWallet();if(view==='orders')renderOrders();if(view==='account')renderAccount();if(view==='leaderboard')loadLeaderboard();window.scrollTo({top:0,behavior:'smooth'})}
 function selectedProvider(){return $('input[name="provider"]:checked')?.value||'libyana'}
 function instructions(){const provider=selectedProvider(),amount=Number($('#topupAmount').value||0),box=$('#transferInstructions');if(!box)return;if(!showTopupCode){box.innerHTML='<p>اختار شركة الاتصالات بالأعلى، ثم اضغط لعرض كود الشحن.</p><button type="button" class="btn btn-primary full-width" data-show-topup-code>شحن المحفظة عبر كود</button>';document.querySelectorAll('.provider-card').forEach(c=>c.classList.toggle('selected',c.querySelector('input').checked));return}if(provider==='libyana'){const ussd='*122*0925620538*'+Math.round(amount*1000)+'#';box.innerHTML='<p>كود شحن المحفظة عبر ليبيانا:</p><strong dir="ltr" class="ussd-code">'+ussd+'</strong><a class="btn btn-primary full-width direct-transfer-btn" href="tel:'+ussd.replace('#','%23')+'">تحويل مباشرة</a><button type="button" class="btn btn-soft full-width" data-copy-ussd="'+ussd+'" style="margin-top:8px">نسخ كود التحويل</button><small class="form-note">لو زر التحويل ما فتحش من تيك توك، انسخ الكود وافتح تطبيق الهاتف والصقه ثم اضغط اتصال.</small><br>بعد التحويل ارجع للموقع وقدّم الطلب.'}else{box.innerHTML='<p>رقم التحويل للمدار الجديد:</p><strong dir="ltr" class="ussd-code">218910005566</strong><button type="button" class="btn btn-soft full-width" data-copy-ussd="218910005566" style="margin-top:8px">نسخ رقم التحويل</button>'}document.querySelectorAll('.provider-card').forEach(c=>c.classList.toggle('selected',c.querySelector('input').checked))}

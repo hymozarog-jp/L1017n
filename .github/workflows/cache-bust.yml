@@ -1,0 +1,20 @@
+name: Cache bust app.js
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  bump-app-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump app.js cache version
+        run: |
+          sed -i "s/app.js?v=55/app.js?v=56/g" index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then exit 0; fi
+          git add index.html
+          git commit -m "Bump app.js cache version to v56"
+          git push

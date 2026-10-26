@@ -84,3 +84,33 @@
 .admin-stock-control input{max-width:180px}
 .robux-package:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.6)}
 .robux-package .stock-label{display:block;margin-top:5px;color:var(--muted,#8b9690);font-size:.78rem}
+
+
+/* Order tracking status card — dark and gold */
+.order-status-card{padding:22px;background:linear-gradient(180deg,#18171c 0%,#101014 100%);border:1px solid #3a3020;border-radius:16px;box-shadow:0 8px 24px #0006;display:block;color:#fff}
+.order-status-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.order-status-kicker{display:block;color:#9a9a9a;font-size:11px;margin-bottom:4px}
+.order-status-top h3{font-size:21px;font-weight:800;color:#f3ba2f;margin:0}
+.order-status-description{color:#aaa;font-size:13px;line-height:1.8;margin:0 0 18px}
+.order-status-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#9a9a9a;font-size:11px;padding-bottom:15px;border-bottom:1px solid #ffffff10}
+.order-status-meta b{color:#f0d48b;letter-spacing:1px}
+.order-status-card .spinner{flex:0 0 auto;width:28px;height:28px;border:3px solid #f3ba2f33;border-top-color:#f3ba2f;border-radius:50%;animation:order-status-spin 1s linear infinite}
+@keyframes order-status-spin{to{transform:rotate(360deg)}}
+.order-complete-mark,.order-stop-mark,.order-wait-mark{width:29px;height:29px;flex:0 0 29px;border-radius:50%;display:grid;place-items:center;font-weight:800}
+.order-complete-mark{background:#a8f36b20;color:#a8f36b;border:1px solid #a8f36b66}.order-stop-mark{background:#ff777718;color:#ff9c9c;border:1px solid #ff777766}.order-wait-mark{background:#f3ba2f15;color:#f3ba2f;border:1px solid #f3ba2f55;font-size:20px}
+.order-stepper{direction:rtl;display:flex;align-items:flex-start;gap:7px;margin:20px 0 18px}
+.order-step{flex:0 1 30%;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;color:#ccc;font-size:11px}
+.order-step-dot{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#f3ba2f;color:#101014;font-weight:800;font-size:13px;z-index:1}
+.order-step-line{height:3px;background:#f3ba2f;flex:1;margin-top:14px;border-radius:9px;opacity:.9}
+.order-step small{font-size:11px;line-height:1.5;color:#c7c7c7}
+.order-stepper.is-working .order-step:nth-of-type(5) .order-step-dot,.order-stepper.is-pending .order-step:nth-of-type(5) .order-step-dot{background:#101014;border:3px solid #f3ba2f;color:#f3ba2f}
+.order-stepper.is-working .order-step:nth-of-type(5) .order-step-dot{border:0;background:transparent}
+.order-stepper.is-working .order-step:nth-of-type(5) small{color:#f3ba2f}
+.order-stepper.is-pending .order-step:nth-of-type(3) .order-step-dot{background:#101014;border:3px solid #f3ba2f;color:#f3ba2f}
+.order-stepper.is-stopped .order-step-dot{background:#ff77771c;color:#ff9c9c}.order-stepper.is-stopped .order-step-line{background:#ff777744}
+.order-stepper.is-complete .order-step-dot{background:#a8f36b;color:#08120e}
+.order-stepper .step-spinner{width:16px;height:16px;border:2px solid #f3ba2f33;border-top-color:#f3ba2f;border-radius:50%;animation:order-status-spin 1s linear infinite;display:block}
+.order-product-summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;border:1px solid #ffffff12;border-radius:12px;background:#ffffff04}
+.order-product-summary b,.order-product-summary small{display:block}.order-product-summary b{font-size:13px}.order-product-summary small{font-size:11px;color:#9a9a9a;margin-top:4px;overflow-wrap:anywhere}.order-product-summary strong{color:#f3ba2f;font-size:14px;white-space:nowrap}
+.order-status-card .order-admin-note{margin-top:12px}
+@media(max-width:480px){.order-status-card{padding:17px}.order-status-top h3{font-size:19px}.order-stepper{gap:4px}.order-step{flex-basis:32%;gap:7px}.order-step-dot{width:29px;height:29px}.order-step-line{margin-top:13px}.order-step small{font-size:10px}.order-status-meta{font-size:10px}}

@@ -61,6 +61,28 @@ if(RECOVERY_LINK){
   });
 }
 
+
+async function loadLeaderboard(){
+  const list=$('#leaderboardList');
+  if(!list)return;
+  list.innerHTML='<p class="muted">جاري تحميل الترتيب…</p>';
+  try{
+    const {data:profiles,error:profileError}=await supabaseClient.from('leaderboard_profiles').select('user_id,nickname').eq('public_visible',true);
+    if(profileError)throw profileError;
+    if(!profiles?.length){list.innerHTML='<p class="muted">ما فيش مشاركين ظاهرين في الترتيب حتى الآن. تقدر تفعّل المشاركة من حسابك.</p>';return}
+    const ids=profiles.map(p=>p.user_id);
+    const {data:orders,error:ordersError}=await supabaseClient.from('purchase_orders').select('user_id,total_amount').eq('status','completed').in('user_id',ids);
+    if(ordersError)throw ordersError;
+    const totals=new Map(profiles.map(p=>[p.user_id,{nickname:p.nickname,points:0}]));
+    (orders||[]).forEach(o=>{const item=totals.get(o.user_id);if(item)item.points+=Number(o.total_amount)||0});
+    const ranked=[...totals.values()].filter(p=>p.points>0).sort((a,b)=>b.points-a.points);
+    if(!ranked.length){list.innerHTML='<p class="muted">ما فيش مشتريات مكتملة للمشاركين حتى الآن.</p>';return}
+    list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>'<div class="leaderboard-row"><span class="leaderboard-rank">'+(i+1)+'</span><span class="leaderboard-nickname">'+escapeHtml(p.nickname)+'</span><strong class="leaderboard-points">'+Math.round(p.points).toLocaleString('ar-LY')+' نقطة</strong></div>').join('')+'</div>';
+  }catch(error){
+    list.innerHTML='<p class="muted">تعذر تحميل الترتيب حالياً. حاول تحديث الصفحة بعد قليل.</p>';
+  }
+}
+
 async function renderLeaderboardProfile(){const panel=$('.account-panel');if(!panel)return;let form=$('#leaderboardProfileForm');if(!form){form=document.createElement('form');form.id='leaderboardProfileForm';form.className='leaderboard-profile-form';form.innerHTML='<h3>الظهور في ترتيب المتسوقين</h3><p class="form-note">اختار اسم مستعار. ما نعرضوش بريدك أو اسم Roblox أو تفاصيل مشترياتك. النقاط تساوي إجمالي قيمة مشترياتك المكتملة بالدينار الليبي.</p><label for="leaderboardNickname">اسم مستعار (3 إلى 24 حرف)</label><input id="leaderboardNickname" minlength="3" maxlength="24" required placeholder="مثال: اللاعب الذهبي"><label class="transfer-confirm"><input id="leaderboardVisible" type="checkbox"><span>نوافق على إظهار اسمي المستعار ونقاطي في الترتيب العام</span></label><button class="btn btn-primary full-width" type="submit">حفظ إعدادات الترتيب</button><p id="leaderboardProfileStatus" class="form-note"></p>';panel.appendChild(form);form.addEventListener('submit',saveLeaderboardProfile)}const user=await currentUser();if(!user){form.classList.add('hidden');return}form.classList.remove('hidden');const {data,error}=await supabaseClient.from('leaderboard_profiles').select('nickname,public_visible').eq('user_id',user.id).maybeSingle();if(!error&&data){$('#leaderboardNickname').value=data.nickname;$('#leaderboardVisible').checked=data.public_visible}else if(!$('#leaderboardNickname').value){$('#leaderboardNickname').value='متسوق'+user.id.replace(/-/g,'').slice(0,6)}}
 async function saveLeaderboardProfile(e){e.preventDefault();const user=await currentUser();if(!user){toast('سجّل دخولك أولاً');return}const nickname=$('#leaderboardNickname').value.trim(),visible=$('#leaderboardVisible').checked;if(nickname.length<3||nickname.length>24){toast('الاسم المستعار لازم يكون بين 3 و24 حرف');return}const {error}=await supabaseClient.from('leaderboard_profiles').upsert({user_id:user.id,nickname,public_visible:visible,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error){$('#leaderboardProfileStatus').textContent=error.code==='23505'?'الاسم المستعار مستخدم؛ اختار اسم ثاني.':'تعذر حفظ الإعدادات. حاول باسم مستعار مختلف.';return}$('#leaderboardProfileStatus').textContent=visible?'تم الحفظ، وبيظهر اسمك المستعار بعد وجود مشتريات مكتملة.':'تم الحفظ، ومشاركتك في الترتيب متوقفة.';await renderAccount();await loadLeaderboard();toast('تم حفظ إعدادات الترتيب')}
 $('#refreshLeaderboard')?.addEventListener('click',loadLeaderboard);

@@ -6,7 +6,7 @@
 <title>L1017n | متجر الألعاب والشحن</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7"><link rel="stylesheet" href="packages.css?v=2">
+<link rel="stylesheet" href="styles.css?v=7"><link rel="stylesheet" href="packages.css?v=3">
 </head>
 <body>
 <header class="topbar"><a class="brand" href="#" data-view="home"><span class="brand-mark">L</span><span><b>L1017n</b><small>متجر الألعاب الرقمي</small></span></a><nav class="desktop-nav"><button data-view="home" class="nav-link active">الرئيسية</button><button data-view="store" class="nav-link">المتجر</button><button data-view="wallet" class="nav-link"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg>المحفظة</button><button data-view="orders" class="nav-link">طلباتي</button><button data-view="leaderboard" class="nav-link"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg>التصنيف</button></nav><button class="btn btn-outline" id="accountBtn">حسابي ↗</button></header>
@@ -40,7 +40,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=19';
+      var s=document.createElement('script');s.src='app.js?v=20';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

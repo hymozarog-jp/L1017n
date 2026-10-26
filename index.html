@@ -30,6 +30,12 @@
     if(!box){box=document.createElement('div');box.id='site-load-error';box.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:16px;background:#401818;color:white;border-radius:12px;text-align:center;font:16px sans-serif';document.body.appendChild(box)}
     box.textContent=text;
   }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-view]');
+    if(b && typeof window.switchView!=='function'){
+      showError('وصل الضغط للزر «'+(b.textContent||'').trim()+'»، لكن كود التنقل لم يبدأ. أعد تحميل الصفحة وأرسل هذه الرسالة.');
+    }
+  },true);
   window.addEventListener('error',function(e){
     showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));
   });

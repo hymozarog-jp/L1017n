@@ -30,19 +30,6 @@
     if(!box){box=document.createElement('div');box.id='site-load-error';box.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:16px;background:#401818;color:white;border-radius:12px;text-align:center;font:16px sans-serif';document.body.appendChild(box)}
     box.textContent=text;
   }
-  document.addEventListener('click',function(e){
-    var b=e.target.closest('[data-view]');
-    if(!b)return;
-    var view=b.getAttribute('data-view');
-    var sections=['#homeView','#storeView','.wallet-promo','.steps-section','#walletView','#ordersView','#accountView'];
-    sections.forEach(function(sel){document.querySelectorAll(sel).forEach(function(n){n.classList.add('hidden')})});
-    var map={home:['#homeView','#storeView','.wallet-promo','.steps-section'],store:['#storeView'],wallet:['#walletView'],orders:['#ordersView'],account:['#accountView']};
-    (map[view]||map.home).forEach(function(sel){document.querySelectorAll(sel).forEach(function(n){n.classList.remove('hidden')})});
-    document.querySelectorAll('[data-view]').forEach(function(n){n.classList.toggle('active',n.getAttribute('data-view')===view)});
-    if(view==='wallet' || view==='orders' || view==='account')showError('تم فتح القسم. لو بياناته ما ظهرتش، بنصلح اتصال قاعدة البيانات في الخطوة التالية.');
-    e.preventDefault();
-    window.scrollTo(0,0);
-  },true);
   window.addEventListener('error',function(e){
     showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));
   });
@@ -52,7 +39,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=14';
+      var s=document.createElement('script');s.src='app.js?v=15';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

@@ -77,3 +77,10 @@
 #adminProductForm .transfer-confirm,#adminProductForm .admin-request-actions{grid-column:1/-1}
 #adminStatus{margin:18px 0}
 @media(max-width:620px){.admin-request{gap:10px;flex-direction:column}.admin-request>div:last-child{display:flex;align-items:center;gap:10px}.admin-request-actions{width:100%}.admin-request-actions .btn{flex:1}#adminProductForm{grid-template-columns:1fr}#adminProductForm textarea,#adminProductForm #adminProductDescription,#adminProductForm .transfer-confirm,#adminProductForm .admin-request-actions{grid-column:1}}
+
+/* Roblox inventory status */
+.admin-stock-control{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0}
+.admin-stock-control label{font-weight:700}
+.admin-stock-control input{max-width:180px}
+.robux-package:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.6)}
+.robux-package .stock-label{display:block;margin-top:5px;color:var(--muted,#8b9690);font-size:.78rem}

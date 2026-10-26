@@ -1,6 +1,7 @@
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const SUPABASE_URL='https://cmtxsjlehjworqypbxjz.supabase.co';
 const SUPABASE_KEY='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
+const RECOVERY_LINK=new URLSearchParams(window.location.search).has('code')||new URLSearchParams(window.location.hash.slice(1)).get('type')==='recovery'||new URLSearchParams(window.location.search).get('type')==='recovery';
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const statusText={pending:'قيد المراجعة',approved:'تمت الموافقة',rejected:'مرفوض'};
 const orderStatusText={paid_pending_fulfillment:'تم الدفع — بانتظار التنفيذ',completed:'مكتمل',rejected:'مرفوض — تم إرجاع الرصيد',refunded:'تم إرجاع الرصيد'};
@@ -52,6 +53,13 @@ function openPasswordRecovery(){
 supabaseClient.auth.onAuthStateChange((event)=>{
   if(event==='PASSWORD_RECOVERY') openPasswordRecovery();
 });
+if(RECOVERY_LINK){
+  supabaseClient.auth.getSession().then(({data,error})=>{
+    if(error){toast('تعذر فتح رابط الاستعادة. اطلب رابطاً جديداً.');return}
+    if(data?.session)openPasswordRecovery();
+    else toast('رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطاً جديداً من «نسيت كلمة المرور».');
+  });
+}
 
 const ADMIN_EMAIL='mommedmmkk@gmail.com';
 const ADMIN_REVIEW_URL=SUPABASE_URL+'/functions/v1/admin-topup-review';

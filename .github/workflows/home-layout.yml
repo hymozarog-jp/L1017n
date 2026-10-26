@@ -1,0 +1,33 @@
+name: Update home layout
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update-home:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rearrange home page
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          start = s.find('<section class="stats home-stats">')
+          end = s.find('</section>', start)
+          if start != -1 and end != -1:
+              s = s[:start] + s[end + len('</section>'):]
+          start = s.find('<section class="section" id="storeView">')
+          end = s.find('</section>', start)
+          if start != -1 and end != -1:
+              s = s[:start] + s[end + len('</section>'):]
+          p.write_text(s, encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then exit 0; fi
+          git add index.html
+          git commit -m "Simplify home page layout"
+          git push

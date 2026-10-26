@@ -3,3 +3,24 @@
 .roblox-verify-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}.roblox-verify-row input{min-width:0}.roblox-verify-result{margin:12px 0;color:var(--muted);font-size:13px;line-height:1.7}.roblox-verify-result.error{color:#ff9c9c}.roblox-verify-result.success{color:#b6f58a}.roblox-profile-card{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid #a8f36b38;border-radius:16px;background:#a8f36b0b}.roblox-avatar,.roblox-avatar-placeholder{width:68px;height:68px;flex:0 0 68px;border-radius:16px;object-fit:cover;background:#203329}.roblox-avatar-placeholder{display:grid;place-items:center;font-weight:800;font-size:24px;color:var(--green)}.roblox-profile-info{min-width:0;display:flex;flex-direction:column;gap:3px}.roblox-profile-info strong{color:var(--text);overflow-wrap:anywhere}.roblox-profile-info span,.roblox-profile-info small{color:var(--muted);overflow-wrap:anywhere}.roblox-profile-info small{color:#b6f58a}.roblox-verify-row button:disabled{opacity:.65;cursor:wait}#submitRobloxPurchase:disabled{opacity:.55;cursor:not-allowed}
 
 .provider-card.madar{opacity:.72}.provider-card.madar small{color:#ffcf78}.provider-card.madar::after{content:'شحن المدار غير متوفر حاليًا';display:block;position:absolute;bottom:-28px;right:0;color:#ffcf78;font-size:10px;white-space:nowrap}.provider-card.madar.selected{border-color:#b68a3a;background:#b68a3a0b}
+/* Dark and gold Roblox package shop */
+.package-modal{background:rgba(2,4,8,.92);padding:14px}
+.package-box.robux-store-box{width:min(760px,100%);padding:24px;border-color:#b68a3a80;border-radius:25px;background:radial-gradient(ellipse at 50% 0%,#282012 0,transparent 42%),linear-gradient(145deg,#11151d,#05070a 75%);color:#f6f7fb}
+.robux-store-top{display:flex;align-items:center;gap:13px;padding:6px 0 18px}
+.roblox-brand-mark{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:#f4bf36;color:#111;font-size:28px;font-weight:900;transform:rotate(-8deg)}
+.robux-store-box h2{margin:2px 0;font-size:clamp(26px,5vw,36px)}
+.robux-wallet-strip{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #d3a43c77;border-radius:17px;padding:15px 17px;margin:0 0 18px;background:linear-gradient(110deg,#241d0d,#0b0d11)}
+.robux-wallet-strip small,.robux-wallet-strip strong{display:block}
+.robux-wallet-strip small{color:#c7c0ad;font-size:12px}
+.robux-wallet-strip strong{font-size:25px;color:#ffd45a;direction:ltr;text-align:right}
+.robux-add-balance{border:1px solid #e5b83e;border-radius:12px;background:#e8b832;color:#15110a;padding:10px 13px;font-weight:800;white-space:nowrap}
+.robux-store-box .package-subtitle{line-height:1.8}
+.robux-store-box .package-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.robux-store-box .robux-package{min-width:0;border:1px solid #675532;border-radius:16px;background:linear-gradient(145deg,#171b23,#090b0f);padding:14px;gap:12px}
+.robux-store-box .robux-package:hover{border-color:#f3c343;background:linear-gradient(145deg,#272112,#0b0d10);box-shadow:0 0 20px #e8b83216}
+.robux-store-box .robux-icon{flex:0 0 42px;background:#f0bc3420;color:#ffd04b;border:1px solid #d8a82f66}
+.robux-store-box .robux-package strong{font-size:15px;color:#fff}
+.robux-store-box .robux-package small{font-size:12px;color:#f6c84b}
+.robux-store-box .robux-package .stock-label{font-size:10px;color:#a9b0bb}
+.robux-store-box .robux-package:disabled{border-color:#33353a}
+@media(max-width:520px){.package-box.robux-store-box{padding:20px 14px}.robux-store-box .package-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.robux-store-box .robux-package{padding:12px 9px;gap:8px}.robux-store-box .robux-icon{flex-basis:34px;width:34px;height:34px}.robux-store-box .robux-package strong{font-size:12px}.robux-store-box .robux-package small{font-size:11px}.robux-wallet-strip{align-items:flex-start;flex-direction:column}.robux-add-balance{width:100%}}

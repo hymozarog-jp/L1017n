@@ -25,22 +25,23 @@
 <div class="toast" id="toast" role="status"></div>
 <script>
 (function(){
-  const sources=['https://unpkg.com/@supabase/supabase-js@2','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'];
-  function loadLib(i){
-    if(i>=sources.length){
-      const box=document.createElement('div');box.style.cssText='position:fixed;z-index:99999;bottom:12px;left:12px;right:12px;padding:14px;background:#401818;color:white;border-radius:12px;text-align:center';
-      box.textContent='تعذر تحميل خدمة تسجيل الدخول. جرّب شبكة أخرى أو أعد تحميل الصفحة.';document.body.appendChild(box);return;
-    }
-    const s=document.createElement('script');s.src=sources[i];
-    s.onload=function(){
-      if(!window.supabase){loadLib(i+1);return}
-      const app=document.createElement('script');app.src='app.js?v=4';
-      app.onerror=function(){const box=document.createElement('div');box.style.cssText='position:fixed;z-index:99999;bottom:12px;left:12px;right:12px;padding:14px;background:#401818;color:white;border-radius:12px;text-align:center';box.textContent='تعذر تحميل وظائف الموقع. حدّث الصفحة أو جرّب شبكة أخرى.';document.body.appendChild(box)};
-      document.body.appendChild(app);
-    };
-    s.onerror=function(){loadLib(i+1)};document.head.appendChild(s);
+  function showError(text){
+    var box=document.getElementById('site-load-error');
+    if(!box){box=document.createElement('div');box.id='site-load-error';box.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:16px;background:#401818;color:white;border-radius:12px;text-align:center;font:16px sans-serif';document.body.appendChild(box)}
+    box.textContent=text;
   }
-  loadLib(0);
+  function startApp(){
+    if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
+    try{
+      var s=document.createElement('script');s.src='app.js?v=5';
+      s.onload=function(){showError('تم تحميل وظائف المتجر. لو الأزرار لا تعمل، أعد تحميل الصفحة.');setTimeout(function(){var b=document.getElementById('site-load-error');if(b)b.remove()},4500)};
+      s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
+      document.body.appendChild(s);
+    }catch(e){showError('خطأ أثناء تشغيل المتجر: '+(e.message||e))}
+  }
+  var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload=startApp;s.onerror=function(){showError('تعذر الاتصال بمكتبة المتجر. جرّب شبكة أخرى أو افتح الموقع في Safari/Chrome.')};
+  document.head.appendChild(s);
 })();
 </script>
 </body></html>

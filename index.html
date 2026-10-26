@@ -32,9 +32,16 @@
   }
   document.addEventListener('click',function(e){
     var b=e.target.closest('[data-view]');
-    if(b && typeof window.switchView!=='function'){
-      showError('وصل الضغط للزر «'+(b.textContent||'').trim()+'»، لكن كود التنقل لم يبدأ. أعد تحميل الصفحة وأرسل هذه الرسالة.');
-    }
+    if(!b)return;
+    var view=b.getAttribute('data-view');
+    var sections=['#homeView','#storeView','.wallet-promo','.steps-section','#walletView','#ordersView','#accountView'];
+    sections.forEach(function(sel){document.querySelectorAll(sel).forEach(function(n){n.classList.add('hidden')})});
+    var map={home:['#homeView','#storeView','.wallet-promo','.steps-section'],store:['#storeView'],wallet:['#walletView'],orders:['#ordersView'],account:['#accountView']};
+    (map[view]||map.home).forEach(function(sel){document.querySelectorAll(sel).forEach(function(n){n.classList.remove('hidden')})});
+    document.querySelectorAll('[data-view]').forEach(function(n){n.classList.toggle('active',n.getAttribute('data-view')===view)});
+    if(view==='wallet' || view==='orders' || view==='account')showError('تم فتح القسم. لو بياناته ما ظهرتش، بنصلح اتصال قاعدة البيانات في الخطوة التالية.');
+    e.preventDefault();
+    window.scrollTo(0,0);
   },true);
   window.addEventListener('error',function(e){
     showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));

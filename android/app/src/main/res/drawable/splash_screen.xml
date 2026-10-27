@@ -1,0 +1,6 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="#06110D" />
+    <item android:gravity="center" android:width="176dp" android:height="176dp">
+        <bitmap android:src="@drawable/ic_brand_mark" android:gravity="fill" />
+    </item>
+</layer-list>

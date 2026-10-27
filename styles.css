@@ -141,6 +141,16 @@
 .game-category-button:active{transform:scale(.985)}
 @media(max-width:520px){#productGrid{gap:12px}.game-category-art{height:220px}.game-category-info{padding:13px 10px;display:block}.game-category-info h3{font-size:17px}.game-category-info span{display:block;margin-top:7px;font-size:11px}.game-art-kicker{top:12px;left:10px;font-size:8px}.fortnite-art-logo,.roblox-game-logo{font-size:clamp(25px,7vw,38px)}}
 
-/* Customer balance shortcut in the header */
-.customer-wallet-chip{display:flex;align-items:center;gap:9px;padding:6px 8px 6px 12px;border:1px solid #2f936a;border-radius:14px;background:linear-gradient(135deg,#102a20,#0c1b17);color:#eafff2;white-space:nowrap}
-.customer-wallet-chip.hidden{display:none!important}.customer-wallet-label{font-size:11px;color:#9bd7b8}.customer-wallet-chip strong{font-size:13px;font-weight:800;direction:rtl}.customer-wallet-chip button{width:30px;height:30px;border:0;border-radius:10px;background:#35c77c;color:#062014;font-size:23px;font-weight:800;line-height:1;cursor:pointer;display:grid;place-items:center;flex-shrink:0}.topbar{gap:10px}@media(max-width:620px){.topbar{gap:6px}.customer-wallet-chip{gap:5px;padding:4px 5px 4px 7px;border-radius:11px}.customer-wallet-label{display:none}.customer-wallet-chip strong{font-size:11px}.customer-wallet-chip button{width:27px;height:27px}.topbar .btn{padding:8px 9px;font-size:12px}}
+
+/* Premium customer wallet chip */
+.customer-wallet-chip{display:flex;align-items:center;gap:10px;padding:7px 9px 7px 13px;border:1px solid rgba(69,211,145,.3);border-radius:16px;background:linear-gradient(145deg,rgba(19,48,37,.98),rgba(9,25,20,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 5px 18px rgba(0,0,0,.12);color:#f2fff7;white-space:nowrap;transition:border-color .2s,transform .2s}
+.customer-wallet-chip:hover{border-color:rgba(69,211,145,.65);transform:translateY(-1px)}
+.customer-wallet-chip.hidden{display:none!important}
+.customer-wallet-label{display:block;font-size:10px;line-height:1.35;color:#8fc8aa;font-weight:600;letter-spacing:.2px}
+.customer-wallet-chip strong{display:block;font-size:13px;font-weight:800;line-height:1.5;direction:rtl;font-variant-numeric:tabular-nums}
+.customer-wallet-chip button{width:34px;height:34px;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:linear-gradient(145deg,#50e09a,#20b96c);color:#062819;font-size:23px;font-weight:500;line-height:1;cursor:pointer;display:grid;place-items:center;flex-shrink:0;box-shadow:0 3px 10px rgba(32,185,108,.22);transition:filter .2s,transform .2s}
+.customer-wallet-chip button:hover{filter:brightness(1.08);transform:scale(1.04)}
+.customer-wallet-chip button:focus-visible{outline:2px solid #8af0bc;outline-offset:3px}
+.topbar{gap:12px}
+@media(max-width:760px){.topbar{gap:7px}.customer-wallet-chip{gap:7px;padding:5px 7px 5px 9px;border-radius:13px}.customer-wallet-label{font-size:9px}.customer-wallet-chip strong{font-size:11px}.customer-wallet-chip button{width:30px;height:30px;border-radius:10px}.topbar .btn{padding:8px 10px;font-size:12px}}
+@media(max-width:390px){.customer-wallet-chip{gap:5px;padding:4px 5px 4px 7px}.customer-wallet-label{display:none}.customer-wallet-chip strong{font-size:10px}.customer-wallet-chip button{width:27px;height:27px}.topbar{gap:5px}}

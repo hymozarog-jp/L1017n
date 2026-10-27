@@ -20,12 +20,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Accept Android SDK licenses
-        working-directory: .
-        run: yes | sdkmanager --licenses >/dev/null || true
       - name: Install Android SDK platform
         working-directory: .
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
       - name: Install Gradle
         uses: gradle/actions/setup-gradle@v4
         with:

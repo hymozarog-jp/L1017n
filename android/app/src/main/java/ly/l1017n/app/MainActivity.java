@@ -13,6 +13,7 @@ public class MainActivity extends Activity {
     private static final String HOME = "https://hymozarog-jp.github.io/L1017n/";
 
     @Override protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         webView = new WebView(this);
         setContentView(webView);

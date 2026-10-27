@@ -140,3 +140,7 @@
 .game-category-info span{font-size:12px;color:#e8c46a;white-space:nowrap}
 .game-category-button:active{transform:scale(.985)}
 @media(max-width:520px){#productGrid{gap:12px}.game-category-art{height:220px}.game-category-info{padding:13px 10px;display:block}.game-category-info h3{font-size:17px}.game-category-info span{display:block;margin-top:7px;font-size:11px}.game-art-kicker{top:12px;left:10px;font-size:8px}.fortnite-art-logo,.roblox-game-logo{font-size:clamp(25px,7vw,38px)}}
+
+/* Customer balance shortcut in the header */
+.customer-wallet-chip{display:flex;align-items:center;gap:9px;padding:6px 8px 6px 12px;border:1px solid #2f936a;border-radius:14px;background:linear-gradient(135deg,#102a20,#0c1b17);color:#eafff2;white-space:nowrap}
+.customer-wallet-chip.hidden{display:none!important}.customer-wallet-label{font-size:11px;color:#9bd7b8}.customer-wallet-chip strong{font-size:13px;font-weight:800;direction:rtl}.customer-wallet-chip button{width:30px;height:30px;border:0;border-radius:10px;background:#35c77c;color:#062014;font-size:23px;font-weight:800;line-height:1;cursor:pointer;display:grid;place-items:center;flex-shrink:0}.topbar{gap:10px}@media(max-width:620px){.topbar{gap:6px}.customer-wallet-chip{gap:5px;padding:4px 5px 4px 7px;border-radius:11px}.customer-wallet-label{display:none}.customer-wallet-chip strong{font-size:11px}.customer-wallet-chip button{width:27px;height:27px}.topbar .btn{padding:8px 9px;font-size:12px}}

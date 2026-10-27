@@ -1,15 +1,14 @@
 package ly.l1017n.app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private WebView webView;
     private static final String HOME = "https://hymozarog-jp.github.io/L1017n/";
 
@@ -23,12 +22,8 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setAllowFileAccess(false);
         webView.getSettings().setSupportMultipleWindows(false);
         webView.setWebViewClient(new WebViewClient() {
-            @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return openUrl(request.getUrl().toString());
-            }
-            @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return openUrl(url);
-            }
+            @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) { return openUrl(request.getUrl().toString()); }
+            @Override public boolean shouldOverrideUrlLoading(WebView view, String url) { return openUrl(url); }
             private boolean openUrl(String url) {
                 if (url.startsWith("https://") || url.startsWith("http://")) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception ignored) {}
@@ -36,10 +31,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         webView.loadUrl(HOME);
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override public void handleOnBackPressed() {
-                if (webView.canGoBack()) webView.goBack(); else finish();
-            }
-        });
+    }
+
+    @Override public void onBackPressed() {
+        if (webView.canGoBack()) webView.goBack(); else super.onBackPressed();
     }
 }

@@ -392,3 +392,17 @@ body.topup-modal-open{overflow:hidden}
 #leaderboardView .leaderboard-profile-form input:not([type="checkbox"]){background:#101b30;color:#fff;border:1px solid #354b70;border-radius:12px}
 #leaderboardView .leaderboard-profile-form .btn-primary{background:linear-gradient(110deg,#7e4be6,#4c7ae9);border-color:#7954dd;color:white}
 @media(max-width:550px){#leaderboardView{padding:19px 11px 110px}#leaderboardView .leaderboard-panel{padding:12px}#leaderboardView .leaderboard-prize{padding:12px}#leaderboardView .leaderboard-row{padding:11px 10px}}
+
+
+/* Reference-matched portrait game cards: three columns, 0.73 aspect ratio */
+#productGrid{display:block!important;width:100%;max-width:1050px;margin-inline:auto}
+#productGrid .game-tiles{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(12px,2.8vw,28px)!important;align-items:start}
+#productGrid .game-tile{min-width:0;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+#productGrid .game-tile-btn{display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:visible}
+#productGrid .game-tile-art{width:100%;height:auto!important;aspect-ratio:0.73!important;border:3px solid #233552;border-radius:clamp(14px,3vw,26px);position:relative;overflow:hidden;background-color:#10182c}
+#productGrid .game-tile-art img{width:100%;height:100%;object-fit:cover!important;padding:0!important;display:block}
+#productGrid .game-tile-yellow{display:none!important}
+#productGrid .game-tile-info{min-height:0!important;padding:11px 2px 21px!important;background:transparent;text-align:center}
+#productGrid .game-tile-info strong{font-size:clamp(12px,2.2vw,20px);line-height:1.35;font-weight:750;white-space:normal;overflow-wrap:anywhere}
+#productGrid .game-tile-info small{display:none!important}
+@media(max-width:600px){#productGrid .game-tiles{gap:clamp(9px,2.8vw,17px)!important}#productGrid .game-tile-art{border-width:2px;border-radius:clamp(12px,3vw,19px)}#productGrid .game-tile-info{padding:9px 0 19px!important}#productGrid .game-tile-info strong{font-size:clamp(11px,3vw,15px)}}

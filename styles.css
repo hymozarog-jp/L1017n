@@ -199,3 +199,11 @@ body{background:#0d1219}
 .game-art-newstate{background:linear-gradient(135deg,#1e293b,#0c1015 70%)}.game-art-cod{background:linear-gradient(135deg,#504d26,#171a15)}
 .game-art-fortnite{background:linear-gradient(135deg,#6e40c4,#1749b3)}
 .game-art-roblox img,.game-art-pubg img,.game-art-cod img{background:transparent}
+
+
+/* Portrait-cover game cards: no tiny landscape thumbnails */
+.game-tile-art{height:clamp(205px,31vw,320px)!important}
+.game-tile-brand{font-size:clamp(19px,3.5vw,42px)!important;letter-spacing:-1px!important;transform:rotate(-3deg);filter:drop-shadow(0 8px 12px #0009)}
+.game-tile-art:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 65% 24%,#ffffff40,transparent 28%),linear-gradient(155deg,transparent 45%,#0009);z-index:0}
+.game-tile-art:after{content:'';position:absolute;width:95%;height:70%;top:4%;left:3%;border:2px solid #ffffff20;border-radius:50%;transform:rotate(-24deg);box-shadow:0 0 60px #ffffff20;pointer-events:none}
+@media(max-width:700px){.game-tile-art{height:clamp(160px,35vw,230px)!important}.game-tile-brand{font-size:clamp(14px,3.4vw,24px)!important}}

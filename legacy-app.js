@@ -12,30 +12,19 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;',
 async function currentUser(){const {data:{user}}=await supabaseClient.auth.getUser();return user}
 async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data)robuxAvailable=Number(inventoryResult.data.robux_available)||0;renderProducts()}
 function renderProducts(){
-  const g = $('#productGrid');
-  if (!g) return;
-  const robux = products.filter(p => String(p.game || '').toLowerCase() === 'roblox' || /robux|روبوكس/i.test(p.name || ''));
-  g.innerHTML = `
-    <article class="product-card game-category-card fortnite-category-card">
-      <button class="game-category-button" data-game-category="fortnite" aria-label="فورت نايت">
-        <div class="game-category-art fortnite-category-art">
-          <span class="game-art-kicker">L1017N GAMING</span>
-          <div class="fortnite-art-logo">FORTNITE</div>
-          <span class="game-art-subtitle">BATTLE ROYALE</span>
-        </div>
-        <div class="game-category-info"><h3>فورت نايت</h3><span>عرض القسم ←</span></div>
-      </button>
-    </article>
-    <article class="product-card game-category-card roblox-game-card">
-      <button class="game-category-button" data-product="roblox" aria-label="عرض باقات روبلوكس">
-        <div class="game-category-art roblox-game-art">
-          <span class="game-art-kicker">L1017N GAMING</span>
-          <div class="roblox-game-logo">ROBLOX</div>
-          <span class="game-art-subtitle">ROBUX STORE</span>
-        </div>
-        <div class="game-category-info"><h3>روبلوكس</h3><span>${robux.length} باقات · دخول ←</span></div>
-      </button>
-    </article>`;
+ const g=$('#productGrid');if(!g)return;
+ const games=[
+ {name:'روبلوكس',category:'ألعاب الهواتف',image:'https://tr.rbxcdn.com/180DAY-be965de4138292ae27a6ef20e0321690/768/432/Image/Webp/noFilter',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
+ {name:'ببجي موبايل',category:'ألعاب الهواتف',image:'https://cdn.cloudflare.steamstatic.com/steam/apps/578080/header.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
+ {name:'فري فاير',category:'ألعاب الهواتف',image:'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',key:'freefire',count:products.filter(p=>/free fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
+ {name:'اف سي موبايل',category:'ألعاب الهواتف',image:'https://cdn.cloudflare.steamstatic.com/steam/apps/2195250/header.jpg',key:'fc',count:products.filter(p=>/fc mobile|فيفا/i.test([p.game,p.name].join(' '))).length},
+ {name:'ببجي نيو ستيت',category:'ألعاب الهواتف',image:'https://cdn.cloudflare.steamstatic.com/steam/apps/1615210/header.jpg',key:'newstate',count:products.filter(p=>/new state|نيو ستيت/i.test([p.game,p.name].join(' '))).length},
+ {name:'كول أوف ديوتي موبايل',category:'ألعاب الهواتف',image:'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',key:'cod',count:products.filter(p=>/call of duty|كول اوف|كول أوف/i.test([p.game,p.name].join(' '))).length},
+ {name:'فورت نايت',category:'ألعاب PC',image:'https://cdn2.unrealengine.com/fortnite-chapter-5-season-1-key-art-1920x1080-1920x1080-0d75f10f4e3d.jpg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
+ ];
+ g.innerHTML='<div class="game-filter-bar" role="group" aria-label="تصنيفات الألعاب"><button class="game-filter active" data-game-filter="all">كل الألعاب <small>'+games.length+'</small></button><button class="game-filter" data-game-filter="ألعاب الهواتف">ألعاب الهواتف</button><button class="game-filter" data-game-filter="ألعاب PC">ألعاب PC</button></div><div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+x.category+'"><button type="button" class="game-tile-btn" data-game-open="'+x.key+'" aria-label="'+x.name+'"><div class="game-tile-art"><img loading="lazy" src="'+x.image+'" alt="'+x.name+'" onerror="this.style.display=\'none\'"></div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+x.name+'</strong><small>'+x.count+' قسم ◈</small></div></button></article>').join('')+'</div>';
+ g.querySelectorAll('[data-game-filter]').forEach(btn=>btn.addEventListener('click',()=>{g.querySelectorAll('[data-game-filter]').forEach(n=>n.classList.toggle('active',n===btn));g.querySelectorAll('[data-game-group]').forEach(n=>n.hidden=btn.dataset.gameFilter!=='all'&&n.dataset.gameGroup!==btn.dataset.gameFilter)}));
+ g.querySelectorAll('[data-game-open]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.gameOpen;if(key==='roblox'){document.querySelector('[data-product="roblox"]')?.click();return}if(key==='fortnite'){document.querySelector('[data-game-category="fortnite"]')?.click();return}const match=products.find(p=>{const v=[p.game,p.name,p.product_key].join(' ').toLowerCase();return key==='pubg'?/pubg|ببجي/.test(v):key==='freefire'?/free fire|فري فاير/.test(v):key==='fc'?/fc mobile|فيفا/.test(v):key==='newstate'?/new state|نيو ستيت/.test(v):/call of duty|كول اوف|كول أوف/.test(v)});if(match&&typeof selectPackage==='function')selectPackage(match.id);else toast('باقات '+btn.closest('.game-tile').querySelector('strong').textContent+' غير متوفرة حالياً')}));
 }
 function switchView(view){const map={home:['#homeView','#storeView','.wallet-promo','.steps-section'],store:['#storeView'],wallet:['#walletView'],orders:['#ordersView'],account:['#accountView'],leaderboard:['#leaderboardView']};const sections=['#homeView','#storeView','.wallet-promo','.steps-section','#walletView','#ordersView','#accountView','#leaderboardView','#adminView'];sections.forEach(s=>{const n=$(s);if(n)n.classList.add('hidden')});(map[view]||map.home).forEach(s=>{const n=$(s);if(n)n.classList.remove('hidden')});$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='wallet')renderWallet();if(view==='orders')renderOrders();if(view==='account')renderAccount();if(view==='leaderboard')loadLeaderboard();window.scrollTo({top:0,behavior:'smooth'})}
 function selectedProvider(){return $('input[name="provider"]:checked')?.value||'libyana'}

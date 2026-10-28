@@ -1,0 +1,10 @@
+/* iPhone Safari layout parity for Roblox full-screen catalog */
+#robuxModal.robux-full-page .robux-store-box{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#robuxModal .package-grid{width:100%!important;max-width:720px!important;box-sizing:border-box!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;justify-content:stretch!important;justify-items:stretch!important;align-items:stretch!important;gap:12px!important}
+#robuxModal .robux-package{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;aspect-ratio:0.82!important;min-height:0!important;justify-self:stretch!important}
+#robuxModal .robux-package>span:not(.robux-art):not(.robux-plus){box-sizing:border-box!important;min-width:0!important}
+#robuxModal .package-close{position:fixed!important;top:calc(16px + env(safe-area-inset-top,0px))!important;right:16px!important;left:auto!important;float:none!important;transform:none!important;display:grid!important;place-items:center!important}
+#robuxModal .robux-reference-hero{padding-top:max(80px,calc(65px + env(safe-area-inset-top,0px)))!important}
+#robuxModal .robux-reference-section{margin-top:20px!important}
+@supports(-webkit-touch-callout:none){#robuxModal .package-grid{display:grid!important;grid-auto-flow:row!important;grid-auto-columns:minmax(0,1fr)!important}#robuxModal .robux-package{height:auto!important;overflow:hidden!important}#robuxModal .robux-art{aspect-ratio:1!important}#robuxModal.robux-full-page:not(.hidden){-webkit-overflow-scrolling:touch!important}}
+@media(max-width:600px){#robuxModal.robux-full-page .robux-store-box{padding-left:14px!important;padding-right:14px!important}#robuxModal .package-grid{gap:10px!important}#robuxModal .robux-package{aspect-ratio:.82!important}#robuxModal .robux-package strong{font-size:clamp(14px,4vw,20px)!important}#robuxModal .robux-package .stock-label{font-size:10px!important;white-space:normal!important}}

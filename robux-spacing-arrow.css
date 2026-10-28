@@ -1,0 +1,13 @@
+/* Cleaner Robux page spacing, hide top wallet, show selection guidance */
+#robuxModal .robux-wallet-strip{display:none!important}
+#robuxModal.robux-full-page .robux-store-box{padding:18px max(18px,calc((100vw - 670px)/2)) 100px!important}
+#robuxModal .robux-store-top{margin:10px 0 8px!important}
+#robuxModal .package-subtitle{margin:8px 0 16px!important}
+#robuxModal .package-grid{gap:12px!important;margin-top:14px!important;max-width:620px;margin-inline:auto!important}
+#robuxModal .robux-package{aspect-ratio:.82!important}
+#robuxModal .robux-package.selected{border:2px solid #8bbdff!important;box-shadow:0 0 0 3px #6f80ff44,0 8px 20px #0007!important}
+#robuxModal .robux-scroll-arrow{position:fixed;bottom:max(22px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:999999;background:linear-gradient(110deg,#6852d5,#2474c5);color:white;border:1px solid #a2b7ff;border-radius:999px;padding:13px 25px;font:700 15px 'IBM Plex Sans Arabic',sans-serif;box-shadow:0 8px 28px #0009;cursor:pointer;white-space:nowrap;animation:robuxArrowPop .25s ease}
+#robuxModal .robux-scroll-arrow[hidden]{display:none!important}
+#robuxModal #purchaseBox{scroll-margin-top:24px}
+@keyframes robuxArrowPop{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(max-width:480px){#robuxModal.robux-full-page .robux-store-box{padding:16px 15px 110px!important}#robuxModal .package-grid{gap:12px!important}#robuxModal .robux-package{aspect-ratio:.78!important}}

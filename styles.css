@@ -367,3 +367,28 @@ body.topup-modal-open{overflow:hidden}
  .orders-card-side>strong small{font-size:10px}
  .orders-status{font-size:10px;padding:5px 7px}
 }
+
+
+/* Unified classification / leaderboard palette */
+#leaderboardView{background:#080e1d;color:#eef3ff;min-height:calc(100dvh - 110px);padding:25px 16px 115px;border-radius:22px}
+#leaderboardView .section-head h2{color:#f0f4ff;font-size:clamp(27px,5vw,36px)}
+#leaderboardView .section-head p{color:#8e9db8}
+#leaderboardView .section-head .eyebrow{color:#789fdf}
+#leaderboardView .text-button{color:#9cc3ff;background:#172744;border:1px solid #304b76;border-radius:14px;padding:9px 13px}
+#leaderboardView .leaderboard-panel{background:#0f192d;border:1px solid #293c5c;border-radius:23px;padding:17px}
+#leaderboardView .leaderboard-prize{background:linear-gradient(115deg,#28213d,#192343);border:1px solid #594982;border-radius:18px;padding:15px}
+#leaderboardView .leaderboard-prize-icon{background:#a26af72b;border-radius:14px}
+#leaderboardView .leaderboard-prize strong,#leaderboardView .leaderboard-prize p b{color:#c8a6ff}
+#leaderboardView .leaderboard-prize p{color:#c2cbe0}
+#leaderboardView .leaderboard-privacy{background:#131e33;border:1px solid #283d5d;color:#a2b0ca;border-radius:14px}
+#leaderboardView .leaderboard-row{background:#141f35;border:1px solid #2c3c59;border-radius:16px;padding:13px}
+#leaderboardView .leaderboard-row:nth-child(1){background:linear-gradient(105deg,#28223d,#19253d);border-color:#75629a}
+#leaderboardView .leaderboard-row:nth-child(2){border-color:#4a6485}
+#leaderboardView .leaderboard-row:nth-child(3){border-color:#485475}
+#leaderboardView .leaderboard-rank{color:#bca4ff}
+#leaderboardView .leaderboard-points{color:#67d8bf}
+#leaderboardView .leaderboard-name{color:#f1f4ff}
+#leaderboardView .leaderboard-profile-form{border-color:#2d3d5b}
+#leaderboardView .leaderboard-profile-form input:not([type="checkbox"]){background:#101b30;color:#fff;border:1px solid #354b70;border-radius:12px}
+#leaderboardView .leaderboard-profile-form .btn-primary{background:linear-gradient(110deg,#7e4be6,#4c7ae9);border-color:#7954dd;color:white}
+@media(max-width:550px){#leaderboardView{padding:19px 11px 110px}#leaderboardView .leaderboard-panel{padding:12px}#leaderboardView .leaderboard-prize{padding:12px}#leaderboardView .leaderboard-row{padding:11px 10px}}

@@ -331,3 +331,39 @@ body.topup-modal-open{overflow:hidden}
 .orders-status-completed{color:#45e0ad;background:#123b3a}.orders-status-pending{color:#f4cb73;background:#473821}.orders-status-refunded{color:#ff9ca5;background:#482b39}
 .orders-empty{text-align:center;color:#9ba9c4;padding:25px 10px;line-height:2}.orders-empty[hidden]{display:none}
 @media(max-width:550px){#ordersView{padding:24px 14px 115px}.orders-filter-tabs{gap:7px}.orders-filter-tabs button{padding:10px 14px;font-size:14px}.orders-modern-card{gap:10px;padding:16px 12px;border-radius:22px}.orders-game-icon{width:61px;height:61px;border-radius:17px;font-size:36px}.orders-card-title{font-size:15px}.orders-card-meta{font-size:11px}.orders-card-side>strong{font-size:17px}.orders-card-side>strong small{font-size:11px}.orders-status{font-size:11px;padding:6px 9px}}
+
+
+/* Refined compact orders proportions */
+#ordersView{padding:24px 15px 105px}
+#ordersView .section-head{margin-bottom:15px}
+#ordersView .section-head h2{font-size:clamp(27px,5vw,36px);line-height:1.3}
+#ordersView .section-head p{font-size:14px;line-height:1.6}
+.orders-filter-tabs{gap:7px;padding:3px 0 17px}
+.orders-filter-tabs button{font-size:13px;padding:8px 14px;border-radius:25px}
+.orders-modern-list{gap:11px}
+.orders-modern-card{gap:11px;padding:14px 13px;border-radius:19px}
+.orders-game-icon{width:60px;height:60px;border-radius:15px;font-size:34px}
+.orders-card-title{font-size:16px}
+.orders-card-meta{font-size:12px;margin-top:5px}
+.orders-card-id{font-size:10px;margin-top:4px}
+.orders-card-side{gap:8px}
+.orders-card-side>strong{font-size:17px}
+.orders-card-side>strong small{font-size:11px}
+.orders-status{font-size:12px;padding:5px 9px}
+@media(max-width:550px){
+ #ordersView{padding:18px 11px 100px}
+ #ordersView .section-head h2{font-size:30px}
+ #ordersView .section-head p{font-size:13px}
+ .orders-filter-tabs{gap:6px;padding-bottom:15px}
+ .orders-filter-tabs button{font-size:12px;padding:8px 11px}
+ .orders-modern-list{gap:10px}
+ .orders-modern-card{padding:12px 10px;gap:9px;border-radius:17px}
+ .orders-game-icon{width:51px;height:51px;border-radius:13px;font-size:30px}
+ .orders-card-title{font-size:13px}
+ .orders-card-meta{font-size:10px;margin-top:4px}
+ .orders-card-id{font-size:9px}
+ .orders-card-side{gap:7px}
+ .orders-card-side>strong{font-size:15px}
+ .orders-card-side>strong small{font-size:10px}
+ .orders-status{font-size:10px;padding:5px 7px}
+}

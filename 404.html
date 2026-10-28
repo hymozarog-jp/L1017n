@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#08120e">
+  <title>فتح المتجر | L1017n</title>
+  <script>
+    (function () {
+      // Social posts can append invisible formatting characters to copied URLs.
+      // Recover only known pages, on this origin; keep query strings and hashes.
+      try {
+        var target = new URL(window.location.href);
+        var path = decodeURIComponent(target.pathname);
+        var cleanPath = path.replace(/[\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '');
+        var knownPages = [
+          '/L1017n/', '/L1017n/index.html', '/L1017n/admin.html',
+          '/L1017n/admin-v2.html', '/L1017n/privacy-policy.html'
+        ];
+        if (cleanPath === '/L1017n') cleanPath += '/';
+        if (path !== cleanPath && knownPages.indexOf(cleanPath) !== -1) {
+          target.pathname = cleanPath;
+          window.location.replace(target.href);
+        }
+      } catch (error) {
+        // Malformed links still have a working, fixed link back to the store.
+      }
+    })();
+  </script>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#08120e;color:#edf7f0;font-family:system-ui,sans-serif;text-align:center}main{max-width:480px;padding:32px;border:1px solid #284335;border-radius:24px;background:#102219}h1{font-size:26px}p{color:#c0d5c7;line-height:1.9}a{display:inline-block;margin-top:12px;padding:14px 28px;border-radius:12px;background:#a7ed6d;color:#08120e;font-weight:700;text-decoration:none}a:focus-visible{outline:3px solid #fff;outline-offset:4px}
+  </style>
+</head>
+<body>
+  <main>
+    <strong dir="ltr">L1017n</strong>
+    <h1>لنفتح المتجر</h1>
+    <p>قد يكون الرابط المنسوخ غير مكتمل أو يحتوي على أحرف إضافية. إذا لم تفتح الصفحة تلقائيًا، اضغط الزر للوصول إلى المتجر.</p>
+    <a href="/L1017n/">افتح المتجر</a>
+  </main>
+</body>
+</html>

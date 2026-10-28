@@ -1,0 +1,5 @@
+#robuxModal.robux-full-page:not(.hidden){display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;z-index:999999!important;margin:0!important;padding:0!important;background:#060b17!important;backdrop-filter:none!important}
+#robuxModal.robux-full-page .robux-store-box{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-height:100dvh!important;height:auto!important;margin:0!important;border:0!important;border-radius:0!important;padding:22px max(14px,calc((100vw - 740px)/2)) 80px!important;background:radial-gradient(ellipse at 50% 0%,#1c345a,#0a1427 46%,#060b17 100%)!important}
+#robuxModal.robux-full-page .package-close{position:sticky!important;top:10px!important;float:left!important;z-index:50!important}
+#robuxModal.robux-full-page .package-grid{clear:both}
+body:has(#robuxModal.robux-full-page:not(.hidden)){overflow:hidden!important}

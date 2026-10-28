@@ -14,7 +14,7 @@ async function loadProducts(){const [productResult,inventoryResult]=await Promis
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
- {name:'روبلوكس',category:'ألعاب الهواتف',image:'https://images.launchbox-app.com/66b85b4c-4c13-4b24-948c-a7913c0d1972.jpg',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
+ {name:'روبلوكس',category:'ألعاب الهواتف',image:'game-covers/roblox.svg?v=20261028logo3',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
  {name:'ببجي موبايل',category:'ألعاب الهواتف',image:'https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
  {name:'فري فاير',category:'ألعاب الهواتف',image:'https://images.launchbox-app.com/1a210ab9-e0f5-46f0-967b-ec5703e7e28c.jpg',key:'freefire',count:products.filter(p=>/free fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
  {name:'اف سي موبايل',category:'ألعاب الهواتف',image:'https://images.launchbox-app.com/a45f981c-d21c-4142-be54-1f5cd31c1564.jpg',key:'fc',count:products.filter(p=>/fc mobile|فيفا/i.test([p.game,p.name].join(' '))).length},

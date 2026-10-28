@@ -1,0 +1,9 @@
+
+/* Animated floating selection bubble for bottom navigation */
+.mobile-nav{isolation:isolate;position:fixed!important}
+.mobile-nav .nav-follow-bubble{position:absolute;z-index:-1;top:7px;left:0;width:0;height:calc(100% - 14px - env(safe-area-inset-bottom));border-radius:999px;background:linear-gradient(135deg,#8c65f0b8,#547cfa9e);border:1px solid #c7b4ff99;box-shadow:0 3px 16px #7965ff4a,inset 0 1px 0 #ffffff40;pointer-events:none;opacity:0;transition:transform .36s cubic-bezier(.2,.9,.25,1.15),width .36s cubic-bezier(.2,.9,.25,1.15),opacity .18s ease}
+.mobile-nav .nav-follow-bubble.ready{opacity:1}
+.mobile-nav button.active,body:has(#homeView:not(.hidden)) .mobile-nav button.active{background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:#fff!important}
+.mobile-nav button{position:relative;z-index:1;transition:color .25s ease,transform .25s ease}
+.mobile-nav button.active .nav-icon{filter:drop-shadow(0 0 5px #d9c9ff)}
+@media(prefers-reduced-motion:reduce){.mobile-nav .nav-follow-bubble{transition:none!important}}

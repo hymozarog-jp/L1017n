@@ -245,3 +245,33 @@ body{background:#0d1219}
 #walletView .history-panel .history-head{display:none}
 #walletView #topupHistory .order-tracking-card[hidden]{display:none!important}
 @media(max-width:600px){#walletView{padding:16px 10px}.wallet-hero{min-height:225px;padding:20px;border-radius:26px}.wallet-hero-icon{width:50px;height:50px}.wallet-hero-top small{font-size:11px}.wallet-primary-badge{font-size:12px;padding:8px}.wallet-actions{padding:17px 5px}.wallet-action-icon{width:56px;height:56px;border-radius:18px;font-size:32px}}
+
+
+/* Mobile-first blue storefront home */
+#homeView.home-showcase{display:block;max-width:1050px;margin:0 auto;color:#fff;padding:0 0 35px;background:#080e20}
+#homeView.hidden{display:none!important}
+body:has(#homeView:not(.hidden)){background:#080e20}
+body:has(#homeView:not(.hidden)) .topbar{display:none}
+body:has(#homeView:not(.hidden)) .wallet-promo,body:has(#homeView:not(.hidden)) .steps-section{display:none}
+.home-blue-hero{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(140deg,#1982e9,#38b4fa 65%,#1687e8);border-radius:0 0 48px 48px;padding:42px 28px 66px;min-height:465px}
+.home-blue-pattern{position:absolute;z-index:-1;left:-50px;top:-120px;font-size:650px;line-height:1;font-weight:900;color:#ffffff10;transform:rotate(-22deg);pointer-events:none}
+.home-hero-top{display:flex;justify-content:space-between;align-items:center;direction:ltr}
+.home-bell{height:50px;width:50px;border:1px solid #ffffff55;border-radius:17px;background:#ffffff24;color:white;font-size:30px}
+.home-brand{display:flex;align-items:center;gap:10px;font-size:22px}.home-brand-mark{display:grid;place-items:center;border:3px solid white;width:44px;height:44px;border-radius:13px;font-size:31px;font-weight:900;transform:rotate(-12deg)}
+.home-greeting{margin:42px 0 26px;text-align:right}.home-greeting h1{font-size:clamp(29px,6vw,42px);margin:0;font-weight:800}.home-greeting p{color:#d5ecff;margin:5px 0 0;font-size:18px}
+.home-wallet-glass{position:relative;min-height:175px;padding:27px 26px 64px;border:1px solid #ffffff70;border-radius:29px;background:#ffffff16;box-shadow:inset 0 1px #ffffff44;backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.home-wallet-right{text-align:right}.home-wallet-right>span{font-size:18px;color:#e2f4ff}.home-wallet-right>div{display:flex;gap:8px;align-items:baseline}.home-wallet-right strong{font-size:clamp(36px,7vw,50px)}.home-wallet-right b{font-size:19px}
+.home-charge{background:white;border:0;border-radius:18px;padding:14px 21px;color:#127bda;font-size:21px;font-weight:800;white-space:nowrap}
+.home-wallet-pill{position:absolute;bottom:19px;right:50%;transform:translateX(50%);border-radius:35px;background:#ffffff29;padding:8px 14px;display:flex;align-items:center;gap:10px;white-space:nowrap;color:#f0f8ff;font-size:14px}.home-wallet-pill span{font-size:23px}
+.home-discover{padding:0 22px;margin-top:-34px;position:relative;z-index:2}
+.home-search{width:100%;display:flex;align-items:center;gap:12px;text-align:right;border:1px solid #2c3b60;border-radius:25px;background:#10182d;color:#9daac3;padding:20px 23px;font-size:19px;box-shadow:0 12px 25px #040c1b40}
+.home-search svg{width:28px;height:28px;fill:none;stroke:#56b8ff;stroke-width:2.4;flex:none}
+.home-promo-carousel{margin-top:28px}.home-promo-card{width:100%;min-height:195px;border-radius:28px;border:1px solid #86d5ff;background:linear-gradient(125deg,#70b5e9,#acd9f6);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden;box-shadow:0 12px 30px #0003}
+.home-promo-icons{display:flex;align-items:center;gap:6px;transform:rotate(-8deg);margin-bottom:6px}.home-promo-icons span{width:52px;height:74px;display:grid;place-items:center;border-radius:11px;background:#ffba11;font-size:28px;box-shadow:0 5px 14px #0002}.home-promo-icons span:nth-child(2){background:#15d2a3}.home-promo-icons span:nth-child(3){background:#e00dc1}.home-promo-icons span:nth-child(4){background:#fff;color:#111}
+.home-promo-card strong{font-size:30px}.home-promo-card small{font-size:13px;color:#edf7ff}
+.home-promo-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin:16px 0}.home-promo-dots i{height:8px;width:8px;border-radius:8px;background:#26395d}.home-promo-dots i.active{width:34px;background:linear-gradient(90deg,#0873e8,#6de4ff)}
+.home-international{width:100%;display:flex;align-items:center;gap:20px;justify-content:space-between;padding:25px 22px;text-align:right;border:1px solid #6841b2;border-radius:28px;background:radial-gradient(circle at 90% 50%,#4d2a8a 0,#17172f 54%,#0d162b 100%);color:#fff}
+.home-international strong{font-size:clamp(24px,5vw,34px)}.home-international p{font-size:16px;color:#a5aec5;line-height:1.6;margin:8px 0 0}.home-card-art{height:110px;width:115px;flex:none;border-radius:25px;display:grid;place-items:center;background:linear-gradient(130deg,#9c65f8,#5921d0);font-size:55px;box-shadow:0 0 22px #8752ff66}.home-card-art span{font-size:19px;position:absolute;transform:translate(30px,28px)}
+body:has(#homeView:not(.hidden)) .mobile-nav{background:#1c3c7be8;border:1px solid #5978ae;border-radius:40px;left:15px;right:15px;bottom:13px;padding:11px 4px calc(11px + env(safe-area-inset-bottom))}
+body:has(#homeView:not(.hidden)) .mobile-nav button.active{background:#ffffff3b;border:1px solid #ffffffb0;border-radius:40px;color:#fff}
+@media(max-width:550px){.home-blue-hero{padding:35px 22px 60px;min-height:435px}.home-discover{padding:0 18px}.home-greeting{margin-top:35px}.home-wallet-glass{padding:23px 17px 65px}.home-wallet-pill{font-size:12px}.home-promo-card{min-height:180px}.home-international{gap:10px;padding:20px 14px}.home-card-art{width:90px;height:95px}}

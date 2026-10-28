@@ -302,3 +302,32 @@ body.topup-modal-open{overflow:hidden}
 .topup-modal-info{background:#121c31;border:1px solid #293958;color:#aebddd;border-radius:15px;padding:13px 14px;font-size:13px;line-height:1.8;margin:18px 0}
 .topup-modal-continue{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;padding:16px;border:0;border-radius:17px;background:linear-gradient(110deg,#a247fc,#6825e7);color:white;font-size:19px;font-weight:800;box-shadow:0 8px 24px #6725e755}
 @media(max-width:540px){.topup-modal{align-items:flex-end;padding:0}.topup-modal-sheet{width:100%;max-height:95dvh;border-radius:30px 30px 0 0}.topup-modal-content{padding:0 19px 28px}}
+
+
+/* Orders screen — compact navy cards inspired by reference */
+#ordersView{min-height:calc(100dvh - 140px);max-width:960px;margin:0 auto;padding:34px 18px 110px;color:#edf3ff}
+#ordersView .section-head{margin:0 0 24px;text-align:right}
+#ordersView .section-head .eyebrow{display:none}
+#ordersView .section-head h2{font-size:clamp(35px,6vw,48px);margin:0 0 4px;font-weight:800}
+#ordersView .section-head p{color:#8191ae;font-size:17px;margin:0}
+#ordersList{border:0;background:transparent;padding:0;box-shadow:none;max-width:none}
+.orders-filter-tabs{display:flex;align-items:center;gap:10px;overflow-x:auto;scrollbar-width:none;padding:6px 0 24px}
+.orders-filter-tabs::-webkit-scrollbar{display:none}
+.orders-filter-tabs button{border:1px solid #263657;border-radius:40px;padding:12px 20px;background:#0d172a;color:#b4bfd4;white-space:nowrap;font-size:16px}
+.orders-filter-tabs button.active{background:#eaf2ff;color:#111c31;border-color:#eaf2ff}
+.orders-modern-list{display:grid;gap:15px}
+.orders-modern-card{display:flex;align-items:center;gap:15px;min-width:0;border:1px solid #273753;border-radius:25px;padding:21px 19px;background:#0e182b;color:#eef3ff;box-shadow:0 2px 0 #080e1c}
+.orders-modern-card[hidden]{display:none!important}
+.orders-game-icon{display:grid;place-items:center;flex:none;width:75px;height:75px;border-radius:22px;border:1px solid #2b3d5b;background:#05070e;color:#e9f1ff;font-size:44px;font-weight:900}
+.orders-icon-topup{background:#193e40;color:#61e0b8;font-size:50px}
+.orders-card-main{flex:1;min-width:0;text-align:right}
+.orders-card-title{font-weight:800;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orders-card-meta{color:#8595b1;margin-top:8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orders-card-id{color:#60718f;font-size:11px;margin-top:6px;direction:ltr;text-align:right}
+.orders-card-note{color:#c9cfe0;font-size:12px;margin:6px 0 0}
+.orders-card-side{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:12px;white-space:nowrap}
+.orders-card-side>strong{font-size:21px;direction:ltr}.orders-card-side>strong small{font-size:13px;font-weight:500}
+.orders-status{display:inline-flex;align-items:center;border-radius:28px;padding:7px 11px;font-size:14px;font-weight:700}
+.orders-status-completed{color:#45e0ad;background:#123b3a}.orders-status-pending{color:#f4cb73;background:#473821}.orders-status-refunded{color:#ff9ca5;background:#482b39}
+.orders-empty{text-align:center;color:#9ba9c4;padding:25px 10px;line-height:2}.orders-empty[hidden]{display:none}
+@media(max-width:550px){#ordersView{padding:24px 14px 115px}.orders-filter-tabs{gap:7px}.orders-filter-tabs button{padding:10px 14px;font-size:14px}.orders-modern-card{gap:10px;padding:16px 12px;border-radius:22px}.orders-game-icon{width:61px;height:61px;border-radius:17px;font-size:36px}.orders-card-title{font-size:15px}.orders-card-meta{font-size:11px}.orders-card-side>strong{font-size:17px}.orders-card-side>strong small{font-size:11px}.orders-status{font-size:11px;padding:6px 9px}}

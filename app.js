@@ -1,4 +1,6 @@
 (function(){
-  function load(src){return new Promise(function(resolve,reject){var s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)})}
-  load('legacy-app.js?v=20261028auth2').then(function(){return load('wallet-flow.js?v=20261028')}).catch(function(e){console.error('L1017n loader error',e)})
+  var s=document.createElement('script');
+  s.src='legacy-app.js?v=20261028walletfix1';
+  s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
+  document.body.appendChild(s);
 })();

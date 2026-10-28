@@ -210,3 +210,38 @@ body{background:#0d1219}
 
 .game-tile-art:has(img) img{object-fit:cover!important;padding:0!important;z-index:3}
 .game-tile-art:has(img) .game-tile-brand{display:none}
+
+
+/* Wallet inspired by the provided Libyana wallet reference */
+#walletView{background:#080d1a;color:#eef2ff;border-radius:22px;padding:22px 16px}
+#walletView>.section-head .eyebrow{display:none}
+#walletView>.section-head h2{font-size:clamp(32px,6vw,48px);font-weight:800}
+.wallet-subtitle{color:#94a3bb;text-align:right;margin:0 0 20px}
+.wallet-hero{position:relative;overflow:hidden;min-height:245px;padding:28px;border-radius:30px;background:radial-gradient(circle at 8% 8%,#d875cb80 0 17%,transparent 18%),radial-gradient(circle at 37% 115%,#ffffff17 0 22%,transparent 23%),linear-gradient(120deg,#b34cac,#8f238f);box-shadow:0 15px 32px #16092766;color:white}
+.wallet-hero:after{content:'◈';position:absolute;bottom:-78px;right:-20px;font-size:220px;opacity:.1;line-height:1}
+.wallet-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.wallet-hero-top>div{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
+.wallet-hero-icon{grid-row:span 2;background:#ffffff25;border-radius:20px;width:60px;height:60px;display:grid;place-items:center;font-size:36px}
+.wallet-hero-top strong{font-size:clamp(22px,4vw,31px)}
+.wallet-hero-top small{font-size:14px;color:#ffe4fa}
+.wallet-primary-badge{border:1px solid #ffffff80;background:#ffffff2c;border-radius:28px;padding:10px 14px;font-weight:700;white-space:nowrap}
+.wallet-hero-balance{position:relative;z-index:1;text-align:right;margin-top:55px}
+.wallet-hero-balance>span{font-size:16px;color:#ffe3f9}
+.wallet-hero-balance div{display:flex;align-items:baseline;gap:9px}
+.wallet-hero-balance strong{font-size:clamp(38px,7vw,56px);line-height:1.25}
+.wallet-hero-balance b{font-size:20px}
+.wallet-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:22px 0 38px;padding:22px 12px;background:#10192a;border:1px solid #283854;border-radius:25px}
+.wallet-action{background:none;border:0;color:#f4f4fa;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:15px}
+.wallet-action-icon{width:66px;height:66px;border-radius:22px;background:#2b173f;color:#ca52c8;font-size:40px;display:grid;place-items:center}
+.wallet-action:first-child .wallet-action-icon{background:#a328a0;color:#fff}
+.wallet-action:last-child .wallet-action-icon{background:#12343c;color:#45dfac}
+.wallet-recent-head h3{font-size:24px;margin:0 0 18px}
+.wallet-filter-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px}
+.wallet-filter-tabs button{background:#101a2b;border:1px solid #283a59;color:#edf1fa;border-radius:25px;padding:8px 17px;white-space:nowrap}
+.wallet-filter-tabs button.active{background:#edf3ff;color:#0c1830}
+#walletView .wallet-layout{margin-top:12px}
+#walletView .balance-panel{display:none}
+#walletView .history-panel{background:#10192a;border:1px solid #263651;border-radius:24px}
+#walletView .history-panel .history-head{display:none}
+#walletView #topupHistory .order-tracking-card[hidden]{display:none!important}
+@media(max-width:600px){#walletView{padding:16px 10px}.wallet-hero{min-height:225px;padding:20px;border-radius:26px}.wallet-hero-icon{width:50px;height:50px}.wallet-hero-top small{font-size:11px}.wallet-primary-badge{font-size:12px;padding:8px}.wallet-actions{padding:17px 5px}.wallet-action-icon{width:56px;height:56px;border-radius:18px;font-size:32px}}

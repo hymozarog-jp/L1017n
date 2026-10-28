@@ -207,3 +207,6 @@ body{background:#0d1219}
 .game-tile-art:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 65% 24%,#ffffff40,transparent 28%),linear-gradient(155deg,transparent 45%,#0009);z-index:0}
 .game-tile-art:after{content:'';position:absolute;width:95%;height:70%;top:4%;left:3%;border:2px solid #ffffff20;border-radius:50%;transform:rotate(-24deg);box-shadow:0 0 60px #ffffff20;pointer-events:none}
 @media(max-width:700px){.game-tile-art{height:clamp(160px,35vw,230px)!important}.game-tile-brand{font-size:clamp(14px,3.4vw,24px)!important}}
+
+.game-tile-art:has(img) img{object-fit:cover!important;padding:0!important;z-index:3}
+.game-tile-art:has(img) .game-tile-brand{display:none}

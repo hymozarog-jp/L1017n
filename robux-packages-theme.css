@@ -1,0 +1,23 @@
+/* Refined Roblox package purchase sheet */
+#robuxModal.package-modal{background:#030713dc;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+#robuxModal .package-box{background:linear-gradient(155deg,#151d38,#0b1224 55%,#080d1b)!important;border:1px solid #33456e!important;border-radius:26px!important;color:#f5f6ff!important;box-shadow:0 25px 85px #000b!important;max-width:680px!important;padding:24px 18px!important}
+#robuxModal .robux-store-top{display:flex;align-items:center;gap:13px;margin:6px 0 18px}
+#robuxModal .robux-store-top h2{font-size:clamp(23px,5vw,31px);color:#fff;margin:0}
+#robuxModal .robux-store-top .eyebrow{color:#a9a0fa;font-size:11px;letter-spacing:1.4px}
+#robuxModal .roblox-brand-mark{display:grid;place-items:center;width:53px;height:53px;border-radius:16px;background:linear-gradient(135deg,#7659ed,#3c66cd);color:white;font-size:28px;box-shadow:0 7px 24px #5b56de66}
+#robuxModal .robux-wallet-strip{background:#182342!important;border:1px solid #344a78!important;border-radius:17px!important;padding:14px!important;margin-bottom:16px}
+#robuxModal .robux-wallet-strip small{color:#9eacd1}
+#robuxModal .robux-wallet-strip strong{color:#fff}
+#robuxModal .robux-add-balance{background:#6553cb!important;color:#fff!important;border:0!important;border-radius:12px!important}
+#robuxModal .package-subtitle{color:#a9b7d3!important;font-size:13px;line-height:1.7}
+#robuxModal .package-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;margin-top:15px}
+#robuxModal .robux-package{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;min-height:118px!important;padding:14px 11px!important;border-radius:18px!important;background:linear-gradient(145deg,#202c4d,#131d36)!important;border:1px solid #3a4e78!important;color:#fff!important;text-align:right!important;box-shadow:0 6px 16px #0002!important;transition:transform .2s,border-color .2s,background .2s}
+#robuxModal .robux-package:not(:disabled):active{transform:scale(.97)}
+#robuxModal .robux-package:not(:disabled):hover{border-color:#aa92ff!important;background:linear-gradient(145deg,#2d3660,#192544)!important}
+#robuxModal .robux-package .robux-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:13px;background:#8668e829;color:#c2a8ff;font-size:22px}
+#robuxModal .robux-package strong{display:block;font-size:clamp(13px,3.3vw,17px);color:#f5f6ff;line-height:1.45}
+#robuxModal .robux-package small{display:block;color:#74dfcb;font-size:13px;font-weight:750;margin-top:6px}
+#robuxModal .robux-package .stock-label{color:#9aa8c6!important;font-size:10px!important;font-weight:400;line-height:1.5}
+#robuxModal .robux-package:disabled{opacity:.44!important;filter:none!important}
+#robuxModal .package-close{background:#283450!important;color:#fff!important;border-radius:50%!important}
+@media(max-width:420px){#robuxModal .package-box{padding:19px 12px!important}#robuxModal .package-grid{gap:8px!important}#robuxModal .robux-package{padding:11px 8px!important;gap:7px!important;min-height:110px!important}#robuxModal .robux-package .robux-icon{width:30px;height:30px;font-size:18px}#robuxModal .robux-package .stock-label{font-size:9px!important}}

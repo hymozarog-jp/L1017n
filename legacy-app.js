@@ -14,13 +14,13 @@ async function loadProducts(){const [productResult,inventoryResult]=await Promis
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
- {name:'روبلوكس',category:'ألعاب الهواتف',image:'game-covers/roblox.svg',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
- {name:'ببجي موبايل',category:'ألعاب الهواتف',image:'game-covers/pubg.svg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
+ {name:'روبلوكس',category:'ألعاب الهواتف',image:'game-covers/roblox.svg?v=2',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
+ {name:'ببجي موبايل',category:'ألعاب الهواتف',image:'game-covers/pubg.svg?v=2',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
  {name:'فري فاير',category:'ألعاب الهواتف',image:'',key:'freefire',count:products.filter(p=>/free fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
  {name:'اف سي موبايل',category:'ألعاب الهواتف',image:'',key:'fc',count:products.filter(p=>/fc mobile|فيفا/i.test([p.game,p.name].join(' '))).length},
  {name:'ببجي نيو ستيت',category:'ألعاب الهواتف',image:'',key:'newstate',count:products.filter(p=>/new state|نيو ستيت/i.test([p.game,p.name].join(' '))).length},
  {name:'كول أوف ديوتي موبايل',category:'ألعاب الهواتف',image:'',key:'cod',count:products.filter(p=>/call of duty|كول اوف|كول أوف/i.test([p.game,p.name].join(' '))).length},
- {name:'فورت نايت',category:'ألعاب PC',image:'game-covers/fortnite.svg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
+ {name:'فورت نايت',category:'ألعاب PC',image:'game-covers/fortnite.svg?v=2',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
  ];
  g.innerHTML='<div class="game-filter-bar" role="group" aria-label="تصنيفات الألعاب"><button class="game-filter active" data-game-filter="all">كل الألعاب <small>'+games.length+'</small></button><button class="game-filter" data-game-filter="ألعاب الهواتف">ألعاب الهواتف</button><button class="game-filter" data-game-filter="ألعاب PC">ألعاب PC</button></div><div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+x.category+'"><button type="button" class="game-tile-btn" data-game-open="'+x.key+'" aria-label="'+x.name+'"><div class="game-tile-art game-art-'+x.key+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fc:'FC MOBILE',newstate:'NEW STATE',cod:'CALL OF DUTY',fortnite:'FORTNITE'}[x.key])+'</span>'+(x.image?'<img loading="lazy" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+x.name+'</strong><small>'+x.count+' قسم ◈</small></div></button></article>').join('')+'</div>';
  g.querySelectorAll('[data-game-filter]').forEach(btn=>btn.addEventListener('click',()=>{g.querySelectorAll('[data-game-filter]').forEach(n=>n.classList.toggle('active',n===btn));g.querySelectorAll('[data-game-group]').forEach(n=>n.hidden=btn.dataset.gameFilter!=='all'&&n.dataset.gameGroup!==btn.dataset.gameFilter)}));

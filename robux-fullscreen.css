@@ -1,0 +1,8 @@
+/* Robux packages open as a full-screen page instead of a centered popup */
+#robuxModal.package-modal:not(.hidden){position:fixed!important;inset:0!important;z-index:99995!important;display:block!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:#060b17!important;backdrop-filter:none!important;padding:0!important;margin:0!important}
+#robuxModal .package-box.robux-store-box{box-sizing:border-box!important;position:relative!important;display:block!important;min-height:100dvh!important;max-height:none!important;width:100%!important;max-width:none!important;margin:0!important;padding:26px max(16px,calc((100vw - 760px)/2)) 60px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:radial-gradient(ellipse at 50% -15%,#20375e 0%,#0b1428 42%,#060b17 85%)!important;overflow:visible!important}
+#robuxModal .package-close{position:sticky!important;top:8px!important;float:left!important;z-index:20!important;width:42px!important;height:42px!important;display:grid!important;place-items:center!important}
+#robuxModal .robux-store-top{clear:both;padding-top:12px}
+#robuxModal .package-grid{margin-bottom:24px}
+#robuxModal #purchaseBox{padding-bottom:24px}
+@media(max-width:480px){#robuxModal .package-box.robux-store-box{padding:18px 14px 45px!important}}

@@ -1,0 +1,22 @@
+/* Unified polished motion system: lightweight and accessible */
+:root{--motion-ease:cubic-bezier(.22,1,.36,1)}
+@keyframes uiPageEnter{from{opacity:.25;transform:translate3d(0,17px,0);filter:blur(3px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@keyframes uiSheetEnter{from{opacity:0;transform:translate3d(0,24px,0) scale(.985)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes uiCardEnter{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+#homeView:not(.hidden),#storeView:not(.hidden),#walletView:not(.hidden),#ordersView:not(.hidden),#accountView:not(.hidden),#leaderboardView:not(.hidden),#adminView:not(.hidden){animation:uiPageEnter .42s var(--motion-ease) both}
+#robloxGamePage{animation:uiPageEnter .36s var(--motion-ease) both}
+#robuxModal.robux-full-page:not(.hidden) .robux-store-box{animation:uiSheetEnter .4s var(--motion-ease) both}
+#robuxModal .robux-package{transition:transform .22s var(--motion-ease),border-color .22s ease,box-shadow .22s ease!important}
+#robuxModal .robux-package:not(:disabled):active{transform:scale(.96)!important}
+#robloxGamePage .rgp-card{transition:transform .28s var(--motion-ease),box-shadow .28s ease,border-color .28s ease!important}
+#robloxGamePage .rgp-card:active{transform:scale(.97)!important}
+.mobile-nav button,.mobile-nav .nav-follow-bubble{will-change:transform}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent}
+button:not(:disabled),a{transition-property:transform,background-color,border-color,box-shadow,color,opacity;transition-duration:.2s;transition-timing-function:var(--motion-ease)}
+button:not(:disabled):active{transform:scale(.97)}
+#robuxModal .robux-package:not(:disabled):active{transform:scale(.96)!important}
+@media(hover:hover){.game-tile:hover,.product-card:hover{transform:translateY(-4px)}}
+.game-tile,.product-card{transition:transform .28s var(--motion-ease),box-shadow .28s ease}
+input,select,textarea{transition:border-color .22s ease,box-shadow .22s ease}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#homeView:not(.hidden),#storeView:not(.hidden),#walletView:not(.hidden),#ordersView:not(.hidden),#accountView:not(.hidden),#leaderboardView:not(.hidden),#adminView:not(.hidden),#robloxGamePage,#robuxModal.robux-full-page:not(.hidden) .robux-store-box{animation:none!important}button,a,.game-tile,.product-card,#robuxModal .robux-package{transition:none!important;transform:none!important}}

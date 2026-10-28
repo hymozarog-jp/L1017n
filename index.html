@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="robux-packages-theme.css?v=1">
 <link rel="stylesheet" href="robux-portrait-cards.css?v=1">
 <link rel="stylesheet" href="robux-fullscreen.css?v=1">
+<link rel="stylesheet" href="robux-page-fix.css?v=2">
 <script src="auth-design.js?v=20261028-violet-1" defer></script>
 </head>
 <body>
@@ -117,7 +118,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=robuxportrait1';
+      var s=document.createElement('script');s.src='app.js?v=robuxpagefix2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

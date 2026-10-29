@@ -186,10 +186,12 @@
     refreshQuickAmounts();
     show('','جاهز للشحن','اختار المبلغ المناسب واضغط «متابعة». أي مبلغ تختاره لازم تسمح به خدمة تحويل ليبيانا.');
   }
+  // Capture before older wallet listeners call refreshAutoTopup: no intent
+  // may be generated just because the amount field changes.
   amountInput()?.addEventListener('input',()=>{
     clearTimeout(inputDebounce);
-    inputDebounce=setTimeout(clearIntent,100);
-  });
+    clearIntent();
+  },true);
   document.querySelectorAll('#topupForm [data-amount]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       if(amountInput())amountInput().value=btn.dataset.amount;

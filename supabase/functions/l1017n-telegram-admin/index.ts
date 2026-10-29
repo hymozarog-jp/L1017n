@@ -102,7 +102,7 @@ Deno.serve(async (request: Request) => {
   if (update.action === "register_webhook") {
     const projectUrl = Deno.env.get("SUPABASE_URL") ?? "";
     if (!projectUrl.startsWith("https://")) return json({ error: "project_url_missing" }, 503);
-    const url = projectUrl.replace(/\\/$/, "") + "/functions/v1/l1017n-telegram-admin";
+    const url = (projectUrl.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl) + "/functions/v1/l1017n-telegram-admin";
     const result = await fetch("https://api.telegram.org/bot" + token + "/setWebhook", {
       method: "POST",
       headers: { "content-type": "application/json" },

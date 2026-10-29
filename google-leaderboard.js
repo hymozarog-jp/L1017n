@@ -109,6 +109,7 @@ async function renderOwnRank(){
   track.appendChild(fill);
   root.appendChild(track);
   root.appendChild(node('p','lb-progress-caption',message));
+  addRankPrivacyToggle(root,user,participating);
   root.classList.remove('hidden');
 }
 window.loadLeaderboard=async function(){
@@ -145,94 +146,58 @@ window.loadLeaderboard=async function(){
   }
 };
 
+// Account privacy is controlled by one switch inside the customer's own rank card.
+// Unchecking "hide" is an explicit opt-in to publish Google name/photo to visitors.
+function addRankPrivacyToggle(root,user,isVisible) {
+  const row=node('label','lb-hide-row');
+  const title=node('span','lb-hide-label','◉  إخفاء حسابي من التصنيف');
+  const toggle=document.createElement('input');
+  toggle.type='checkbox';
+  toggle.className='lb-hide-switch';
+  toggle.id='lbHideSwitch';
+  toggle.checked=!isVisible;
+  toggle.setAttribute('aria-label','إخفاء حسابي من التصنيف');
+  row.append(title,toggle);
+  root.appendChild(row);
+  root.appendChild(node('p','lb-hide-notice',hasGoogle(user)
+    ? 'إلغاء الإخفاء يعني موافقتك على إظهار اسمك وصورتك من Google للجميع.'
+    : 'عند إلغاء الإخفاء، يظهر ترتيبك ونقاطك للزوار بدون بيانات شخصية.'));
+  const status=node('p','lb-hide-status');
+  status.setAttribute('role','status');
+  status.setAttribute('aria-live','polite');
+  root.appendChild(status);
+  toggle.addEventListener('change',async function(){
+    const hide=toggle.checked;
+    toggle.disabled=true;
+    status.textContent='جاري الحفظ…';
+    try{
+      const prior=await supabaseClient.from('leaderboard_profiles')
+        .select('nickname').eq('user_id',user.id).maybeSingle();
+      if(prior.error)throw prior.error;
+      const nickname=prior.data?.nickname||'متسوق'+user.id.replace(/-/g,'').slice(0,14);
+      const result=await supabaseClient.from('leaderboard_profiles').upsert({
+        user_id:user.id,nickname,
+        public_visible:!hide,
+        share_google_profile:!hide&&hasGoogle(user),
+        updated_at:new Date().toISOString()
+      },{onConflict:'user_id'});
+      if(result.error)throw result.error;
+      status.textContent=hide?'تم إخفاء ترتيبك عن الزوار.':'تم إظهار حسابك في التصنيف.';
+      await window.loadLeaderboard();
+    }catch(error){
+      console.warn('Could not update ranking visibility',error);
+      toggle.checked=!hide;
+      status.textContent='تعذر الحفظ. جرّب مرة ثانية.';
+    }finally{
+      toggle.disabled=false;
+    }
+  });
+}
+// Keep the legacy account screen clean; ranking settings live only in the rank card.
 window.renderLeaderboardProfile=async function(){
-  const panel=document.getElementById('leaderboardParticipation');
-  if(!panel)return;
-  // Older versions rendered these settings in "حسابي"; remove that copy.
-  const obsolete=document.querySelector('.account-panel #leaderboardProfileForm');
-  if(obsolete)obsolete.remove();
-  let guest=document.getElementById('leaderboardParticipationGuest');
-  if(!guest){
-    guest=document.createElement('div');
-    guest.id='leaderboardParticipationGuest';
-    guest.className='leaderboard-participation-guest hidden';
-    guest.innerHTML='<strong>تبي تظهر في التصنيف؟ 🏆</strong>'+
-      '<p>سجّل دخولك باش تتحكم في ظهور اسمك وصورتك من Google في الترتيب.</p>'+
-      '<button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button>';
-    panel.appendChild(guest);
-  }
-  let form=document.getElementById('leaderboardProfileForm');
-  if(!form||form.dataset.googleVersion!=='1'){
-    if(form)form.remove();
-    form=document.createElement('form');
-    form.id='leaderboardProfileForm';
-    form.className='leaderboard-profile-form';
-    form.dataset.googleVersion='1';
-    form.innerHTML =
-      '<h3>المشاركة في ترتيب المتسوقين</h3>'+
-      '<p class="form-note">نقاطك من مشترياتك المكتملة. الترتيب عام، لكن ما ننشروش بريدك أو رقم هاتفك أو تفاصيل طلباتك.</p>'+
-      '<label class="transfer-confirm"><input type="checkbox" id="leaderboardVisible"><span>أوافق على ظهور ترتيبي ونقاطي لكل زوار المتجر</span></label>'+
-      '<label class="transfer-confirm" id="leaderboardGoogleConsentWrap"><input type="checkbox" id="leaderboardGooglePublic"><span>أوافق على نشر اسمي وصورتي من Google بجانب ترتيبي لكل الزوار</span></label>'+
-      '<p class="form-note">بدون موافقتك على الاسم والصورة، تظهر نقاطك برقم المركز فقط. تقدر تلغي الموافقة وقت ما تبي.</p>'+
-      '<button type="submit" class="btn btn-primary full-width">حفظ إعدادات الترتيب</button>'+
-      '<p class="form-note" id="leaderboardProfileStatus" role="status"></p>';
-    panel.appendChild(form);
-    const publicCheck=form.querySelector('#leaderboardVisible');
-    const googleCheck=form.querySelector('#leaderboardGooglePublic');
-    googleCheck.addEventListener('change',()=>{if(googleCheck.checked)publicCheck.checked=true;});
-    publicCheck.addEventListener('change',()=>{if(!publicCheck.checked)googleCheck.checked=false;});
-    form.addEventListener('submit',async e=>{
-      e.preventDefault();
-      const user=await currentUser();
-      if(!user)return;
-      const status=form.querySelector('#leaderboardProfileStatus');
-      const button=form.querySelector('button[type="submit"]');
-      const visible=publicCheck.checked;
-      const shareGoogle=visible&&hasGoogle(user)&&googleCheck.checked;
-      button.disabled=true;
-      try{
-        const prev=await supabaseClient.from('leaderboard_profiles')
-          .select('nickname').eq('user_id',user.id).maybeSingle();
-        if(prev.error)throw prev.error;
-        const nickname=prev.data?.nickname||'متسوق'+user.id.replace(/-/g,'').slice(0,14);
-        const res=await supabaseClient.from('leaderboard_profiles').upsert({
-          user_id:user.id,nickname,public_visible:visible,
-          share_google_profile:shareGoogle,updated_at:new Date().toISOString()
-        },{onConflict:'user_id'});
-        if(res.error)throw res.error;
-        status.textContent=!visible?'ترتيبك مخفي عن الزوار.':
-          shareGoogle?'تمت الموافقة: اسمك وصورتك من Google يظهروا للزوار بعد وجود مشتريات مكتملة.':
-          'ترتيبك ظاهر بدون اسم وصورة Google.';
-        await window.loadLeaderboard();
-      }catch(error){
-        console.warn('Leaderboard preference save failed',error);
-        status.textContent='تعذر حفظ الإعدادات، حاول مرة ثانية.';
-      }finally{button.disabled=false;}
-    });
-  }
-  const user=await currentUser();
-  if(!user){
-    form.classList.add('hidden');
-    guest.classList.remove('hidden');
-    return;
-  }
-  guest.classList.add('hidden');
-  form.classList.remove('hidden');
-  const isGoogle=hasGoogle(user);
-  const googleCheck=form.querySelector('#leaderboardGooglePublic');
-  const note=form.querySelector('#leaderboardProfileStatus');
-  googleCheck.disabled=!isGoogle;
-  form.querySelector('#leaderboardGoogleConsentWrap').classList.toggle('hidden',!isGoogle);
-  const result=await supabaseClient.from('leaderboard_profiles')
-    .select('public_visible,share_google_profile').eq('user_id',user.id).maybeSingle();
-  if(result.error){
-    note.textContent='تعذر قراءة تفضيلاتك. حدّث الصفحة.';
-    form.querySelector('button[type="submit"]').disabled=true;
-    return;
-  }
-  form.querySelector('button[type="submit"]').disabled=false;
-  form.querySelector('#leaderboardVisible').checked=!!result.data?.public_visible;
-  googleCheck.checked=isGoogle&&!!result.data?.public_visible&&!!result.data?.share_google_profile;
+  const old=document.querySelector('.account-panel #leaderboardProfileForm');
+  if(old)old.remove();
+  return renderOwnRank();
 };
 
 supabaseClient.auth.onAuthStateChange(function(event){

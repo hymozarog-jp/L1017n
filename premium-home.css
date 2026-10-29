@@ -153,3 +153,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:390px;pointer-event
 }
 @media(max-width:390px){.topbar .brand b{font-size:17px}.topbar .google-welcome-label{display:none}.topbar #googleWelcome{max-width:68px!important}.ph-hero h1{font-size:25px}.ph-hero p{font-size:10px}.ph-shop-button{font-size:11px;padding:8px 12px}.ph-promo-art{font-size:34px}}
 @media(prefers-reduced-motion:reduce){.ph-game-card.roblox{animation:none}#storeView #productGrid .game-tile-btn,.ph-shop-button{transition:none}}
+
+/* Existing inline site rules hide the header wallet; restore the real live wallet control. */
+.topbar .account-wallet-group{display:flex!important}
+.topbar .account-wallet-group .customer-wallet-chip.hidden{display:none!important}

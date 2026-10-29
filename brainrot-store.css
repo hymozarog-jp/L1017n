@@ -3,8 +3,8 @@
 #robloxGamePage .rgp-card.steal:hover{border-color:#5bd9e8}
 #robloxGamePage .rgp-card.steal .rgp-card-body{background:linear-gradient(180deg,#10222c,#0a111f)}
 #robloxGamePage .rgp-card.steal .rgp-action{background:linear-gradient(115deg,#1aa8aa,#3260be)}
-#robloxGamePage .rgp-card.steal img{width:100%;height:155px;object-fit:cover;background:linear-gradient(130deg,#173f57,#10243b);padding:0}
-#robloxGamePage .rgp-grid:has(.rgp-card.steal){grid-template-columns:repeat(3,minmax(0,1fr))}
+#robloxGamePage .rgp-card.steal img{display:block;width:100%;height:155px;object-fit:cover;object-position:center;background:linear-gradient(130deg,#173f57,#10243b);padding:0;box-sizing:border-box}
+#robloxGamePage .rgp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 #robloxGamePage .sab-inner{padding-top:5px;animation:sab-enter .25s ease-out}
 #robloxGamePage .sab-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:17px}
 #robloxGamePage .sab-original-link{color:#8be6fd;font-size:12px;text-decoration:none;border-bottom:1px solid #58adbd80;padding:4px}
@@ -54,12 +54,6 @@
 #sabCheckout .sab-dialog-status{min-height:20px;color:#f4c78f}
 @keyframes sab-enter{from{opacity:.3;transform:translateY(15px)}to{opacity:1;transform:none}}
 @media(max-width:720px){
- #robloxGamePage .rgp-grid:has(.rgp-card.steal){grid-template-columns:repeat(2,minmax(0,1fr))}
- #robloxGamePage .rgp-card.steal{grid-column:span 2;display:grid;grid-template-columns:42% 58%;min-height:150px}
- #robloxGamePage .rgp-card.steal img{height:100%;min-height:150px;width:100%;object-fit:cover}
- #robloxGamePage .rgp-card.steal .rgp-card-body{display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
- #robloxGamePage .rgp-card.steal h3{font-size:20px}
-
  #robloxGamePage .rgp-card.steal img{height:130px}
  #robloxGamePage .sab-hero{min-height:225px}
  #robloxGamePage .sab-hero-copy{padding:24px 14px}

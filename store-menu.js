@@ -70,12 +70,12 @@
     addStyles();closePage();
     var p=document.createElement('div');p.id=pageId;
     p.innerHTML=`<div class="rgp-shell">
-      <div class="rgp-top"><div class="rgp-brand">L1017N · ROBLOX</div><button class="rgp-back" type="button" data-rgp-back>← رجوع للمتجر</button></div>
-      <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>ROBLOX</h1><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
-      <h2 class="rgp-title">شن تبي تشحن اليوم؟</h2>
+      <div class="rgp-top"><div class="rgp-brand">L1017N · ROBLOX</div><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع للمتجر">→</button></div>
+      <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>Roblox</h1><span class="rgp-category-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg>باقات ومستلزمات</span><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
+      <div class="rgp-reference-features"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختر الباقة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span></div><h2 class="rgp-title">اختر الفئة</h2>
       <div class="rgp-grid">
-        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>💎 روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
-        <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>🔪 ماب MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2 →</span></div></button>
+        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
+        <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2 →</span></div></button>
       </div>
     </div>`;
     document.body.appendChild(p);

@@ -84,7 +84,7 @@
       var list=(r.data||[]).filter(function(x){var s=String(x.game||'')+' '+String(x.name||'')+' '+String(x.product_key||'');return /mm2|murder mystery|murdermystery|ماب/i.test(s)});
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){return '<button class="rgp-package" type="button" data-mm2-id="'+String(x.id).replace(/"/g,'&quot;')+'"><strong>'+escapeHtml(x.name)+'</strong><span>'+Number(x.amount||0)+' · '+Number(x.price||0).toFixed(2)+' د.ل</span></button>'}).join('');
-      grid.addEventListener('click',function(e){var b=e.target.closest('[data-mm2-id]');if(!b)return;closePage();if(typeof window.selectPackage==='function')window.selectPackage(b.dataset.mm2Id);});
+      grid.addEventListener('click',function(e){var b=e.target.closest('[data-mm2-id]');if(!b)return;closePage();var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});if(product&&typeof window.openInstantCodeCheckout==='function')window.openInstantCodeCheckout(product.id,product.name,product.price);});
     }catch(err){grid.innerHTML='<div class="rgp-empty">تعذر تحميل باقات MM2. حاول مرة ثانية.</div>'}
   }
 

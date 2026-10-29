@@ -138,3 +138,39 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:350px){#storeView #productGrid .game-tiles{gap:20px 8px!important}#storeView #productGrid .game-tile-info strong{font-size:12px!important}}
 
 #storeView #productGrid .game-tile-art::before{left:35%!important;right:auto!important;top:10px!important;bottom:auto!important;width:30%!important;height:7px!important;transform:none!important;border:0!important;box-shadow:none!important}
+
+/* Interior category layout matching the portrait-cover reference. */
+#robloxGamePage,#pubgCategoryPage{background:radial-gradient(ellipse 95% 360px at 50% 0%,#62676f88,transparent 95%),#070c15!important;padding:22px 20px 55px!important}
+#robloxGamePage .rgp-shell{max-width:860px}
+#robloxGamePage .rgp-top{position:relative!important;justify-content:flex-start!important;margin:0!important;min-height:44px}
+#robloxGamePage .rgp-brand{display:none!important}
+#robloxGamePage .rgp-back,#pubgCategoryPage .pubg-back{border:0!important;border-radius:50%!important;background:#0e1727!important;width:44px!important;height:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:24px!important}
+#robloxGamePage .rgp-hero{display:flex!important;flex-direction:column!important;align-items:center!important;border:0!important;box-shadow:none!important;border-radius:0!important;background:transparent!important;overflow:visible!important;min-height:0!important;padding:0 0 22px!important}
+#robloxGamePage .rgp-hero::after{display:none!important}
+#robloxGamePage .rgp-hero>img,#pubgCategoryPage .pubg-hero>img{position:static!important;width:108px!important;height:108px!important;object-fit:contain!important;border:4px solid #0d1524!important;border-radius:30px!important;background:#000!important;padding:6px!important;box-sizing:border-box!important;filter:none!important;opacity:1!important;box-shadow:none!important}
+#robloxGamePage .rgp-hero-content{min-height:0!important;padding:0!important;display:flex!important;align-items:center!important;text-align:center!important}
+#robloxGamePage .rgp-kicker,#robloxGamePage .rgp-hero p{display:none!important}
+#robloxGamePage .rgp-hero h1,#pubgCategoryPage .pubg-hero h1{font-size:28px!important;line-height:1.3!important;margin:18px 0 12px!important;letter-spacing:0!important}
+.rgp-category-tag{display:inline-flex;align-items:center;gap:8px;background:#182a3b;color:#65bbff;border-radius:30px;padding:7px 14px;font-size:13px}
+.rgp-category-tag svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.rgp-reference-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#0e1626;border:1px solid #25314a;border-radius:20px;padding:14px 0;margin:0 0 32px;direction:rtl}
+.rgp-reference-features>span{display:flex;flex-direction:column;align-items:center;gap:7px;border-left:1px solid #25314a;color:#61b8ff}
+.rgp-reference-features>span:last-child{border:0}
+.rgp-reference-features svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rgp-reference-features small{color:#9aaac2;font-size:12px}
+#robloxGamePage .rgp-title{font-size:21px!important;margin:0 0 18px!important}
+#robloxGamePage .rgp-grid,#pubgCategoryPage .pubg-category-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:28px 12px!important;align-items:start!important}
+#robloxGamePage .rgp-card{position:relative!important;display:flex!important;flex-direction:column!important;min-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;padding:0!important;gap:10px!important}
+#robloxGamePage .rgp-card>img,#pubgCategoryPage .pubg-category>img{width:100%!important;height:auto!important;aspect-ratio:3/4!important;object-fit:cover!important;box-sizing:border-box!important;border:1px solid #28344c!important;padding:3px!important;border-radius:19px!important;background:#000!important;filter:none!important}
+#robloxGamePage .rgp-card:not(.mm2)>img{object-fit:contain!important;padding:12px!important;background:#000!important}
+#robloxGamePage .rgp-card::before,#pubgCategoryPage .pubg-category::before{content:"";position:absolute;top:10px;left:35%;right:auto;width:30%;height:7px;background:#0b1424;border-radius:999px;z-index:2;pointer-events:none}
+#robloxGamePage .rgp-card-body,#robloxGamePage .rgp-card.mm2 .rgp-card-body{padding:0!important;width:100%;background:transparent!important;text-align:center!important}
+#robloxGamePage .rgp-card h3,#pubgCategoryPage .pubg-category strong{font-size:14px!important;line-height:1.6!important;margin:0!important;color:#eef3ff!important;text-align:center!important}
+#robloxGamePage .rgp-card p,#robloxGamePage .rgp-action{display:none!important}
+#pubgCategoryPage .pubg-category{position:relative!important;gap:10px!important}
+#pubgCategoryPage .pubg-hero{padding-top:0!important}
+#pubgCategoryPage .pubg-features{border-radius:20px!important;margin:0 0 32px!important;background:#0e1626!important;border-color:#25314a!important}
+#pubgCategoryPage .pubg-hero{padding-bottom:22px!important}
+#pubgCategoryPage .pubg-badge{font-size:13px!important;padding:7px 14px!important}
+#pubgCategoryPage>h2{font-size:21px!important}
+@media(min-width:700px){#robloxGamePage .rgp-hero>img,#pubgCategoryPage .pubg-hero>img{width:138px!important;height:138px!important}#robloxGamePage .rgp-grid,#pubgCategoryPage .pubg-category-grid{gap:32px 22px!important}#robloxGamePage .rgp-card h3,#pubgCategoryPage .pubg-category strong{font-size:18px!important}#pubgCategoryPage{padding-inline:max(20px,calc((100vw - 860px)/2))!important}}

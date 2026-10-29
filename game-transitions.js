@@ -8,7 +8,7 @@
     return button.querySelector("img") || button.querySelector(".game-tile-art") || button;
   }
   function destinationFor(button) {
-    if (button.matches('[data-rgp-choice="robux"]')) return '#robuxModal:not(.hidden) .robux-reference-logo img';
+    if (button.matches('[data-rgp-choice="robux"]')) return '#robuxModal:not(.hidden) .robux-reference-logo';
     if (button.matches('[data-product="roblox"]')) return '#robloxGamePage .rgp-hero img';
     if (button.matches('[data-game-open="roblox"]')) return '#robloxGamePage .rgp-hero img';
     if (button.matches('[data-game-open="pubg"]')) return '#pubgCategoryPage.visible .pubg-hero img';
@@ -29,6 +29,8 @@
     clone.removeAttribute("id");
     clone.setAttribute("aria-hidden", "true");
     clone.classList.add("game-cover-flight");
+    var toRobuxSquare = selector === '#robuxModal:not(.hidden) .robux-reference-logo';
+    if (toRobuxSquare) clone.classList.add("game-cover-flight--robux");
     var computed = getComputedStyle(src);
     clone.style.cssText += ";left:" + r.left + "px;top:" + r.top +
       "px;width:" + r.width + "px;height:" + r.height + "px;" +
@@ -36,7 +38,7 @@
     document.body.appendChild(clone);
 
     var cleaned = false, observer = null, timer = null, anim = null;
-    var dest = null, oldOpacity = "", reveal = null;
+    var dest = null, visual = null, oldOpacity = "", reveal = null;
     function clear() {
       if (cleaned) return;
       cleaned = true;
@@ -44,7 +46,7 @@
       if (timer) clearTimeout(timer);
       if (anim) anim.cancel();
       if (reveal) reveal.cancel();
-      if (dest) dest.style.opacity = oldOpacity;
+      if (visual) visual.style.opacity = oldOpacity;
       clone.remove();
       if (current === clear) current = null;
     }
@@ -56,9 +58,11 @@
       dest = next;
       if (observer) observer.disconnect();
       var t = next.getBoundingClientRect();
-      oldOpacity = next.style.opacity;
-      var endOpacity = Number(getComputedStyle(next).opacity) || 1;
-      next.style.opacity = "0";
+      visual = toRobuxSquare ? next.querySelector('img') : next;
+      if (!visual) { clear(); return; }
+      oldOpacity = visual.style.opacity;
+      var endOpacity = Number(getComputedStyle(visual).opacity) || 1;
+      visual.style.opacity = "0";
       if (!clone.animate) { clear(); return; }
       // Leave the cover briefly in the foreground before it flies to the detail image.
       anim = clone.animate([
@@ -66,16 +70,16 @@
         { transform: "translate3d(0,0,0) scale(1.08)", opacity: 1, offset: .16 },
         { transform: "translate3d(" + (t.left-r.left)*.88 + "px," + (t.top-r.top)*.88 + "px,0) scale(" + (1+(t.width/r.width-1)*.88) + "," + (1+(t.height/r.height-1)*.88) + ")", opacity: .96, offset: .82 },
         { transform: "translate3d(" + (t.left-r.left) + "px," + (t.top-r.top) + "px,0) scale(" + (t.width/r.width) + "," + (t.height/r.height) + ")", opacity: 0, offset: 1 }
-      ], { duration: 450, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
-      reveal = next.animate([
+      ], { duration: toRobuxSquare ? 900 : 600, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      reveal = visual.animate([
         { opacity: 0, transform: "scale(.92) translateX(12px)" },
         { opacity: endOpacity, transform: "scale(1) translateX(0)" }
-      ], { duration: 270, delay: 90, easing: "ease-out", fill: "both" });
+      ], { duration: toRobuxSquare ? 250 : 320, delay: toRobuxSquare ? 600 : 240, easing: "ease-out", fill: "both" });
       anim.onfinish = clear;
     }
     observer = new MutationObserver(check);
     observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:["class"] });
-    timer = setTimeout(clear, 1400);
+    timer = setTimeout(clear, 2200);
     requestAnimationFrame(check);
   }
   document.addEventListener("click", function(e) {

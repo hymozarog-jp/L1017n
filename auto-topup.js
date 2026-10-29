@@ -40,7 +40,7 @@
     return root;
   }
   function stopWatcher(){if(watcher){clearInterval(watcher);watcher=null}watcherCount=0}
-  function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();}
+  function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
     if(/verified_libyana_phone_required/.test(t))return 'الشحن عبر هذا الكود يتطلب رقم ليبيانا 092 أو 094 موثّق برسالة SMS من حسابي.';
@@ -48,6 +48,153 @@
     if(/invalid_ussd_amount/.test(t))return 'اكتب مبلغًا صحيحًا بالدينار الليبي، ويجب أن يكون عددًا صحيحًا موجبًا.';
     return 'تعذر تجهيز طلب التحويل. لا تحوّل رصيدًا قبل ظهور رقم الطلب وكود الاتصال.';
   }
+  // USSD hands control to the native Phone app. Returning is not proof of
+  // transfer: this overlay only reads the authenticated existing request.
+  const DIAL_HANDOFF_KEY='l1017n-ussd-return-v1';
+  let dialHandoff=null;
+  function saveDialHandoff(){
+    try{
+      if(dialHandoff)sessionStorage.setItem(DIAL_HANDOFF_KEY,JSON.stringify(dialHandoff));
+      else sessionStorage.removeItem(DIAL_HANDOFF_KEY);
+    }catch(_){/* private browsing can block session storage */}
+  }
+  function restoreDialHandoff(){
+    if(dialHandoff)return dialHandoff;
+    try{
+      const saved=JSON.parse(sessionStorage.getItem(DIAL_HANDOFF_KEY)||'null');
+      if(saved && typeof saved.id==='string' && saved.id.length>=10
+        && Number.isFinite(saved.startedAt) && Date.now()-saved.startedAt>=0
+        && Date.now()-saved.startedAt<30*60*1000 && saved.shown!==true){
+        dialHandoff=saved;
+      }else if(saved){sessionStorage.removeItem(DIAL_HANDOFF_KEY);}
+    }catch(_){}
+    return dialHandoff;
+  }
+  function clearDialHandoff(){dialHandoff=null;saveDialHandoff()}
+  function armDialHandoff(id,amount){
+    if(!id)return;
+    dialHandoff={id:String(id),amount:Number(amount),startedAt:Date.now(),hidden:false,shown:false};
+    saveDialHandoff();
+  }
+  function closeVerifier(){
+    document.getElementById('tpReturnVerify')?.remove();
+    document.body.classList.remove('tpv-open');
+  }
+  function updateVerifier(id,data,networkError){
+    const root=document.getElementById('tpReturnVerify');
+    if(!root||root.dataset.requestId!==String(id))return;
+    const title=root.querySelector('.tpv-title');
+    const desc=root.querySelector('.tpv-subtitle');
+    const foot=root.querySelector('.tpv-footnote');
+    if(!title||!desc||!foot)return;
+    if(networkError){
+      root.dataset.state='pending';
+      title.textContent='جاري التحقق من التحويل';
+      desc.textContent='تعذّر تحديث الحالة الآن. تأكد من اتصال الإنترنت واضغط «تحديث حالة الطلب».';
+      foot.textContent='لم يتم تأكيد الشحن بعد. لا تحول الرصيد مرة ثانية.';
+      return;
+    }
+    if(data?.status==='approved'){
+      root.dataset.state='approved';
+      title.textContent='تم اعتماد الشحن!';
+      desc.textContent='أكد النظام اعتماد الطلب وإضافة المبلغ لمحفظتك بنجاح.';
+      foot.textContent='يمكنك إغلاق النافذة أو متابعة طلباتك.';
+      clearDialHandoff();
+      return;
+    }
+    if(data?.status==='rejected'){
+      root.dataset.state='rejected';
+      title.textContent='لم يتم اعتماد الشحن';
+      desc.textContent='لم تتم الموافقة على الطلب. راجع حالة الطلب أو تواصل مع الإدارة.';
+      foot.textContent='لا تكرر التحويل قبل معرفة سبب الرفض.';
+      clearDialHandoff();
+      return;
+    }
+    root.dataset.state='pending';
+    title.textContent='جاري التحقق من التحويل';
+    if(data?.sms_status==='matched'){
+      desc.textContent='وصل إشعار مطابق لرقمك ومبلغ طلبك. ننتظر الاعتماد النهائي قبل إضافة الرصيد.';
+    }else{
+      desc.textContent='ننتظر وصول إشعار التحويل ومطابقته مع طلبك. قد يستغرق ذلك قليلًا.';
+    }
+    foot.textContent='الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.';
+  }
+  function showVerifier(id,amount){
+    if(!id)return;
+    const existing=document.getElementById('tpReturnVerify');
+    if(existing){if(existing.dataset.requestId===String(id))return;closeVerifier()}
+    const root=document.createElement('section');
+    root.id='tpReturnVerify';
+    root.dataset.requestId=String(id);
+    root.dataset.state='pending';
+    root.setAttribute('role','dialog');
+    root.setAttribute('aria-modal','true');
+    root.setAttribute('aria-labelledby','tpvHeading');
+    root.setAttribute('aria-describedby','tpvDescription');
+    root.dir='rtl';
+    root.innerHTML='<div class="tpv-card">'
+      +'<button type="button" class="tpv-close" aria-label="إغلاق شاشة التحقق">×</button>'
+      +'<span class="tpv-brand">L1017n <span>•</span> ليبيانا</span>'
+      +'<div class="tpv-visual" aria-hidden="true">'
+        +'<span class="tpv-spark"></span><span class="tpv-ring tpv-ring-outer"></span><span class="tpv-ring tpv-ring-inner"></span>'
+        +'<div class="tpv-visual-icon"><svg viewBox="0 0 48 48"><path d="M24 7 36 12v11c0 8-5 14-12 18-7-4-12-10-12-18V12Z"/><path d="m18 24 4 4 8-9"/></svg></div>'
+      +'</div>'
+      +'<h2 class="tpv-title" id="tpvHeading" tabindex="-1">جاري التحقق من التحويل</h2>'
+      +'<p class="tpv-subtitle" id="tpvDescription" role="status" aria-live="polite">نراجع حالة طلبك ونتأكد من وصول إشعار ليبيانا. لا تحتاج إلى التحويل مرة ثانية.</p>'
+      +'<div class="tpv-amount">مبلغ الشحن <b class="tpv-amount-value"></b> د.ل</div>'
+      +'<div class="tpv-progress" aria-hidden="true"><div class="tpv-progress-fill"></div></div>'
+      +'<div class="tpv-steps" aria-label="خطوات متابعة الشحن">'
+        +'<div class="tpv-step"><i>1</i><span>تجهيز الطلب</span></div>'
+        +'<div class="tpv-step"><i>2</i><span>مطابقة التحويل</span></div>'
+        +'<div class="tpv-step"><i>3</i><span>اعتماد الرصيد</span></div>'
+      +'</div>'
+      +'<div class="tpv-actions">'
+        +'<button class="tpv-action tpv-refresh" type="button">تحديث حالة الطلب</button>'
+        +'<button class="tpv-action tpv-dismiss" type="button">متابعة التسوق</button>'
+      +'</div>'
+      +'<p class="tpv-footnote">الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.</p>'
+    +'</div>';
+    root.querySelector('.tpv-amount-value').textContent=
+      Number.isFinite(Number(amount))&&Number(amount)>0?Number(amount).toFixed(2):'—';
+    root.querySelector('.tpv-close').addEventListener('click',closeVerifier);
+    root.querySelector('.tpv-dismiss').addEventListener('click',()=>{
+      closeVerifier();
+      const page=document.getElementById('topupDedicatedPage');
+      if(page)page.querySelector('.topup-dedicated-back')?.click();
+      if(typeof switchView==='function')switchView('orders');
+    });
+    root.querySelector('.tpv-refresh').addEventListener('click',()=>refreshRequest(id));
+    document.body.appendChild(root);
+    document.body.classList.add('tpv-open');
+    root.querySelector('.tpv-title')?.focus({preventScroll:true});
+    currentRequest=String(id);
+    currentAmount=Number(amount);
+    watch(id);
+  }
+  function maybeShowReturnVerify(){
+    const h=restoreDialHandoff();
+    if(!h||h.shown||document.visibilityState==='hidden')return;
+    const elapsed=Date.now()-h.startedAt;
+    if(elapsed<1400||elapsed>30*60*1000)return;
+    // Some iOS/Android in-app browsers never dispatch visibility=hidden.
+    // In that case, allow a later focus event but not the immediate tap.
+    if(!h.hidden && elapsed<4000)return;
+    if(currentRequest && String(currentRequest)!==h.id)return;
+    h.shown=true;saveDialHandoff();
+    showVerifier(h.id,h.amount);
+    clearDialHandoff();
+  }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'){
+      const h=restoreDialHandoff();
+      if(h){h.hidden=true;saveDialHandoff();}
+    }else setTimeout(maybeShowReturnVerify,260);
+  });
+  window.addEventListener('focus',()=>setTimeout(maybeShowReturnVerify,270));
+  window.addEventListener('pageshow',()=>setTimeout(maybeShowReturnVerify,430));
+  // The browser may reload the page after handing off to Phone.
+  setTimeout(maybeShowReturnVerify,700);
+
   async function refreshRequest(id){
     if(!id||!host())return;
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
@@ -56,23 +203,27 @@
       const {data,error}=await db.rpc('get_my_ussd_topup_status',{p_request_id:id});
       if(error)throw error;
       const status=document.getElementById('ussdTransferStatus');
-      if(!status||currentRequest!==id)return;
+      if(currentRequest!==String(id))return;
+      updateVerifier(id,data);
       if(data?.status==='approved'){
-        status.textContent='✅ تم اعتماد التحويل وإضافة الرصيد لمحفظتك.';
+        if(status)status.textContent='✅ تم اعتماد التحويل وإضافة الرصيد لمحفظتك.';
         stopWatcher();chosen=false;
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(()=>{});
         return;
       }
       if(data?.status==='rejected'){
-        status.textContent='⛔ لم يُعتمد التحويل. تواصل مع إدارة المتجر مع رقم الطلب.';
+        if(status)status.textContent='⛔ لم يُعتمد التحويل. تواصل مع إدارة المتجر مع رقم الطلب.';
         stopWatcher();return;
       }
       if(data?.sms_status==='matched'){
-        status.textContent='📩 البوت طابق إشعار التحويل. جاري انتظار نتيجة الفحص الآلي؛ ما تكررّش التحويل. إذا احتاجت العملية مراجعة، تظهر حالتها هنا.';
+        if(status)status.textContent='📩 البوت طابق إشعار التحويل. جاري انتظار نتيجة الفحص الآلي؛ ما تكررّش التحويل. إذا احتاجت العملية مراجعة، تظهر حالتها هنا.';
       }else{
-        status.textContent='⏳ ننتظر إشعار التحويل من ليبيانا. فتح الاتصال لا يعني نجاح التحويل؛ أكّد العملية داخل قائمة USSD. لا تكرر التحويل.';
+        if(status)status.textContent='⏳ ننتظر إشعار التحويل من ليبيانا. فتح الاتصال لا يعني نجاح التحويل؛ أكّد العملية داخل قائمة USSD. لا تكرر التحويل.';
       }
-    }catch(e){console.warn('USSD status could not be refreshed',e)}
+    }catch(e){
+      updateVerifier(id,null,true);
+      console.warn('USSD status could not be refreshed',e);
+    }
   }
   function watch(id){
     stopWatcher();
@@ -148,19 +299,26 @@
       const dial=el('a','btn btn-primary full-width','📞 فتح الاتصال وتحويل '+amount+' د.ل');
       dial.href='tel:'+codeFor(amount).replace('#','%23');
       dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا');
-      dial.addEventListener('click',()=>{watch(intent.request_id)});
+      dial.addEventListener('click',()=>{armDialHandoff(intent.request_id,amount);watch(intent.request_id)});
       panel.append(dial);
       const copy=el('button','btn btn-soft full-width','نسخ كود USSD');
       copy.type='button';
       copy.addEventListener('click',async()=>{
-        try{await navigator.clipboard.writeText(codeFor(amount));copy.textContent='تم نسخ الكود ✓'}
+        try{
+          await navigator.clipboard.writeText(codeFor(amount));
+          armDialHandoff(intent.request_id,amount);
+          copy.textContent='تم نسخ الكود ✓';
+        }
         catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
       panel.append(copy);
       const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. بعد الاتصال، أكد التحويل كما تطلب ليبيانا.');
       status.id='ussdTransferStatus';
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
-      refresh.type='button';refresh.addEventListener('click',()=>refreshRequest(intent.request_id));
+      refresh.type='button';refresh.addEventListener('click',()=>{
+        if(dialHandoff){dialHandoff.shown=true;saveDialHandoff();clearDialHandoff();}
+        showVerifier(intent.request_id,amount);
+      });
       panel.append(status,refresh);
       panel.append(el('p','auto-topup-note','مهم: الاتصال يفتح خدمة تحويل ليبيانا، وتحتاج تأكيد التحويل بنفسك. شحن المحفظة قد يتم آليًا بعد وصول إشعار SMS مطابق من هاتف المتجر. إشعارات SMS ليست تأكيدًا رسميًا من مشغّل الشبكة؛ التحويلات غير المطابقة تحتاج مراجعة.'));
       area.append(panel);

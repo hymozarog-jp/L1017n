@@ -472,7 +472,7 @@ setTimeout(refreshAdminAccess,0);
  const btn=e.target.closest('[data-account-action]');if(!btn)return;
  const action=btn.dataset.accountAction;
  if(action==='personal'){openPersonalDetails();return}
- else if(action==='verify')show('<h3>توثيق الحساب</h3><p>خدمة توثيق الحساب غير متاحة حالياً. لن نطلب منك رفع مستندات هنا.</p>');
+ else if(action==='verify'){openPersonalDetails({focusPhone:true});return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='theme')show('<h3>المظهر</h3><p>التصميم الداكن هو المظهر الحالي للموقع.</p>');
  else if(action==='language')show('<h3>اللغة</h3><p>اللغة المتوفرة حالياً: العربية.</p>');
@@ -481,25 +481,79 @@ setTimeout(refreshAdminAccess,0);
 })();
 
 /* Dedicated personal details screen: actual user name and phone, no city */
-async function openPersonalDetails(){
+async function openPersonalDetails(options={}){
  const user=await currentUser();if(!user)return;
- let phone=user.phone||user.user_metadata?.phone||'';
- try{const {data}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();if(data?.libyana_phone)phone=data.libyana_phone}catch(e){}
- const meta=user.user_metadata||{},name=meta.full_name||meta.name||user.email?.split('@')[0]||'مستخدم';
  let page=document.getElementById('personalDetailsPage');
+ if(page&&page.classList.contains('visible')){
+   if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'smooth',block:'center'});
+   return;
+ }
+ // The saved phone and SMS widget are rendered by the existing account
+ // code and moved here: no second registration system, no bypass of Resala.
+ await renderAccount();
+ const meta=user.user_metadata||{},name=meta.full_name||meta.name||user.email?.split('@')[0]||'مستخدم';
  if(!page){page=document.createElement('div');page.id='personalDetailsPage';document.body.appendChild(page)}
- page.innerHTML='<div class="personal-page-header"><button type="button" id="personalBack" aria-label="رجوع">❯</button><h2>المعلومات الشخصية</h2></div><div class="personal-page-user"><div class="personal-page-avatar">'+escapeHtml(name.slice(0,1).toUpperCase())+'</div><div><strong>'+escapeHtml(name)+'</strong><span dir="ltr">'+escapeHtml(phone||user.email||'')+'</span></div></div><form id="personalDetailsForm"><div class="personal-page-fields"><label><span>♙ &nbsp; الاسم الكامل</span><input id="personalFullName" type="text" maxlength="60" minlength="2" required value="'+escapeHtml(name).replace(/"/g,'&quot;')+'"></label><div class="personal-page-phone"><span>♧ &nbsp; رقم الهاتف</span><strong dir="ltr">'+escapeHtml(phone||'غير مسجل')+'</strong><small>رقم الهاتف مرتبط بحسابك، ولا يمكن تغييره من هذه الصفحة.</small></div></div><button type="submit" class="personal-save">✓ &nbsp; حفظ</button><p id="personalSaveStatus" role="status"></p></form>';
+ page.innerHTML=
+  '<div class="personal-page-shell">'+
+   '<div class="personal-page-header"><button type="button" id="personalBack" aria-label="رجوع إلى حسابي">'+
+    '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>'+
+    '<div><small>إعدادات حسابك</small><h2>المعلومات الشخصية</h2></div></div>'+
+   '<div class="personal-page-user"><div class="personal-page-avatar">'+escapeHtml(name.slice(0,1).toUpperCase())+'</div>'+
+    '<div><strong id="personalDisplayName">'+escapeHtml(name)+'</strong><span dir="ltr">'+escapeHtml(user.email||'')+'</span></div></div>'+
+   '<div class="personal-page-group-heading"><h3>بيانات الحساب</h3><span>معلوماتك الخاصة</span></div>'+
+   '<form id="personalDetailsForm"><div class="personal-page-fields">'+
+    '<label for="personalFullName"><span>الاسم الكامل</span><input id="personalFullName" type="text" maxlength="60" minlength="2" required value="'+escapeHtml(name).replace(/"/g,'&quot;')+'"></label>'+
+    '<label for="personalEmail"><span>البريد الإلكتروني</span><input id="personalEmail" type="email" readonly value="'+escapeHtml(user.email||'').replace(/"/g,'&quot;')+'"></label>'+
+    '</div><button type="submit" class="personal-save">حفظ تغييرات الاسم</button><p id="personalSaveStatus" role="status" aria-live="polite"></p></form>'+
+   '<section class="personal-phone-section" id="personalPhoneSection" aria-label="توثيق رقم الهاتف">'+
+    '<div class="personal-phone-heading"><div class="personal-phone-icon" aria-hidden="true">'+
+     '<svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>'+
+    '</div><div class="personal-phone-heading-text"><strong>رقم الهاتف والتوثيق</strong><span>تأكيد ملكية الرقم برسالة SMS</span></div>'+
+    '<span id="personalPhoneBadge" class="personal-phone-badge" role="status" aria-live="polite">جاري التحقق</span></div>'+
+    '<div id="personalPhoneSlot" class="personal-phone-slot"></div>'+
+    '<div class="personal-phone-security"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>'+
+     '<span>توثيق الرقم مطلوب قبل الشراء. لا تشارك رمز التحقق مع أي شخص.</span></div>'+
+   '</section>'+
+  '</div>';
  page.classList.add('visible');
- const close=()=>page.classList.remove('visible');
+ const slot=page.querySelector('#personalPhoneSlot');
+ const gate=document.getElementById('accountPhoneGate');
+ const otp=document.getElementById('resalaVerifyBox');
+ if(gate){gate.classList.remove('hidden');slot.appendChild(gate)}
+ if(otp)slot.appendChild(otp);
+ if(!gate){
+   slot.innerHTML='<p class="personal-phone-loading">تعذر تحميل رقم الهاتف. أغلق الصفحة وافتحها مرة ثانية.</p>';
+ }
+ const close=()=>{
+   const oldGate=document.getElementById('accountPhoneGate');
+   const oldOtp=document.getElementById('resalaVerifyBox');
+   const profile=document.getElementById('signedInProfile');
+   if(oldGate&&profile&&profile.parentNode){
+     profile.insertAdjacentElement('afterend',oldGate);
+     if(oldOtp)oldGate.insertAdjacentElement('afterend',oldOtp);
+   }
+   page.classList.remove('visible');
+ };
  page.querySelector('#personalBack').onclick=close;
  page.querySelector('#personalDetailsForm').onsubmit=async e=>{
- e.preventDefault();const value=page.querySelector('#personalFullName').value.trim(),status=page.querySelector('#personalSaveStatus');
- if(value.length<2){status.textContent='الاسم لازم يكون حرفين على الأقل';return}
- const {error}=await supabaseClient.auth.updateUser({data:{full_name:value}});
- if(error){status.textContent='تعذر حفظ الاسم، حاول مرة ثانية';return}
- status.textContent='تم حفظ الاسم بنجاح';document.getElementById('accountModernName').textContent=value;document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
+   e.preventDefault();
+   const value=page.querySelector('#personalFullName').value.trim(),status=page.querySelector('#personalSaveStatus');
+   if(value.length<2){status.textContent='الاسم لازم يكون حرفين على الأقل';return}
+   const {error}=await supabaseClient.auth.updateUser({data:{full_name:value}});
+   if(error){status.textContent='تعذر حفظ الاسم، حاول مرة ثانية';return}
+   status.textContent='تم حفظ الاسم بنجاح';
+   page.querySelector('#personalDisplayName').textContent=value;
+   page.querySelector('.personal-page-avatar').textContent=value.slice(0,1).toUpperCase();
+   document.getElementById('accountModernName').textContent=value;
+   document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
  };
+ if(typeof window.renderResalaOtp==='function'){
+   try{await window.renderResalaOtp(user)}
+   catch(e){console.warn('[personal/verify] Unable to refresh status:',e)}
+ }
+ if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'smooth',block:'center'});
 }
+window.openPersonalDetails=openPersonalDetails;
 
 /* PUBG Mobile category selector — separate from Roblox checkout */
 function openPubgCategories(){

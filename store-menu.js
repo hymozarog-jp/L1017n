@@ -38,6 +38,9 @@
       #${pageId} .rgp-action{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;background:linear-gradient(110deg,#7553e6,#436be6);font-weight:700}
       #${pageId} .mm2 .rgp-action{background:linear-gradient(110deg,#b84c9c,#7446cb)}
       #${pageId} .rgp-packages{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+      #${pageId} .rgp-mm2-subcategory{margin-top:14px}
+      #${pageId} .rgp-mm2-subcategory .rgp-back{margin-top:5px}
+      #${pageId} .rgp-mm2-subcategory .rgp-packages{margin-top:20px}
       #${pageId} .rgp-package{border:1px solid #214968;background:#091a2b;border-radius:18px;padding:18px;text-align:right;color:#fff;cursor:pointer;font:inherit}
       #${pageId} .rgp-package:hover{border-color:#35a9ff}
       #${pageId} .rgp-package strong{display:block;font-size:18px}
@@ -78,6 +81,7 @@
     document.body.appendChild(p);
     p.addEventListener('click',function(e){
       if(e.target.closest('[data-rgp-back]')){closePage();return}
+      if(e.target.closest('[data-mm2-back]')){showRobloxPage();return}
       var choice=e.target.closest('[data-rgp-choice]');if(!choice)return;
       if(choice.dataset.rgpChoice==='robux'){
         closePage();
@@ -91,12 +95,16 @@
   async function showMm2Page(){
     var p=document.getElementById(pageId);if(!p)return;
     var grid=document.createElement('div');grid.className='rgp-packages';grid.innerHTML='<div class="rgp-empty">جاري تحميل باقات MM2…</div>';
-    p.querySelector('.rgp-grid').replaceWith(grid);
-    p.querySelector('.rgp-title').textContent='باقات ماب MM2';
+    var section=document.createElement('section');section.className='rgp-mm2-subcategory';
+    var back=document.createElement('button');back.type='button';back.className='rgp-back';back.setAttribute('data-mm2-back','');back.textContent='← رجوع لقائمة روبلوكس';
+    section.append(back,grid);
+    p.querySelector('.rgp-grid').replaceWith(section);
+    p.querySelector('.rgp-title').textContent='روبلوكس ← باقة MM2';
     try{
       var client=window.supabase.createClient(supabaseUrl,supabaseKey);
       var r=await client.from('products').select('*').eq('active',true).order('sort_order');
-      var list=(r.data||[]).filter(function(x){var s=String(x.game||'')+' '+String(x.name||'')+' '+String(x.product_key||'');return /mm2|murder mystery|murdermystery|ماب/i.test(s)});
+      // Show only real MM2 items inside the Roblox > MM2 package category.
+      var list=(r.data||[]).filter(function(x){var game=String(x.game||'').trim();var key=String(x.product_key||'');var name=String(x.name||'');return /^(?:mm2|murder[ _-]*mystery[ _-]*2)$/i.test(game)||/^mm2[-_]/i.test(key)||/MM2/i.test(name)});
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var art=String(x.product_key)==='mm2-minty-gun'

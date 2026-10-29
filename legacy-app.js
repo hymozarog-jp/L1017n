@@ -21,10 +21,11 @@ function renderProducts(){
  {name:'فري فاير',category:'ألعاب',image:'https://images.launchbox-app.com/1a210ab9-e0f5-46f0-967b-ec5703e7e28c.jpg',key:'freefire',count:products.filter(p=>/free ?fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
  {name:'ببجي موبايل',category:'ألعاب',image:'https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length}
  ];
- // Include additional games added through the Telegram admin bot.
+ // MM2 is a Roblox subcategory, never an independent game on the home page.
+ const isMm2Game=game=>/^(?:mm2|roblox[\s_-]*mm2|murder[\s_-]*mystery[\s_-]*2)$/i.test(String(game||'').trim());
  const existingGames=new Set(games.map(x=>x.key));
  for(const game of new Set(products.map(p=>String(p.game||'').trim().toLowerCase()))){
-  if(!game||existingGames.has(game)||game==='mm2'||game==='murder mystery 2')continue; // MM2 weapons live inside the Roblox > MM2 section
+  if(!game||existingGames.has(game)||isMm2Game(game))continue;
   const items=products.filter(p=>String(p.game||'').trim().toLowerCase()===game);
   games.push({name:game.replace(/[-_]/g,' '),category:'ألعاب الهواتف',image:'',key:game,count:items.length});
  }
@@ -33,6 +34,11 @@ function renderProducts(){
 }
 /* Non-Roblox digital items use the atomic wallet-to-code delivery checkout. */
 function showGameProductPreview(key){
+ // Never present an MM2 item as a standalone digital game or instant code.
+ if(/mm2|murder[\s_-]*mystery/i.test(String(key||''))){
+   if(typeof window.openRobloxGameMenu==='function')window.openRobloxGameMenu();
+   return;
+ }
  const box=$('#storePurchaseBox');if(!box)return;
  const items=products.filter(p=>String(p.game||'').trim().toLowerCase()===key);
  const label=({fortnite:'فورت نايت',freefire:'فري فاير',pubg:'ببجي موبايل'}[key]||key.replace(/[-_]/g,' '));

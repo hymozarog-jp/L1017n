@@ -20,7 +20,7 @@
     fortnite: { name: "Fortnite", tag: "فورت نايت", color: "indigo", art: "FN" },
     freefire: { name: "Free Fire", tag: "فري فاير", color: "orange", art: "FF" }
   };
-  const FILTERS = [["all", "الكل"], ["roblox", "Roblox"], ["pubg", "PUBG"], ["mm2", "MM2"], ["steal-a-brainrot", "ماب السرقة"], ["fortnite", "Fortnite"], ["freefire", "Free Fire"]];
+  const FILTERS = [["all", "الكل"], ["roblox", "Roblox"], ["pubg", "PUBG"], ["fortnite", "Fortnite"], ["freefire", "Free Fire"]];
   const HEROES = [
     { headline: "عالم روبلوكس", more: "صار أقرب لك", desc: "باقات Robux ومستلزمات المابات في مكان واحد.", label: "ROBLOX · L1017N", action: "roblox", button: "استكشف روبلوكس", theme: "violet", art: "R" },
     { headline: "شدات ببجي", more: "بكل سهولة", desc: "شوف بطاقات PUBG المتوفرة وأسعارها الحقيقية.", label: "PUBG MOBILE · UC", action: "pubg", button: "تصفح ببجي", theme: "gold", art: "UC" },
@@ -48,26 +48,46 @@
     return key || "other";
   }
   function itemMeta(product) { return GAME_META[gameKey(product)] || { name: product.game || "الألعاب", tag: "منتجات رقمية", color: "purple", art: "L" }; }
+  // Roblox is a single parent game in the storefront. Robux, MM2 and
+  // Steal a Brainrot remain nested in the existing Roblox category screen.
+  function isRobloxFamily(key) {
+    return key === "roblox" || key === "mm2" || key === "steal-a-brainrot";
+  }
+  function hasRobloxCategory() {
+    const items = catalog().filter(p => p && p.active !== false && isRobloxFamily(gameKey(p)));
+    if (!items.length || (chosen !== "all" && chosen !== "roblox")) return false;
+    if (!query) return true;
+    const searchable = [
+      "Roblox", "روبلوكس", "Robux", "روبوكس", "MM2", "Murder Mystery 2",
+      "ماب السرقة", "Steal a Brainrot", "قرما", "لاسيكرت", "لاسبوكي",
+      ...items.map(p => [p.name, p.product_key, p.game].join(" "))
+    ].join(" ");
+    return normalize(searchable).includes(query);
+  }
   function displayList() {
-    const available = catalog().filter(item => item && item.active !== false && Number(item.price) > 0);
-    let filtered = available.filter(item => {
+    const available = catalog().filter(item => item && item.active !== false && Number(item.price) > 0 && !isRobloxFamily(gameKey(item)));
+    return available.filter(item => {
       const category = gameKey(item);
       if (chosen !== "all" && category !== chosen) return false;
       if (!query) return true;
       const meta = itemMeta(item);
-      const text = normalize([item.name, item.game, item.product_key, meta.name, meta.tag].join(" "));
-      return text.includes(query);
+      return normalize([item.name, item.game, item.product_key, meta.name, meta.tag].join(" ")).includes(query);
     });
-    // Present an editorial cross-game mix on the home page, then all remaining inventory.
-    if (chosen === "all" && !query) {
-      const priorities = ["robux-100", "pubg-60", "mm2-minty-gun", "steal-garama", "steal-los-secret", "steal-los-spooky"];
-      filtered = filtered.slice().sort((a, b) => {
-        const ai = priorities.indexOf(a.product_key), bi = priorities.indexOf(b.product_key);
-        if (ai >= 0 || bi >= 0) return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
-        return String(a.game).localeCompare(String(b.game));
-      });
-    }
-    return filtered;
+  }
+  function robloxParentCard() {
+    return '<article class="ll-roblox-parent ll-reveal" aria-label="قسم Roblox: روبوكس، MM2، ماب السرقة">'
+      + '<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح قسم Roblox">'
+      + '<span class="ll-roblox-parent-kicker">L1017N / ROBLOX</span>'
+      + '<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="شعار Roblox الأصلي" loading="eager" decoding="async">'
+      + '</button>'
+      + '<div class="ll-roblox-parent-info">'
+      + '<span class="ll-roblox-parent-label">عالم الألعاب</span><h3>Roblox</h3>'
+      + '<p>اختَر القسم اللي تبيه داخل روبلوكس</p>'
+      + '<div class="ll-roblox-subcategories" role="group" aria-label="أقسام Roblox الداخلية">'
+      + '<button type="button" data-ll-game="roblox" class="ll-roblox-subcategory"><span>Robux</span><small>باقات الروبوكس</small></button>'
+      + '<button type="button" data-ll-game="mm2" class="ll-roblox-subcategory"><span>MM2</span><small>مستلزمات الماب</small></button>'
+      + '<button type="button" data-ll-game="steal-a-brainrot" class="ll-roblox-subcategory"><span>ماب السرقة</span><small>قرما · لاسيكرت · لاسبوكي</small></button>'
+      + '</div></div></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");
@@ -172,16 +192,20 @@
     if (!root) return;
     const productsToShow = displayList();
     const all = catalog().filter(p => p && p.active !== false);
-    q("#llItemCount").textContent = all.length ? productsToShow.length + " من " + all.length + " منتج" : "جاري تحميل المنتجات";
+    const showRoblox = hasRobloxCategory();
+    const visibleCount = productsToShow.length + (showRoblox ? 1 : 0);
+    q("#llItemCount").textContent = all.length ? visibleCount + " قسم وباقة" : "جاري تحميل المنتجات";
     if (!all.length) {
       root.innerHTML = '<div class="ll-empty">جاري تحميل باقات المتجر الحقيقية…</div>';
       return;
     }
-    if (!productsToShow.length) {
+    if (!visibleCount) {
       root.innerHTML = '<div class="ll-empty">ما فيش منتجات تطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
       return;
     }
-    root.innerHTML = productsToShow.map(card).join("");
+    // One Roblox parent image with all three subcategories, never standalone
+    // MM2 or Steal a Brainrot top-level cards.
+    root.innerHTML = (showRoblox ? robloxParentCard() : "") + productsToShow.map(card).join("");
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {

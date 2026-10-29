@@ -1,0 +1,103 @@
+
+/* L1017n — Midnight & Gold Shopping Leaderboard */
+#leaderboardView{
+ --lb-gold:#f6c94e;--lb-gold-deep:#ac7e29;--lb-ink:#080f1e;--lb-panel:#0c1526;--lb-line:#29344a;
+ box-sizing:border-box;direction:rtl;max-width:1180px;width:100%;min-height:80vh;margin:0 auto;
+ padding:clamp(22px,4vw,50px) clamp(13px,3vw,30px) 125px!important;
+ background:radial-gradient(ellipse at 60% -16%,#202e3b 0%,#0c1525 39%,#070d19 78%);
+ border-radius:0;color:#eef1f8;font-family:'IBM Plex Sans Arabic',sans-serif
+}
+#leaderboardView *{box-sizing:border-box}
+#leaderboardView .lb-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 25px}
+#leaderboardView .lb-header-main{display:flex;align-items:center;gap:16px;min-width:0}
+#leaderboardView .lb-header-trophy{width:78px;height:78px;display:grid;place-items:center;flex:none;border:1px solid #aa8a3d93;border-radius:24px;background:linear-gradient(145deg,#5948245e,#211d1c);font-size:38px;box-shadow:inset 0 1px #eebf4240}
+#leaderboardView .lb-header h1{font-size:clamp(33px,5.6vw,51px);font-weight:900;line-height:1.12;margin:0 0 7px;color:#fff}
+#leaderboardView .lb-header p{margin:0;color:#a7b1c2;font-size:clamp(11px,2.4vw,15px);line-height:1.65}
+#leaderboardView .lb-live{display:inline-flex;align-items:center;gap:8px;border-radius:30px;background:#0756384d;border:1px solid #17875a7c;padding:8px 13px;color:#64e2a0;font-size:12px;font-weight:800;white-space:nowrap}
+#leaderboardView .lb-live i{height:9px;width:9px;display:inline-block;background:#2ed77a;border-radius:50%;box-shadow:0 0 0 5px #31d97b16}
+#leaderboardView .lb-self{border:1px solid #c69b47b0;border-radius:27px;background:linear-gradient(145deg,#312a20b8,#151b25 68%,#11182a);box-shadow:0 12px 40px #0005,inset 0 1px #ffe7a21c;padding:clamp(16px,3vw,26px);margin-bottom:22px}
+#leaderboardView .lb-self-top{display:grid;grid-template-columns: minmax(0,1fr) auto minmax(96px,auto);gap:12px;align-items:center}
+#leaderboardView .lb-self-user{display:flex;gap:13px;align-items:center;min-width:0}
+#leaderboardView .lb-self-avatar{position:relative;display:grid;place-items:center;flex:none;height:67px;width:67px;border-radius:50%;border:3px solid var(--lb-gold);background:#1e2e43;overflow:hidden;font-size:26px;color:#fff}
+#leaderboardView .lb-self-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#leaderboardView .lb-self-name{min-width:0}
+#leaderboardView .lb-self-name strong{display:block;font-size:clamp(16px,2.4vw,21px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#leaderboardView .lb-self-name small,#leaderboardView .lb-self-spend small,#leaderboardView .lb-self-position small{display:block;font-size:12px;color:#9da9bc;margin-bottom:3px}
+#leaderboardView .lb-self-spend{text-align:center}
+#leaderboardView .lb-self-spend strong{display:block;font-size:clamp(19px,3vw,25px);color:#fff;line-height:1.35;font-variant-numeric:tabular-nums}
+#leaderboardView .lb-self-position{text-align:left}
+#leaderboardView .lb-self-position strong{display:block;color:var(--lb-gold);font-size:clamp(27px,4.5vw,43px);font-weight:900;line-height:1.1}
+#leaderboardView .lb-progress-track{height:11px;overflow:hidden;border-radius:99px;background:#2a3447;margin:21px 0 12px}
+#leaderboardView .lb-progress-track span{height:100%;display:block;border-radius:99px;background:linear-gradient(90deg,#28c26b,#f2cf42);transition:width .5s ease}
+#leaderboardView .lb-progress-caption{margin:0;color:#abb5c7;font-size:13px;text-align:center}
+#leaderboardView .lb-progress-caption strong{color:var(--lb-gold)}
+#leaderboardView .lb-section-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:34px 0 19px}
+#leaderboardView .lb-section-label h2{display:flex;align-items:center;gap:9px;margin:0;font-size:clamp(19px,3.6vw,25px);color:#f0f2fa}
+#leaderboardView .lb-section-label small{font-size:12px;color:#818da5}
+#leaderboardView .lb-section-label .lb-gold-icon{color:var(--lb-gold);font-size:25px}
+#leaderboardView .lb-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(7px,2vw,20px);align-items:end;padding-top:22px;margin:0 auto 29px;max-width:860px}
+#leaderboardView .lb-podium-card{position:relative;min-width:0;min-height:217px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:20px 9px 17px;border-radius:26px;border:1px solid #303a52;background:linear-gradient(155deg,#111a2d,#0b1020);text-align:center}
+#leaderboardView .lb-podium-card.lb-first{min-height:250px;border:1px solid #b69342;background:radial-gradient(ellipse at 50% -45%,#b49a492b,#191a1f 55%,#12162a);box-shadow:0 14px 42px #0005,inset 0 1px #f9d47955}
+#leaderboardView .lb-podium-card.lb-first:before{content:'♛';position:absolute;top:-38px;color:var(--lb-gold);font-size:49px;line-height:1}
+#leaderboardView .lb-podium-avatar{position:relative;display:grid;place-items:center;width:clamp(56px,10vw,88px);height:clamp(56px,10vw,88px);border-radius:50%;border:4px solid #617890;background:#243144;color:#c2cede;font-size:26px;overflow:visible;flex:none}
+#leaderboardView .lb-podium-card.lb-first .lb-podium-avatar{border-color:var(--lb-gold);width:clamp(68px,11vw,104px);height:clamp(68px,11vw,104px)}
+#leaderboardView .lb-podium-card.lb-second .lb-podium-avatar{border-color:#acc1d4}
+#leaderboardView .lb-podium-card.lb-third .lb-podium-avatar{border-color:#e7a861}
+#leaderboardView .lb-podium-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#leaderboardView .lb-podium-medal{position:absolute;z-index:1;bottom:-9px;right:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:3px solid #171928;background:#e6bd46;color:#292319;font-size:13px;font-weight:900}
+#leaderboardView .lb-second .lb-podium-medal{background:#b5c5d3}
+#leaderboardView .lb-third .lb-podium-medal{background:#df9d63}
+#leaderboardView .lb-podium-name{margin-top:5px;font-weight:800;font-size:clamp(12px,2.4vw,17px);line-height:1.5;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#leaderboardView .lb-podium-amount{font-weight:900;font-size:clamp(16px,3vw,25px);color:#d8b96d;font-variant-numeric:tabular-nums;line-height:1.1}
+#leaderboardView .lb-first .lb-podium-amount{color:var(--lb-gold)}
+#leaderboardView .lb-podium-card small{font-size:11px;color:#8693ab}
+#leaderboardView .lb-podium-card.lb-empty{opacity:.65}
+#leaderboardView .lb-other-rows{display:grid;gap:11px}
+#leaderboardView .lb-other-row{display:flex;align-items:center;gap:13px;padding:14px 17px;min-height:77px;border-radius:21px;border:1px solid var(--lb-line);background:linear-gradient(160deg,#111a2d,#0d1423)}
+#leaderboardView .lb-other-position{min-width:28px;color:var(--lb-gold);font-size:18px;font-weight:900}
+#leaderboardView .lb-other-avatar{position:relative;display:grid;place-items:center;overflow:hidden;flex:none;border-radius:50%;height:44px;width:44px;background:#1b3859;color:#9fb4d0;font-size:19px}
+#leaderboardView .lb-other-avatar img{height:100%;width:100%;object-fit:cover}
+#leaderboardView .lb-other-name{font-size:15px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+#leaderboardView .lb-other-amount{font-size:16px;font-weight:800;white-space:nowrap;text-align:left}
+#leaderboardView .lb-other-amount small{display:block;color:#8390a7;font-size:11px;font-weight:500}
+#leaderboardView .lb-empty-message{border:1px dashed #4e5870;background:#10192b;padding:28px;text-align:center;border-radius:20px;color:#aeb7c9}
+#leaderboardView .lb-prize{margin-top:35px;border:1px solid #9b7b3e66;border-radius:20px;background:#c6a14b0b;padding:14px 18px;color:#d9d0b9;font-size:13px;text-align:center}
+#leaderboardView .lb-prize strong{color:var(--lb-gold)}
+#leaderboardView .leaderboard-privacy{background:transparent;border:none;padding:0;margin:16px auto 0;text-align:center;max-width:760px;color:#79869d;font-size:11px;line-height:1.8}
+#leaderboardView .lb-refresh{font:inherit;border:1px solid #4a5668;color:#d6dee9;background:#111c2c;border-radius:16px;padding:8px 13px;cursor:pointer;font-size:12px}
+#leaderboardView .lb-refresh:focus-visible{outline:2px solid var(--lb-gold);outline-offset:2px}
+#leaderboardView #leaderboardParticipation{max-width:900px;margin:0 auto 25px;padding:0;border:0}
+#leaderboardView #leaderboardParticipation .leaderboard-profile-form{max-width:100%;margin:0;padding:20px;border:1px solid #bd94455e;border-radius:23px;background:linear-gradient(140deg,#272720b4,#151c2c)}
+#leaderboardView .leaderboard-profile-form h3{margin:0;font-size:19px;color:var(--lb-gold)}
+#leaderboardView .leaderboard-profile-form .form-note{margin:0;color:#a7b4c9;font-size:12px}
+#leaderboardView .leaderboard-profile-form .transfer-confirm{padding:9px 0;margin:0;gap:12px;display:flex;align-items:center}
+#leaderboardView .leaderboard-profile-form .transfer-confirm span{font-size:14px;color:#e3e8f2;flex:1}
+#leaderboardView .leaderboard-profile-form .transfer-confirm input{width:20px;height:20px;accent-color:#e4b748;flex:none}
+#leaderboardView .leaderboard-profile-form button[type=submit]{border:0;background:linear-gradient(135deg,#f0c34e,#b98527);color:#172033;border-radius:14px;font-weight:900}
+#leaderboardView .leaderboard-participation-guest{display:grid;justify-items:center;gap:12px;padding:18px;text-align:center;background:#141e2d;border:1px solid #39445b;border-radius:20px}
+#leaderboardView .leaderboard-participation-guest .btn{background:#cfa94c;color:#141a26;border:0;border-radius:13px}
+#leaderboardView .leaderboard-participation-guest p{margin:0;color:#a8b5c7;font-size:12px}
+@media(max-width:620px){
+ #leaderboardView .lb-header-trophy{width:59px;height:59px;border-radius:18px;font-size:30px}
+ #leaderboardView .lb-header-main{gap:11px}
+ #leaderboardView .lb-live{padding:6px 10px;font-size:10px}
+ #leaderboardView .lb-self-top{grid-template-columns:1fr auto;row-gap:14px}
+ #leaderboardView .lb-self-spend{grid-column:1;text-align:right}
+ #leaderboardView .lb-self-position{grid-column:2;grid-row:1 / span 2}
+ #leaderboardView .lb-self-avatar{width:58px;height:58px}
+ #leaderboardView .lb-self-name strong{font-size:17px}
+ #leaderboardView .lb-podium{gap:8px}
+ #leaderboardView .lb-podium-card{padding:17px 5px 12px;min-height:192px;border-radius:20px}
+ #leaderboardView .lb-podium-card.lb-first{min-height:224px}
+ #leaderboardView .lb-podium-card.lb-first:before{top:-29px;font-size:37px}
+ #leaderboardView .lb-other-row{padding:12px;gap:9px}
+ #leaderboardView .lb-other-amount{font-size:13px}
+ #leaderboardView .lb-other-name{font-size:13px}
+ #leaderboardView .lb-self{padding:16px}
+}
+@media(max-width:365px){
+ #leaderboardView .lb-podium-name{font-size:11px}
+ #leaderboardView .lb-podium-amount{font-size:13px}
+ #leaderboardView .lb-podium-avatar{height:52px;width:52px}
+ #leaderboardView .lb-podium-card.lb-first .lb-podium-avatar{height:64px;width:64px}
+}

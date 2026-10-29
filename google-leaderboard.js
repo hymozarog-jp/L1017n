@@ -40,7 +40,42 @@ function attachImage(container,url,alt){
   img.onerror=()=>img.remove();
   container.appendChild(img);
 }
-function makePodiumCard(item,rank){
+function makeMoneyMeter(amount, topValue, compact){
+  const value=Math.max(0,Number(amount)||0);
+  const highest=Math.max(0,Number(topValue)||0);
+  const percent=highest>0?Math.max(0,Math.min(100,value/highest*100)):0;
+  const gap=Math.max(0,highest-value);
+  const wrap=node('div','lb-money-widget'+(compact?' lb-money-compact':'')+(value===0?' lb-money-zero':''));
+  const button=node('button','lb-money-action');
+  button.type='button';
+  button.setAttribute('aria-expanded','false');
+  button.setAttribute('aria-label','افتح تفاصيل مشتريات المتسوق بالدينار الليبي: '+formatDinar(value)+' د.ل، ونسبتها من مشتريات المتصدر '+Math.round(percent)+' بالمئة');
+  const headline=node('span','lb-money-topline');
+  headline.append(
+    node('span','lb-money-label','💰 مقارنة بالمتصدر'),
+    node('strong','lb-money-percent',Math.round(percent)+'٪')
+  );
+  button.appendChild(headline);
+  const track=node('span','lb-money-rail');
+  const fill=node('span','lb-money-fill');
+  fill.style.setProperty('--lb-money-width',percent.toFixed(2)+'%');
+  track.appendChild(fill);
+  button.appendChild(track);
+  const details=node('div','lb-money-details');
+  details.hidden=true;
+  details.appendChild(node('span','', '💵 مشتريات المتسوق: '+formatDinar(value)+' د.ل'));
+  details.appendChild(node('span','', '🏆 مشتريات المتصدر: '+formatDinar(highest)+' د.ل'));
+  details.appendChild(node('strong','', highest>0?'الفارق: '+formatDinar(gap)+' د.ل':'كل المشاركين عندهم 0.00 د.ل حاليًا'));
+  button.addEventListener('click',function(){
+    const wasOpen=button.getAttribute('aria-expanded')==='true';
+    button.setAttribute('aria-expanded',String(!wasOpen));
+    details.hidden=wasOpen;
+  });
+  wrap.append(button,details);
+  return wrap;
+}
+
+function makePodiumCard(item,rank,topValue){
   const style=rank===1?'lb-first':rank===2?'lb-second':'lb-third';
   const card=node('div','lb-podium-card '+style+(item?'':' lb-empty'));
   const avatar=node('div','lb-podium-avatar');
@@ -49,20 +84,24 @@ function makePodiumCard(item,rank){
   avatar.appendChild(node('span','lb-podium-medal',String(rank)));
   card.appendChild(avatar);
   card.appendChild(node('strong','lb-podium-name',item?publicName(item,rank):'المركز متاح'));
-  card.appendChild(node('div','lb-podium-amount',item?formatDinar(item.points):'—'));
-  card.appendChild(node('small','',item?'د.ل من مشتريات مكتملة':'بانتظار متسوق'));
+  card.appendChild(node('div','lb-podium-amount',item?'💰 '+formatDinar(item.points)+' د.ل':'—'));
+  card.appendChild(node('small','',item?'إجمالي المشتريات':'بانتظار متسوق'));
+  if(item)card.appendChild(makeMoneyMeter(item.points,topValue,false));
   return card;
 }
-function makeOtherRow(item,rank){
+function makeOtherRow(item,rank,topValue){
   const row=node('div','lb-other-row');
   row.appendChild(node('span','lb-other-position',String(rank)));
   const avatar=node('span','lb-other-avatar','👤');
   attachImage(avatar,item.avatar_url,'صورة المتسوق');
   row.appendChild(avatar);
-  row.appendChild(node('span','lb-other-name',publicName(item,rank)));
-  const money=node('strong','lb-other-amount',formatDinar(item.points));
-  money.appendChild(node('small','','د.ل'));
-  row.appendChild(money);
+  const info=node('div','lb-other-info');
+  const infoTop=node('div','lb-other-info-top');
+  infoTop.appendChild(node('span','lb-other-name',publicName(item,rank)));
+  infoTop.appendChild(node('strong','lb-other-amount','💰 '+formatDinar(item.points)+' د.ل'));
+  info.appendChild(infoTop);
+  info.appendChild(makeMoneyMeter(item.points,topValue,true));
+  row.appendChild(info);
   return row;
 }
 async function renderOwnRank(){
@@ -122,9 +161,10 @@ window.loadLeaderboard=async function(){
     const result=await supabaseClient.rpc('get_store_leaderboard_with_google');
     if(result.error)throw result.error;
     const data=Array.isArray(result.data)?result.data:[];
+    const topValue=Math.max(0,Number(data[0]?.points)||0);
     const shell=node('div','lb-results');
     const podium=node('div','lb-podium');
-    [2,1,3].forEach(rank=>podium.appendChild(makePodiumCard(data.find(item=>Number(item.rank)===rank),rank)));
+    [2,1,3].forEach(rank=>podium.appendChild(makePodiumCard(data.find(item=>Number(item.rank)===rank),rank,topValue)));
     shell.appendChild(podium);
     const header=node('div','lb-section-label');
     const label=node('h2','','☷ باقي المتصدرين');
@@ -134,10 +174,10 @@ window.loadLeaderboard=async function(){
     const remaining=data.filter(item=>Number(item.rank)>3);
     if(remaining.length){
       const rows=node('div','lb-other-rows');
-      remaining.forEach(item=>rows.appendChild(makeOtherRow(item,Number(item.rank))));
+      remaining.forEach(item=>rows.appendChild(makeOtherRow(item,Number(item.rank),topValue)));
       shell.appendChild(rows);
     }else{
-      shell.appendChild(node('p','lb-empty-message',data.length?'المراكز التالية تظهر مع زيادة المتسوقين المشاركين.':'ما فيش مشتريات مكتملة لمشاركين في التصنيف حتى الآن.'));
+      shell.appendChild(node('p','lb-empty-message',data.length?'المراكز التالية تظهر مع زيادة المتسوقين المشاركين.':'ما فيش مشاركين في التصنيف حتى الآن.'));
     }
     host.replaceChildren(shell);
   }catch(err){
@@ -161,7 +201,7 @@ function addRankPrivacyToggle(root,user,isVisible) {
   root.appendChild(row);
   root.appendChild(node('p','lb-hide-notice',hasGoogle(user)
     ? 'إلغاء الإخفاء يعني موافقتك على إظهار اسمك وصورتك من Google للجميع.'
-    : 'عند إلغاء الإخفاء، يظهر ترتيبك ونقاطك للزوار بدون بيانات شخصية.'));
+    : 'عند إلغاء الإخفاء، يظهر ترتيبك وإجمالي مشترياتك بالدينار للزوار بدون بيانات شخصية.'));
   const status=node('p','lb-hide-status');
   status.setAttribute('role','status');
   status.setAttribute('aria-live','polite');

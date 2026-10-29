@@ -43,11 +43,19 @@
     <p id="authIntro">سجّل دخولك وتابع طلباتك</p>
   </div>
   <div class="panel account-panel">
-    <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك بالبريد وكلمة المرور ورقم الهاتف، أو أنشئ حسابًا جديدًا. نفس الرقم لحساب واحد فقط.</p>
+    <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك عبر Google بسهولة، أو استخدم البريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.</p>
     <form id="authForm">
       <div class="auth-mode-switch" role="group" aria-label="نوع الحساب">
         <button id="authModeLogin" class="btn btn-soft active" type="button" aria-pressed="true">تسجيل الدخول</button>
         <button id="authModeSignup" class="btn btn-soft" type="button" aria-pressed="false">إنشاء حساب</button>
+      </div>
+      <div class="auth-google-wrap">
+        <button id="googleSignInBtn" class="auth-google-button" type="button" aria-label="المتابعة باستخدام حساب Google">
+          <span class="auth-google-letter" aria-hidden="true">G</span>
+          <span class="auth-google-label">المتابعة باستخدام Google</span>
+        </button>
+        <p class="auth-google-caption">أنشئ حسابًا أو ادخل مباشرة بحساب Google، وبعدها اربط رقم هاتفك مرة واحدة.</p>
+        <div class="auth-google-divider" aria-hidden="true"><span>أو باستخدام البريد الإلكتروني</span></div>
       </div>
       <div class="auth-field"><label for="authEmail">البريد الإلكتروني</label><div class="auth-input-wrap">
         <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>

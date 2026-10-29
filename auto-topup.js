@@ -127,6 +127,15 @@
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
       currentRequest=intent.request_id;currentAmount=amount;
+      if(intent.state==='matched'){
+        show('ok','📩 البوت طابق التحويل','وصل إشعار تحويل من ليبيانا بنفس رقمك الموثّق والمبلغ، والعملية بانتظار الاعتماد. لا تحوّل المبلغ مرة ثانية.');
+        const current=host();
+        const status=el('div','auto-topup-status','⏳ بانتظار تأكيد رصيد المحفظة.');
+        status.id='ussdTransferStatus';
+        current?.append(status);
+        watch(intent.request_id);
+        return;
+      }
       const linked=readiness.data===true;
       const area=show(linked?'ok':'warning',
         linked?'✅ حسابك جاهز للشحن الآلي':'📩 أول تحويل يحتاج مراجعة',

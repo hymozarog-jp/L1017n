@@ -7,6 +7,7 @@
  * This function does NOT fulfill customer purchases, touch wallets, or send codes.
  */
 import { createClient } from "npm:@supabase/supabase-js@2.75.0";
+import { handleArabicAdmin } from "./arabic-chat.ts";
 
 const json = (value: unknown, status = 200) =>
   new Response(JSON.stringify(value), { status, headers: { "content-type": "application/json; charset=utf-8" } });
@@ -37,38 +38,19 @@ async function telegramMessage(token: string, chatId: number, message: string): 
 }
 
 const HELP = [
-  "🎮 لوحة إدارة متجر L1017n",
-  "هذه الأوامر تعمل من محادثة المدير الخاصة مع البوت.",
+  "👋 هلا بيك في مساعد إدارة متجر L1017n",
+  "تقدر تكلمني بالعربي عادي؛ مش لازم تحفظ أوامر.",
   "",
-  "📋 1) عرض المنتجات",
-  "/games — الألعاب الموجودة وعدد باقات كل لعبة",
-  "/list — الباقات مع المعرّفات والأسعار وحالة الظهور",
+  "🔐 «نبي نضيف كود» — نحدد الباقة ونحفظ الكود.",
+  "📊 «كم كود عندي في ببجي؟» — نعرض المخزون.",
+  "📦 «وريني الباقات» — نعرض المنتجات والأسعار.",
+  "➕ «ضيف باقة جديدة» — نسألك اللعبة والاسم والكمية والسعر.",
+  "💵 «غير سعر باقة ببجي» — نحدد الباقة والسعر ونطلب موافقتك.",
+  "👁️ «اخفي باقة ...» أو «فعّل باقة ...».",
   "",
-  "➕ 2) إضافة باقة جديدة (تبدأ مخفية)",
-  "/add key | game | name | amount | price",
-  "مثال: /add pubg-60 | pubg | 60 UC | 60 | 12.5",
-  "key = معرّف فريد بالإنجليزي، مثل pubg-60",
-  "game = رمز اللعبة بالإنجليزي، مثل pubg",
-  "name = اسم الباقة الذي يراه الزبون",
-  "amount = محتوى الباقة (مثل 60 شدة)، وليس عدد الأكواد",
-  "price = سعر الباقة بالدينار الليبي",
-  "",
-  "✏️ 3) تعديل الباقات",
-  "/price pubg-60 | 15 — تغيير سعرها إلى 15 د.ل",
-  "/rename pubg-60 | 60 شدة — تغيير الاسم",
-  "/on pubg-60 — إظهار الباقة على الموقع",
-  "/off pubg-60 — إخفاء الباقة عن الموقع",
-  "",
-  "🔐 4) إدارة الأكواد",
-  "/code pubg-60 | ABC-123-XYZ — إضافة كود للمخزون",
-  "/stock pubg-60 — عرض عدد الأكواد المتاحة",
-  "تنبيه: التسليم الفوري يعمل للباقات الرقمية فقط بعد خصم الرصيد من المحفظة.",
-  "",
-  "ℹ️ 5) مساعدة",
-  "/id — عرض رقم حسابك في تيليجرام",
-  "/help — عرض هذه القائمة",
-  "",
-  "⚠️ لا تفعّل بيع ألعاب غير مجهّزة للدفع والتسليم.",
+  "في أي وقت قول «إلغاء» أو «مساعدة».",
+  "الأوامر المختصرة القديمة ما زالت تشتغل: /list /games /add /code /stock /price /rename /on /off /id.",
+  "⚠️ تسليم الأكواد الفوري للباقات الرقمية فقط. روبلوكس حاليًا تنفيذ يدوي.",
 ].join("\n");
 
 const textPart = (text: string): string[] =>
@@ -155,7 +137,12 @@ Deno.serve(async (request: Request) => {
 
   try {
     let reply = "";
-    if (command === "start" || command === "help" || !command) {
+    let deleteSensitiveMessage = false;
+    if (!command) {
+      const natural = await handleArabicAdmin(db, chatId!, text);
+      reply = natural.reply;
+      deleteSensitiveMessage = !!natural.deleteMessage;
+    } else if (command === "start" || command === "help") {
       reply = HELP;
     } else if (command === "games") {
       const { data, error } = await db.from("products").select("game,active").limit(1000);
@@ -273,7 +260,7 @@ Deno.serve(async (request: Request) => {
 
     // Code commands contain supplier secrets. Best-effort remove the original message
     // from the private bot conversation once handled; do not echo the secret.
-    if (command === "code" && Number.isSafeInteger(message?.message_id)) {
+    if ((command === "code" || deleteSensitiveMessage) && Number.isSafeInteger(message?.message_id)) {
       try {
         await fetch("https://api.telegram.org/bot" + token + "/deleteMessage", {
           method: "POST",

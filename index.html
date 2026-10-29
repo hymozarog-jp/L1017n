@@ -206,7 +206,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=flexible-charge1';
+      var s=document.createElement('script');s.src='app.js?v=return-verifying2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -541,5 +541,6 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
 <link rel="stylesheet" href="live-mobile.css?v=google-avatar-left1">
 <link rel="stylesheet" href="topup-reference.css?v=libyana-flex1">
+<link rel="stylesheet" href="topup-return.css?v=return-verifying2">
 <script src="live-mobile.js?v=leaderboard-nav4" defer></script>
 </body></html>

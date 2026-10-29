@@ -1,25 +1,6 @@
 (function(){
 'use strict';
 /* Google leaderboard: public rankings, explicit consent for name/photo. */
-const styles = document.createElement('style');
-styles.id = 'google-leaderboard-styles';
-styles.textContent = [
-  '#leaderboardView .leaderboard-row{grid-template-columns:42px 46px minmax(0,1fr) auto;gap:12px;min-height:77px}',
-  '#leaderboardParticipation{margin-top:22px;padding-top:18px;border-top:1px solid #365643}',
-  '#leaderboardParticipation .leaderboard-profile-form{max-width:620px;margin:0 auto;padding:12px 0;border-top:0}',
-  '#leaderboardParticipation .leaderboard-participation-guest{display:grid;justify-items:center;gap:12px;text-align:center;padding:22px 12px}',
-  '#leaderboardParticipation .leaderboard-participation-guest p{margin:0;color:#bdd2c1}',
-  '#leaderboardParticipation .leaderboard-participation-guest .btn{justify-content:center}',
-
-  '#leaderboardView .leaderboard-user-avatar{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#173626;border:2px solid #a8f36b52;overflow:hidden}',
-  '#leaderboardView .leaderboard-user-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}',
-  '#leaderboardView .leaderboard-display-name{min-width:0;overflow-wrap:anywhere;font-weight:700;color:#f2f8ef}',
-  '#leaderboardView .leaderboard-rank{font-size:20px}',
-  '#leaderboardView .leaderboard-row:first-child{border-color:#cba24d73;background:linear-gradient(110deg,#cba24d14,#ffffff03)}',
-  '#leaderboardView .leaderboard-row:first-child .leaderboard-rank{color:#f8d06b}',
-  '@media(max-width:510px){#leaderboardView .leaderboard-row{grid-template-columns:32px 42px minmax(0,1fr);gap:8px;padding:12px 10px}#leaderboardView .leaderboard-points{grid-column:3;font-size:12px}#leaderboardView .leaderboard-user-avatar{width:40px;height:40px}}'
-].join('\n');
-document.head.appendChild(styles);
 
 function hasGoogle(user){
   return !!user && (user.app_metadata?.provider==='google' ||
@@ -41,44 +22,126 @@ function node(tag,className,text){
   return el;
 }
 
+
+function formatDinar(amount) {
+  return Number(amount||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function publicName(item,rank){
+  return String(item?.display_name||'').trim()||('متسوق المركز '+rank);
+}
+function attachImage(container,url,alt){
+  const safe=photoUrl(url);
+  if(!safe)return;
+  const img=document.createElement('img');
+  img.src=safe;
+  img.alt=alt||'صورة Google';
+  img.loading='lazy';
+  img.referrerPolicy='no-referrer';
+  img.onerror=()=>img.remove();
+  container.appendChild(img);
+}
+function makePodiumCard(item,rank){
+  const style=rank===1?'lb-first':rank===2?'lb-second':'lb-third';
+  const card=node('div','lb-podium-card '+style+(item?'':' lb-empty'));
+  const avatar=node('div','lb-podium-avatar');
+  avatar.appendChild(node('span','',item?'👤':'♙'));
+  if(item)attachImage(avatar,item.avatar_url,'صورة المتسوق');
+  avatar.appendChild(node('span','lb-podium-medal',String(rank)));
+  card.appendChild(avatar);
+  card.appendChild(node('strong','lb-podium-name',item?publicName(item,rank):'المركز متاح'));
+  card.appendChild(node('div','lb-podium-amount',item?formatDinar(item.points):'—'));
+  card.appendChild(node('small','',item?'د.ل من مشتريات مكتملة':'بانتظار متسوق'));
+  return card;
+}
+function makeOtherRow(item,rank){
+  const row=node('div','lb-other-row');
+  row.appendChild(node('span','lb-other-position',String(rank)));
+  const avatar=node('span','lb-other-avatar','👤');
+  attachImage(avatar,item.avatar_url,'صورة المتسوق');
+  row.appendChild(avatar);
+  row.appendChild(node('span','lb-other-name',publicName(item,rank)));
+  const money=node('strong','lb-other-amount',formatDinar(item.points));
+  money.appendChild(node('small','','د.ل'));
+  row.appendChild(money);
+  return row;
+}
+async function renderOwnRank(){
+  const root=document.getElementById('lbMyRank');
+  if(!root)return;
+  const user=await currentUser();
+  if(!user){root.classList.add('hidden');root.replaceChildren();return}
+  const meta=user.user_metadata||{};
+  const realName=String(meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'متسوق').trim();
+  const {data,error}=await supabaseClient.rpc('get_my_store_leaderboard_rank');
+  const own=(!error&&Array.isArray(data))?data[0]:null;
+  if(error)console.warn('Personal rank unavailable',error);
+  const rank=Number(own?.my_rank)||0;
+  const spent=Math.max(Number(own?.my_spend)||0,0);
+  const gap=Number(own?.gap_to_next)||0;
+  const participating=!!own?.participating;
+  const top=node('div','lb-self-top');
+  const who=node('div','lb-self-user');
+  const avatar=node('span','lb-self-avatar',realName.slice(0,1).toUpperCase());
+  attachImage(avatar,meta.avatar_url||meta.picture,'صورتك في Google');
+  who.appendChild(avatar);
+  const whoText=node('span','lb-self-name');
+  whoText.appendChild(node('strong','',realName));
+  whoText.appendChild(node('small','','بطاقة ترتيبك الشخصية'));
+  who.appendChild(whoText);
+  top.appendChild(who);
+  const total=node('div','lb-self-spend');
+  total.appendChild(node('small','','إجمالي مشترياتك المكتملة'));
+  total.appendChild(node('strong','',formatDinar(spent)+' د.ل'));
+  top.appendChild(total);
+  const position=node('div','lb-self-position');
+  position.appendChild(node('small','','ترتيبك'));
+  position.appendChild(node('strong','',rank?'#'+rank:'—'));
+  top.appendChild(position);
+  root.replaceChildren(top);
+  const track=node('div','lb-progress-track');
+  const fill=document.createElement('span');
+  let progress=0,message='';
+  if(rank===1){progress=100;message='أنت المتصدر حاليًا 🏆'}
+  else if(rank>1){progress=Math.min(99,Math.round(100*spent/Math.max(spent+gap,0.01)));message='باقي لك '+formatDinar(gap+0.01)+' د.ل لتتقدم إلى المركز #'+(rank-1);}
+  else if(!participating){message='فعّل المشاركة في التصنيف من الخيارات الموجودة تحت بطاقتك.'}
+  else{message='أول ما تكمل عملية شراء، يبدأ يظهر ترتيبك بين المتسوقين.'}
+  fill.style.width=progress+'%';
+  track.appendChild(fill);
+  root.appendChild(track);
+  root.appendChild(node('p','lb-progress-caption',message));
+  root.classList.remove('hidden');
+}
 window.loadLeaderboard=async function(){
   const host=document.getElementById('leaderboardList');
   if(!host)return;
-  host.replaceChildren(node('p','muted','جاري تحميل الترتيب…'));
+  host.replaceChildren(node('p','lb-empty-message','جاري تحميل الترتيب…'));
+  // Personal summary is private to the logged-in shopper.
+  renderOwnRank().catch(err=>console.warn('Could not show personal rank',err));
   try{
     const result=await supabaseClient.rpc('get_store_leaderboard_with_google');
     if(result.error)throw result.error;
-    const data=result.data||[];
-    if(!data.length){
-      host.replaceChildren(node('p','muted','ما فيش متسوقين بمشتريات مكتملة مشاركين في التصنيف حتى الآن.'));
-      return;
+    const data=Array.isArray(result.data)?result.data:[];
+    const shell=node('div','lb-results');
+    const podium=node('div','lb-podium');
+    [2,1,3].forEach(rank=>podium.appendChild(makePodiumCard(data.find(item=>Number(item.rank)===rank),rank)));
+    shell.appendChild(podium);
+    const header=node('div','lb-section-label');
+    const label=node('h2','','☷ باقي المتصدرين');
+    const count=node('small','',''+data.length+' مشارك في التصنيف');
+    header.append(label,count);
+    shell.appendChild(header);
+    const remaining=data.filter(item=>Number(item.rank)>3);
+    if(remaining.length){
+      const rows=node('div','lb-other-rows');
+      remaining.forEach(item=>rows.appendChild(makeOtherRow(item,Number(item.rank))));
+      shell.appendChild(rows);
+    }else{
+      shell.appendChild(node('p','lb-empty-message',data.length?'المراكز التالية تظهر مع زيادة المتسوقين المشاركين.':'ما فيش مشتريات مكتملة لمشاركين في التصنيف حتى الآن.'));
     }
-    const list=node('div','leaderboard-rows');
-    data.forEach((item,index)=>{
-      const rank=Number(item.rank)||index+1;
-      const row=node('div','leaderboard-row');
-      const rankEl=node('span','leaderboard-rank',rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':String(rank));
-      const avatar=node('span','leaderboard-user-avatar','👤');
-      const photo=photoUrl(item.avatar_url);
-      if(photo){
-        const img=document.createElement('img');
-        img.src=photo;
-        img.alt='صورة حساب Google';
-        img.loading='lazy';
-        img.referrerPolicy='no-referrer';
-        img.onerror=()=>img.remove();
-        avatar.appendChild(img);
-      }
-      const displayName=String(item.display_name||'').trim()||('متسوق المركز '+rank);
-      const display=node('span','leaderboard-display-name',displayName);
-      const points=node('strong','leaderboard-points',Math.round(Number(item.points)||0).toLocaleString('ar-LY')+' نقطة');
-      row.append(rankEl,avatar,display,points);
-      list.appendChild(row);
-    });
-    host.replaceChildren(list);
+    host.replaceChildren(shell);
   }catch(err){
     console.warn('Cannot load public ranking',err);
-    host.replaceChildren(node('p','muted','تعذر تحميل التصنيف حالياً. حاول تحديث الصفحة.'));
+    host.replaceChildren(node('p','lb-empty-message','تعذر تحميل التصنيف حالياً. حاول تحديث الصفحة.'));
   }
 };
 

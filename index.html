@@ -112,7 +112,7 @@
       <h3 class="account-group-title">الحساب</h3>
       <div class="account-settings-list">
         <button type="button" data-account-action="personal"><span class="account-row-icon">♙</span><b>المعلومات الشخصية</b><span class="account-row-arrow">‹</span></button>
-        <button type="button" data-account-action="verify"><span class="account-row-icon">♢</span><b>توثيق الحساب</b><small>غير موثق</small><span class="account-row-arrow">‹</span></button>
+        <button type="button" data-account-action="verify"><span class="account-row-icon">♢</span><b>توثيق رقم الهاتف</b><small>من المعلومات الشخصية</small><span class="account-row-arrow">‹</span></button>
         <button type="button" data-account-action="notifications"><span class="account-row-icon">♧</span><b>الإشعارات والتنبيهات</b><span class="account-row-arrow">‹</span></button>
       </div>
       <h3 class="account-group-title">التطبيق</h3>
@@ -186,7 +186,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=neon-premium10';
+      var s=document.createElement('script');s.src='app.js?v=personal-phone12';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -200,8 +200,8 @@
 <script src="game-transitions.js?v=fourgames1"></script>
 <script src="store-menu.js?v=mm2-nested8"></script>
 <!-- Legacy duplicate Libyana phone form removed; accountPhoneGate and Resala OTP remain active. -->
-<script src="resala-otp.js?v=ussd-intent4"></script>
-<script src="purchase-phone.js?v=resala-required2"></script>
+<script src="resala-otp.js?v=personal-phone12"></script>
+<script src="purchase-phone.js?v=personal-phone12"></script>
 <script src="instant-code.js?v=resala-required2"></script>
 <script src="nav-bubble.js?v=account-recovery9"></script>
 <script>
@@ -507,4 +507,5 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <!-- Premium storefront styling loaded last to override older inline theme rules -->
 <link rel="stylesheet" href="premium-home.css?v=swipe-carousel11">
 <script src="premium-home.js?v=swipe-carousel11" defer></script>
+<link rel="stylesheet" href="personal-phone.css?v=personal-phone12">
 </body></html>

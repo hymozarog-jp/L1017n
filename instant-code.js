@@ -11,6 +11,7 @@
     if (/code_out_of_stock/i.test(text)) return 'الأكواد نفدت لهذه الباقة. لم يتم خصم أي مبلغ.';
     if (/product_not_available|manual_fulfillment_required/i.test(text)) return 'هذه الباقة غير متاحة للتسليم الفوري.';
     if (/not_authenticated|JWT|unauthorized/i.test(text)) return 'سجّل الدخول أولاً للشراء.';
+    if (/phone_required_before_purchase/i.test(text)) return 'لازم تضيف رقم هاتفك لحسابك قبل الشراء.';
     return 'تعذر إتمام الشراء. تحقق من طلباتك قبل المحاولة مرة ثانية.';
   }
   function showDeliveredCode(name,code){
@@ -60,6 +61,8 @@
     try {
       const {data:{user},error:authError}=await db.auth.getUser();
       if(authError||!user){alert('سجّل دخولك أولاً للشراء.');return;}
+      if(typeof window.ensurePurchasePhone!=='function'){alert('تعذر تحميل التحقق من رقم الهاتف. حدّث الصفحة وحاول مرة ثانية.');return;}
+      if(!await window.ensurePurchasePhone())return;
       const {data,error}=await db.rpc('buy_instant_code',{p_product_id:productId});
       if(error)throw error;
       if(!data||typeof data.code!=='string')throw new Error('unexpected_response');

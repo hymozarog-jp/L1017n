@@ -161,12 +161,15 @@ if(RECOVERY_LINK){
 async function renderCustomerHeaderWallet(user){const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');if(!chip||!amount)return;if(!user){chip.classList.add('hidden');return}chip.classList.remove('hidden');amount.textContent='…';const {data,error}=await supabaseClient.from('wallet_accounts').select('balance').eq('user_id',user.id).maybeSingle();amount.textContent=(error?'0.00':Number(data?.balance||0).toFixed(2))+' د.ل';}
 function renderGoogleHeaderAvatar(user){
  const btn=$('#googleProfileButton'),img=$('#googleProfileImage'),fallback=$('#googleProfileFallback');
+ const welcome=$('#googleWelcome'),welcomeName=$('#googleWelcomeName');
  if(!btn||!img||!fallback)return;
  const googleUser=!!user&&(user.app_metadata?.provider==='google'||user.app_metadata?.providers?.includes('google')||user.identities?.some(i=>i.provider==='google'));
- if(!googleUser){btn.classList.add('hidden');btn.classList.add('no-image');img.removeAttribute('src');return}
+ if(!googleUser){if(welcome)welcome.classList.add('hidden');if(welcomeName)welcomeName.textContent='';btn.classList.add('hidden');btn.classList.add('no-image');img.removeAttribute('src');return}
  const meta=user.user_metadata||{};
  const name=String(meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'م').trim();
  fallback.textContent=name.slice(0,1).toUpperCase()||'م';
+ if(welcomeName)welcomeName.textContent=name;
+ if(welcome)welcome.classList.remove('hidden');
  let photo='';
  try{
   const url=new URL(String(meta.avatar_url||meta.picture||''));

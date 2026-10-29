@@ -1,0 +1,9 @@
+/* Dedicated full-screen checkout step */
+#robuxModal.robux-checkout-mode .robux-reference-hero,#robuxModal.robux-checkout-mode .robux-reference-features,#robuxModal.robux-checkout-mode .robux-reference-region,#robuxModal.robux-checkout-mode .robux-reference-section,#robuxModal.robux-checkout-mode .package-grid,#robuxModal.robux-checkout-mode .robux-checkout-bar{display:none!important}
+#robuxModal.robux-checkout-mode .robux-store-box{min-height:100dvh!important;padding:95px 20px 70px!important;background:linear-gradient(160deg,#101d38,#070d1c)!important}
+#robuxModal.robux-checkout-mode #purchaseBox{display:block!important;max-width:620px;margin:0 auto!important;animation:uiPageEnter .35s ease both;scroll-margin-top:0!important}
+#robuxModal.robux-checkout-mode #purchaseBox:before{content:'إكمال طلب روبلوكس';display:block;color:#fff;font-size:26px;font-weight:800;margin:0 0 18px;text-align:right}
+#robuxModal.robux-checkout-mode #purchaseForm{padding:22px 17px;border-radius:22px;background:#111d34;border:1px solid #314263}
+#robuxModal.robux-checkout-mode #purchaseForm h3{color:#fff;font-size:20px}
+#robuxModal.robux-checkout-mode #purchaseForm label{color:#d7e5ff}
+#robuxModal.robux-checkout-mode .package-close{display:grid!important}

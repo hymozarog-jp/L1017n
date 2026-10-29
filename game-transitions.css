@@ -70,3 +70,25 @@
     animation: none !important;
   }
 }
+/* Land the moving Roblox image precisely inside the already-designed square. */
+.game-cover-flight.game-cover-flight--robux {
+  object-fit: contain !important;
+  background: #050914 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .45) !important;
+}
+@keyframes l1017-robux-square-page-in {
+  from { opacity: .65; }
+  to { opacity: 1; }
+}
+/* Keep the square stationary while the flying image approaches its coordinates. */
+#robuxModal:not(.hidden) .robux-reference-hero {
+  animation: l1017-robux-square-page-in 420ms ease-out both;
+}
+/* The image is revealed by the flight; don't run a competing CSS transform. */
+#robuxModal:not(.hidden) .robux-reference-logo img {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #robuxModal:not(.hidden) .robux-reference-hero { animation: none !important; }
+}

@@ -2,7 +2,7 @@
   var pageId='robloxGamePage';
   var supabaseUrl='https://cmtxsjlehjworqypbxjz.supabase.co';
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
-  var robloxImage='https://tr.rbxcdn.com/180DAY-be965de4138292ae27a6ef20e0321690/768/432/Image/Webp/noFilter';
+  var robloxImage='game-covers/roblox.svg?v=20261028logo3';
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
   var styleId='robloxGamePageStyles';
 
@@ -16,8 +16,8 @@
       #${pageId} .rgp-brand{font-weight:800;font-size:20px;letter-spacing:.5px}
       #${pageId} .rgp-back{border:1px solid #23415f;background:#091727;color:#fff;border-radius:999px;padding:10px 18px;cursor:pointer;font:inherit}
       #${pageId} .rgp-hero{position:relative;min-height:245px;border-radius:28px;overflow:hidden;border:1px solid #1268c9;box-shadow:0 25px 80px rgba(0,93,255,.18);background:#071526}
-      #${pageId} .rgp-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.68}
-      #${pageId} .rgp-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,8,18,.96),rgba(2,8,18,.48),rgba(2,8,18,.12))}
+      #${pageId} .rgp-hero img{position:absolute;top:0;bottom:0;left:0;width:44%;height:100%;object-fit:contain;object-position:center;opacity:.97;filter:drop-shadow(0 8px 18px rgba(0,0,0,.45))}
+      #${pageId} .rgp-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,8,18,.06) 0%,rgba(2,8,18,.32) 44%,rgba(2,8,18,.9) 100%)}
       #${pageId} .rgp-hero-content{position:relative;z-index:2;min-height:245px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:30px;max-width:650px}
       #${pageId} .rgp-kicker{color:#55b5ff;font-weight:700;letter-spacing:2px;font-size:13px}
       #${pageId} .rgp-hero h1{font-size:clamp(42px,7vw,78px);margin:8px 0 6px;line-height:1;font-weight:900}
@@ -29,6 +29,7 @@
       #${pageId} .rgp-card.mm2{border-color:#7b2630}
       #${pageId} .rgp-card.mm2:hover{border-color:#ff4454}
       #${pageId} .rgp-card img{width:100%;height:155px;object-fit:cover;display:block;filter:saturate(1.08)}
+      #${pageId} .rgp-card:not(.mm2) img{object-fit:contain;background:radial-gradient(ellipse at center,#273d63 0%,#111b30 68%,#071322 100%);padding:8px 16px;box-sizing:border-box}
       #${pageId} .rgp-card-body{padding:18px 20px 20px;background:linear-gradient(180deg,#091827,#06101d)}
       #${pageId} .rgp-card.mm2 .rgp-card-body{background:linear-gradient(180deg,#1a0b10,#0c070a)}
       #${pageId} .rgp-card h3{font-size:24px;margin:0 0 4px}
@@ -53,10 +54,10 @@
     var p=document.createElement('div');p.id=pageId;
     p.innerHTML=`<div class="rgp-shell">
       <div class="rgp-top"><div class="rgp-brand">L1017N · ROBLOX</div><button class="rgp-back" type="button" data-rgp-back>← رجوع للمتجر</button></div>
-      <section class="rgp-hero"><img src="${robloxImage}" alt="Roblox"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>ROBLOX</h1><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
+      <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>ROBLOX</h1><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
       <h2 class="rgp-title">شن تبي تشحن اليوم؟</h2>
       <div class="rgp-grid">
-        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="روبوكس"><div class="rgp-card-body"><h3>💎 روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
+        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>💎 روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
         <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>🔪 ماب MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2 →</span></div></button>
       </div>
     </div>`;

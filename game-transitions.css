@@ -1,0 +1,42 @@
+/* L1017n cover-to-cover transition. Never blocks clicks or checkout. */
+.game-cover-flight {
+  position: fixed !important;
+  z-index: 2147483646 !important;
+  pointer-events: none !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .5) !important;
+  transform-origin: top left !important;
+  will-change: transform, opacity;
+}
+@keyframes game-package-enter {
+  from { opacity: 0; transform: translateY(22px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+#robloxGamePage .rgp-card,
+#robuxModal:not(.hidden) .robux-package,
+#pubgCategoryPage.visible .pubg-category {
+  animation: game-package-enter 520ms cubic-bezier(.22,1,.36,1) both;
+}
+#robloxGamePage .rgp-card:nth-child(2),
+#robuxModal:not(.hidden) .robux-package:nth-child(2),
+#pubgCategoryPage.visible .pubg-category:nth-child(2) { animation-delay: 80ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(3),
+#pubgCategoryPage.visible .pubg-category:nth-child(3) { animation-delay: 130ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(4) { animation-delay: 180ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(5) { animation-delay: 230ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(6) { animation-delay: 280ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(7) { animation-delay: 330ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(8) { animation-delay: 380ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(9) { animation-delay: 430ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(10) { animation-delay: 480ms; }
+@media (prefers-reduced-motion: reduce) {
+  #robloxGamePage .rgp-card,
+  #robuxModal:not(.hidden) .robux-package,
+  #pubgCategoryPage.visible .pubg-category {
+    animation: none !important;
+  }
+}

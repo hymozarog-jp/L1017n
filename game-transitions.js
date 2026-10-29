@@ -12,6 +12,7 @@
     if (button.matches('[data-product="roblox"]')) return '#robloxGamePage .rgp-hero img';
     if (button.matches('[data-game-open="roblox"]')) return '#robloxGamePage .rgp-hero img';
     if (button.matches('[data-game-open="pubg"]')) return '#pubgCategoryPage.visible .pubg-hero img';
+    if (button.matches('[data-game-open="fortnite"],[data-game-open="freefire"]')) return '#storePurchaseBox .digital-game-preview .digital-game-cover';
     return null;
   }
   function validTarget(selector) {
@@ -29,7 +30,7 @@
     clone.removeAttribute("id");
     clone.setAttribute("aria-hidden", "true");
     clone.classList.add("game-cover-flight");
-    var toRobuxSquare = selector === '#robuxModal:not(.hidden) .robux-reference-logo';
+    var toRobuxSquare = selector === '#robuxModal:not(.hidden) .robux-reference-logo' || selector === '#storePurchaseBox .digital-game-preview .digital-game-cover';
     if (toRobuxSquare) clone.classList.add("game-cover-flight--robux");
     var computed = getComputedStyle(src);
     clone.style.cssText += ";left:" + r.left + "px;top:" + r.top +

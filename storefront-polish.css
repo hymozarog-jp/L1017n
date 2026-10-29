@@ -112,3 +112,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
  #robloxGamePage .rgp-action{font-size:11px!important;padding:8px!important}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Reference layout: three evenly sized portrait covers with separate labels. */
+#storeView #productGrid .game-tiles{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:28px 16px!important;align-items:start!important;max-width:960px;margin-inline:auto}
+#storeView #productGrid .game-tile-btn{height:auto!important;display:flex!important;flex-direction:column!important;gap:12px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+#storeView #productGrid .game-tile-art{box-sizing:border-box!important;width:100%!important;aspect-ratio:3/4!important;height:auto!important;padding:4px!important;border:1px solid #28334b!important;border-radius:22px!important;background:#0e1626!important;overflow:hidden!important;isolation:isolate}
+#storeView #productGrid .game-tile-art img{position:absolute!important;inset:4px!important;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;object-fit:cover!important;object-position:center!important;border-radius:17px!important;filter:none!important;transform:none!important}
+#storeView #productGrid .game-tile-art::before{content:""!important;position:absolute!important;z-index:5;top:10px;left:35%;width:30%;height:7px;border-radius:999px;background:#0b1424;pointer-events:none}
+#storeView #productGrid .game-tile-art::after{content:none!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art{background:#050609!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art img{inset:4px!important;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;object-fit:contain!important;filter:none!important;padding:8px!important;box-sizing:border-box!important}
+#storeView #productGrid .game-tile-info{position:static!important;display:block!important;width:100%;min-height:46px!important;padding:0 2px!important;background:transparent!important;border:0!important;text-align:center!important}
+#storeView #productGrid .game-tile-info strong{display:block!important;width:100%;font-size:clamp(13px,2.1vw,20px)!important;font-weight:700!important;line-height:1.5!important;text-align:center!important;white-space:normal!important;overflow-wrap:anywhere}
+#storeView #productGrid .game-tile-info strong::before,#storeView #productGrid .game-tile-info strong::after{content:none!important;display:none!important}
+#storeView #productGrid .game-tile-info small{display:none!important}
+@media(hover:hover){#storeView #productGrid .game-tile-btn:hover{box-shadow:none!important;transform:translateY(-3px)!important}#storeView #productGrid .game-tile-btn:hover .game-tile-art{border-color:#aa96ec!important}}
+@media(max-width:620px){
+ #storeView #productGrid .game-tiles{gap:24px 12px!important}
+ #storeView #productGrid .game-tile-btn{gap:9px!important;border-radius:0!important}
+ #storeView #productGrid .game-tile-art{border-radius:19px!important}
+ #storeView #productGrid .game-tile-art img{border-radius:14px!important}
+ #storeView #productGrid .game-tile-info{min-height:42px!important;padding:0!important}
+ #storeView #productGrid .game-tile-info strong{font-size:13px!important;line-height:1.55!important}
+}
+@media(max-width:350px){#storeView #productGrid .game-tiles{gap:20px 8px!important}#storeView #productGrid .game-tile-info strong{font-size:12px!important}}
+
+#storeView #productGrid .game-tile-art::before{left:35%!important;right:auto!important;top:10px!important;bottom:auto!important;width:30%!important;height:7px!important;transform:none!important;border:0!important;box-shadow:none!important}

@@ -180,3 +180,81 @@
   text-align:center;
 }
 #leaderboardView .lb-other-name {color:#f7f9ff}
+
+
+/* Animated, clickable spending comparison — amounts in LYD. */
+#leaderboardView .lb-podium-card{min-height:285px;justify-content:flex-start;padding-top:24px}
+#leaderboardView .lb-podium-card.lb-first{min-height:318px}
+#leaderboardView .lb-podium-card .lb-money-widget{margin-top:auto}
+#leaderboardView .lb-podium-amount{font-size:clamp(14px,2.5vw,22px);font-weight:900;color:#efd277;direction:rtl}
+#leaderboardView .lb-other-info{display:grid;gap:8px;min-width:0;flex:1}
+#leaderboardView .lb-other-info-top{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0}
+#leaderboardView .lb-other-info-top .lb-other-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#leaderboardView .lb-other-info-top .lb-other-amount{font-size:clamp(12px,2.3vw,17px);white-space:nowrap;color:#f5d682;flex:none}
+#leaderboardView .lb-money-widget{width:100%;min-width:0;text-align:right}
+#leaderboardView .lb-money-action{
+ display:block;box-sizing:border-box;width:100%;min-width:0;margin:0;padding:7px 8px 9px;
+ border:1px solid #c59b3a45;border-radius:12px;outline-offset:2px;
+ color:#f1e5c5;background:linear-gradient(135deg,#ad81220d,#f5c95108);
+ font:inherit;text-align:right;cursor:pointer;transition:border-color .18s ease,background .18s ease
+}
+#leaderboardView .lb-money-action:hover,
+#leaderboardView .lb-money-action[aria-expanded="true"]{border-color:#e4b645ad;background:#e5ba4f1c}
+#leaderboardView .lb-money-action:focus-visible{outline:2px solid #f6c94e}
+#leaderboardView .lb-money-topline{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;min-width:0}
+#leaderboardView .lb-money-label{font-size:clamp(9px,1.55vw,12px);line-height:1.3;color:#d9bc80;white-space:nowrap}
+#leaderboardView .lb-money-percent{font-size:clamp(10px,1.8vw,13px);color:#f6cb65;white-space:nowrap;direction:ltr}
+#leaderboardView .lb-money-rail{
+ position:relative;display:block;box-sizing:border-box;overflow:hidden;width:100%;height:11px;
+ background:linear-gradient(90deg,#263148,#343c50);border:1px solid #5b536064;
+ border-radius:99px;box-shadow:inset 0 1px 4px #0008
+}
+#leaderboardView .lb-money-fill{
+ position:relative;display:block;height:100%;width:var(--lb-money-width,0%);
+ border-radius:99px;background:linear-gradient(90deg,#16ba6a 0%,#69d47b 27%,#c4d44a 65%,#ffcc50 100%);
+ box-shadow:0 0 12px #f4cb50b0,inset 0 1px 2px #ffffff96;
+ animation:lbMoneyFill 1.05s cubic-bezier(.14,.7,.16,1) both
+}
+#leaderboardView .lb-money-fill:after{
+ content:"";position:absolute;top:0;bottom:0;width:36%;left:-45%;
+ background:linear-gradient(90deg,transparent,#ffffffaa,transparent);
+ animation:lbMoneyShimmer 2.7s ease-in-out infinite
+}
+#leaderboardView .lb-money-zero .lb-money-action{border-color:#53607d48}
+#leaderboardView .lb-money-zero .lb-money-label{color:#8793aa}
+#leaderboardView .lb-money-zero .lb-money-percent{color:#b9c2d0}
+#leaderboardView .lb-money-details{
+ display:grid;gap:5px;margin-top:6px;padding:10px 12px;
+ border-radius:11px;background:#1b2739;border:1px solid #77613e65;
+ color:#ccd8e7;font-size:clamp(10px,1.8vw,12px);line-height:1.5
+}
+#leaderboardView .lb-money-details[hidden]{display:none!important}
+#leaderboardView .lb-money-details strong{color:#ffd26a}
+#leaderboardView .lb-money-compact .lb-money-action{padding:6px 9px 8px}
+#leaderboardView .lb-money-compact .lb-money-rail{height:9px}
+#leaderboardView .lb-progress-track{position:relative}
+#leaderboardView .lb-progress-track span{
+ box-shadow:0 0 12px #f6ca4a7b;
+ background:linear-gradient(90deg,#1fc876,#8bcf54,#ffd16b)
+}
+@keyframes lbMoneyFill{from{width:0}to{width:var(--lb-money-width,0%)}}
+@keyframes lbMoneyShimmer{0%{left:-45%}55%,100%{left:125%}}
+@media(max-width:620px){
+ #leaderboardView .lb-podium-card{min-height:252px;padding:16px 5px 11px}
+ #leaderboardView .lb-podium-card.lb-first{min-height:285px}
+ #leaderboardView .lb-money-action{padding:6px 4px}
+ #leaderboardView .lb-money-topline{gap:3px}
+ #leaderboardView .lb-money-label{font-size:9px;white-space:normal}
+ #leaderboardView .lb-money-percent{font-size:10px}
+ #leaderboardView .lb-money-rail{height:9px}
+ #leaderboardView .lb-podium-card .lb-money-widget{width:100%}
+ #leaderboardView .lb-podium-amount{font-size:clamp(12px,3vw,18px)}
+ #leaderboardView .lb-other-info-top{flex-wrap:wrap;row-gap:4px}
+ #leaderboardView .lb-other-info-top .lb-other-name{flex:1 1 110px}
+ #leaderboardView .lb-other-info-top .lb-other-amount{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #leaderboardView .lb-money-fill,
+ #leaderboardView .lb-money-fill:after{animation:none!important}
+ #leaderboardView .lb-money-action{transition:none}
+}

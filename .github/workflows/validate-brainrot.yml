@@ -46,7 +46,11 @@ jobs:
           assert(browser.includes('product&&product.active&&Number(product.price)>0'));
           assert(old.includes('steal-a-brainrot'));
           assert(/brainrot-store\.js\?v=steal-inner\d+/.test(html));
-          assert(/brainrot-store\.css\?v=steal-inner\d+/.test(html));
+          assert(/brainrot-store\.css\?v=[^"']+/.test(html));
+          assert(css.includes('.rgp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}'), 'All three Roblox cards should share equal-width grid cells');
+          assert(!css.includes('grid-column:span 2'), 'Steal card must not span columns on mobile');
+          assert(!css.includes('grid-template-columns:42% 58%'), 'Steal card should use standard vertical layout');
+          assert(menu.includes('.rgp-card:not(.mm2):not(.steal) img'), 'Steal cover should render full bleed like MM2');
           assert(css.includes('.sab-products-grid'));
           assert(fs.existsSync('game-covers/steal-a-brainrot-original.png'), 'Original Roblox icon is missing');
           console.log('Roblox Steal a Brainrot inner category verified.');

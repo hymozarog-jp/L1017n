@@ -304,20 +304,17 @@ async function loadLeaderboard(){
   if(!list)return;
   list.innerHTML='<p class="muted">جاري تحميل الترتيب…</p>';
   try{
-    // Public, server-side ranking. Never request other shoppers' order details
-    // from the browser; the RPC only returns opted-in nicknames and points.
-    const {data,error}=await supabaseClient.rpc('get_store_leaderboard');
+    const {data,error}=await supabaseClient.rpc('get_store_leaderboard_with_google');
     if(error)throw error;
     const ranked=Array.isArray(data)?data:[];
-    if(!ranked.length){
-      list.innerHTML='<p class="muted">ما فيش متسوقين مشاركين عندهم مشتريات مكتملة حتى الآن. تقدر تشارك باسم مستعار من إعدادات حسابك.</p>';
-      return;
-    }
-    list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>
-      '<div class="leaderboard-row"><span class="leaderboard-rank">'+(Number(p.rank)||i+1)+'</span><span class="leaderboard-nickname">'+escapeHtml(p.nickname||'متسوق')+'</span><strong class="leaderboard-points">'+Math.round(Number(p.points)||0).toLocaleString('ar-LY')+' نقطة</strong></div>'
-    ).join('')+'</div>';
+    if(!ranked.length){list.innerHTML='<p class="muted">ما فيش مشاركين في التصنيف حتى الآن.</p>';return}
+    list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>{
+      const rank=Number(p.rank)||i+1;
+      const display=String(p.display_name||'').trim()||'متسوق المركز '+rank;
+      const money=Number(p.points||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      return '<div class="leaderboard-row"><span class="leaderboard-rank">'+rank+'</span><span class="leaderboard-nickname">'+escapeHtml(display)+'</span><strong class="leaderboard-points">'+money+' د.ل</strong></div>';
+    }).join('')+'</div>';
   }catch(error){
-    console.warn('Public leaderboard unavailable',error);
     list.innerHTML='<p class="muted">تعذر تحميل الترتيب حالياً. حاول تحديث الصفحة بعد قليل.</p>';
   }
 }

@@ -73,6 +73,26 @@
       <button id="authSubmit" class="btn btn-primary full-width" type="submit">تسجيل الدخول</button>
       <div class="auth-alternate"><p id="authAlternateText">ليس لديك حساب؟</p><button type="button" id="authAlternate">إنشاء حساب</button></div>
     </form>
+    <div id="accountModern" class="hidden">
+      <div class="account-id-card">
+        <button type="button" id="accountEditName" class="account-edit-name" aria-label="تعديل الاسم">✎</button>
+        <div class="account-id-top"><div class="account-id-avatar" id="accountModernAvatar">L</div><div class="account-id-details"><strong id="accountModernName">L1017n</strong><span id="accountModernEmail"></span><small>● نشط</small></div></div>
+        <div class="account-id-stats"><div><span>المدينة</span><b>طرابلس</b></div><div><span>عضو منذ</span><b id="accountMemberSince">—</b></div><div><span>الحساب</span><b>مسجّل</b></div></div>
+      </div>
+      <h3 class="account-group-title">الحساب</h3>
+      <div class="account-settings-list">
+        <button type="button" data-account-action="personal"><span class="account-row-icon">♙</span><b>المعلومات الشخصية</b><span class="account-row-arrow">‹</span></button>
+        <button type="button" data-account-action="verify"><span class="account-row-icon">♢</span><b>توثيق الحساب</b><small>غير موثق</small><span class="account-row-arrow">‹</span></button>
+        <button type="button" data-account-action="notifications"><span class="account-row-icon">♧</span><b>الإشعارات والتنبيهات</b><span class="account-row-arrow">‹</span></button>
+      </div>
+      <h3 class="account-group-title">التطبيق</h3>
+      <div class="account-settings-list">
+        <button type="button" data-account-action="theme"><span class="account-row-icon">◐</span><b>المظهر</b><small id="accountThemeLabel">داكن</small><span class="account-row-arrow">‹</span></button>
+        <button type="button" data-account-action="language"><span class="account-row-icon">文</span><b>اللغة</b><small>العربية</small><span class="account-row-arrow">‹</span></button>
+        <button type="button" data-account-action="help"><span class="account-row-icon">?</span><b>المساعدة والدعم</b><span class="account-row-arrow">‹</span></button>
+      </div>
+      <div id="accountSettingsDetail" class="account-settings-detail hidden" aria-live="polite"></div>
+    </div>
     <button class="btn btn-primary hidden" id="openAdminDashboard" type="button">لوحة الإدارة ⚙</button>
     <button class="btn btn-soft hidden" id="logoutBtn" type="button">تسجيل الخروج</button>
     <button class="btn btn-soft account-wallet-link" data-view="wallet">افتح المحفظة</button>
@@ -360,4 +380,35 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #accountView #signedInProfile img,#accountView #signedInProfile>div:first-child{width:52px!important;height:52px!important;flex-shrink:0!important}
 #accountView #accountTitle{font-size:21px!important}
 }
-</style><style>.mobile-nav button[data-view="account"] .nav-icon{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}</style><style>@media(max-width:650px){.mobile-nav{display:flex!important;justify-content:space-around!important;gap:0!important}.mobile-nav>button{flex:1 1 20%!important;min-width:0!important;padding-inline:2px!important}.mobile-nav>button span{font-size:10px!important}.mobile-nav .nav-icon{width:22px!important;height:22px!important}}</style></body></html>
+</style><style>.mobile-nav button[data-view="account"] .nav-icon{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}</style><style>@media(max-width:650px){.mobile-nav{display:flex!important;justify-content:space-around!important;gap:0!important}.mobile-nav>button{flex:1 1 20%!important;min-width:0!important;padding-inline:2px!important}.mobile-nav>button span{font-size:10px!important}.mobile-nav .nav-icon{width:22px!important;height:22px!important}}</style><style>
+#accountView:has(#accountModern:not(.hidden)) .auth-hero,#accountView:has(#accountModern:not(.hidden)) .auth-back,#accountView:has(#accountModern:not(.hidden)) .account-avatar,#accountView:has(#accountModern:not(.hidden)) #accountTitle,#accountView:has(#accountModern:not(.hidden)) #accountText,#accountView:has(#accountModern:not(.hidden)) #signedInProfile{display:none!important}
+#accountView:has(#accountModern:not(.hidden)) .account-panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;max-width:680px!important}
+#accountView:has(#accountModern:not(.hidden)){background:#070d1d!important}
+#accountModern{direction:rtl;color:#f6f8ff;padding:0 4px 35px}
+#accountModern .account-id-card{position:relative;overflow:hidden;background:radial-gradient(circle at 4% 0%,#62caff70,transparent 55%),linear-gradient(120deg,#41b6f4,#1479d8 72%,#1967c8);border-radius:27px;padding:22px 19px 20px;box-shadow:0 14px 34px #0869d34a;margin:14px 0 23px}
+#accountModern .account-id-card:before{content:'L';position:absolute;left:25px;top:-35px;font-size:210px;color:#ffffff0d;font-weight:900;pointer-events:none}
+#accountModern .account-id-top{display:flex;align-items:center;gap:14px;min-height:100px}
+#accountModern .account-id-avatar{width:68px;height:68px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;border:3px solid #ffffff90;background:#ffffff27;font-size:29px;font-weight:800}
+#accountModern .account-id-details{min-width:0;display:flex;flex-direction:column;gap:6px}
+#accountModern .account-id-details strong{font-size:23px;overflow-wrap:anywhere}
+#accountModern .account-id-details span{font-size:13px;color:#e2f2ff;overflow-wrap:anywhere}
+#accountModern .account-id-details small{align-self:flex-start;border-radius:30px;background:#ffffff24;padding:5px 12px;font-size:12px}
+#accountModern .account-edit-name{position:absolute;left:17px;top:22px;border:1px solid #ffffff70;background:#ffffff22;color:#fff;width:41px;height:41px;border-radius:13px;font-size:23px;z-index:2}
+#accountModern .account-id-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #ffffff65;border-radius:17px;margin-top:12px;padding:14px 4px;background:#ffffff12}
+#accountModern .account-id-stats>div{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;border-left:1px solid #ffffff55}
+#accountModern .account-id-stats>div:last-child{border:0}
+#accountModern .account-id-stats span{font-size:12px;color:#e4efff}
+#accountModern .account-id-stats b{font-size:15px}
+#accountModern .account-group-title{font-size:15px;color:#91a0bb;margin:23px 8px 13px}
+#accountModern .account-settings-list{border:1px solid #263453;border-radius:22px;background:#10192d;overflow:hidden}
+#accountModern .account-settings-list button{width:100%;min-height:74px;display:flex;align-items:center;gap:13px;text-align:right;background:transparent;color:#f2f5ff;border:0;border-bottom:1px solid #283654;padding:13px 15px;cursor:pointer}
+#accountModern .account-settings-list button:last-child{border-bottom:0}
+#accountModern .account-settings-list b{flex:1;font-size:15px}
+#accountModern .account-settings-list small{color:#9aaac8;font-size:11px}
+#accountModern .account-row-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#19263f;color:#9caed0;font-size:25px}
+#accountModern .account-row-arrow{font-size:29px;color:#9cabc6}
+#accountModern .account-settings-detail{margin:17px 0;padding:16px;background:#14233b;border:1px solid #375277;border-radius:18px;line-height:1.8}
+#accountModern .account-settings-detail button{border:0;border-radius:11px;background:#a6f467;color:#0a2112;padding:9px 16px;font-weight:800;margin:8px}
+#accountModern .account-settings-detail input{max-width:100%;background:#0b1426;border:1px solid #526b94;color:#fff;border-radius:10px;padding:10px}
+@media(max-width:600px){#accountModern .account-id-details strong{font-size:20px}#accountModern .account-id-avatar{width:60px;height:60px}#accountModern .account-settings-list button{min-height:67px}}
+</style></body></html>

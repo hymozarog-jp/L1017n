@@ -1,0 +1,52 @@
+name: Validate Roblox Steal a Brainrot section
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'brainrot-store.js'
+      - 'brainrot-store.css'
+      - 'store-menu.js'
+      - 'legacy-app.js'
+      - 'app.js'
+      - 'index.html'
+      - '.github/workflows/validate-brainrot.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax
+        run: |
+          node --check brainrot-store.js
+          node --check store-menu.js
+          node --check legacy-app.js
+          node --check app.js
+      - name: Verify Roblox category and secure checkout integration
+        run: |
+          node - <<'JS'
+          const fs=require('fs'), assert=require('assert').strict;
+          const menu=fs.readFileSync('store-menu.js','utf8');
+          const browser=fs.readFileSync('brainrot-store.js','utf8');
+          const html=fs.readFileSync('index.html','utf8');
+          const old=fs.readFileSync('legacy-app.js','utf8');
+          const css=fs.readFileSync('brainrot-store.css','utf8');
+          for(const name of ['قرما','لاسيكرت','لاسبوكي'])assert(browser.includes(name),'Missing character '+name);
+          assert(menu.includes('data-rgp-choice="brainrot"'));
+          assert(menu.includes('window.openStealBrainrotCategory()'));
+          assert(browser.includes('openInsideRoblox'));
+          assert(browser.includes('7709344486'));
+          assert(browser.includes('https://www.roblox.com/games/109983668079237/Steal-a-Brainrot'));
+          assert(browser.includes('create_purchase_order'));
+          assert(browser.includes('ensurePurchasePhone'));
+          assert(browser.includes('product&&product.active&&Number(product.price)>0'));
+          assert(old.includes('steal-a-brainrot'));
+          assert(html.includes('brainrot-store.js?v=steal-inner1'));
+          assert(html.includes('brainrot-store.css?v=steal-inner1'));
+          assert(css.includes('.sab-products-grid'));
+          console.log('Roblox Steal a Brainrot inner category verified.');
+          JS

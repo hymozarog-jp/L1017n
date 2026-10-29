@@ -1,0 +1,40 @@
+name: Validate Message487 inbound SMS
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/l1017n-message487-ingest/**'
+      - 'MESSAGE487-SETUP-AR.md'
+      - '.github/workflows/validate-message487.yml'
+  workflow_dispatch:
+jobs:
+  security-and-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check inbound transport and manual-review boundaries
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const code=fs.readFileSync('supabase/functions/l1017n-message487-ingest/index.ts','utf8');
+          const doc=fs.readFileSync('MESSAGE487-SETUP-AR.md','utf8');
+          const old='supabase/functions/l1017n-sms-ingest/index.ts';
+          assert.match(code,/MESSAGE487_BEARER_TOKEN/);
+          assert.match(code,/SMS_FORWARD_HMAC_KEY/);
+          assert.match(code,/validToken\(claimed\[1\],secret\)/);
+          assert.match(code,/body\.message_type/);
+          assert.match(code,/body\.source!=="android"/);
+          assert.match(code,/parseLibyana\(message\)/);
+          assert.match(code,/status:"accepted",event_id:eventId/);
+          assert.match(code,/duplicate:true/);
+          assert.match(code,/sms_match_pending_receipts/);
+          assert.match(code,/sender_label:"message487-libyana"/);
+          assert.match(code,/next:"admin_verification_required"/);
+          assert.doesNotMatch(code,/db\.rpc\(["']sms_auto_credit_receipt["']/);
+          assert.doesNotMatch(code,/wallet_accounts["']\)\.update|wallet_transactions["']\)\.insert/);
+          assert.match(doc,/Message487/);
+          console.log('Message487 schema, authentication, dedup, and manual-only payment rules validated');
+          JS

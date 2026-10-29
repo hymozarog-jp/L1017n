@@ -4,6 +4,7 @@
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
   var robloxImage='game-covers/roblox-mark.svg?v=logo-square1';
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
+  var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
   var styleId='robloxGamePageStyles';
 
   function addStyles(){
@@ -40,6 +41,19 @@
       #${pageId} .rgp-package{border:1px solid #214968;background:#091a2b;border-radius:18px;padding:18px;text-align:right;color:#fff;cursor:pointer;font:inherit}
       #${pageId} .rgp-package:hover{border-color:#35a9ff}
       #${pageId} .rgp-package strong{display:block;font-size:18px}
+      #${pageId} .rgp-package .mm2-item-art{display:flex;align-items:center;justify-content:center;height:150px;background:radial-gradient(circle at 50% 45%,#473126 0%,#211822 55%,#0d111c 100%);border-radius:14px;margin-bottom:12px;overflow:hidden}
+      #${pageId} .rgp-package .mm2-item-art img{max-height:132px;max-width:94%;width:auto;height:auto;object-fit:contain;border-radius:8px}
+      #${pageId} .rgp-package .mm2-price{display:block;color:#93f5b0!important;font-size:20px;font-weight:800;margin-top:8px}
+      #${pageId} .rgp-package .mm2-delivery{display:block;color:#a8b5c8;font-size:12px;margin-top:5px}
+      #rgpMm2Checkout{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.82);direction:rtl}
+      #rgpMm2Checkout .mm2-checkout-box{width:min(100%,430px);background:#121a2d;color:#fff;border:1px solid #644d85;border-radius:22px;padding:22px;box-shadow:0 25px 90px #0009}
+      #rgpMm2Checkout .mm2-checkout-box img{width:100%;height:145px;object-fit:contain;background:radial-gradient(circle,#44322b,#141a2a);border-radius:14px}
+      #rgpMm2Checkout .mm2-checkout-box input{display:block;width:100%;box-sizing:border-box;border:1px solid #5f6c84;border-radius:11px;padding:13px;margin:9px 0 14px;background:#0b1324;color:#fff;font:inherit;direction:ltr}
+      #rgpMm2Checkout .mm2-actions{display:flex;gap:10px}
+      #rgpMm2Checkout .mm2-actions button{flex:1;cursor:pointer;padding:13px;border-radius:11px;font:inherit;font-weight:700;border:1px solid #654e86;background:#272139;color:#fff}
+      #rgpMm2Checkout .mm2-actions button[type=submit]{background:#8253c9;border:0}
+      #rgpMm2Checkout .mm2-actions button:disabled{opacity:.55;cursor:wait}
+      #rgpMm2Checkout .mm2-state{font-size:13px;color:#f8ca95;min-height:20px;margin-top:12px;line-height:1.7}
       #${pageId} .rgp-package span{display:block;color:#62b9ff;margin-top:5px}
       #${pageId} .rgp-empty{padding:30px;text-align:center;border:1px dashed #28455e;border-radius:18px;color:#9bb0c5}
       @media(max-width:720px){#${pageId}{padding:16px 12px 35px}#${pageId} .rgp-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#${pageId} .rgp-hero{min-height:210px}#${pageId} .rgp-hero-content{min-height:210px;padding:22px}#${pageId} .rgp-hero h1{font-size:40px}#${pageId} .rgp-hero p{font-size:13px}#${pageId} .rgp-card{min-height:0;border-radius:18px}#${pageId} .rgp-card img{height:130px}#${pageId} .rgp-card-body{padding:12px 10px 15px}#${pageId} .rgp-card h3{font-size:17px}#${pageId} .rgp-card p{font-size:12px;line-height:1.6}#${pageId} .rgp-action{font-size:11px;padding:8px 9px}#${pageId} .rgp-title{font-size:21px}}
@@ -84,9 +98,75 @@
       var r=await client.from('products').select('*').eq('active',true).order('sort_order');
       var list=(r.data||[]).filter(function(x){var s=String(x.game||'')+' '+String(x.name||'')+' '+String(x.product_key||'');return /mm2|murder mystery|murdermystery|ماب/i.test(s)});
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
-      grid.innerHTML=list.map(function(x){return '<button class="rgp-package" type="button" data-mm2-id="'+String(x.id).replace(/"/g,'&quot;')+'"><strong>'+escapeHtml(x.name)+'</strong><span>'+Number(x.amount||0)+' · '+Number(x.price||0).toFixed(2)+' د.ل</span></button>'}).join('');
-      grid.addEventListener('click',function(e){var b=e.target.closest('[data-mm2-id]');if(!b)return;closePage();var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});if(product&&typeof window.openInstantCodeCheckout==='function')window.openInstantCodeCheckout(product.id,product.name,product.price);});
+      grid.innerHTML=list.map(function(x){
+        var art=String(x.product_key)==='mm2-minty-gun'
+          ? '<span class="mm2-item-art"><img loading="lazy" src="'+mm2MintyImage+'" alt="سلاح Minty فقط"></span>'
+          : '';
+        return '<button class="rgp-package" type="button" data-mm2-id="'+escapeHtml(x.id)+'">'+art+
+          '<strong>'+escapeHtml(x.name)+'</strong>'+
+          '<span class="mm2-price">'+Number(x.price||0).toFixed(2)+' د.ل</span>'+
+          '<small class="mm2-delivery">التسليم داخل اللعبة بعد مراجعة الطلب</small></button>';
+      }).join('');
+      grid.addEventListener('click',function(e){
+        var b=e.target.closest('[data-mm2-id]');if(!b)return;
+        var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});
+        if(product)showMm2Checkout(product);
+      });
     }catch(err){grid.innerHTML='<div class="rgp-empty">تعذر تحميل باقات MM2. حاول مرة ثانية.</div>'}
+  }
+
+
+  function showMm2Checkout(product){
+    var old=document.getElementById('rgpMm2Checkout');if(old)old.remove();
+    var overlay=document.createElement('div');overlay.id='rgpMm2Checkout';
+    overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','طلب سلاح MM2');
+    overlay.innerHTML='<div class="mm2-checkout-box"><img src="'+mm2MintyImage+'" alt="سلاح Minty">'+
+      '<h2 style="margin:14px 0 7px">'+escapeHtml(product.name)+'</h2>'+
+      '<p style="color:#92e8a9;font-size:22px;font-weight:800;margin:0 0 12px">'+Number(product.price).toFixed(2)+' د.ل</p>'+
+      '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox حتى يقدر فريق المتجر يسلمك السلاح داخل MM2. سيتم خصم المبلغ من محفظتك بعد تأكيد الطلب، والتسليم بعد مراجعة الإدارة.</p>'+
+      '<form><label for="mm2RobloxName">اسم مستخدم Roblox</label>'+
+      '<input id="mm2RobloxName" type="text" pattern="[A-Za-z0-9_]{3,20}" minlength="3" maxlength="20" autocomplete="off" required placeholder="Roblox username">'+
+      '<div class="mm2-actions"><button type="button" data-mm2-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'+
+      '<div class="mm2-state" role="status" aria-live="polite"></div></form></div>';
+    document.body.appendChild(overlay);
+    function close(){overlay.remove()}
+    overlay.querySelector('[data-mm2-cancel]').addEventListener('click',close);
+    overlay.addEventListener('click',function(e){if(e.target===overlay)close()});
+    var form=overlay.querySelector('form'),send=form.querySelector('[type="submit"]'),state=form.querySelector('.mm2-state');
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();
+      var username=form.querySelector('#mm2RobloxName').value.trim();
+      if(!/^[a-z0-9_]{3,20}$/i.test(username)){state.textContent='اكتب اسم Roblox صحيح من 3 إلى 20 حرف.';return}
+      var client=typeof supabaseClient!=='undefined'?supabaseClient:null;
+      if(!client){state.textContent='تعذر الاتصال بالمتجر، حدّث الصفحة.';return}
+      send.disabled=true;state.textContent='جاري التحقق من الحساب ورصيد المحفظة…';
+      try{
+        var auth=await client.auth.getUser();
+        if(auth.error||!auth.data||!auth.data.user){
+          close();closePage();if(typeof switchView==='function')switchView('account');
+          alert('سجّل دخولك قبل شراء السلاح.');return;
+        }
+        if(typeof window.ensurePurchasePhone!=='function')throw Error('verification_unavailable');
+        if(!await window.ensurePurchasePhone()){
+          close();closePage();return;
+        }
+        var result=await client.rpc('create_purchase_order',{p_product_id:product.id,p_roblox_username:username});
+        if(result.error)throw result.error;
+        close();closePage();
+        if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(function(){});
+        if(typeof renderOrders==='function')Promise.resolve(renderOrders()).catch(function(){});
+        if(typeof toast==='function')toast('تم طلب '+product.name+' بمبلغ '+Number(product.price).toFixed(2)+' د.ل — بانتظار التنفيذ.');
+        else alert('تم إنشاء الطلب بنجاح، والتسليم بعد مراجعة الإدارة.');
+      }catch(err){
+        var msg=String(err&&err.message||'');
+        state.textContent=/insufficient_balance/i.test(msg)?'رصيد المحفظة غير كافٍ. اشحن المحفظة أولاً.':
+          /phone_verification_required_before_purchase/i.test(msg)?'وثّق رقم الهاتف برسالة SMS قبل الشراء.':
+          /product_not_available/i.test(msg)?'المنتج غير متاح حاليًا.':
+          'تعذر إكمال الطلب. لم يتم تأكيد أي خصم. حاول لاحقًا.';
+      }finally{send.disabled=false}
+    });
+    form.querySelector('input').focus();
   }
 
   function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}

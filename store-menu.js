@@ -104,7 +104,7 @@
       var client=window.supabase.createClient(supabaseUrl,supabaseKey);
       var r=await client.from('products').select('*').eq('active',true).order('sort_order');
       // Show only real MM2 items inside the Roblox > MM2 package category.
-      var list=(r.data||[]).filter(function(x){var game=String(x.game||'').trim();var key=String(x.product_key||'');var name=String(x.name||'');return /^(?:mm2|murder[\\s_-]*mystery[\\s_-]*2)$/i.test(game)||/^mm2[-_]/i.test(key)||/\\bMM2\\b/i.test(name)});
+      var list=(r.data||[]).filter(function(x){var game=String(x.game||'').trim();var key=String(x.product_key||'');var name=String(x.name||'');return /^(?:mm2|murder[ _-]*mystery[ _-]*2)$/i.test(game)||/^mm2[-_]/i.test(key)||/MM2/i.test(name)});
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var art=String(x.product_key)==='mm2-minty-gun'

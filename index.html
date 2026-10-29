@@ -186,7 +186,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=account-recovery9';
+      var s=document.createElement('script');s.src='app.js?v=neon-premium10';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -504,4 +504,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #pubgCategoryPage .pubg-item small{flex-basis:100%;color:#93a7c4}
 #pubgCategoryPage .pubg-empty{color:#9eaec6}
 </style>
+<!-- Premium storefront styling loaded last to override older inline theme rules -->
+<link rel="stylesheet" href="premium-home.css?v=neon-premium10">
+<script src="premium-home.js?v=neon-premium10" defer></script>
 </body></html>

@@ -44,8 +44,8 @@
   function errorText(error){
     const t=String(error?.message||'');
     if(/verified_libyana_phone_required/.test(t))return 'الشحن عبر هذا الكود يتطلب رقم ليبيانا 092 أو 094 موثّق برسالة SMS من حسابي.';
-    if(/ussd_daily_limit/.test(t))return 'وصلت للحد اليومي لطلبات التحويل. حاول لاحقًا.';
-    if(/invalid_ussd_amount/.test(t))return 'اختر مبلغًا صحيحًا من 1 إلى 10 دنانير.';
+    if(/ussd_daily_limit/.test(t))return 'طلبات كثيرة في وقت قصير؛ جرّب بعد شوية أو تواصل مع الإدارة.';
+    if(/invalid_ussd_amount/.test(t))return 'اكتب مبلغًا صحيحًا بالدينار الليبي، ويجب أن يكون عددًا صحيحًا موجبًا.';
     return 'تعذر تجهيز طلب التحويل. لا تحوّل رصيدًا قبل ظهور رقم الطلب وكود الاتصال.';
   }
   async function refreshRequest(id){
@@ -87,12 +87,12 @@
     if(!root||!amountEl)return;
     const run=++generation;
     if(!chosen){
-      show('','اختار المبلغ اللي تبي تحوّله','بعد اختيار المبلغ بنجهز طلبك ونظهر لك كود USSD، وبعدها تفتح الاتصال وتؤكد التحويل من هاتفك.');
+      show('','جاهز للشحن','اكتب المبلغ أو اختاره من الأزرار، ثم اضغط «متابعة شحن المحفظة». لا يتم تحويل أي رصيد بمجرد اختيار المبلغ.');
       return;
     }
     const amount=Number(amountEl.value);
-    if(!Number.isInteger(amount)||amount<1||amount>10){
-      show('warning','مبلغ غير صحيح','الشحن المتاح من 1 إلى 10 دنانير لكل تحويل.');
+    if(!Number.isSafeInteger(amount)||amount<1||amount>10000){
+      show('warning','مبلغ غير صحيح','أدخل مبلغًا صحيحًا بالدينار الليبي. تأكد أن المبلغ يتوافق مع شروط خدمة تحويل ليبيانا.');
       return;
     }
     show('','جاري تجهيز كود التحويل…','نتأكد أولًا من رقم ليبيانا الموثّق، ونجهز رقم متابعة حتى يتعرف البوت على العملية.');
@@ -139,8 +139,8 @@
         watch(intent.request_id);
         return;
       }
-      const area=show('ok','الشحن الآلي مفعّل لحسابك',
-        'بعد تأكيد التحويل من ليبيانا، يطابق النظام إشعار SMS مع رقمك الموثّق ومبلغ الطلب. أول تحويل والتحويلات التالية قد تُعتمد تلقائيًا إذا اجتازت فحوصات الأمان؛ أي رسالة مشبوهة أو غير مطابقة تحتاج مراجعة.');
+      const area=show('ok','تم تجهيز طلب شحن '+amount+' د.ل',
+        'بعد تأكيد التحويل من ليبيانا، يطابق النظام المبلغ والرقم الموثّق بإشعار التحويل. بعض العمليات، خصوصًا المبالغ الكبيرة، تحتاج مراجعة الإدارة قبل إضافة الرصيد.');
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
@@ -172,24 +172,66 @@
     }
   }
 
+  // Do not generate payment intents merely by changing the number: only
+  // an explicit Continue click prepares the verified USSD payment.
   let inputDebounce=null;
+  function refreshQuickAmounts(){
+    const value=String(amountInput()?.value||'').trim();
+    document.querySelectorAll('#topupForm [data-amount]').forEach(b=>{
+      b.setAttribute('aria-pressed',String(b.dataset.amount===value));
+    });
+  }
+  function clearIntent(){
+    resetSelection();generation++;
+    refreshQuickAmounts();
+    show('','جاهز للشحن','اختار المبلغ المناسب واضغط «متابعة». أي مبلغ تختاره لازم تسمح به خدمة تحويل ليبيانا.');
+  }
   amountInput()?.addEventListener('input',()=>{
-    chosen=true;stopWatcher();
     clearTimeout(inputDebounce);
-    inputDebounce=setTimeout(render,500);
+    inputDebounce=setTimeout(clearIntent,100);
   });
   document.querySelectorAll('#topupForm [data-amount]').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      chosen=true;stopWatcher();
       if(amountInput())amountInput().value=btn.dataset.amount;
       clearTimeout(inputDebounce);
-      Promise.resolve().then(render);
+      clearIntent();
     });
   });
+  document.getElementById('topupProceed')?.addEventListener('click',async e=>{
+    const button=e.currentTarget;
+    if(button.disabled)return;
+    chosen=true;
+    button.disabled=true;
+    try{await render()}
+    finally{button.disabled=false}
+  });
+  async function renderTopupPhoneStatus(){
+    const number=document.getElementById('topupVerifiedNumber');
+    const state=document.getElementById('topupPhoneState');
+    if(!number||!state)return;
+    number.textContent='جاري التحقق…';state.textContent='فحص التوثيق';
+    const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
+    if(!db){number.textContent='غير متاح';state.textContent='تعذر الاتصال';state.className='tp-phone-state is-error';return}
+    try{
+      const [user,verified]=await Promise.all([
+        db.auth.getUser(),db.functions.invoke('l1017n-resala-otp',{body:{action:'status'}})
+      ]);
+      if(user.error||!user.data?.user){number.textContent='سجّل الدخول أولًا';state.textContent='غير مسجّل';state.className='tp-phone-state is-error';return}
+      const phone=String(verified.data?.phone||'');
+      if(verified.error||!verified.data?.verified||!/^09[24][0-9]{7}$/.test(phone)){
+        number.textContent='لم يتم توثيق رقم ليبيانا';
+        state.textContent='وثّق رقمك في حسابي';state.className='tp-phone-state is-error';return;
+      }
+      number.textContent=phone;
+      state.textContent='✓ رقم موثّق';state.className='tp-phone-state is-verified';
+    }catch(error){number.textContent='تعذر جلب الرقم';state.textContent='أعد المحاولة';state.className='tp-phone-state is-error'}
+  }
+  window.renderTopupPhoneStatus=renderTopupPhoneStatus;
   window.refreshAutoTopup=()=>render();
   document.addEventListener('click',event=>{
     if(event.target.closest('[data-view="wallet"],#walletActionTopup,#topupModalContinue')){
       if(chosen)setTimeout(render,50);
+      if(event.target.closest('#walletActionTopup'))renderTopupPhoneStatus();
     }
   });
   if(typeof supabaseClient!=='undefined'){

@@ -24,7 +24,7 @@ function renderProducts(){
  // Include additional games added through the Telegram admin bot.
  const existingGames=new Set(games.map(x=>x.key));
  for(const game of new Set(products.map(p=>String(p.game||'').trim().toLowerCase()))){
-  if(!game||existingGames.has(game))continue;
+  if(!game||existingGames.has(game)||game==='mm2'||game==='murder mystery 2')continue; // MM2 weapons live inside the Roblox > MM2 section
   const items=products.filter(p=>String(p.game||'').trim().toLowerCase()===game);
   games.push({name:game.replace(/[-_]/g,' '),category:'ألعاب الهواتف',image:'',key:game,count:items.length});
  }

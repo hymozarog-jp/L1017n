@@ -260,7 +260,7 @@ setTimeout(refreshAdminAccess,0);
  const edit=e.target.closest('#accountEditName');if(edit){editName();return}
  const btn=e.target.closest('[data-account-action]');if(!btn)return;
  const action=btn.dataset.accountAction;
- if(action==='personal'){const user=await currentUser();show('<h3>المعلومات الشخصية</h3><p>البريد الإلكتروني: '+escapeHtml(user?.email||'—')+'</p><p>يمكنك تعديل الاسم من زر القلم في بطاقة الحساب.</p><button type="button" id="detailEditName">تعديل الاسم</button>');detail.querySelector('#detailEditName').onclick=editName}
+ if(action==='personal'){openPersonalDetails();return}
  else if(action==='verify')show('<h3>توثيق الحساب</h3><p>خدمة توثيق الحساب غير متاحة حالياً. لن نطلب منك رفع مستندات هنا.</p>');
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='theme')show('<h3>المظهر</h3><p>التصميم الداكن هو المظهر الحالي للموقع.</p>');
@@ -268,3 +268,24 @@ setTimeout(refreshAdminAccess,0);
  else if(action==='help')show('<h3>المساعدة والدعم</h3><p>لو عندك مشكلة في طلب أو شحن، افتح طلباتي وراجع حالة الطلب.</p><button type="button" id="detailHelpOrders">فتح طلباتي</button>'),detail.querySelector('#detailHelpOrders').onclick=()=>switchView('orders');
  });
 })();
+
+/* Dedicated personal details screen: actual user name and phone, no city */
+async function openPersonalDetails(){
+ const user=await currentUser();if(!user)return;
+ let phone=user.phone||user.user_metadata?.phone||'';
+ try{const {data}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();if(data?.libyana_phone)phone=data.libyana_phone}catch(e){}
+ const meta=user.user_metadata||{},name=meta.full_name||meta.name||user.email?.split('@')[0]||'مستخدم';
+ let page=document.getElementById('personalDetailsPage');
+ if(!page){page=document.createElement('div');page.id='personalDetailsPage';document.body.appendChild(page)}
+ page.innerHTML='<div class="personal-page-header"><button type="button" id="personalBack" aria-label="رجوع">❯</button><h2>المعلومات الشخصية</h2></div><div class="personal-page-user"><div class="personal-page-avatar">'+escapeHtml(name.slice(0,1).toUpperCase())+'</div><div><strong>'+escapeHtml(name)+'</strong><span dir="ltr">'+escapeHtml(phone||user.email||'')+'</span></div></div><form id="personalDetailsForm"><div class="personal-page-fields"><label><span>♙ &nbsp; الاسم الكامل</span><input id="personalFullName" type="text" maxlength="60" minlength="2" required value="'+escapeHtml(name).replace(/"/g,'&quot;')+'"></label><div class="personal-page-phone"><span>♧ &nbsp; رقم الهاتف</span><strong dir="ltr">'+escapeHtml(phone||'غير مسجل')+'</strong><small>رقم الهاتف مرتبط بحسابك، ولا يمكن تغييره من هذه الصفحة.</small></div></div><button type="submit" class="personal-save">✓ &nbsp; حفظ</button><p id="personalSaveStatus" role="status"></p></form>';
+ page.classList.add('visible');
+ const close=()=>page.classList.remove('visible');
+ page.querySelector('#personalBack').onclick=close;
+ page.querySelector('#personalDetailsForm').onsubmit=async e=>{
+ e.preventDefault();const value=page.querySelector('#personalFullName').value.trim(),status=page.querySelector('#personalSaveStatus');
+ if(value.length<2){status.textContent='الاسم لازم يكون حرفين على الأقل';return}
+ const {error}=await supabaseClient.auth.updateUser({data:{full_name:value}});
+ if(error){status.textContent='تعذر حفظ الاسم، حاول مرة ثانية';return}
+ status.textContent='تم حفظ الاسم بنجاح';document.getElementById('accountModernName').textContent=value;document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
+ };
+}

@@ -246,4 +246,28 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #walletView .wallet-filter-tabs button.active{background:#edf3ff!important;color:#09162b!important}
 #walletView .balance-panel{display:none!important}
 </style>
+<style>
+/* Compact wallet cards for small iPhone screens */
+@media(max-width:600px){
+#walletView{padding-inline:12px!important}
+#walletView>.section-head{padding:12px 4px 8px!important}
+#walletView>.section-head h2{font-size:27px!important;margin:0!important}
+#walletView .wallet-subtitle{font-size:12px!important;margin:5px 0 12px!important}
+#walletView .wallet-carousel{gap:10px!important;padding-bottom:8px!important}
+#walletView .wallet-carousel>.wallet-hero,#walletView .wallet-carousel>.madar-wallet-card{flex-basis:84%!important;height:176px!important;border-radius:20px!important;padding:17px!important}
+#walletView .wallet-hero-top strong{font-size:17px!important}
+#walletView .wallet-hero-top small{font-size:11px!important}
+#walletView .wallet-primary-badge{font-size:11px!important;padding:6px!important}
+#walletView .wallet-hero-balance{bottom:15px!important;right:17px!important}
+#walletView .wallet-hero-balance strong{font-size:28px!important}
+#walletView .madar-wallet-card strong{font-size:16px!important}
+#walletView .madar-wallet-card p{font-size:11px!important;margin:10px 0!important}
+#walletView .madar-wallet-card button{padding:9px!important;font-size:12px!important}
+#walletView .wallet-carousel-dots{margin:4px 0 14px!important}
+#walletView .wallet-actions{padding:14px 8px!important;border-radius:19px!important;margin-bottom:22px!important}
+#walletView .wallet-action-icon{width:46px!important;height:46px!important;font-size:25px!important;border-radius:14px!important}
+#walletView .wallet-action b{font-size:12px!important}
+#walletView .wallet-recent-head h3{font-size:19px!important}
+}
+</style>
 </body></html>

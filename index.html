@@ -146,7 +146,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=accountfix29';
+      var s=document.createElement('script');s.src='app.js?v=personal30';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -411,4 +411,24 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #accountModern .account-settings-detail button{border:0;border-radius:11px;background:#a6f467;color:#0a2112;padding:9px 16px;font-weight:800;margin:8px}
 #accountModern .account-settings-detail input{max-width:100%;background:#0b1426;border:1px solid #526b94;color:#fff;border-radius:10px;padding:10px}
 @media(max-width:600px){#accountModern .account-id-details strong{font-size:20px}#accountModern .account-id-avatar{width:60px;height:60px}#accountModern .account-settings-list button{min-height:67px}}
-</style><style>#accountView:has(#accountModern:not(.hidden)) .account-panel{display:block!important}#accountView #accountModern:not(.hidden){display:block!important;visibility:visible!important;opacity:1!important}#accountView:has(#accountModern:not(.hidden)) .auth-hero,#accountView:has(#accountModern:not(.hidden)) .auth-decoration{display:none!important}</style></body></html>
+</style><style>#accountView:has(#accountModern:not(.hidden)) .account-panel{display:block!important}#accountView #accountModern:not(.hidden){display:block!important;visibility:visible!important;opacity:1!important}#accountView:has(#accountModern:not(.hidden)) .auth-hero,#accountView:has(#accountModern:not(.hidden)) .auth-decoration{display:none!important}</style><style>
+#personalDetailsPage{display:none;position:fixed;inset:0;z-index:99999;background:#060d1b;color:#eef4ff;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 23px) 22px calc(env(safe-area-inset-bottom) + 35px);direction:rtl;font-family:inherit}
+#personalDetailsPage.visible{display:block}
+#personalDetailsPage .personal-page-header{display:flex;align-items:center;gap:16px;max-width:620px;margin:0 auto 43px}
+#personalDetailsPage .personal-page-header button{border:0;background:transparent;color:#eaf2ff;font-size:28px;padding:5px 0}
+#personalDetailsPage .personal-page-header h2{font-size:22px;margin:0;font-weight:800}
+#personalDetailsPage .personal-page-user{max-width:620px;margin:0 auto 30px;display:flex;align-items:center;gap:14px}
+#personalDetailsPage .personal-page-avatar{display:grid;place-items:center;width:65px;height:65px;border-radius:50%;background:#132b4a;border:3px solid #295d91;color:#61b6ff;font-size:27px;font-weight:800;flex-shrink:0}
+#personalDetailsPage .personal-page-user>div:last-child{display:flex;flex-direction:column;gap:8px;min-width:0}
+#personalDetailsPage .personal-page-user strong{font-size:20px;overflow-wrap:anywhere}
+#personalDetailsPage .personal-page-user span{color:#8194b2;font-size:14px;overflow-wrap:anywhere}
+#personalDetailsPage form{max-width:620px;margin:auto}
+#personalDetailsPage .personal-page-fields{border:1px solid #253657;background:#0e182c;border-radius:23px;padding:17px;display:flex;flex-direction:column;gap:14px}
+#personalDetailsPage .personal-page-fields label,#personalDetailsPage .personal-page-phone{display:flex;flex-direction:column;gap:9px;border-radius:17px;background:#16233b;padding:16px}
+#personalDetailsPage .personal-page-fields span{color:#a7b7d0;font-size:14px}
+#personalDetailsPage .personal-page-fields input{width:100%;border:0!important;outline:none;background:transparent!important;color:#eef4ff!important;font-size:19px;padding:0!important;text-align:right}
+#personalDetailsPage .personal-page-phone strong{font-size:19px;font-weight:500;text-align:right;color:#e7efff}
+#personalDetailsPage .personal-page-phone small{font-size:12px;color:#8b9cb8}
+#personalDetailsPage .personal-save{display:block;width:100%;margin-top:24px;padding:16px;border:0;border-radius:17px;background:#1479e5;color:#fff;font-size:19px;font-weight:800}
+#personalDetailsPage #personalSaveStatus{color:#95e5ad;text-align:center;margin-top:12px}
+</style></body></html>

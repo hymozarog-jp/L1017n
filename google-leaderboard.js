@@ -5,6 +5,12 @@ const styles = document.createElement('style');
 styles.id = 'google-leaderboard-styles';
 styles.textContent = [
   '#leaderboardView .leaderboard-row{grid-template-columns:42px 46px minmax(0,1fr) auto;gap:12px;min-height:77px}',
+  '#leaderboardParticipation{margin-top:22px;padding-top:18px;border-top:1px solid #365643}',
+  '#leaderboardParticipation .leaderboard-profile-form{max-width:620px;margin:0 auto;padding:12px 0;border-top:0}',
+  '#leaderboardParticipation .leaderboard-participation-guest{display:grid;justify-items:center;gap:12px;text-align:center;padding:22px 12px}',
+  '#leaderboardParticipation .leaderboard-participation-guest p{margin:0;color:#bdd2c1}',
+  '#leaderboardParticipation .leaderboard-participation-guest .btn{justify-content:center}',
+
   '#leaderboardView .leaderboard-user-avatar{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#173626;border:2px solid #a8f36b52;overflow:hidden}',
   '#leaderboardView .leaderboard-user-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}',
   '#leaderboardView .leaderboard-display-name{min-width:0;overflow-wrap:anywhere;font-weight:700;color:#f2f8ef}',
@@ -77,8 +83,21 @@ window.loadLeaderboard=async function(){
 };
 
 window.renderLeaderboardProfile=async function(){
-  const panel=document.querySelector('.account-panel');
+  const panel=document.getElementById('leaderboardParticipation');
   if(!panel)return;
+  // Older versions rendered these settings in "حسابي"; remove that copy.
+  const obsolete=document.querySelector('.account-panel #leaderboardProfileForm');
+  if(obsolete)obsolete.remove();
+  let guest=document.getElementById('leaderboardParticipationGuest');
+  if(!guest){
+    guest=document.createElement('div');
+    guest.id='leaderboardParticipationGuest';
+    guest.className='leaderboard-participation-guest hidden';
+    guest.innerHTML='<strong>تبي تظهر في التصنيف؟ 🏆</strong>'+
+      '<p>سجّل دخولك باش تتحكم في ظهور اسمك وصورتك من Google في الترتيب.</p>'+
+      '<button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button>';
+    panel.appendChild(guest);
+  }
   let form=document.getElementById('leaderboardProfileForm');
   if(!form||form.dataset.googleVersion!=='1'){
     if(form)form.remove();
@@ -129,7 +148,12 @@ window.renderLeaderboardProfile=async function(){
     });
   }
   const user=await currentUser();
-  if(!user){form.classList.add('hidden');return}
+  if(!user){
+    form.classList.add('hidden');
+    guest.classList.remove('hidden');
+    return;
+  }
+  guest.classList.add('hidden');
   form.classList.remove('hidden');
   const isGoogle=hasGoogle(user);
   const googleCheck=form.querySelector('#leaderboardGooglePublic');
@@ -148,7 +172,19 @@ window.renderLeaderboardProfile=async function(){
   googleCheck.checked=isGoogle&&!!result.data?.public_visible&&!!result.data?.share_google_profile;
 };
 
+supabaseClient.auth.onAuthStateChange(function(event){
+  if(['SIGNED_IN','SIGNED_OUT','INITIAL_SESSION','USER_UPDATED'].includes(event)){
+    setTimeout(function(){
+      window.renderLeaderboardProfile();
+      window.loadLeaderboard();
+    },0);
+  }
+});
+
 document.addEventListener('click',function(e){
+  if(e.target.closest('[data-view="leaderboard"]')){
+    setTimeout(function(){window.renderLeaderboardProfile();},0);
+  }
   if(e.target.closest('#refreshLeaderboard')){
     e.preventDefault();e.stopImmediatePropagation();
     window.loadLeaderboard();

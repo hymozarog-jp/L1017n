@@ -1,0 +1,55 @@
+name: Validate Libyana flexible top-up
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.js'
+      - 'auto-topup.js'
+      - 'topup-reference.css'
+      - 'supabase/migrations/20261029_flexible_libyana_amounts_and_manual_review.sql'
+      - '.github/workflows/validate-flexible-topup.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript and browser integration
+        run: |
+          node --check app.js
+          node --check auto-topup.js
+          node --check legacy-app.js
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('index.html','utf8');
+          const app=fs.readFileSync('app.js','utf8');
+          const js=fs.readFileSync('auto-topup.js','utf8');
+          const css=fs.readFileSync('topup-reference.css','utf8');
+          const sql=fs.readFileSync('supabase/migrations/20261029_flexible_libyana_amounts_and_manual_review.sql','utf8');
+          for(const id of ['topupForm','topupAmount','topupProceed','topupVerifiedNumber','topupPhoneState','transferInstructions']){
+            assert(html.includes('id="'+id+'"'),'Missing form element '+id);
+          }
+          for(const amount of [1,5,10,30,50])assert(html.includes('data-amount="'+amount+'"'),'Missing quick amount '+amount);
+          assert.match(html,/href="topup-reference\.css\?v=/);
+          assert.match(html,/app\.js\?v=flexible-charge1/);
+          assert.match(app,/auto-topup\.js\?v=flexible-charge1/);
+          assert.match(js,/create_ussd_topup_intent/);
+          assert.match(js,/get_my_ussd_topup_status/);
+          assert.match(js,/renderTopupPhoneStatus/);
+          assert.match(js,/topupProceed/);
+          assert.match(js,/Number\.isSafeInteger\(amount\)/);
+          assert.doesNotMatch(js,/amount>10/,'Do not reject amounts above 10 in browser');
+          assert.doesNotMatch(html,/max="10"/,'Do not hard-cap topup input at 10');
+          assert.match(css,/#topupDedicatedPage/);
+          assert.match(css,/\.tp-provider-grid/);
+          assert.match(sql,/p_amount > 10000/);
+          assert.match(sql,/large_transfer_requires_review/);
+          assert.match(sql,/additional_transfer_requires_review/);
+          assert.doesNotMatch(sql,/sender_total\+r\.amount>30|store_total\+r\.amount>100/,'No hard monetary daily caps');
+          assert.match(sql,/verified_phone=w\.libyana_phone/,'Keep phone verification');
+          console.log('Flexible Libyana top-up UI and secure migration checks passed');
+          JS

@@ -175,4 +175,32 @@ document.addEventListener('click',async function(e){
   }catch(err){alert('تعذر فتح الطلب: '+(err.message||err))}
 },true);
 </script>
+<style>
+#walletView #topupForm{display:none!important}
+#topupDedicatedPage{position:fixed!important;inset:0!important;z-index:999990!important;background:#0b1510!important;overflow-y:auto!important;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top)) 16px calc(45px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;direction:rtl}
+#topupDedicatedPage #topupForm{display:block!important;width:100%!important;max-width:680px!important;margin:20px auto!important;box-sizing:border-box!important}
+#topupDedicatedPage .topup-dedicated-back{background:#23392b;color:#d8ffc1;border:1px solid #54775a;border-radius:14px;padding:12px 18px;font:inherit}
+#topupDedicatedPage .topup-dedicated-title{font-size:25px;color:#f3fff0;margin:22px 0 12px}
+</style>
+<script>
+(function(){
+function openDedicatedTopup(e){
+  if(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}
+  var form=document.getElementById('topupForm');
+  if(!form)return;
+  var page=document.getElementById('topupDedicatedPage');
+  if(page){page.scrollTop=0;return}
+  page=document.createElement('div');page.id='topupDedicatedPage';
+  var back=document.createElement('button');back.type='button';back.className='topup-dedicated-back';back.textContent='→ رجوع للمحفظة';
+  var title=document.createElement('h2');title.className='topup-dedicated-title';title.textContent='شحن المحفظة';
+  var marker=document.createComment('topup-form-original-position');form.parentNode.insertBefore(marker,form);
+  page.append(back,title,form);document.body.appendChild(page);
+  back.onclick=function(){marker.parentNode.insertBefore(form,marker);marker.remove();page.remove()};
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('#walletActionTopup'))openDedicatedTopup(e);
+},true);
+window.openDedicatedTopup=openDedicatedTopup;
+})();
+</script>
 </body></html>

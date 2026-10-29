@@ -66,7 +66,7 @@
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
-      +(available?'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">اطلب الآن ←</button>'
+      +(available?'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">اطلب الآن</button>'
         :'<span class="sab-unavailable">قريبًا</span>')
       +'</div></article>';
   }
@@ -174,16 +174,17 @@
     if(!grid)return;
     const section=document.createElement("section");
     section.className="sab-inner";
-    section.innerHTML='<div class="sab-nav"><button type="button" class="rgp-back" data-sab-back>← رجوع لقائمة Roblox</button>'
-      +'<a href="https://www.roblox.com/games/109983668079237/Steal-a-Brainrot" target="_blank" rel="noopener noreferrer" class="sab-original-link">الماب الأصلي في Roblox ↗</a></div>'
+    section.innerHTML='<div class="sab-nav">'
+      +'<a href="https://www.roblox.com/games/109983668079237/Steal-a-Brainrot" target="_blank" rel="noopener noreferrer" class="sab-original-link">الماب الأصلي في Roblox</a></div>'
       +'<div class="sab-hero"><div class="sab-hero-copy"><span>ROBLOX · L1017N</span>'
       +'<h2>ماب السرقة</h2><p>STEAL A BRAINROT</p><small>اختر الشخصية اللي تبيها وشوف السعر والتوفر.</small></div>'
       +'<img src="'+escapeHtml(officialIcon)+'" alt="صورة ماب Steal a Brainrot الأصلي في Roblox" data-steal-official-icon loading="lazy"></div>'
       +'<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>03 عناصر</small></div>'
       +'<div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
-    const title=root.querySelector(".rgp-title");if(title)title.textContent="روبلوكس ← ماب السرقة";
-    section.querySelector("[data-sab-back]").addEventListener("click",()=>window.openRobloxGameMenu?.());
+    if(typeof window.setRobloxInnerHeader==="function"){
+      window.setRobloxInnerHeader(root,"ماب السرقة","brainrot");
+    }
     applyOfficialImages(section);
     renderItems(section,[]);
     loadItems(section).catch(()=>{

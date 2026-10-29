@@ -110,11 +110,16 @@
       return false;
     }
     if (state.verified === true) return true;
-    // Do not debit wallets or reserve stock; send the customer to the
-    // already-existing Resala SMS widget in the account page.
+    // Unverified customers are sent directly to their Personal Details phone
+    // verification card. Server-side purchase restrictions remain unchanged.
     if (typeof closeRobuxPackages === "function") closeRobuxPackages();
     if (typeof switchView === "function") switchView("account");
-    alert("لازم توثّق رقم هاتفك برسالة SMS قبل الشراء. افتح «حسابي»، اضغط «إرسال رمز التحقق»، وأدخل الرمز. بعدها ارجع للباقة.");
+    if (typeof window.openPersonalDetails === "function") {
+      await window.openPersonalDetails({focusPhone:true});
+      if (typeof toast === "function") toast("وثّق رقمك برسالة SMS من المعلومات الشخصية قبل الشراء.");
+    } else {
+      alert("لازم توثّق رقم هاتفك من «حسابي» ثم «المعلومات الشخصية» قبل الشراء.");
+    }
     return false;
   }
 

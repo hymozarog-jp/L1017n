@@ -1,0 +1,48 @@
+/* L1017n • return from USSD — status UI only, no payment state mutations */
+body.tpv-open{overflow:hidden!important}
+#tpReturnVerify{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;overflow-y:auto;overscroll-behavior:contain;padding:24px 15px;direction:rtl;background:rgba(4,8,20,.83);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#f5f7ff;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif}
+#tpReturnVerify *,#tpReturnVerify *::before,#tpReturnVerify *::after{box-sizing:border-box}
+#tpReturnVerify .tpv-card{position:relative;width:min(100%,430px);margin:auto;overflow:hidden;padding:26px 23px 22px;border:1px solid rgba(176,152,255,.34);border-radius:29px;background:radial-gradient(ellipse at 50% -20%,rgba(149,113,255,.26),transparent 58%),linear-gradient(160deg,#1b2237,#0e1527 72%);box-shadow:0 30px 85px #000b,0 0 0 1px #ffffff08 inset;text-align:center;animation:tpv-enter .35s cubic-bezier(.2,.85,.25,1) both}
+#tpReturnVerify .tpv-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,#a990ff,#6ee6cd,transparent);opacity:.8}
+#tpReturnVerify .tpv-close{position:absolute;top:15px;left:15px;width:36px;height:36px;border:1px solid #ffffff30;border-radius:12px;background:#ffffff0a;color:#e5e9ff;font-size:19px;cursor:pointer;display:grid;place-items:center}
+#tpReturnVerify .tpv-brand{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid #a38dfa44;background:#a38dfa14;border-radius:99px;color:#dacaff;font-size:12px;font-weight:850;letter-spacing:.1px}
+#tpReturnVerify .tpv-brand span{color:#7bdbcf}
+#tpReturnVerify .tpv-visual{position:relative;margin:22px auto 13px;width:146px;height:146px;display:grid;place-items:center}
+#tpReturnVerify .tpv-ring{position:absolute;inset:5px;border-radius:50%;border:2px solid #a891ff3d}
+#tpReturnVerify .tpv-ring-outer{inset:0;border-top-color:#bca7ff;border-left-color:#52d1be;animation:tpv-spin 2.7s linear infinite;box-shadow:0 0 36px #9a7ff928}
+#tpReturnVerify .tpv-ring-inner{inset:16px;border-style:dashed;border-color:#62d7c7aa;animation:tpv-spin 4s linear reverse infinite}
+#tpReturnVerify .tpv-visual-icon{width:84px;height:84px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(130deg,#8c6af5,#5b4bb7);box-shadow:0 12px 34px #7157d160;position:relative;z-index:1}
+#tpReturnVerify .tpv-visual-icon svg{width:45px;height:45px;stroke:white;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#tpReturnVerify .tpv-spark{position:absolute;inset:5px;border-radius:50%;background:#9975f920;filter:blur(10px);animation:tpv-pulse 2s ease-in-out infinite}
+#tpReturnVerify h2{font-size:clamp(23px,6vw,29px);line-height:1.45;margin:10px auto 10px;color:#fff;font-weight:900}
+#tpReturnVerify .tpv-subtitle{color:#bdc7db;font-size:13px;line-height:1.9;margin:0 auto 13px;max-width:330px;min-height:46px}
+#tpReturnVerify .tpv-amount{display:inline-flex;gap:8px;align-items:center;justify-content:center;border:1px solid #ffffff1f;background:#ffffff0a;border-radius:12px;padding:8px 14px;margin-bottom:19px;font-weight:800;font-size:13px}
+#tpReturnVerify .tpv-amount b{color:#a9efcf;font-size:17px}
+#tpReturnVerify .tpv-progress{height:6px;border-radius:999px;background:#ffffff16;overflow:hidden;margin:0 0 19px}
+#tpReturnVerify .tpv-progress-fill{width:32%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a88bff,#59d9be);animation:tpv-flow 1.5s ease-in-out infinite alternate}
+#tpReturnVerify .tpv-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:20px}
+#tpReturnVerify .tpv-step{display:grid;justify-items:center;gap:7px;min-width:0;color:#8d9ab5;font-weight:700;font-size:11px}
+#tpReturnVerify .tpv-step i{font-style:normal;width:30px;height:30px;border-radius:50%;border:1px solid #ffffff29;background:#ffffff0c;display:grid;place-items:center;font:800 12px system-ui}
+#tpReturnVerify .tpv-step:first-child,#tpReturnVerify .tpv-step:nth-child(2){color:#cfd5ef}
+#tpReturnVerify .tpv-step:first-child i{background:#3d8b73;color:white;border-color:#54c09d}
+#tpReturnVerify .tpv-step:nth-child(2) i{background:#6555ab;color:#fff;border-color:#b09cff}
+#tpReturnVerify .tpv-actions{display:grid;gap:9px}
+#tpReturnVerify .tpv-action{min-height:47px;width:100%;border-radius:14px;font:800 13px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer;transition:transform .17s,filter .17s}
+#tpReturnVerify .tpv-action:active{transform:scale(.985)}
+#tpReturnVerify .tpv-refresh{color:#111b28;background:linear-gradient(115deg,#b9a3ff,#84e6cb);border:0}
+#tpReturnVerify .tpv-dismiss{color:#e5e8f8;border:1px solid #ffffff30;background:#ffffff0b}
+#tpReturnVerify .tpv-footnote{margin:14px 0 0;font-size:11px;line-height:1.8;color:#92a0bd}
+#tpReturnVerify[data-state="approved"] .tpv-visual-icon{background:linear-gradient(140deg,#188f67,#48c28e)}
+#tpReturnVerify[data-state="approved"] .tpv-ring-outer{border-color:#66e1af}
+#tpReturnVerify[data-state="approved"] .tpv-progress-fill{width:100%;animation:none}
+#tpReturnVerify[data-state="approved"] .tpv-step i{background:#1e765c;border-color:#4cce99;color:white}
+#tpReturnVerify[data-state="rejected"] .tpv-visual-icon{background:linear-gradient(130deg,#a94b63,#79415c)}
+#tpReturnVerify[data-state="rejected"] .tpv-progress-fill{animation:none;background:#d47c9d;width:100%}
+#tpReturnVerify[data-state="approved"] .tpv-ring,#tpReturnVerify[data-state="rejected"] .tpv-ring{animation:none}
+#tpReturnVerify .tpv-action:focus-visible,#tpReturnVerify .tpv-close:focus-visible{outline:3px solid #e0c6ff;outline-offset:3px}
+@keyframes tpv-spin{to{transform:rotate(360deg)}}
+@keyframes tpv-pulse{0%,100%{transform:scale(.85);opacity:.3}50%{transform:scale(1.11);opacity:.75}}
+@keyframes tpv-flow{from{transform:translateX(0)}to{transform:translateX(-115%)}}
+@keyframes tpv-enter{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:380px){#tpReturnVerify{padding:12px}#tpReturnVerify .tpv-card{padding:20px 16px 19px;border-radius:24px}#tpReturnVerify .tpv-visual{width:124px;height:124px}#tpReturnVerify .tpv-visual-icon{width:77px;height:77px}#tpReturnVerify .tpv-steps{font-size:10px}}
+@media(prefers-reduced-motion:reduce){#tpReturnVerify *,#tpReturnVerify *::before,#tpReturnVerify *::after{animation:none!important;transition:none!important}#tpReturnVerify .tpv-progress-fill{width:68%}}

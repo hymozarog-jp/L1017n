@@ -1,6 +1,6 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=pubg-premium2';
+  s.src='legacy-app.js?v=steal-inner1';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');

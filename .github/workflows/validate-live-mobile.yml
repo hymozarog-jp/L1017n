@@ -43,6 +43,16 @@ jobs:
           assert.match(js,/openRobuxPackages\(\)/);
           assert.match(js,/openStealBrainrotCategory|brainrot/);
           assert.match(js,/data-ll-buy/);
+          assert.match(js,/function robloxParentCard\(\)/);
+          assert.match(js,/game-covers\/roblox-mark\.svg/);
+          assert.match(js,/data-ll-game="mm2"/);
+          assert.match(js,/data-ll-game="steal-a-brainrot"/);
+          assert.match(js,/!isRobloxFamily\(gameKey\(item\)\)/);
+          assert.match(js,/showRoblox \? robloxParentCard\(\)/);
+          assert.match(css,/\.ll-roblox-parent\{/);
+          assert.match(css,/\.ll-roblox-subcategories\{/);
+          assert.match(html,/live-mobile\.js\?v=roblox-group2/);
+          assert.match(html,/live-mobile\.css\?v=roblox-group2/);
           assert.match(js,/data-ll-nav/);
           assert.match(js,/data-ll-dot/);
           assert.match(js,/new IntersectionObserver/);

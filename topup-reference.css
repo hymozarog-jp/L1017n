@@ -50,6 +50,7 @@
   box-shadow:0 3px 10px #0505113b
 }
 #topupDedicatedPage .tp-libyana-logo{font-family:system-ui;font-style:italic;letter-spacing:-4px}
+#topupDedicatedPage .tp-libyana-logo img{display:block;width:100%;height:100%;object-fit:contain;border-radius:12px;background:#fff;padding:3px}
 #topupDedicatedPage .tp-libyana-logo span{color:#c345bc;font-size:12px;letter-spacing:0;margin-inline-start:-12px;margin-top:-19px}
 #topupDedicatedPage .tp-madar-logo{font-size:15px;color:#67a547}
 #topupDedicatedPage .tp-bank-logo{font-size:31px;color:#479acc}

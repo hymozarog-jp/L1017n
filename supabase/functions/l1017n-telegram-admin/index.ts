@@ -78,6 +78,7 @@ type Product = {
 };
 
 Deno.serve(async (request: Request) => {
+  if (request.method === "GET") return json({ status: "deployed", configured: Boolean(Deno.env.get("TG_BOT_TOKEN") && Deno.env.get("TG_WEBHOOK_SECRET")), documentation: "See repository setup guide" });
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   const token = Deno.env.get("TG_BOT_TOKEN") ?? "";
   const webhookSecret = Deno.env.get("TG_WEBHOOK_SECRET") ?? "";
@@ -92,10 +93,29 @@ Deno.serve(async (request: Request) => {
   if (Number(request.headers.get("content-length") || "0") > 10000)
     return json({ error: "payload_too_large" }, 413);
 
-  let update: { message?: { text?: string; chat?: { id?: number; type?: string }; from?: { id?: number } } };
+  let update: { action?: string; message?: { message_id?: number; text?: string; chat?: { id?: number; type?: string }; from?: { id?: number } } };
   try { update = await request.json(); }
   catch { return json({ error: "invalid_json" }, 400); }
 
+  // Secure initial activation through the Supabase Dashboard "Test" tool.
+  // Use the same webhook secret in the request header; the bot token stays on the server.
+  if (update.action === "register_webhook") {
+    const projectUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    if (!projectUrl.startsWith("https://")) return json({ error: "project_url_missing" }, 503);
+    const url = projectUrl.replace(/\\/$/, "") + "/functions/v1/l1017n-telegram-admin";
+    const result = await fetch("https://api.telegram.org/bot" + token + "/setWebhook", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        url,
+        secret_token: webhookSecret,
+        allowed_updates: ["message"],
+        drop_pending_updates: false,
+      }),
+    });
+    const data = await result.json().catch(() => ({ ok: false }));
+    return json({ ok: result.ok && data.ok === true, description: data.description ?? "Webhook setup response" }, result.ok && data.ok === true ? 200 : 502);
+  }
   const message = update?.message;
   const chatId = message?.chat?.id;
   const senderId = message?.from?.id;

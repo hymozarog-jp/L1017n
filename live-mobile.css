@@ -36,7 +36,17 @@ body.l1017-live-ui .topbar #phMenuButton svg,body.l1017-live-ui .topbar #llHeade
   width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round
 }
 body.l1017-live-ui .topbar #phMenuButton:active,body.l1017-live-ui .topbar #llHeaderSearch:active{transform:scale(.93)!important}
-body.l1017-live-ui .topbar #googleProfileButton{order:8}
+/* Authenticated Google photo is the leftmost header control in RTL layout. */
+body.l1017-live-ui .topbar #googleProfileButton:not(.hidden){
+  display:grid!important;order:9!important;margin-right:auto!important;margin-left:0!important;
+  width:43px!important;height:43px!important;flex:0 0 43px!important;
+  padding:2px!important;border:2px solid #bda5ff!important;
+  background:#272046!important;box-shadow:0 0 0 3px #ad8dff26!important;
+  border-radius:50%!important;overflow:hidden;align-items:center;justify-items:center
+}
+body.l1017-live-ui .topbar #googleProfileButton.hidden{display:none!important}
+body.l1017-live-ui .topbar #googleProfileButton img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+body.l1017-live-ui .topbar #googleProfileButton:active{transform:scale(.94)}
 body.l1017-live-ui #storeView{
   max-width:1140px!important;width:100%;margin:0 auto!important;
   padding:0 18px 100px!important;box-sizing:border-box!important
@@ -215,7 +225,8 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
  body.l1017-live-ui .topbar .brand{justify-content:center!important}
  body.l1017-live-ui .topbar .brand small{font-size:8px}
  body.l1017-live-ui .topbar #googleWelcome{display:none!important}
- body.l1017-live-ui .topbar #googleProfileButton{display:none!important}
+ body.l1017-live-ui .topbar #googleProfileButton:not(.hidden){display:grid!important;order:9!important;margin-right:auto!important;margin-left:0!important}
+ body.l1017-live-ui .topbar #googleProfileButton.hidden{display:none!important}
  #llLanding .ll-intro{padding:32px 0 22px}
  #llLanding .ll-intro h1{font-size:27px}
  #llLanding .ll-intro-star{flex-basis:47px;width:47px;height:47px}

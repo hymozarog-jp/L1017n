@@ -6,6 +6,7 @@
   let lastIdentity=null;
   let lastPhone=null;
   let lastReady=false;
+  let lastVerified=false;
   let lastCheckAt=0;
 
   const css=document.createElement('style');
@@ -32,19 +33,22 @@
   }
   async function checkEligibility(db,user,force){
     if(!force && lastIdentity===user.id && Date.now()-lastCheckAt<15000){
-      return {hasPhone:!!lastPhone,ready:lastReady};
+      return {hasPhone:!!lastPhone,ready:lastReady,verified:lastVerified};
     }
-    const [wallet,readiness]=await Promise.all([
+    const [wallet,readiness,verification]=await Promise.all([
       db.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle(),
-      db.rpc('is_my_auto_libyana_topup_ready')
+      db.rpc('is_my_auto_libyana_topup_ready'),
+      db.functions.invoke('l1017n-resala-otp',{body:{action:'status'}})
     ]);
     if(wallet.error)throw wallet.error;
     if(readiness.error)throw readiness.error;
+    if(verification.error||verification.data?.configured!==true)throw verification.error||new Error("verification_unavailable");
     lastIdentity=user.id;
     lastPhone=wallet.data?.libyana_phone||null;
-    lastReady=!!readiness.data;
+    lastVerified=verification.data?.verified===true;
+    lastReady=!!readiness.data&&lastVerified;
     lastCheckAt=Date.now();
-    return {hasPhone:!!lastPhone,ready:lastReady};
+    return {hasPhone:!!lastPhone,ready:lastReady,verified:lastVerified};
   }
   function show(node,cls,msg){
     node.replaceChildren(el('div','auto-topup-status '+cls,msg));
@@ -69,8 +73,15 @@
         show(host,'warning','📱 سجّل رقم ليبيانا الخاص بك من حسابي قبل الشحن.');
         return;
       }
+      if(!state.verified){
+        show(host,'warning','📱 لازم توثّق رقمك برسالة SMS من «حسابي» قبل ما تقدر تفعّل الشحن الآلي أو تشتري من محفظتك.');
+        const action=el('button','btn btn-primary','توثيق رقم الهاتف');
+        action.type='button'; action.addEventListener('click',()=>{if(typeof switchView==='function')switchView('account')});
+        host.appendChild(action);
+        return;
+      }
       if(!state.ready){
-        show(host,'warning','⛔ الشحن الآلي مش مفعّل لهذا الرقم بعد. اطلب من إدارة المتجر توثيق وربط رقم تحويل ليبيانا بحسابك. ما تحوّلش فلوس قبل تفعيل الرقم.');
+        show(host,'warning','✅ رقمك موثّق برسالة SMS والدفع من المحفظة متاح بعد تأكيد الشراء. الشحن الآلي لتحويلات ليبيانا يحتاج أيضًا ربط رقم المحوّل لدى إدارة المتجر بعد التحقق من أول تحويل. ما تحوّلش رصيد قبل تفعيل الربط.');
         return;
       }
       const raw=Number(amountInput.value);
@@ -116,7 +127,7 @@
   if(typeof supabaseClient!=='undefined'){
     supabaseClient.auth.onAuthStateChange(event=>{
       if(['SIGNED_IN','SIGNED_OUT','INITIAL_SESSION','USER_UPDATED'].includes(event)){
-        lastIdentity=null;lastPhone=null;lastReady=false;lastCheckAt=0;
+        lastIdentity=null;lastPhone=null;lastReady=false;lastVerified=false;lastCheckAt=0;
         setTimeout(()=>render(true),0);
       }
     });

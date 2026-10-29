@@ -1,0 +1,11 @@
+#robuxModal .robux-checkout-bar{position:fixed;bottom:0;left:0;right:0;z-index:999999;display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:center;gap:15px;padding:16px max(20px,calc((100vw - 720px)/2)) calc(17px + env(safe-area-inset-bottom,0px));background:#0e1628;border-top:1px solid #26334d;box-shadow:0 -12px 30px #0007;transform:translateY(110%);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s ease;box-sizing:border-box}
+#robuxModal .robux-checkout-bar.visible{transform:translateY(0);opacity:1;pointer-events:auto}
+#robuxModal .robux-checkout-info{display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:0}
+#robuxModal .robux-checkout-info small{font-size:14px;color:#8e9fbb}
+#robuxModal .robux-checkout-info strong{font-size:clamp(21px,5vw,29px);color:#f1f6ff;white-space:nowrap}
+#robuxModal .robux-checkout-next{border:0;border-radius:17px;background:#1474df;color:white;font:800 clamp(17px,4vw,22px) 'IBM Plex Sans Arabic',sans-serif;padding:16px 22px;min-width:44%;display:flex;justify-content:center;align-items:center;gap:12px}
+#robuxModal .robux-checkout-next span{font-size:26px}
+#robuxModal .robux-package.selected .robux-plus{background:#58b8ff!important;color:#0b1930!important;font-weight:800}
+#robuxModal .robux-package.selected{border:3px solid #62b9ff!important;box-shadow:0 0 0 1px #62b9ff55!important}
+#robuxModal .robux-scroll-arrow{display:none!important}
+@media(prefers-reduced-motion:reduce){#robuxModal .robux-checkout-bar{transition:none}}

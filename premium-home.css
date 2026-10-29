@@ -1,0 +1,159 @@
+/* L1017N neon premium storefront — scoped to the existing store, checkout is unchanged. */
+:root{
+  --bg:#070d1e;--panel:#11182c;--panel2:#17213d;--line:#2e416f;
+  --text:#f6f7ff;--muted:#a2b0d1;--green:#a991ff;--green2:#8460ff;--purple:#9f85ff;
+}
+html{scroll-padding-top:95px}
+body{background:radial-gradient(ellipse 70% 32% at 52% -8%,#22276b 0,transparent 73%),#070d1e;color:#f6f7ff}
+body::before{content:"";position:fixed;inset:0 0 auto;height:390px;pointer-events:none;background:radial-gradient(ellipse at 15% 0%,#3345bd2d,transparent 65%);z-index:-1}
+.topbar{min-height:86px;height:auto;padding:12px clamp(14px,3.5vw,46px);background:#071022eb;border-bottom:1px solid #5166c630;box-shadow:0 12px 40px #0307165c;gap:clamp(7px,1.7vw,20px);z-index:40}
+.topbar .brand{order:3;margin-inline-start:auto;min-width:0}
+.topbar .brand b{color:#fff;font-size:clamp(18px,2.8vw,29px);letter-spacing:.3px;text-shadow:0 0 18px #a48fff35}
+.topbar .brand small{color:#93a7cc}
+.topbar #googleProfileButton{order:0}
+.topbar #googleWelcome{order:1}
+.topbar .account-wallet-group{order:2}
+.topbar .desktop-nav{order:4}
+.topbar .account-wallet-group #customerWalletChip{border:1px solid #5364ae7d!important;border-radius:19px!important;background:linear-gradient(125deg,#151d36,#1c2351)!important;box-shadow:inset 0 1px #ffffff15,0 8px 25px #0003;padding:7px 9px;min-height:52px}
+.topbar .account-wallet-group #customerWalletChip strong{color:#fff!important}
+.topbar .account-wallet-group #customerTopupShortcut{border-radius:50%;background:linear-gradient(135deg,#a65af8,#5a49f4)!important;color:#fff!important;box-shadow:0 0 15px #8461fb60}
+.topbar .google-profile-button{border-color:#9cf89d!important;box-shadow:0 0 0 3px #80faae22,0 0 20px #72d99c33!important}
+.topbar .google-welcome-label{color:#d7def5!important}
+.topbar .google-welcome strong{color:white!important}
+.topbar #accountBtn{background:#151f3b;color:#e6e9ff;border-color:#435784}
+.topbar .desktop-nav .nav-link.active{background:#9b76ff25;color:#c5b6ff}
+.ph-header-menu{order:5;border:1px solid #5573b1;border-radius:50%;width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;background:linear-gradient(140deg,#17244a,#0c162b);color:#e8edff;box-shadow:inset 0 1px #ffffff20;font-size:24px}
+.ph-header-menu:hover{border-color:#ac93ff}
+.ph-header-menu svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#storeView{max-width:1220px!important;padding:22px clamp(16px,3vw,32px) 30px!important}
+#storeView .section-head{margin:28px 0 16px!important;align-items:center}
+#storeView .section-head h2{font-size:clamp(24px,4vw,38px)!important;margin:0 0 4px}
+#storeView .section-head h2::before{content:"🎮";font-size:.68em;vertical-align:12%;margin-inline-end:10px}
+#storeView .section-head p{color:#b9c5e2!important}
+.ph-hero{position:relative;display:grid;grid-template-columns:1fr 1.08fr;direction:ltr;min-height:305px;isolation:isolate;overflow:hidden;border-radius:28px;background:linear-gradient(118deg,#101843 0%,#151a49 35%,#192477 67%,#281e72 100%);border:1px solid #5866f7;box-shadow:0 16px 50px #0008,inset 0 0 0 1px #9c7fff21}
+.ph-hero::before{content:"";z-index:-1;position:absolute;inset:0;background:radial-gradient(circle at 83% 49%,#8447ff9c 0,transparent 33%),radial-gradient(circle at 42% 100%,#485ff86a,transparent 52%),repeating-linear-gradient(125deg,transparent 0 45px,#ffffff06 46px 47px,transparent 48px 90px)}
+.ph-hero::after{content:"";position:absolute;pointer-events:none;inset:auto 5% -96px 5%;height:130px;background:#654afb66;filter:blur(55px);z-index:-1}
+.ph-hero-copy{direction:rtl;align-self:center;text-align:right;padding:clamp(20px,4vw,48px);position:relative;z-index:3}
+.ph-hero-eyebrow{display:inline-flex;align-items:center;gap:9px;color:#c9bbff;font-size:11px;font-weight:750;letter-spacing:1.8px;direction:ltr}
+.ph-hero-eyebrow::before{content:"✦";color:#af9bff;font-size:20px}
+.ph-hero h1{font-size:clamp(28px,4.4vw,52px);line-height:1.28;color:white;margin:10px 0 12px;text-shadow:0 5px 24px #0005;font-weight:800;letter-spacing:-.8px}
+.ph-hero h1 span{display:block;color:#bd8bff;text-shadow:0 0 26px #814eff6d}
+.ph-hero p{color:#d5dcf1;line-height:1.9;margin:0 0 23px;font-size:clamp(11px,1.7vw,16px)}
+.ph-shop-button{min-height:47px;display:inline-flex;gap:12px;align-items:center;justify-content:center;border:1px solid #d6a5ff9e;border-radius:999px;background:linear-gradient(115deg,#8641ff,#613de5 68%,#4e55f3);color:#fff;padding:10px 30px;box-shadow:0 0 28px #834afc85,inset 0 2px 0 #ffffff55;font-weight:800;font-size:14px;transition:transform .2s,box-shadow .2s}
+.ph-shop-button:hover{transform:translateY(-2px);box-shadow:0 0 45px #834afca3}
+.ph-shop-button:focus-visible{outline:3px solid white;outline-offset:3px}
+.ph-hero-art{position:relative;display:block;min-width:0;overflow:hidden;perspective:500px}
+.ph-orb{position:absolute;width:240px;height:240px;right:15%;top:4%;background:radial-gradient(circle,#a469ffbd,transparent 68%);filter:blur(10px);border-radius:50%}
+.ph-game-card{position:absolute;display:grid;place-items:center;border:1px solid #b6bcff9d;border-radius:21px;background:linear-gradient(145deg,#14216f,#253ed8);box-shadow:0 24px 40px #05082d9e,inset 0 2px 5px #ffffff46;transform:rotate(-15deg);overflow:hidden}
+.ph-game-card.roblox{width:154px;height:160px;right:19%;top:14%;z-index:3;animation:phFloat 5s ease-in-out infinite}
+.ph-game-card.roblox img{width:82%;height:82%;object-fit:contain;filter:drop-shadow(0 5px 9px #0009)}
+.ph-game-card.uc{width:92px;height:95px;right:1%;top:35%;z-index:2;transform:rotate(13deg);background:linear-gradient(135deg,#463175,#181637)}
+.ph-game-card.uc strong{font:bold 38px Arial,sans-serif;color:#e4b763;text-shadow:0 1px 8px #ffde9d9c}
+.ph-game-card.coin{width:101px;height:105px;right:58%;top:36%;z-index:2;transform:rotate(-28deg);background:linear-gradient(125deg,#2b2caa,#151e50)}
+.ph-game-card.coin strong{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#78ebff,#2d74e8 65%,#2831b3);border:5px double #c0faff;color:#f5ffff;font:bold 34px Arial,sans-serif;box-shadow:0 0 20px #58d3ff9e}
+.ph-controller{position:absolute;right:24%;bottom:0;z-index:4;font-size:148px;line-height:1;filter:drop-shadow(0 15px 12px #000b) drop-shadow(0 0 15px #5ba4ff);transform:rotate(-10deg);user-select:none}
+.ph-gem{position:absolute;z-index:2;color:#88efff;font-size:55px;text-shadow:0 0 25px #61cdff;user-select:none}
+.ph-gem.g1{right:1%;bottom:10%;transform:rotate(13deg)}.ph-gem.g2{right:76%;top:6%;font-size:32px}
+.ph-stars{position:absolute;color:#b6dcff;font-size:28px;text-shadow:0 0 13px #fff;user-select:none}
+.ph-stars.a{right:66%;top:20%}.ph-stars.b{right:5%;top:4%}
+@keyframes phFloat{0%,100%{transform:translateY(0) rotate(-15deg)}50%{transform:translateY(-10px) rotate(-12deg)}}
+.ph-search-wrap{margin:20px 0 12px;position:relative}
+.ph-search-wrap input{display:block;width:100%;height:65px;border:1px solid #3c4d80;background:linear-gradient(130deg,#151d36,#10172d);border-radius:999px;color:#fff;padding:0 65px 0 22px;outline:none;font-size:16px;box-shadow:inset 0 1px 3px #ffffff13,0 4px 15px #0003}
+.ph-search-wrap input::placeholder{color:#8c9bbe}
+.ph-search-wrap input:focus{border-color:#9c80ff;box-shadow:0 0 0 3px #986aff24}
+.ph-search-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);color:#cdd6fa;pointer-events:none;font-size:26px;line-height:1}
+.ph-filters{display:flex;align-items:center;gap:10px;overflow-x:auto;scrollbar-width:none;padding:5px 3px 10px;overscroll-behavior-x:contain}
+.ph-filters::-webkit-scrollbar{display:none}
+.ph-filter{white-space:nowrap;flex:0 0 auto;border:1px solid #35466e;background:linear-gradient(145deg,#172039,#111a30);color:#d3daf1;border-radius:999px;padding:10px 19px;min-height:44px;font-weight:700;font-size:13px;transition:.2s}
+.ph-filter:hover{border-color:#a18cfa}
+.ph-filter[aria-pressed="true"]{color:white;border-color:#a38aff;background:linear-gradient(125deg,#7943d9,#5f48ed);box-shadow:0 0 21px #643cec55,inset 0 1px 0 #ffffff50}
+.ph-section-actions{display:flex;align-items:center;gap:12px}
+.ph-section-count{color:#a4b2d2;font-size:12px}
+.ph-empty{border:1px dashed #526294;border-radius:20px;padding:28px;text-align:center;color:#bac8e7;line-height:1.9;background:#161e37;margin-top:12px}
+#storeView #productGrid{display:block!important}
+#storeView #productGrid .game-tiles{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(12px,2vw,20px)!important;align-items:stretch!important}
+#storeView #productGrid .game-tile{position:relative;min-width:0!important;overflow:visible!important}
+#storeView #productGrid .game-tile[hidden]{display:none!important}
+#storeView #productGrid .game-tile-btn{position:relative;display:block!important;width:100%!important;height:100%;border:1px solid #5858d0!important;border-radius:22px!important;overflow:hidden!important;background:linear-gradient(140deg,#121a39,#1e2368)!important;box-shadow:0 12px 22px #0008,0 0 0 1px #a0a8ff16!important;padding:0!important;transition:transform .22s,box-shadow .22s}
+#storeView #productGrid .game-tile-btn:hover{transform:translateY(-4px);box-shadow:0 16px 38px #000a,0 0 24px #675ff452!important}
+#storeView #productGrid .game-tile-art{position:relative!important;display:block!important;width:100%!important;height:auto!important;aspect-ratio:1.38!important;min-height:0!important;max-height:none!important;border:0!important;border-radius:0!important;overflow:hidden!important;background:radial-gradient(circle at 40% 35%,#3e51bc,#172448 70%)!important;padding:0!important}
+#storeView #productGrid .game-tile-art::after{content:"";position:absolute;inset:22% 0 0;background:linear-gradient(0deg,#030817dd,transparent 64%);z-index:3;pointer-events:none}
+#storeView #productGrid .game-tile-art img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;padding:0!important;filter:saturate(1.12) contrast(1.05)!important}
+#storeView #productGrid .game-tile-brand{position:absolute;z-index:4;left:12px;bottom:12px;right:auto;font-weight:1000;color:#fff;text-shadow:0 3px 12px #000b,0 0 12px #202f74;font-size:clamp(13px,2.4vw,25px);pointer-events:none;line-height:1.1}
+#storeView #productGrid .game-tile-info{position:absolute;inset:auto 0 0 0!important;z-index:5;display:flex!important;align-items:center;justify-content:flex-start;min-height:45px!important;padding:10px 14px 11px!important;background:linear-gradient(0deg,#050c21ec,#090c245c)!important;text-align:right!important;border-top:1px solid #ffffff10}
+#storeView #productGrid .game-tile-info strong{font-size:clamp(13px,1.7vw,18px)!important;font-weight:800;color:white!important}
+#storeView #productGrid .game-tile-info strong::before{content:"‹";display:inline-grid;place-items:center;float:left;width:24px;height:24px;border:1px solid #b4baf4;border-radius:50%;background:#202b50;color:white;font:bold 24px Arial;line-height:1;margin-right:8px}
+#storeView #productGrid .game-tile-info small{display:none!important}
+#storeView #productGrid .game-tile-yellow{display:none!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-btn{border-color:#8164ff!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art{background:radial-gradient(circle,#5c52d3,#1b2c71 78%)!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art img{object-fit:contain!important;width:77%!important;height:87%!important;left:12%!important;top:0!important;filter:drop-shadow(0 0 14px #b6a2ff)!important}
+#storeView #productGrid .game-tile:has(.game-art-fortnite) .game-tile-btn{border-color:#655bde!important}
+#storeView #productGrid .game-tile:has(.game-art-freefire) .game-tile-btn{border-color:#4e8aff!important}
+#storeView #productGrid .game-tile:has(.game-art-pubg) .game-tile-btn{border-color:#6277bf!important}
+.ph-promo{margin-top:24px;min-height:148px;display:flex;justify-content:space-between;gap:16px;align-items:center;overflow:hidden;position:relative;background:linear-gradient(105deg,#141b3f,#192155 70%,#2a1853);border:1px solid #5d58d2;border-radius:24px;padding:20px clamp(18px,4vw,34px);box-shadow:0 16px 36px #0006}
+.ph-promo::after{content:"";pointer-events:none;position:absolute;inset:auto -30px -90px auto;width:280px;height:200px;background:#ae39db80;filter:blur(62px)}
+.ph-promo h3{margin:0 0 4px;font-size:clamp(22px,3.2vw,32px);line-height:1.4}
+.ph-promo p{margin:0;color:#c4c6e9;font-size:13px}
+.ph-promo .ph-promo-cta{display:inline-flex;gap:8px;align-items:center;margin-top:12px;padding:9px 16px;border-radius:999px;background:#7145e4;color:white;border:1px solid #b29cfa;font-weight:700;font-size:12px}
+.ph-promo-art{font-size:65px;z-index:1;filter:drop-shadow(0 9px 18px #0007);white-space:nowrap;transform:rotate(-10deg)}
+.ph-offers-eyebrow{font-size:12px;color:#c4adff;font-weight:750}
+.wallet-promo.home-balance{border-color:#5c5cc05c;background:linear-gradient(135deg,#141e39,#10162b);margin-top:22px}
+.wallet-promo.home-balance .btn-primary{background:linear-gradient(135deg,#9353ee,#5b4ae7);color:#fff}
+.wallet-promo.home-balance .wallet-visual{border-color:#6655d2;background:linear-gradient(145deg,#2d296c,#111d41)}
+/* Mobile bottom bar adopts the same neon glass appearance without changing navigation. */
+.mobile-nav{background:#0d152eee!important;border:1px solid #5366a9!important;box-shadow:0 10px 35px #000b,inset 0 1px #ffffff1c!important;border-radius:28px!important;left:12px!important;right:12px!important;bottom:11px!important;padding:9px 5px calc(9px + env(safe-area-inset-bottom))!important}
+.mobile-nav button{color:#a5b6d5!important;font-weight:650!important}
+.mobile-nav button.active{color:white!important}
+.mobile-nav .nav-follow-bubble{background:linear-gradient(130deg,#8258f1d9,#6b4debd6)!important;border-color:#b9a4ff!important;box-shadow:0 0 22px #7153f788!important}
+.ph-drawer[hidden]{display:none!important}
+.ph-drawer{position:fixed;z-index:99992;inset:0;background:#04071ab5;backdrop-filter:blur(8px);display:flex;direction:rtl}
+.ph-drawer-sheet{width:min(80vw,315px);min-height:100vh;background:linear-gradient(160deg,#1a2040,#0a1026);border-left:1px solid #62529a;padding:25px 18px;box-shadow:-15px 0 60px #000a}
+.ph-drawer-top{display:flex;justify-content:space-between;align-items:center;color:#fff;margin-bottom:25px;font-size:21px}
+.ph-drawer-close{border:1px solid #6870b2;background:#1f2652;color:#fff;width:39px;height:39px;border-radius:50%;font-size:23px}
+.ph-drawer-link{width:100%;text-align:right;padding:14px 12px;display:flex;gap:12px;align-items:center;border:0;border-bottom:1px solid #6c80b526;background:transparent;color:#e5e9ff;font-weight:700}
+.ph-drawer-link:focus-visible{outline:2px solid #ba9dff}
+.ph-drawer-note{font-size:12px;color:#a7b5d9;margin-top:20px;line-height:1.9}
+@media (min-width:901px){.ph-header-menu{display:none}.topbar .brand{margin-inline-start:0}.ph-hero{min-height:360px}.ph-game-card.roblox{width:175px;height:180px;right:25%}.ph-controller{right:33%;bottom:1%}}
+@media (max-width:900px){.topbar .desktop-nav{display:none}.topbar .brand{margin-inline-start:auto}.topbar .brand small{display:none}.topbar .account-wallet-group #accountBtn{display:none}.topbar #customerWalletChip{margin:0}}
+@media (max-width:620px){
+  .topbar{height:76px;min-height:76px;padding:8px 12px;gap:6px}
+  .topbar .brand b{font-size:20px}.topbar #googleWelcome{max-width:89px!important}
+  .topbar .google-welcome-label{font-size:10px!important}.topbar .google-welcome strong{font-size:12px!important}
+  .topbar .account-wallet-group #customerWalletChip{min-height:45px;padding:5px 7px;border-radius:15px!important;font-size:10px}
+  .topbar .account-wallet-group #customerWalletChip strong{font-size:12px}
+  .topbar .account-wallet-group #customerTopupShortcut{width:27px;height:27px;font-size:15px}
+  .ph-header-menu{width:40px;height:40px;flex-basis:40px;font-size:19px}
+  #storeView{padding:14px 14px 25px!important}
+  .ph-hero{min-height:240px;grid-template-columns:1.08fr .92fr;border-radius:23px}
+  .ph-hero-copy{padding:20px 6px 19px 18px;align-self:center}
+  .ph-hero-eyebrow{font-size:9px;letter-spacing:.8px}
+  .ph-hero h1{font-size:clamp(25px,6.1vw,34px);margin:6px 0 7px;line-height:1.22}
+  .ph-hero p{font-size:10.5px;line-height:1.7;margin-bottom:13px}
+  .ph-shop-button{min-height:42px;padding:8px 18px;font-size:12px;gap:5px}
+  .ph-game-card.roblox{width:100px;height:113px;right:13%;top:13%;border-radius:15px}
+  .ph-game-card.uc{width:62px;height:65px;right:-3%;top:43%;border-radius:12px}.ph-game-card.uc strong{font-size:24px}
+  .ph-game-card.coin{width:67px;height:71px;right:58%;top:36%;border-radius:12px}.ph-game-card.coin strong{width:50px;height:50px;font-size:22px}
+  .ph-controller{font-size:90px;right:21%;bottom:7%}
+  .ph-gem{font-size:32px}.ph-gem.g2{font-size:20px}
+  .ph-search-wrap input{height:56px;font-size:13px;padding-right:55px}
+  .ph-search-icon{right:20px;font-size:22px}
+  .ph-filter{font-size:11px;min-height:43px;padding:9px 13px}
+  #storeView .section-head{margin:20px 0 13px!important}
+  #storeView .section-head h2{font-size:26px!important}
+  #storeView .section-head p{font-size:12px}
+  #storeView #productGrid .game-tiles{gap:12px!important}
+  #storeView #productGrid .game-tile-btn{border-radius:18px!important}
+  #storeView #productGrid .game-tile-art{aspect-ratio:1.10!important}
+  #storeView #productGrid .game-tile-info{padding:8px 10px 10px!important;min-height:43px!important}
+  #storeView #productGrid .game-tile-info strong{font-size:13px!important}
+  #storeView #productGrid .game-tile-brand{font-size:clamp(12px,3.4vw,19px);bottom:47px;left:9px}
+  .ph-promo{min-height:127px;border-radius:20px;padding:16px}.ph-promo h3{font-size:22px}.ph-promo p{font-size:11px}
+  .ph-promo-art{font-size:40px}
+}
+@media(max-width:390px){.topbar .brand b{font-size:17px}.topbar .google-welcome-label{display:none}.topbar #googleWelcome{max-width:68px!important}.ph-hero h1{font-size:25px}.ph-hero p{font-size:10px}.ph-shop-button{font-size:11px;padding:8px 12px}.ph-promo-art{font-size:34px}}
+@media(prefers-reduced-motion:reduce){.ph-game-card.roblox{animation:none}#storeView #productGrid .game-tile-btn,.ph-shop-button{transition:none}}
+
+/* Existing inline site rules hide the header wallet; restore the real live wallet control. */
+.topbar .account-wallet-group{display:flex!important}
+.topbar .account-wallet-group .customer-wallet-chip.hidden{display:none!important}

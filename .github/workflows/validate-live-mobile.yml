@@ -51,7 +51,7 @@ jobs:
           assert.match(js,/showRoblox \? robloxParentCard\(\)/);
           assert.match(css,/\.ll-roblox-parent\{/);
           assert.match(css,/\.ll-roblox-subcategories\{/);
-          assert.match(html,/live-mobile\.js\?v=roblox-group2/);
+          assert.match(html,/live-mobile\.js\?v=wallet-nav3/);
           assert.match(html,/live-mobile\.css\?v=google-avatar-left1/);
           const header=html.match(/<header class="topbar">([\s\S]*?)<\/header>/)?.[1]||'';
           assert(header.includes('id="googleProfileButton"'),'Keep authenticated Google photo');
@@ -60,6 +60,9 @@ jobs:
           assert.match(css,/order:9!important/);
           assert.doesNotMatch(css,/#googleProfileButton\{display:none!important\}/,'Do not hide Google photo on mobile');
           assert.match(js,/data-ll-nav/);
+          assert.match(js,/\["wallet", "المحفظة", "wallet"\]/,'Bottom bar must include the wallet tab');
+          assert.match(js,/else routeView\(btn.dataset.llNav\)/,'Wallet tab must navigate to existing wallet screen');
+          assert.match(js,/wallet: '<rect/,'Wallet icon must be present');
           assert.match(js,/data-ll-dot/);
           assert.match(js,/new IntersectionObserver/);
           assert.match(js,/new MutationObserver/);

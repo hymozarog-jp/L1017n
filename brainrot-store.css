@@ -1,0 +1,74 @@
+/* Roblox > Steal a Brainrot subcategory, scoped to Roblox page. */
+#robloxGamePage .rgp-card.steal{border-color:#3a7396;background:#101520}
+#robloxGamePage .rgp-card.steal:hover{border-color:#5bd9e8}
+#robloxGamePage .rgp-card.steal .rgp-card-body{background:linear-gradient(180deg,#10222c,#0a111f)}
+#robloxGamePage .rgp-card.steal .rgp-action{background:linear-gradient(115deg,#1aa8aa,#3260be)}
+#robloxGamePage .rgp-card.steal img{width:100%;height:155px;object-fit:cover;background:linear-gradient(130deg,#173f57,#10243b);padding:0}
+#robloxGamePage .rgp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#robloxGamePage .sab-inner{padding-top:5px;animation:sab-enter .25s ease-out}
+#robloxGamePage .sab-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:17px}
+#robloxGamePage .sab-original-link{color:#8be6fd;font-size:12px;text-decoration:none;border-bottom:1px solid #58adbd80;padding:4px}
+#robloxGamePage .sab-hero{position:relative;isolation:isolate;overflow:hidden;border-radius:25px;min-height:265px;display:grid;grid-template-columns:1fr 45%;border:1px solid #44b6c77e;background:radial-gradient(circle at 80% 0,#187d8770,transparent 53%),linear-gradient(120deg,#10263b,#08111d);box-shadow:0 17px 42px #0006}
+#robloxGamePage .sab-hero-copy{padding:37px 27px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+#robloxGamePage .sab-hero-copy>span{font:800 11px system-ui,sans-serif;letter-spacing:2px;color:#70d8de}
+#robloxGamePage .sab-hero h2{font-size:clamp(28px,5vw,47px);margin:12px 0 0;color:#fff}
+#robloxGamePage .sab-hero p{margin:1px 0 14px;color:#82d9e8;direction:ltr;letter-spacing:1.3px;font:800 13px system-ui,sans-serif}
+#robloxGamePage .sab-hero small{color:#bdcfdb;font-size:13px;line-height:1.9}
+#robloxGamePage .sab-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.13);align-self:stretch}
+#robloxGamePage .sab-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#09172535,transparent 60%);z-index:1}
+#robloxGamePage .sab-section-title{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:28px 0 15px}
+#robloxGamePage .sab-section-title span{display:block;color:#64cbd7;font:800 10px system-ui,sans-serif;letter-spacing:1.7px}
+#robloxGamePage .sab-section-title h2{font-size:24px;margin:5px 0}
+#robloxGamePage .sab-section-title small{color:#accbd1;padding:7px 10px;border:1px solid #2e7b89;border-radius:30px}
+#robloxGamePage .sab-products-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+#robloxGamePage .sab-item-card{position:relative;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;border:1px solid #276478;border-radius:20px;background:linear-gradient(140deg,#1a2937,#0c1522);padding:15px;min-height:274px;box-shadow:0 12px 30px #0004}
+#robloxGamePage .sab-card-top{display:flex;justify-content:space-between;gap:8px;color:#89b8c7}
+#robloxGamePage .sab-card-top small{font:750 9px system-ui,sans-serif;letter-spacing:1px}
+#robloxGamePage .sab-card-top span{color:#c7dde3;font:800 12px system-ui,sans-serif}
+#robloxGamePage .sab-card-art{position:relative;display:grid;place-items:center;flex:1;min-height:104px}
+#robloxGamePage .sab-symbol{display:grid;place-items:center;width:77px;height:77px;border:3px solid #80e8ee;border-radius:23px;transform:rotate(-12deg);background:linear-gradient(140deg,#41bdc7,#244989);box-shadow:0 16px 28px #0009,inset 0 2px #ffffff60;font:900 29px system-ui,sans-serif;color:#fff;z-index:2}
+#robloxGamePage .sab-glow{position:absolute;width:130px;height:75px;background:#20a5b247;border-radius:50%;filter:blur(25px)}
+#robloxGamePage .sab-item-card:nth-child(2) .sab-symbol{background:linear-gradient(135deg,#a45fd5,#53298e);border-color:#d3a7f4}
+#robloxGamePage .sab-item-card:nth-child(3) .sab-symbol{background:linear-gradient(135deg,#ed9265,#9a393d);border-color:#f9b487}
+#robloxGamePage .sab-card-label{font:800 10px system-ui,sans-serif;letter-spacing:1px;color:#87a7bb;direction:ltr;text-align:right}
+#robloxGamePage .sab-item-card h3{font-size:20px;font-weight:900;margin:6px 0 15px;color:#fff}
+#robloxGamePage .sab-card-footer{margin-top:auto;padding-top:13px;border-top:1px solid #ffffff18;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+#robloxGamePage .sab-card-footer strong{font-size:15px;color:#98f5bd}
+#robloxGamePage .sab-unavailable{font-size:11px;color:#e6cca2;background:#deae4a20;border:1px solid #deae4a43;border-radius:30px;padding:7px 10px}
+#robloxGamePage .sab-buy{border:0;border-radius:10px;background:linear-gradient(110deg,#50e5df,#6d99ff);color:#101b26;font-size:11px;font-weight:850;padding:9px 11px;cursor:pointer}
+#robloxGamePage .sab-info{color:#a8bacb;font-size:12px;line-height:1.9;margin-top:18px}
+#robloxGamePage .sab-fetch-error{color:#f0c3b6}
+#sabCheckout{position:fixed;inset:0;z-index:999999;display:grid;place-items:center;padding:17px;background:#000c;direction:rtl}
+#sabCheckout .sab-dialog{position:relative;width:min(100%,440px);background:#111e2a;color:#fff;border:1px solid #48a3ac;border-radius:22px;padding:26px;box-shadow:0 26px 90px #000a}
+#sabCheckout .sab-dialog-close{position:absolute;top:12px;left:14px;cursor:pointer;background:none;border:0;color:#fff;font-size:27px}
+#sabCheckout .sab-dialog-kicker{font:800 10px system-ui,sans-serif;letter-spacing:1.7px;color:#79cbd8}
+#sabCheckout .sab-dialog h2{font-size:28px;margin:12px 0}
+#sabCheckout .sab-dialog-price{color:#a2f0bd;font-size:22px}
+#sabCheckout .sab-dialog p{color:#bdcfda;font-size:13px;line-height:1.9}
+#sabCheckout .sab-dialog label{display:block;margin:16px 0 7px;font-weight:750}
+#sabCheckout .sab-dialog input{display:block;width:100%;box-sizing:border-box;background:#07121c;border:1px solid #5c8192;border-radius:11px;padding:13px;color:#fff}
+#sabCheckout .sab-dialog-actions{display:flex;gap:10px;margin-top:18px}
+#sabCheckout .sab-dialog-actions button{flex:1;border:1px solid #678899;border-radius:12px;padding:12px 9px;color:#fff;background:#1b3545;cursor:pointer;font-weight:750}
+#sabCheckout .sab-dialog-actions button[type=submit]{background:#3899a8;border:0}
+#sabCheckout .sab-dialog-actions button:disabled{opacity:.55;cursor:wait}
+#sabCheckout .sab-dialog-status{min-height:20px;color:#f4c78f}
+@keyframes sab-enter{from{opacity:.3;transform:translateY(15px)}to{opacity:1;transform:none}}
+@media(max-width:720px){
+ #robloxGamePage .rgp-card.steal img{height:130px}
+ #robloxGamePage .sab-hero{min-height:225px}
+ #robloxGamePage .sab-hero-copy{padding:24px 14px}
+ #robloxGamePage .sab-hero h2{font-size:28px}
+ #robloxGamePage .sab-hero p{font-size:10px}
+ #robloxGamePage .sab-hero small{font-size:11px}
+ #robloxGamePage .sab-section-title h2{font-size:21px}
+ #robloxGamePage .sab-products-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #robloxGamePage .sab-item-card{min-height:245px;padding:12px}
+ #robloxGamePage .sab-symbol{width:60px;height:60px;border-radius:19px;font-size:22px}
+ #robloxGamePage .sab-card-top small{font-size:8px}
+ #robloxGamePage .sab-item-card h3{font-size:17px}
+ #robloxGamePage .sab-card-footer{align-items:stretch;flex-direction:column}
+ #robloxGamePage .sab-card-footer strong{font-size:14px}
+ #robloxGamePage .sab-unavailable,#robloxGamePage .sab-buy{text-align:center}
+}
+@media(max-width:365px){#robloxGamePage .sab-hero{grid-template-columns:1fr 36%}#robloxGamePage .sab-nav{align-items:stretch}#robloxGamePage .sab-section-title small{font-size:10px}}
+@media(prefers-reduced-motion:reduce){#robloxGamePage .sab-inner{animation:none}}

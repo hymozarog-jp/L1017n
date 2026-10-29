@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="robux-checkout-bar.css?v=1">
 <link rel="stylesheet" href="robux-checkout-screen.css?v=1">
 <link rel="stylesheet" href="robux-purchase-overlay.css?v=1">
-<link rel="stylesheet" href="game-transitions.css?v=fly2">
+<link rel="stylesheet" href="game-transitions.css?v=fast3">
 <script src="auth-design.js?v=20261028-violet-1" defer></script>
 </head>
 <body>
@@ -139,7 +139,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=instantcodes1';
+      var s=document.createElement('script');s.src='app.js?v=robuxfast1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -150,7 +150,7 @@
   document.head.appendChild(s);
 })();
 </script>
-<script src="game-transitions.js?v=fly2"></script>
+<script src="game-transitions.js?v=fast3"></script>
 <script src="store-menu.js?v=robloxmatch2"></script>
 <script src="libyana-phone.js?v=20261028"></script>
 <script src="instant-code.js?v=instantcodes1"></script>

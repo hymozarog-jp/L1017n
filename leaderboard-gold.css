@@ -101,3 +101,31 @@
  #leaderboardView .lb-podium-avatar{height:52px;width:52px}
  #leaderboardView .lb-podium-card.lb-first .lb-podium-avatar{height:64px;width:64px}
 }
+
+
+/* Compact privacy switch, styled to match the reference screenshot. */
+#leaderboardView .lb-hide-row{
+ display:flex;align-items:center;justify-content:space-between;gap:15px;
+ border-top:1px solid #ffffff1c;margin-top:19px;padding:17px 2px 7px;
+ cursor:pointer;user-select:none;color:#cdd5e6
+}
+#leaderboardView .lb-hide-label{font-size:clamp(13px,2.7vw,17px);font-weight:800;line-height:1.4}
+#leaderboardView .lb-hide-switch{
+ position:relative;flex:0 0 66px;width:66px;height:37px;margin:0;
+ appearance:none;-webkit-appearance:none;border:1px solid #41495b;
+ border-radius:999px;background:#3e4153;cursor:pointer;
+ transition:background .2s ease,border-color .2s ease
+}
+#leaderboardView .lb-hide-switch:before{
+ content:'';display:block;width:29px;height:29px;
+ position:absolute;top:3px;right:3px;border-radius:50%;
+ background:white;box-shadow:0 1px 5px #0004;transition:transform .2s ease
+}
+#leaderboardView .lb-hide-switch:checked{background:#a87c2d;border-color:#d8a63f}
+#leaderboardView .lb-hide-switch:checked:before{transform:translateX(-29px)}
+#leaderboardView .lb-hide-switch:focus-visible{outline:3px solid #f6c94e;outline-offset:3px}
+#leaderboardView .lb-hide-switch:disabled{opacity:.55;cursor:wait}
+#leaderboardView .lb-hide-notice{
+ margin:5px 0 0;font-size:11px;line-height:1.6;color:#a6b0c1
+}
+#leaderboardView .lb-hide-status{margin:4px 0 0;color:#f6ca53;font-size:12px;min-height:0}

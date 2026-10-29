@@ -66,16 +66,16 @@
         { transform: "translate3d(0,0,0) scale(1.08)", opacity: 1, offset: .16 },
         { transform: "translate3d(" + (t.left-r.left)*.88 + "px," + (t.top-r.top)*.88 + "px,0) scale(" + (1+(t.width/r.width-1)*.88) + "," + (1+(t.height/r.height-1)*.88) + ")", opacity: .96, offset: .82 },
         { transform: "translate3d(" + (t.left-r.left) + "px," + (t.top-r.top) + "px,0) scale(" + (t.width/r.width) + "," + (t.height/r.height) + ")", opacity: 0, offset: 1 }
-      ], { duration: 920, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      ], { duration: 450, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
       reveal = next.animate([
         { opacity: 0, transform: "scale(.92) translateX(12px)" },
         { opacity: endOpacity, transform: "scale(1) translateX(0)" }
-      ], { duration: 420, delay: 540, easing: "ease-out", fill: "both" });
+      ], { duration: 270, delay: 90, easing: "ease-out", fill: "both" });
       anim.onfinish = clear;
     }
     observer = new MutationObserver(check);
     observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:["class"] });
-    timer = setTimeout(clear, 2500);
+    timer = setTimeout(clear, 1400);
     requestAnimationFrame(check);
   }
   document.addEventListener("click", function(e) {

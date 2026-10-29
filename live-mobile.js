@@ -275,6 +275,7 @@
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
       ["search", "البحث", "search"],
+      ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],
       ["account", "حسابي", "profile"]
     ].map(([key, label, icon], index) =>

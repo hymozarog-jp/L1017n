@@ -129,3 +129,54 @@
  margin:5px 0 0;font-size:11px;line-height:1.6;color:#a6b0c1
 }
 #leaderboardView .lb-hide-status{margin:4px 0 0;color:#f6ca53;font-size:12px;min-height:0}
+
+/* Ensure Google pictures stay inside the round avatar, never below the name. */
+#leaderboardView .lb-podium-avatar {
+  box-sizing:border-box;
+  isolation:isolate;
+  display:grid;
+  place-items:center;
+}
+#leaderboardView .lb-podium-avatar > img {
+  position:absolute !important;
+  inset:0 !important;
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:cover !important;
+  border-radius:50% !important;
+  z-index:1;
+}
+#leaderboardView .lb-podium-avatar > .lb-podium-medal {z-index:2}
+#leaderboardView .lb-other-avatar {position:relative;isolation:isolate}
+#leaderboardView .lb-other-avatar > img {
+  position:absolute !important;
+  inset:0 !important;
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:cover !important;
+  border-radius:50% !important;
+  z-index:1;
+}
+#leaderboardView .lb-podium-name {
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  min-height:1.5em;
+  color:#f7f9ff;
+  font-weight:850;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  text-align:center;
+}
+#leaderboardView .lb-other-name {color:#f7f9ff}

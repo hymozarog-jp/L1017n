@@ -270,4 +270,25 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #walletView .wallet-recent-head h3{font-size:19px!important}
 }
 </style>
+<style>
+/* Keep full card width, reduce only height; same sizing for both wallets */
+@media(max-width:600px){
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+ flex:0 0 92%!important;
+ width:92%!important;
+ height:155px!important;
+ min-height:155px!important;
+ max-height:155px!important;
+ padding:15px 18px!important;
+ border-radius:20px!important;
+}
+#walletView .wallet-hero-balance{bottom:12px!important;right:18px!important}
+#walletView .wallet-hero-balance strong{font-size:27px!important}
+#walletView .madar-wallet-card-top{gap:10px!important}
+#walletView .madar-wallet-logo{width:43px!important;height:43px!important;font-size:23px!important}
+#walletView .madar-wallet-card p{margin:7px 0!important}
+#walletView .madar-wallet-card button{padding:7px!important}
+}
+</style>
 </body></html>

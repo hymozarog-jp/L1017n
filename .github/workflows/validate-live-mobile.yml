@@ -51,7 +51,7 @@ jobs:
           assert.match(js,/showRoblox \? robloxParentCard\(\)/);
           assert.match(css,/\.ll-roblox-parent\{/);
           assert.match(css,/\.ll-roblox-subcategories\{/);
-          assert.match(html,/live-mobile\.js\?v=wallet-nav3/);
+          assert.match(html,/live-mobile\.js\?v=leaderboard-nav4/);
           assert.match(html,/live-mobile\.css\?v=google-avatar-left1/);
           const header=html.match(/<header class="topbar">([\s\S]*?)<\/header>/)?.[1]||'';
           assert(header.includes('id="googleProfileButton"'),'Keep authenticated Google photo');
@@ -61,6 +61,11 @@ jobs:
           assert.doesNotMatch(css,/#googleProfileButton\{display:none!important\}/,'Do not hide Google photo on mobile');
           assert.match(js,/data-ll-nav/);
           assert.match(js,/\["wallet", "المحفظة", "wallet"\]/,'Bottom bar must include the wallet tab');
+          assert.match(js,/\["leaderboard", "التصنيف", "leaderboard"\]/,'Bottom bar must include the leaderboard tab');
+          assert.doesNotMatch(js,/\["search", "البحث", "search"\]/,'Bottom bar must not show a search tab');
+          assert.match(js,/leaderboard: '<path/,'Leaderboard icon must be present');
+          assert.match(js,/routeView\(btn.dataset.llNav\)/,'Bottom navigation routes to the real leaderboard view');
+          assert.match(old,/leaderboard:\['#leaderboardView'\]/,'Existing leaderboard view is available');
           assert.match(js,/else routeView\(btn.dataset.llNav\)/,'Wallet tab must navigate to existing wallet screen');
           assert.match(js,/wallet: '<rect/,'Wallet icon must be present');
           assert.match(js,/data-ll-dot/);

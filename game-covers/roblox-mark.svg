@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="Roblox">
+<defs>
+  <linearGradient id="metal" x1=".12" y1="0" x2=".75" y2="1">
+    <stop stop-color="#fff"/>
+    <stop offset=".32" stop-color="#f4f7f9"/>
+    <stop offset=".66" stop-color="#bfcbd5"/>
+    <stop offset="1" stop-color="#8b9aa6"/>
+  </linearGradient>
+  <filter id="drop" x="-30%" y="-30%" width="160%" height="170%">
+    <feDropShadow dx="15" dy="23" stdDeviation="16" flood-color="#02050c" flood-opacity=".68"/>
+  </filter>
+</defs>
+<g transform="translate(300 300) rotate(16) scale(.90)" filter="url(#drop)">
+  <path d="M-211 -211H211V211H-211Z M-66 -66V66H66V-66Z" fill="url(#metal)" fill-rule="evenodd"/>
+  <path d="M-211 -211H211V211H-211Z" fill="none" stroke="#d8e1e8" stroke-width="3"/>
+  <path d="M-66 -66H66V66H-66Z" fill="none" stroke="#8796a5" stroke-width="4"/>
+</g>
+</svg>

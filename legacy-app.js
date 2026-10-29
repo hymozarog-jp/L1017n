@@ -163,9 +163,19 @@ if(!phoneGate){phoneGate=document.createElement('div');phoneGate.id='accountPhon
 if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
+ let oauthPhone='';
+ try{oauthPhone=sessionStorage.getItem('l1017n_phone_pending')||''}catch(e){}
+ if(registered && oauthPhone){
+   try{sessionStorage.removeItem('l1017n_phone_pending')}catch(e){}
+   if(registered!==oauthPhone){
+     await supabaseClient.auth.signOut();
+     toast('رقم الهاتف لا يطابق الرقم المرتبط بحساب Google.');
+     await renderAccount();
+     return;
+   }
+ }
  if(!registered){
-   let pending='';
-   try{pending=sessionStorage.getItem('l1017n_phone_pending')||''}catch(e){}
+   let pending=oauthPhone;
    if(pending){
      try{const {error:bindError}=await supabaseClient.rpc('save_my_libyana_phone',{p_phone:pending});if(!bindError)registered=pending;else toast('تعذر ربط رقم الهاتف. ربما مسجل بحساب ثانٍ.');}catch(e){}
      try{sessionStorage.removeItem('l1017n_phone_pending')}catch(e){}

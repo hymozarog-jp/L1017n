@@ -1,0 +1,7 @@
+#robuxPurchaseScreen{position:fixed!important;inset:0!important;z-index:2147483640!important;overflow-y:auto!important;overscroll-behavior:contain;background:linear-gradient(155deg,#142340,#080e1c)!important;color:white!important;padding:calc(25px + env(safe-area-inset-top)) 18px calc(50px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;display:block!important;direction:rtl!important}
+#robuxPurchaseScreen .robux-purchase-back{display:block!important;background:#1d3153!important;color:#fff!important;border:1px solid #46638c!important;border-radius:12px!important;padding:12px 18px!important;margin:0 0 32px!important;font-size:16px!important}
+#robuxPurchaseScreen h2{font-size:26px!important;font-weight:800!important;margin:0 0 22px!important}
+#robuxPurchaseScreen #purchaseBox{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;max-width:600px!important;margin:auto!important}
+#robuxPurchaseScreen #purchaseForm{display:block!important;visibility:visible!important;opacity:1!important;padding:22px 16px!important;border-radius:20px!important;background:#14233b!important;border:1px solid #395175!important}
+#robuxPurchaseScreen #purchaseForm h3,#robuxPurchaseScreen #purchaseForm label{color:#fff!important}
+#robuxPurchaseScreen #robloxUsername{display:block!important;min-width:0!important}

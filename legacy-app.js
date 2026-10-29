@@ -557,6 +557,7 @@ window.openPersonalDetails=openPersonalDetails;
 
 /* PUBG Mobile category selector — separate from Roblox checkout */
 function openPubgCategories(){
+ if(typeof window.renderPremiumPubg === "function") { window.renderPremiumPubg(); return; }
  const image='https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg';
  let page=document.getElementById('pubgCategoryPage');
  if(!page){page=document.createElement('section');page.id='pubgCategoryPage';document.body.appendChild(page)}

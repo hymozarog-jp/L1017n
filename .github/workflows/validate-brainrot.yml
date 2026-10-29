@@ -45,8 +45,8 @@ jobs:
           assert(browser.includes('ensurePurchasePhone'));
           assert(browser.includes('product&&product.active&&Number(product.price)>0'));
           assert(old.includes('steal-a-brainrot'));
-          assert(/brainrot-store\\.js\\?v=steal-inner\\d+/.test(html));
-          assert(/brainrot-store\\.css\\?v=steal-inner\\d+/.test(html));
+          assert(/brainrot-store\.js\?v=steal-inner\d+/.test(html));
+          assert(/brainrot-store\.css\?v=steal-inner\d+/.test(html));
           assert(css.includes('.sab-products-grid'));
           assert(fs.existsSync('game-covers/steal-a-brainrot-original.png'), 'Original Roblox icon is missing');
           console.log('Roblox Steal a Brainrot inner category verified.');

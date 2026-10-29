@@ -335,4 +335,29 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #walletView .primary-wallet-amount strong{font-size:30px;color:#fff;direction:ltr}
 #walletView .wallet-primary-badge{font-size:12px!important}
 @media(max-width:600px){#walletView .primary-wallet-card{min-height:158px;padding:16px 18px;margin:10px 0 15px}#walletView .primary-wallet-symbol{width:53px;height:53px;font-size:30px}#walletView .primary-wallet-amount strong{font-size:26px}}
+</style><style>
+/* Refined signed-in account screen */
+#accountView:not(.hidden){padding-bottom:115px!important}
+#accountView .account-panel{max-width:600px!important;margin:14px auto 25px!important;padding:22px 18px!important;border-radius:26px!important;background:linear-gradient(155deg,#10261c,#0a1812)!important;border:1px solid #365642!important;box-shadow:0 15px 45px #0004!important}
+#accountView .account-avatar{width:74px!important;height:74px!important;border-radius:22px!important;margin:0 auto 14px!important;background:#a6f467!important;color:#102114!important;font-size:42px!important;display:grid!important;place-items:center!important;font-weight:900!important}
+#accountView #accountTitle{text-align:center!important;font-size:23px!important;line-height:1.45!important;margin:5px 0 9px!important;color:#f5fff4!important}
+#accountView #accountText{text-align:center!important;color:#a6baa9!important;font-size:13px!important;line-height:1.8!important;margin:12px 0 20px!important}
+#accountView #signedInProfile{display:flex!important;align-items:center!important;gap:13px!important;text-align:right!important;padding:16px!important;margin:14px 0!important;border:1px solid #355742!important;border-radius:20px!important;background:#172c20!important;min-width:0!important}
+#accountView #signedInProfile.hidden{display:none!important}
+#accountView #signedInProfile>div:last-child{min-width:0!important;flex:1!important}
+#accountView #signedInProfile strong{font-size:17px!important;color:#f3fff0!important;overflow-wrap:anywhere!important}
+#accountView #signedInProfile span{font-size:13px!important;color:#c1d4c4!important;overflow-wrap:anywhere!important;direction:ltr!important;text-align:right!important;line-height:1.6!important}
+#accountView #signedInProfile small{display:inline-block!important;margin-top:7px!important;color:#8deb9d!important;font-size:12px!important}
+#accountView #openAdminDashboard{display:block;margin:17px auto!important;min-height:49px!important;padding:11px 23px!important;border-radius:15px!important;font-size:16px!important;font-weight:800!important}
+#accountView #openAdminDashboard.hidden{display:none!important}
+#accountView #logoutBtn{margin:15px auto!important;border-radius:15px!important}
+#accountView .account-wallet-link{border-radius:15px!important}
+#accountView .account-panel:has(#signedInProfile:not(.hidden)){padding-top:23px!important}
+@media(max-width:600px){
+#accountView{padding-inline:13px!important}
+#accountView .account-panel{padding:19px 15px!important}
+#accountView #signedInProfile{padding:13px!important;gap:11px!important}
+#accountView #signedInProfile img,#accountView #signedInProfile>div:first-child{width:52px!important;height:52px!important;flex-shrink:0!important}
+#accountView #accountTitle{font-size:21px!important}
+}
 </style></body></html>

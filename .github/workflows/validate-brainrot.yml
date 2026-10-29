@@ -52,6 +52,18 @@ jobs:
           assert(!css.includes('grid-template-columns:42% 58%'), 'Steal card should use standard vertical layout');
           assert(menu.includes('.rgp-card:not(.mm2):not(.steal) img'), 'Steal cover should render full bleed like MM2');
           assert(css.includes('.sab-products-grid'));
+          // Each inner page has one common back button and no duplicate hero.
+          assert(menu.includes('setInnerHeader(p,\'MM2\',\'mm2\')'),'MM2 must use the shared compact header');
+          assert(browser.includes('window.setRobloxInnerHeader(root,"ماب السرقة","brainrot")'),'Brainrot must use the shared header');
+          assert(menu.includes('rgp-inner-page .rgp-hero'),'Hide oversized Roblox hero on subcategories');
+          assert(menu.includes('root.scrollTop=0'),'Scroll to the top on navigation');
+          assert(!menu.includes('data-mm2-back'),'Remove duplicate MM2 back control');
+          assert(!browser.includes('data-sab-back'),'Remove duplicate Brainrot back control');
+          assert(!menu.includes('روبلوكس ← باقة MM2'),'No breadcrumb arrows in MM2 page title');
+          assert(!browser.includes('روبلوكس ← ماب السرقة'),'No breadcrumb arrows in Brainrot page title');
+          assert(menu.includes('if(p.classList.contains(\'rgp-inner-page\'))showRobloxPage()'),'Back from inner page returns to Roblox categories');
+          assert(html.includes('store-menu.js?v=inner-layout5'),'Fresh Roblox menu asset version');
+          assert(html.includes('brainrot-store.css?v=inner-layout5'),'Fresh layout stylesheet');
           assert(fs.existsSync('game-covers/steal-a-brainrot-original.png'), 'Original Roblox icon is missing');
           console.log('Roblox Steal a Brainrot inner category verified.');
           JS

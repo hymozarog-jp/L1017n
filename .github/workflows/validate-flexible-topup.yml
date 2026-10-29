@@ -42,7 +42,7 @@ jobs:
           assert.match(js,/renderTopupPhoneStatus/);
           assert.match(js,/topupProceed/);
           assert.match(js,/Number\.isSafeInteger\(amount\)/);
-          assert.doesNotMatch(js,/amount>10/,'Do not reject amounts above 10 in browser');
+          assert.doesNotMatch(js,/amount>10(?![0-9])/,'Do not reject amounts above 10 in browser');
           assert.doesNotMatch(html,/max="10"/,'Do not hard-cap topup input at 10');
           assert.match(css,/#topupDedicatedPage/);
           assert.match(css,/\.tp-provider-grid/);

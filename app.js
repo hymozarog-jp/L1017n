@@ -1,10 +1,10 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=neon-premium10';
+  s.src='legacy-app.js?v=personal-phone12';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');
-    auto.src='auto-topup.js?v=ussd-intent4';
+    auto.src='auto-topup.js?v=personal-phone12';
     auto.onerror=function(){console.error('تعذر تحميل الشحن الآلي');var b=document.getElementById('transferInstructions');if(b)b.textContent='تعذر تحميل خدمة الشحن الآلي؛ لا تحوّل حتى يتم إصلاحها.'};
     document.body.appendChild(auto);
     var ranking=document.createElement('script');

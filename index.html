@@ -141,4 +141,38 @@
 <script src="libyana-phone.js?v=20261028"></script>
 <script src="store-menu.js?v=2"></script>
 <script src="nav-bubble.js?v=1"></script>
+<script>
+/* Reliable checkout navigation: capture Continue before legacy click handlers. */
+document.addEventListener('click',async function(e){
+  var next=e.target.closest('#robuxModal .robux-checkout-next');
+  if(!next)return;
+  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+  var modal=document.getElementById('robuxModal');
+  var selected=modal&&modal.querySelector('.robux-package.selected');
+  if(!selected)return;
+  var box=modal.querySelector('#purchaseBox');
+  if(!box)return;
+  try{
+    if(typeof selectPackage==='function')await selectPackage(selected.getAttribute('data-robux'));
+    if(!box.querySelector('#purchaseForm')){
+      alert('تعذر تحميل نموذج الطلب. حدّث الصفحة وجرب مرة ثانية.');
+      return;
+    }
+    document.getElementById('robuxPurchaseScreen')?.remove();
+    var screen=document.createElement('div');
+    screen.id='robuxPurchaseScreen';
+    screen.dir='rtl';
+    screen.style.cssText='position:fixed!important;inset:0!important;z-index:2147483647!important;overflow:auto!important;display:block!important;background:#0a1428!important;color:white!important;padding:65px 18px 40px!important;box-sizing:border-box!important';
+    var back=document.createElement('button');
+    back.type='button';back.textContent='→ رجوع للباقات';
+    back.style.cssText='padding:12px 18px;border-radius:12px;background:#253c61;color:white;border:1px solid #526c94;margin-bottom:25px';
+    var title=document.createElement('h2');title.textContent='إكمال طلب روبلوكس';
+    screen.append(back,title,box);
+    box.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;max-width:600px;margin:25px auto';
+    back.onclick=function(){modal.querySelector('.robux-store-box').appendChild(box);box.style.display='none';screen.remove()};
+    document.body.appendChild(screen);
+    document.querySelector('#robuxModal .robux-checkout-bar')?.classList.remove('visible');
+  }catch(err){alert('تعذر فتح الطلب: '+(err.message||err))}
+},true);
+</script>
 </body></html>

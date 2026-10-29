@@ -113,7 +113,7 @@
       if(!verified.data?.verified){
         const parent=show('warning','لازم توثّق رقمك أولًا','افتح حسابي ووثّق رقم الهاتف برسالة SMS. ما تحولش رصيد قبل التوثيق.');
         const btn=el('button','btn btn-primary','توثيق رقم الهاتف');
-        btn.type='button';btn.onclick=()=>{if(typeof switchView==='function')switchView('account');};
+        btn.type='button';btn.onclick=async()=>{if(typeof switchView==='function')switchView('account');if(typeof window.openPersonalDetails==='function')await window.openPersonalDetails({focusPhone:true});};
         parent?.append(btn);
         return;
       }

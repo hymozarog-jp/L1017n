@@ -5,6 +5,7 @@
   const ICONS = {
     home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/>',
+    leaderboard: '<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/>',
     orders: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
     profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
     wallet: '<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/>',
@@ -231,7 +232,7 @@
     if (!search) return;
     q("#llSearchWrap")?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
     setTimeout(() => { if (q("#storeView") && !q("#storeView").classList.contains("hidden")) search.focus({ preventScroll: true }); }, 100);
-    updateNavigation("search");
+    updateNavigation("home");
   }
   function makeHeroSlides() {
     return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + slide.theme + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.label) + '">'
@@ -274,7 +275,7 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
-      ["search", "البحث", "search"],
+      ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],
       ["account", "حسابي", "profile"]
@@ -321,8 +322,7 @@
     search.addEventListener("input", () => {
       query = normalize(search.value.trim());
       renderCatalog();
-      if (query) updateNavigation("search");
-      else updateNavigation("home");
+      updateNavigation("home");
     });
     q("#llCategories").addEventListener("click", e => {
       const b = e.target.closest("[data-ll-category]");
@@ -385,8 +385,7 @@
     nav.addEventListener("click", e => {
       const btn=e.target.closest("[data-ll-nav]");
       if (!btn) return;
-      if (btn.dataset.llNav === "search") goSearch();
-      else routeView(btn.dataset.llNav);
+      routeView(btn.dataset.llNav);
     });
     // Keep custom nav highlighting consistent with existing account/wallet/drawer navigation.
     document.addEventListener("click", e => {

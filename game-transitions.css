@@ -1,42 +1,72 @@
-/* L1017n cover-to-cover transition. Never blocks clicks or checkout. */
+/* Visible page + cover transition, with a fallback even when pictures are still loading. */
 .game-cover-flight {
   position: fixed !important;
   z-index: 2147483646 !important;
   pointer-events: none !important;
-  display: block !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, .5) !important;
+  display: block !important;
+  object-fit: cover !important;
   transform-origin: top left !important;
   will-change: transform, opacity;
+  box-shadow: 0 20px 65px rgba(0,0,0,.54) !important;
 }
-@keyframes game-package-enter {
-  from { opacity: 0; transform: translateY(22px) scale(.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes l1017-page-in {
+  from {opacity:.20; transform:translate3d(-85px,24px,0) scale(.91); filter:blur(7px)}
+  to {opacity:1; transform:translate3d(0,0,0) scale(1); filter:blur(0)}
+}
+@keyframes l1017-image-in {
+  from {transform:translate3d(80px,0,0) scale(1.25); filter:brightness(1.3)}
+  to {transform:translate3d(0,0,0) scale(1); filter:brightness(1)}
+}
+@keyframes l1017-card-in {
+  from {opacity:0; transform:translate3d(0,35px,0) scale(.9)}
+  to {opacity:1; transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes l1017-card-selected {
+  0% {transform:translateY(0) scale(1)}
+  48% {transform:translateY(-11px) scale(1.11)}
+  100% {transform:translateY(0) scale(1)}
+}
+#robloxGamePage .rgp-hero,
+#robuxModal:not(.hidden) .robux-reference-hero,
+#pubgCategoryPage.visible .pubg-hero {
+  animation:l1017-page-in 880ms cubic-bezier(.22,1,.36,1) both;
+}
+#robloxGamePage .rgp-hero img,
+#robuxModal:not(.hidden) .robux-reference-logo img,
+#pubgCategoryPage.visible .pubg-hero img {
+  animation:l1017-image-in 1080ms cubic-bezier(.22,1,.36,1) both;
 }
 #robloxGamePage .rgp-card,
 #robuxModal:not(.hidden) .robux-package,
 #pubgCategoryPage.visible .pubg-category {
-  animation: game-package-enter 520ms cubic-bezier(.22,1,.36,1) both;
+  animation:l1017-card-in 570ms cubic-bezier(.22,1,.36,1) both;
 }
 #robloxGamePage .rgp-card:nth-child(2),
 #robuxModal:not(.hidden) .robux-package:nth-child(2),
-#pubgCategoryPage.visible .pubg-category:nth-child(2) { animation-delay: 80ms; }
+#pubgCategoryPage.visible .pubg-category:nth-child(2) { animation-delay:90ms; }
 #robuxModal:not(.hidden) .robux-package:nth-child(3),
-#pubgCategoryPage.visible .pubg-category:nth-child(3) { animation-delay: 130ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(4) { animation-delay: 180ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(5) { animation-delay: 230ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(6) { animation-delay: 280ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(7) { animation-delay: 330ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(8) { animation-delay: 380ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(9) { animation-delay: 430ms; }
-#robuxModal:not(.hidden) .robux-package:nth-child(10) { animation-delay: 480ms; }
+#pubgCategoryPage.visible .pubg-category:nth-child(3) { animation-delay:150ms; }
+#robuxModal:not(.hidden) .robux-package:nth-child(4) {animation-delay:210ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(5) {animation-delay:270ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(6) {animation-delay:330ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(7) {animation-delay:390ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(8) {animation-delay:450ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(9) {animation-delay:510ms;}
+#robuxModal:not(.hidden) .robux-package:nth-child(10) {animation-delay:570ms;}
+#robuxModal .robux-package.selected .robux-art {
+  animation: l1017-card-selected 580ms ease-out both;
+}
 @media (prefers-reduced-motion: reduce) {
-  #robloxGamePage .rgp-card,
-  #robuxModal:not(.hidden) .robux-package,
-  #pubgCategoryPage.visible .pubg-category {
+  #robloxGamePage .rgp-hero, #robuxModal .robux-reference-hero,
+  #pubgCategoryPage .pubg-hero, #robloxGamePage .rgp-hero img,
+  #robuxModal .robux-reference-logo img, #pubgCategoryPage .pubg-hero img,
+  #robloxGamePage .rgp-card, #robuxModal .robux-package,
+  #pubgCategoryPage .pubg-category,
+  #robuxModal .robux-package.selected .robux-art {
     animation: none !important;
   }
 }

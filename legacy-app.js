@@ -259,7 +259,16 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'||
 $('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>switchView('wallet'));$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');
-   if(OAUTH_ERROR)toast('تعذر إكمال دخول Google. تأكد من تفعيل Google في Supabase أو جرّب Chrome.');
+   if(OAUTH_ERROR){
+     const oauthParams=new URLSearchParams(window.location.search);
+     const desc=oauthParams.get('error_description')||'';
+     const msg=/invalid_client|client secret|unable to exchange external code/i.test(desc)
+       ? 'تعذر الدخول بحساب Google بسبب إعدادات الربط في المتجر. يجب على الإدارة تصحيح Google Client Secret في Supabase.'
+       : 'تعذر إكمال الدخول باستخدام Google. تواصل مع إدارة المتجر للتحقق من إعدادات تسجيل Google.';
+     const status=$('#authStatus');if(status)status.textContent=msg;
+     toast(msg);
+     try{window.history.replaceState({},'',window.location.pathname)}catch(e){}
+   }
  }
 }).catch(err=>console.warn('Account setup unavailable',err));refreshHomeShowcase();/* Keep storefront open on initial visit except OAuth returns. */
 

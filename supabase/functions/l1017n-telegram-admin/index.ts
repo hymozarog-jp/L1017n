@@ -259,6 +259,17 @@ Deno.serve(async (request: Request) => {
       reply = "الأمر غير معروف. اكتب /help لعرض الأوامر.";
     }
 
+    // Code commands contain supplier secrets. Best-effort remove the original message
+    // from the private bot conversation once handled; do not echo the secret.
+    if (command === "code" && Number.isSafeInteger(message?.message_id)) {
+      try {
+        await fetch("https://api.telegram.org/bot" + token + "/deleteMessage", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, message_id: message!.message_id }),
+        });
+      } catch { /* deletion is best-effort */ }
+    }
     await telegramMessage(token, chatId!, reply);
     return json({ ok: true });
   } catch (error) {

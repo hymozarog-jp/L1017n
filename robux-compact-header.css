@@ -1,0 +1,11 @@
+/* Compact Roblox header so shoppers see packages sooner */
+#robuxModal .robux-reference-hero{min-height:245px!important;padding-top:max(48px,calc(38px + env(safe-area-inset-top,0px)))!important;padding-bottom:12px!important}
+#robuxModal .robux-reference-logo{width:82px!important;height:82px!important;border-width:4px!important;border-radius:22px!important}
+#robuxModal .robux-reference-hero h1{font-size:27px!important;margin:9px 0 9px!important}
+#robuxModal .robux-reference-tag{padding:5px 13px!important;font-size:12px!important}
+#robuxModal .robux-reference-features{margin-bottom:14px!important;padding:10px 6px!important;border-radius:19px!important}
+#robuxModal .robux-reference-features>span{font-size:21px!important;gap:2px!important}
+#robuxModal .robux-reference-features small{font-size:11px!important}
+#robuxModal .robux-reference-region{padding:12px 15px!important;margin-bottom:12px!important;border-radius:16px!important}
+#robuxModal .robux-reference-section{font-size:22px!important;margin:12px 0!important}
+@media(max-width:420px){#robuxModal .robux-reference-hero{min-height:225px!important;padding-top:max(44px,calc(35px + env(safe-area-inset-top,0px)))!important}#robuxModal .robux-reference-logo{width:75px!important;height:75px!important}}

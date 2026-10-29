@@ -25,7 +25,7 @@ function renderProducts(){
  const isMm2Game=game=>/^(?:mm2|roblox[\s_-]*mm2|murder[\s_-]*mystery[\s_-]*2)$/i.test(String(game||'').trim());
  const existingGames=new Set(games.map(x=>x.key));
  for(const game of new Set(products.map(p=>String(p.game||'').trim().toLowerCase()))){
-  if(!game||existingGames.has(game)||isMm2Game(game))continue;
+  if(!game||existingGames.has(game)||isMm2Game(game)||/^(?:steal-a-brainrot|brainrot|stealabrainrot)$/i.test(game))continue;
   const items=products.filter(p=>String(p.game||'').trim().toLowerCase()===game);
   games.push({name:game.replace(/[-_]/g,' '),category:'ألعاب الهواتف',image:'',key:game,count:items.length});
  }

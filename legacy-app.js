@@ -304,18 +304,20 @@ async function loadLeaderboard(){
   if(!list)return;
   list.innerHTML='<p class="muted">جاري تحميل الترتيب…</p>';
   try{
-    const {data:profiles,error:profileError}=await supabaseClient.from('leaderboard_profiles').select('user_id,nickname').eq('public_visible',true);
-    if(profileError)throw profileError;
-    if(!profiles?.length){list.innerHTML='<p class="muted">ما فيش مشاركين ظاهرين في الترتيب حتى الآن. تقدر تفعّل المشاركة من حسابك.</p>';return}
-    const ids=profiles.map(p=>p.user_id);
-    const {data:orders,error:ordersError}=await supabaseClient.from('purchase_orders').select('user_id,total_amount').eq('status','completed').in('user_id',ids);
-    if(ordersError)throw ordersError;
-    const totals=new Map(profiles.map(p=>[p.user_id,{nickname:p.nickname,points:0}]));
-    (orders||[]).forEach(o=>{const item=totals.get(o.user_id);if(item)item.points+=Number(o.total_amount)||0});
-    const ranked=[...totals.values()].sort((a,b)=>b.points-a.points);
-    if(!ranked.length){list.innerHTML='<p class="muted">ما فيش مشتريات مكتملة للمشاركين حتى الآن.</p>';return}
-    list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>'<div class="leaderboard-row"><span class="leaderboard-rank">'+(i+1)+'</span><span class="leaderboard-nickname">'+escapeHtml(p.nickname)+'</span><strong class="leaderboard-points">'+Math.round(p.points).toLocaleString('ar-LY')+' نقطة</strong></div>').join('')+'</div>';
+    // Public, server-side ranking. Never request other shoppers' order details
+    // from the browser; the RPC only returns opted-in nicknames and points.
+    const {data,error}=await supabaseClient.rpc('get_store_leaderboard');
+    if(error)throw error;
+    const ranked=Array.isArray(data)?data:[];
+    if(!ranked.length){
+      list.innerHTML='<p class="muted">ما فيش متسوقين مشاركين عندهم مشتريات مكتملة حتى الآن. تقدر تشارك باسم مستعار من إعدادات حسابك.</p>';
+      return;
+    }
+    list.innerHTML='<div class="leaderboard-rows">'+ranked.map((p,i)=>
+      '<div class="leaderboard-row"><span class="leaderboard-rank">'+(Number(p.rank)||i+1)+'</span><span class="leaderboard-nickname">'+escapeHtml(p.nickname||'متسوق')+'</span><strong class="leaderboard-points">'+Math.round(Number(p.points)||0).toLocaleString('ar-LY')+' نقطة</strong></div>'
+    ).join('')+'</div>';
   }catch(error){
+    console.warn('Public leaderboard unavailable',error);
     list.innerHTML='<p class="muted">تعذر تحميل الترتيب حالياً. حاول تحديث الصفحة بعد قليل.</p>';
   }
 }

@@ -199,9 +199,9 @@ if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
  if(registered){
-   phoneGate.innerHTML='<strong>📱 رقم الهاتف المرتبط بحسابك:</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">الرقم حصري لهذا الحساب. ربطه بالشحن الآلي يحتاج تحقق الإدارة من ملكيته أول مرة.</p>';
+   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">الرقم خاص بحسابك. لإثبات ملكيته، أكمل التأكيد برسالة SMS من هذه الصفحة.</p>';
  }else{
-   phoneGate.innerHTML='<h3>📱 أكمل حسابك برقم الهاتف</h3><p>رقم الهاتف إلزامي ويُستخدم في حساب واحد فقط.</p><form id="accountPhoneForm"><input id="accountPhoneInput" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" required><button class="btn btn-primary" type="submit">حفظ رقم الهاتف</button></form><p id="accountPhoneError" role="status"></p>';
+   phoneGate.innerHTML='<h3>إضافة رقم الهاتف</h3><p>اكتب رقم ليبيانا أو المدار الخاص بك، بعدها بنرسل لك رمز SMS للتوثيق.</p><form id="accountPhoneForm"><label for="accountPhoneInput">رقم الهاتف</label><input id="accountPhoneInput" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="tel-national" required><button class="btn btn-primary" type="submit">حفظ الرقم</button></form><p id="accountPhoneError" role="status"></p>';
    const form=phoneGate.querySelector('#accountPhoneForm');
    form.onsubmit=async ev=>{ev.preventDefault();const value=normalizeStorePhoneInput(phoneGate.querySelector('#accountPhoneInput').value);const errorBox=phoneGate.querySelector('#accountPhoneError');if(!value){errorBox.textContent='اكتب رقمًا ليبيًا صحيحًا: 09xxxxxxxx';return}const {error}=await supabaseClient.rpc('save_my_libyana_phone',{p_phone:value});if(error){errorBox.textContent='تعذر الحفظ. قد يكون الرقم مربوطًا بحساب آخر.';return}toast('تم حفظ رقم الهاتف لحسابك فقط');await renderAccount();await renderWallet()};
  }

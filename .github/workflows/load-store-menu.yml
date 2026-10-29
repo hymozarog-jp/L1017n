@@ -1,4 +1,4 @@
-name: Load Roblox subcategory menu
+name: Ensure Roblox subcategory menu is linked
 on:
   push:
     branches: [main]
@@ -9,26 +9,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add store menu loader
+      - name: Add menu loader only if none exists
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          old = '<script src="store-menu.js?v=1"></script>'
-          new = '<script src="store-menu.js?v=2"></script>'
-          if old in s:
-              s = s.replace(old, new)
-          elif new not in s:
+          # Respect the existing versioned script. Never append a second copy.
+          if re.search(r'<script\b[^>]*\bsrc=["\']store-menu\.js(?:\?[^"\']*)?["\'][^>]*></script>', s, re.I):
+              print('Roblox menu loader already exists')
+          else:
               marker = '</body>'
               if marker not in s:
                   raise SystemExit('Could not find </body> in index.html')
-              s = s.replace(marker, new + '\n' + marker, 1)
-          p.write_text(s, encoding='utf-8')
+              s = s.replace(marker, '<script src="store-menu.js?v=instantcodes1"></script>\n' + marker, 1)
+              p.write_text(s, encoding='utf-8')
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git diff --quiet; then exit 0; fi
           git add index.html
-          git commit -m "Bump Roblox menu script cache version"
+          git commit -m "Keep a single Roblox menu loader"
           git push

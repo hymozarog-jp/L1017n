@@ -1,0 +1,114 @@
+/* Unified storefront presentation. No changes to prices, stock or payment logic. */
+:root{--shop-accent:#b4a1ff;--shop-border:#ffffff18;--shop-surface:#11172b;--shop-muted:#aab5d0}
+body{background:radial-gradient(ellipse at 80% 0%,#28204a55,transparent 42%),#080c19!important}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,a{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #c6b8ff!important;outline-offset:4px}
+.topbar{background:#0b1021f5!important;box-shadow:0 5px 25px #0002!important;border-color:var(--shop-border)!important}
+#storeView{max-width:1200px!important}
+#storeView .section-head h2::before{content:none!important}
+#storeView .section-head h2{font-size:clamp(25px,3vw,34px)!important;letter-spacing:-.7px}
+#storeView .section-head p{font-size:14px;line-height:1.8}
+#storeView .section-head{gap:14px;flex-wrap:wrap}
+#storeView .ph-section-count{border:1px solid var(--shop-border);border-radius:30px;padding:7px 12px;background:#ffffff04}
+#storeView .ph-slider{border:1px solid #9f8bff40;box-shadow:0 14px 45px #0003;border-radius:26px}
+#storeView .ph-slide{min-height:310px}
+#storeView .ph-slide-content{padding:32px}
+#storeView .ph-slide h1,#storeView .ph-slide h2{font-size:clamp(28px,4vw,48px);letter-spacing:-1px;line-height:1.35}
+#storeView .ph-slide p{font-size:14px;line-height:1.85;max-width:400px;color:#d4d7ef}
+#storeView .ph-slide-button{min-height:46px;font-size:13px;border-radius:14px;box-shadow:0 5px 20px #0002}
+#storeView .ph-slider-toolbar{background:#11152b;border-color:var(--shop-border);gap:20px;padding:10px 16px}
+#storeView .ph-slider-arrow{width:40px;height:40px;border-color:#ffffff25;background:#ffffff06}
+#storeView .ph-slider-dot{height:12px;min-width:12px;border:0}
+.ph-search-wrap{margin:22px 0 12px}
+.ph-search-wrap input{height:56px;border-radius:16px;background:#11172b;border-color:var(--shop-border);box-shadow:none}
+.ph-filter{background:#11172b;border-color:var(--shop-border);box-shadow:none;border-radius:12px;font-size:13px}
+.ph-filter[aria-pressed="true"]{background:#a992ff1a;color:#d7caff;border-color:#a992ff80;box-shadow:none}
+#storeView #productGrid .game-tiles{gap:18px!important}
+#storeView #productGrid .game-tile-btn{border-radius:22px!important;border-color:#ffffff20!important;background:#11172b!important;box-shadow:0 8px 24px #0002!important;transition:transform .18s ease,border-color .18s ease!important}
+#storeView #productGrid .game-tile-art{aspect-ratio:1.35!important;background:#182039!important}
+#storeView #productGrid .game-tile-art img{object-position:center 35%;filter:none!important;transition:transform .24s ease}
+#storeView #productGrid .game-tile-art::after{inset:0;background:linear-gradient(0deg,#0b102180,transparent 60%)}
+#storeView #productGrid .game-tile-brand{display:none!important}
+#storeView #productGrid .game-tile-info{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column;align-items:stretch!important;gap:5px;min-height:80px!important;padding:16px!important;background:#11172b!important;border-top:1px solid var(--shop-border)}
+#storeView #productGrid .game-tile-info strong{display:flex;align-items:center;justify-content:space-between;font-size:17px!important}
+#storeView #productGrid .game-tile-info strong::before{content:none!important}
+#storeView #productGrid .game-tile-info strong::after{content:'↗';font:20px/1 Arial;color:var(--shop-accent);background:#a992ff10;border:1px solid #a992ff30;border-radius:10px;width:30px;height:30px;display:grid;place-items:center}
+#storeView #productGrid .game-tile-info small{display:block!important;text-align:right;color:var(--shop-muted)!important;font-size:12px!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art img{width:76%!important;height:76%!important;left:12%!important;top:12%!important;filter:drop-shadow(0 12px 16px #0004)!important}
+#storeView #productGrid .game-tile:has(.game-art-roblox) .game-tile-art{background:radial-gradient(circle at 50% 45%,#52478b,#192039 80%)!important}
+#storeView #productGrid .game-tile[hidden]{display:none!important}
+/* Shared catalog and category styling. */
+#robloxGamePage,#pubgCategoryPage,#robuxModal.robux-full-page{background:radial-gradient(ellipse at 50% 0%,#282044 0,transparent 45%),#080c19!important}
+#robloxGamePage .rgp-hero{border-color:#a992ff40!important;box-shadow:none!important;border-radius:24px!important;background:#15182d!important}
+#robloxGamePage .rgp-kicker{color:#c0adff!important}
+#robloxGamePage .rgp-title{font-size:24px!important}
+#robloxGamePage .rgp-card{border-color:var(--shop-border)!important;border-radius:20px!important;box-shadow:0 8px 24px #0002!important}
+#robloxGamePage .rgp-card img{height:auto!important;aspect-ratio:1.5;object-fit:cover}
+#robloxGamePage .rgp-card-body,#robloxGamePage .rgp-card.mm2 .rgp-card-body{background:#11172b!important}
+#robloxGamePage .rgp-card h3{font-size:20px!important}
+#robloxGamePage .rgp-card p{font-size:13px!important;line-height:1.8}
+#robloxGamePage .rgp-action{border-radius:12px!important;line-height:1.6}
+#robloxGamePage .rgp-package{background:#11172b!important;border-color:#a992ff40!important}
+#robuxModal.robux-full-page .robux-store-box{background:transparent!important;max-width:900px!important}
+#robuxModal .robux-reference-hero{background:transparent!important;min-height:260px!important;padding-top:75px!important;padding-bottom:22px!important}
+#robuxModal .robux-reference-logo{width:94px!important;height:94px!important;border-radius:24px!important;border:1px solid #ffffff20!important;box-shadow:0 12px 30px #0004!important;background:#171b30!important}
+#robuxModal .robux-reference-hero h1{font-size:30px!important;margin:14px 0 10px!important}
+#robuxModal .robux-reference-tag{background:#a992ff12!important;color:#cabaff!important;font-size:12px}
+#robuxModal .robux-reference-features{background:#11172b!important;border-color:var(--shop-border)!important;border-radius:18px!important;padding:13px 8px!important;margin-bottom:22px!important;box-shadow:none!important}
+#robuxModal .robux-reference-features>span{color:#b9a8ff!important;border-color:var(--shop-border)!important;font-size:22px!important}
+#robuxModal .robux-reference-features small{font-size:11px!important}
+#robuxModal .robux-reference-section{font-size:23px!important;margin:24px 0 16px!important}
+#robuxModal .package-grid{gap:14px!important}
+#robuxModal .robux-package{aspect-ratio:auto!important;min-height:228px!important;border:1px solid #ffffff24!important;border-radius:20px!important;background:#11172b!important;box-shadow:0 8px 24px #0002!important;transition:transform .18s,border-color .18s,box-shadow .18s!important}
+#robuxModal .robux-package::before{inset:0 0 auto!important;height:112px;background:radial-gradient(ellipse at 50% 20%,#6a539052,#20203900)!important}
+#robuxModal .robux-art{top:18px!important;left:calc(50% - 36px)!important;width:72px!important;height:72px!important;border:0!important;box-shadow:none!important;border-radius:18px!important;background:transparent!important}
+#robuxModal .robux-art img{object-fit:contain!important}
+#robuxModal .robux-plus{top:10px!important;left:10px!important;width:28px!important;height:28px!important;font-size:21px!important;border:1px solid #ffffff25!important;background:#ffffff08!important;color:#bdaaff!important}
+#robuxModal .robux-package>span:not(.robux-art):not(.robux-plus){padding:14px!important;min-height:122px!important;align-items:flex-start!important;background:transparent!important;gap:3px}
+#robuxModal .robux-package strong{font-size:18px!important;line-height:1.6!important}
+#robuxModal .robux-package small:not(.stock-label){align-self:flex-start!important;font-size:18px!important;color:#d9cdff!important;background:#a992ff12!important;border:1px solid #a992ff22;padding:5px 11px!important;border-radius:10px!important;margin-top:3px!important;font-variant-numeric:tabular-nums}
+#robuxModal .robux-package .stock-label{align-self:flex-start!important;font-size:11px!important;color:#b3bfd5!important;line-height:1.6;white-space:normal!important}
+#robuxModal .robux-package.selected{border-color:#bca6ff!important;box-shadow:0 0 0 2px #a992ff33!important;background:#1c2038!important;transform:none!important}
+#robuxModal .robux-package.selected .robux-plus{color:#151124!important;background:#c0aaff!important}
+#robuxModal .robux-package:disabled{opacity:.48!important;cursor:not-allowed}
+#robuxModal .package-close{width:44px!important;height:44px!important;background:#171c30!important;border:1px solid var(--shop-border)!important}
+.robux-checkout-bar{background:#13192df5!important;border-color:#a992ff55!important;box-shadow:0 -8px 30px #0003!important}
+.robux-checkout-next{background:#b7a0ff!important;color:#171024!important;border-radius:13px!important}
+#storePurchaseBox .digital-game-preview{background:#11172b!important;border:1px solid #a992ff30!important}
+#storePurchaseBox .digital-game-preview>div:not(.digital-game-cover){background:#ffffff04;border:1px solid #ffffff16!important;border-radius:16px;margin-bottom:12px;padding:16px!important}
+#storePurchaseBox .digital-game-preview>div>span{color:#d0bdff;font-weight:700;font-variant-numeric:tabular-nums}
+#storePurchaseBox .digital-game-preview .btn-primary{border-radius:12px;background:#b7a0ff;color:#171024;min-height:44px}
+#pubgCategoryPage .pubg-hero{padding-top:38px!important}
+#pubgCategoryPage .pubg-category img{aspect-ratio:1!important;border:1px solid #ffffff25!important;border-radius:20px!important}
+#pubgCategoryPage .pubg-features{border-color:var(--shop-border)!important;background:#11172b!important}
+.mobile-nav{background:#10162bf5!important;border-color:#ffffff24!important;box-shadow:0 6px 30px #0006!important}
+.mobile-nav .nav-follow-bubble{box-shadow:none!important;border-color:#b7a0ff55!important;background:#a992ff24!important}
+@media(hover:hover){#storeView #productGrid .game-tile-btn:hover{transform:translateY(-3px)!important;border-color:#a992ff80!important;box-shadow:0 10px 25px #0003!important}#storeView #productGrid .game-tile-btn:hover img{transform:scale(1.035)}#robuxModal .robux-package:not(:disabled):hover{border-color:#bca6ff!important;transform:translateY(-2px)}}
+@media(min-width:960px){#storeView #productGrid .game-tiles{grid-template-columns:repeat(4,minmax(0,1fr))!important}#robuxModal .package-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:620px){
+ #storeView{padding:16px 14px 30px!important}
+ #storeView .ph-slider{border-radius:22px}
+ #storeView .ph-slide{min-height:245px;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)}
+ #storeView .ph-slide-content{padding:20px 8px 20px 16px}
+ #storeView .ph-slide h1,#storeView .ph-slide h2{font-size:27px;letter-spacing:-.5px}
+ #storeView .ph-slide p{font-size:12px;line-height:1.8}
+ #storeView .ph-slide-button{font-size:11px;min-height:44px;padding:8px 12px}
+ #storeView .ph-slide-eyebrow{font-size:9px}
+ #storeView .ph-slide-art img{max-height:150px}
+ #storeView #productGrid .game-tiles{gap:12px!important}
+ #storeView #productGrid .game-tile-btn{border-radius:18px!important}
+ #storeView #productGrid .game-tile-info{padding:12px!important;min-height:76px!important}
+ #storeView #productGrid .game-tile-info strong{font-size:14px!important}
+ #storeView #productGrid .game-tile-info small{font-size:11px!important}
+ #storeView .section-head{margin-top:20px!important}
+ #robuxModal .package-grid{gap:11px!important}
+ #robuxModal .robux-package{min-height:222px!important;border-radius:18px!important}
+ #robuxModal .robux-package strong{font-size:16px!important}
+ #robuxModal .robux-package>span:not(.robux-art):not(.robux-plus){padding:12px!important}
+ #robuxModal .robux-package small:not(.stock-label){font-size:16px!important}
+ #robloxGamePage .rgp-card-body{padding:13px!important}
+ #robloxGamePage .rgp-card h3{font-size:17px!important}
+ #robloxGamePage .rgp-action{font-size:11px!important;padding:8px!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

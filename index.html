@@ -43,7 +43,7 @@
     <p id="authIntro">سجّل دخولك وتابع طلباتك</p>
   </div>
   <div class="panel account-panel">
-    <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك بالبريد الإلكتروني وكلمة المرور، أو أنشئ حساب جديد.</p>
+    <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك بالبريد وكلمة المرور ورقم الهاتف، أو أنشئ حسابًا جديدًا. نفس الرقم لحساب واحد فقط.</p>
     <form id="authForm">
       <div class="auth-mode-switch" role="group" aria-label="نوع الحساب">
         <button id="authModeLogin" class="btn btn-soft active" type="button" aria-pressed="true">تسجيل الدخول</button>
@@ -53,6 +53,9 @@
         <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
         <input id="authEmail" name="email" type="email" dir="ltr" placeholder="name@example.com" autocomplete="email" autocapitalize="none" spellcheck="false" required>
       </div></div>
+      <div class="auth-field"><label for="authPhone">رقم الهاتف (إلزامي — رقم واحد لكل حساب)</label><div class="auth-input-wrap">
+        <input id="authPhone" name="phone" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="tel-national" minlength="9" maxlength="18" required>
+      </div><small class="form-note">اكتب رقمك اللي تحوّل منه الرصيد. ما ينفعش تسجيله في حسابين. إدخال الرقم مش إثبات لملكيته.</small></div>
       <div class="auth-field"><label for="authPassword">كلمة المرور</label><div class="auth-input-wrap">
         <input id="authPassword" name="password" type="password" dir="ltr" placeholder="••••••••" minlength="6" autocomplete="current-password" aria-describedby="authStatus" required>
         <button type="button" id="authPasswordToggle" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="auth-eye-slash" d="m4 4 16 16"/></svg></button>
@@ -139,7 +142,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=sms-auto1';
+      var s=document.createElement('script');s.src='app.js?v=phone-unique1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

@@ -4,7 +4,7 @@
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
   var robloxImage='game-covers/roblox-mark.svg?v=logo-square1';
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
-  var brainrotImage='https://tr.rbxcdn.com/180DAY-0a1cbd9f3000421ffcb5541f5c2f5fac/768/432/Image/Png/noFilter';
+  var brainrotImage='game-covers/steal-a-brainrot-original.png';
   var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
   var styleId='robloxGamePageStyles';
 

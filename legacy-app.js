@@ -17,9 +17,9 @@ function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
  {name:'روبلوكس',category:'ألعاب',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
- {name:'فورت نايت',category:'ألعاب',image:'https://images.launchbox-app.com/5aca9e55-9c6d-421e-b6f9-8910b82c11fc.jpg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length},
  {name:'فري فاير',category:'ألعاب',image:'https://images.launchbox-app.com/1a210ab9-e0f5-46f0-967b-ec5703e7e28c.jpg',key:'freefire',count:products.filter(p=>/free ?fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
- {name:'ببجي موبايل',category:'ألعاب',image:'https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length}
+ {name:'ببجي موبايل',category:'ألعاب',image:'https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
+ {name:'فورت نايت',category:'ألعاب',image:'https://images.launchbox-app.com/5aca9e55-9c6d-421e-b6f9-8910b82c11fc.jpg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
  ];
  // MM2 is a Roblox subcategory, never an independent game on the home page.
  const isMm2Game=game=>/^(?:mm2|roblox[\s_-]*mm2|murder[\s_-]*mystery[\s_-]*2)$/i.test(String(game||'').trim());

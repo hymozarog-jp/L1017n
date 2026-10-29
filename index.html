@@ -186,7 +186,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=auto-libyana1';
+      var s=document.createElement('script');s.src='app.js?v=resala-required2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -201,8 +201,8 @@
 <script src="store-menu.js?v=logo-square1"></script>
 <script src="libyana-phone.js?v=20261028"></script>
 <script src="resala-otp.js?v=1"></script>
-<script src="purchase-phone.js?v=phone-checkout1"></script>
-<script src="instant-code.js?v=phone-checkout1"></script>
+<script src="purchase-phone.js?v=resala-required2"></script>
+<script src="instant-code.js?v=resala-required2"></script>
 <script src="nav-bubble.js?v=1"></script>
 <script>
 /* Reliable checkout navigation: capture Continue before legacy click handlers. */

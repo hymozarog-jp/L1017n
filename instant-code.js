@@ -12,6 +12,7 @@
     if (/product_not_available|manual_fulfillment_required/i.test(text)) return 'هذه الباقة غير متاحة للتسليم الفوري.';
     if (/not_authenticated|JWT|unauthorized/i.test(text)) return 'سجّل الدخول أولاً للشراء.';
     if (/phone_required_before_purchase/i.test(text)) return 'لازم تضيف رقم هاتفك لحسابك قبل الشراء.';
+    if (/phone_verification_required_before_purchase/i.test(text)) return 'لازم توثّق رقم هاتفك برسالة SMS من صفحة حسابي قبل الشراء.';
     return 'تعذر إتمام الشراء. تحقق من طلباتك قبل المحاولة مرة ثانية.';
   }
   function showDeliveredCode(name,code){

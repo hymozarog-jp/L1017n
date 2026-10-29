@@ -1,4 +1,4 @@
-/* Require a saved, unique Libyan phone number before any customer checkout. */
+/* Require a saved AND Resala-SMS-verified Libyan phone before checkout. */
 (function(){
   'use strict';
   let pending=null;
@@ -93,6 +93,31 @@
       field.focus();
     });
   }
+
+  // A saved number is NOT proof of ownership: only Resala's server-side
+  // verified record for the same signed-in account unlocks checkout.
+  async function requireVerifiedPhone(db) {
+    let state;
+    try {
+      const { data, error } = await db.functions.invoke("l1017n-resala-otp", {
+        body: { action: "status" }
+      });
+      if (error || !data || data.configured !== true) throw Error("verification_unavailable");
+      state = data;
+    } catch (error) {
+      console.warn("Cannot confirm Resala verification", error);
+      alert("خدمة توثيق رقم الهاتف غير متاحة حاليًا. لا يمكن إكمال الشراء حتى نتأكد من التوثيق.");
+      return false;
+    }
+    if (state.verified === true) return true;
+    // Do not debit wallets or reserve stock; send the customer to the
+    // already-existing Resala SMS widget in the account page.
+    if (typeof closeRobuxPackages === "function") closeRobuxPackages();
+    if (typeof switchView === "function") switchView("account");
+    alert("لازم توثّق رقم هاتفك برسالة SMS قبل الشراء. افتح «حسابي»، اضغط «إرسال رمز التحقق»، وأدخل الرمز. بعدها ارجع للباقة.");
+    return false;
+  }
+
   window.ensurePurchasePhone=async function(){
     if(pending)return pending;
     pending=(async()=>{
@@ -104,8 +129,11 @@
         if(auth.error||!user)return false;
         const check=await db.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
         if(check.error)throw check.error;
-        if(check.data?.libyana_phone)return true;
-        return await modal(db,user);
+        if (!check.data?.libyana_phone) {
+          const saved=await modal(db,user);
+          if (!saved) return false;
+        }
+        return await requireVerifiedPhone(db);
       }catch(error){
         console.warn('Purchase phone check unavailable',error);
         if(typeof toast==='function')toast('تعذر التحقق من رقم الهاتف. حاول ثانية.');

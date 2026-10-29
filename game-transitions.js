@@ -71,16 +71,16 @@
         { transform: "translate3d(0,0,0) scale(1.08)", opacity: 1, offset: .16 },
         { transform: "translate3d(" + (t.left-r.left)*.88 + "px," + (t.top-r.top)*.88 + "px,0) scale(" + (1+(t.width/r.width-1)*.88) + "," + (1+(t.height/r.height-1)*.88) + ")", opacity: .96, offset: .82 },
         { transform: "translate3d(" + (t.left-r.left) + "px," + (t.top-r.top) + "px,0) scale(" + (t.width/r.width) + "," + (t.height/r.height) + ")", opacity: 0, offset: 1 }
-      ], { duration: toRobuxSquare ? 900 : 600, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      ], { duration: toRobuxSquare ? 320 : 280, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
       reveal = visual.animate([
         { opacity: 0, transform: "scale(.92) translateX(12px)" },
         { opacity: endOpacity, transform: "scale(1) translateX(0)" }
-      ], { duration: toRobuxSquare ? 250 : 320, delay: toRobuxSquare ? 600 : 240, easing: "ease-out", fill: "both" });
+      ], { duration: 180, delay: 100, easing: "ease-out", fill: "both" });
       anim.onfinish = clear;
     }
     observer = new MutationObserver(check);
     observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:["class"] });
-    timer = setTimeout(clear, 2200);
+    timer = setTimeout(clear, 1000);
     requestAnimationFrame(check);
   }
   document.addEventListener("click", function(e) {

@@ -333,7 +333,8 @@ function openPubgCategories(){
  const key=btn.dataset.pubgCategory,box=page.querySelector('#pubgCategoryResults');
  const all=products.filter(p=>/pubg|ببجي/i.test([p.game,p.name,p.product_key].join(' ')));
  const filtered=all.filter(p=>{const t=[p.name,p.product_key].join(' ').toLowerCase();return key==='offers'?/عرض|offer|promo|خصم/.test(t):key==='codes'?/كود|code|بطاقة|card|redeem|voucher/.test(t):!/عرض|offer|promo|خصم|كود|code|بطاقة|card|redeem|voucher/.test(t)});
- box.classList.remove('hidden');box.innerHTML='<h3>'+btn.querySelector('strong').textContent+'</h3>'+(filtered.length?filtered.map(p=>'<div class="pubg-item"><strong>'+escapeHtml(p.name)+'</strong><span>'+Number(p.price||0).toFixed(2)+' د.ل</span><small>للاستفسار عن توفر هذه الباقة، تواصل مع المتجر.</small></div>').join(''):'<p class="pubg-empty">ما فيش باقات متاحة في هالفئة حالياً.</p>');
+ box.classList.remove('hidden');box.innerHTML='<h3>'+btn.querySelector('strong').textContent+'</h3>'+(filtered.length?filtered.map(p=>'<div class="pubg-item"><strong>'+escapeHtml(p.name)+'</strong><span>'+Number(p.price||0).toFixed(2)+' د.ل</span><button type="button" class="btn btn-primary" data-pubg-instant-buy="'+escapeHtml(p.id)+'">شراء واستلام الكود</button></div>').join(''):'<p class="pubg-empty">ما فيش باقات متاحة في هالفئة حالياً.</p>');
+ box.querySelectorAll('[data-pubg-instant-buy]').forEach(b=>b.onclick=()=>{const p=filtered.find(x=>String(x.id)===b.dataset.pubgInstantBuy);if(p&&window.openInstantCodeCheckout)window.openInstantCodeCheckout(p.id,p.name,p.price)});
  box.scrollIntoView({behavior:'smooth',block:'nearest'});
  });
 }

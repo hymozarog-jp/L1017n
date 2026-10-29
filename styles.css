@@ -406,3 +406,53 @@ body.topup-modal-open{overflow:hidden}
 #productGrid .game-tile-info strong{font-size:clamp(12px,2.2vw,20px);line-height:1.35;font-weight:750;white-space:normal;overflow-wrap:anywhere}
 #productGrid .game-tile-info small{display:none!important}
 @media(max-width:600px){#productGrid .game-tiles{gap:clamp(9px,2.8vw,17px)!important}#productGrid .game-tile-art{border-width:2px;border-radius:clamp(12px,3vw,19px)}#productGrid .game-tile-info{padding:9px 0 19px!important}#productGrid .game-tile-info strong{font-size:clamp(11px,3vw,15px)}}
+
+/* Four featured game choices, in the requested RTL order. */
+#productGrid .game-tiles {
+  display: grid !important;
+  grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+  gap: 15px !important;
+}
+#productGrid .game-tile {
+  min-width: 0;
+  overflow: hidden;
+}
+#productGrid .game-tile-btn {cursor:pointer}
+#productGrid .game-tile-art {height:clamp(155px,20vw,240px)}
+#productGrid .game-tile-info {min-height:78px}
+#productGrid .game-tile-art img {max-width:100%;max-height:100%}
+#productGrid .game-tile[data-game-group="ألعاب"] .game-tile-info small {letter-spacing:0}
+@media(max-width:760px) {
+  #productGrid .game-tiles {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 12px !important;
+  }
+  #productGrid .game-tile-art {height:clamp(155px,44vw,215px)}
+  #productGrid .game-tile-info {min-height:70px}
+}
+/* Fortnite and Free Fire use a real visual destination for the cover transition. */
+#storePurchaseBox .digital-game-preview{
+  max-width:680px;
+  margin-inline:auto;
+  background:linear-gradient(155deg,#17243b,#09121e 68%);
+  border:1px solid #354a68;
+}
+#storePurchaseBox .digital-game-preview .digital-game-cover{
+  width:min(100%,310px);
+  aspect-ratio:1/1;
+  margin:0 auto 18px;
+  border-radius:24px;
+  border:1px solid #354a68;
+  background:radial-gradient(circle at center,#233c63,#101a2e 72%);
+  overflow:hidden;
+}
+#storePurchaseBox .digital-game-preview .digital-game-cover img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+#storePurchaseBox .digital-game-preview h3 {text-align:center}
+@media(prefers-reduced-motion:reduce){
+  #storePurchaseBox .digital-game-preview .digital-game-cover img{animation:none!important}
+}

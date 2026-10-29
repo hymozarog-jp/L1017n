@@ -52,3 +52,14 @@ body.auth-screen>.topbar,body.auth-screen>.mobile-nav,body.auth-screen>footer{di
 @media(min-width:800px){#accountView.auth-guest{padding-top:40px}.auth-decoration i{width:420px;height:420px}.auth-decoration i:nth-child(1){left:5%;top:-100px}.auth-decoration i:nth-child(2){right:0;top:200px}.auth-decoration i:nth-child(3){left:-100px;top:450px}#accountView.auth-guest .account-panel{padding:26px 30px}#accountView.auth-guest .auth-back{right:6%;top:32px}}
 @media(max-width:360px){#accountView.auth-guest{padding:58px 16px 32px}#accountView.auth-guest .account-panel{padding:18px}.auth-brand{font-size:28px}#accountView .auth-hero h1{font-size:31px}#accountView .auth-hero p{font-size:15px}}
 @media(prefers-reduced-motion:reduce){#accountView.auth-guest *{transition:none!important;scroll-behavior:auto!important}}
+
+/* Google OAuth sign-in: available to both new and returning customers. */
+#accountView.auth-guest .auth-google-wrap{margin:18px 0 20px}
+#accountView.auth-guest .auth-google-button{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:54px;padding:10px 16px;border:1px solid #dcdfe5;border-radius:12px;background:#fff;color:#202124;font:600 16px "IBM Plex Sans Arabic",sans-serif;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+#accountView.auth-guest .auth-google-button:hover{background:#f8f9fb;box-shadow:0 4px 16px #00000029;transform:translateY(-1px)}
+#accountView.auth-guest .auth-google-button:disabled{opacity:.65;cursor:wait;transform:none}
+#accountView.auth-guest .auth-google-letter{font:700 26px Arial,sans-serif;line-height:1;background:conic-gradient(from -40deg,#4285f4 0 32%,#34a853 32% 54%,#fbbc05 54% 72%,#ea4335 72% 88%,#4285f4 88%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#accountView.auth-guest .auth-google-caption{color:#c3b5e6;font-size:12px;line-height:1.8;text-align:center;margin:10px 0 15px}
+#accountView.auth-guest .auth-google-divider{display:flex;gap:12px;align-items:center;color:#c3b5e6;font-size:12px;text-align:center;margin:0 0 10px}
+#accountView.auth-guest .auth-google-divider:before,#accountView.auth-guest .auth-google-divider:after{content:"";flex:1;border-top:1px solid #786a9e80}
+#accountView.auth-guest .auth-google-divider span{white-space:nowrap}

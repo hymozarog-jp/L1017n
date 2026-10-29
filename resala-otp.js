@@ -61,7 +61,9 @@
     const phone = state.phone || "رقمك المسجل";
     if (state.verified) {
       lastSentFor = "";
-      box.innerHTML = '<h3 class="resala-verified">✓ رقم الهاتف موثّق</h3><p>تم تأكيد ملكية الرقم <b dir="ltr"></b> عبر رسالة SMS.</p>';
+      box.innerHTML = '<h3 class="resala-verified">✓ رقم الهاتف موثّق — الدفع من المحفظة متاح</h3><p>تم تأكيد ملكية الرقم <b dir="ltr"></b> عبر رسالة SMS.</p>' +
+        '<p class="resala-verified">✅ لما تأكد شراء باقة ورصيد محفظتك يكفي، ينخصم الثمن تلقائيًا من المحفظة.</p>' +
+        '<p>ملاحظة: هذا مش خصم مباشر من رصيد شريحة ليبيانا أو المدار. الشحن الآلي للمحفظة يتطلب تحويلًا فعليًا وربط رقم التحويل من الإدارة.</p>';
       box.querySelector("b").textContent = phone;
       return;
     }

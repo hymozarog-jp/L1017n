@@ -240,24 +240,31 @@ window.renderLeaderboardProfile=async function(){
   return renderOwnRank();
 };
 
+// The leaderboard is optional. Avoid sending rejected ranking requests to the
+// global unhandled-rejection handler or starting overlapping rank fetches.
+let rankRefreshQueued=false;
+function safelyRefreshRanks(){
+  if(rankRefreshQueued)return;
+  rankRefreshQueued=true;
+  setTimeout(function(){
+    rankRefreshQueued=false;
+    void Promise.resolve().then(()=>window.renderLeaderboardProfile())
+      .catch(err=>console.warn('[rank/account] Could not refresh:',err));
+    void Promise.resolve().then(()=>window.loadLeaderboard())
+      .catch(err=>console.warn('[rank/list] Could not refresh:',err));
+  },30);
+}
 supabaseClient.auth.onAuthStateChange(function(event){
   if(['SIGNED_IN','SIGNED_OUT','INITIAL_SESSION','USER_UPDATED'].includes(event)){
-    setTimeout(function(){
-      window.renderLeaderboardProfile();
-      window.loadLeaderboard();
-    },0);
+    safelyRefreshRanks();
   }
 });
-
 document.addEventListener('click',function(e){
-  if(e.target.closest('[data-view="leaderboard"]')){
-    setTimeout(function(){window.renderLeaderboardProfile();},0);
-  }
+  if(e.target.closest('[data-view="leaderboard"]'))safelyRefreshRanks();
   if(e.target.closest('#refreshLeaderboard')){
     e.preventDefault();e.stopImmediatePropagation();
-    window.loadLeaderboard();
+    safelyRefreshRanks();
   }
 },true);
-window.renderLeaderboardProfile();
-window.loadLeaderboard();
+safelyRefreshRanks();
 })();

@@ -2,7 +2,7 @@
   var pageId='robloxGamePage';
   var supabaseUrl='https://cmtxsjlehjworqypbxjz.supabase.co';
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
-  var robloxImage='game-covers/roblox.svg?v=20261028logo3';
+  var robloxImage='game-covers/roblox-mark.svg?v=logo-square1';
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
   var styleId='robloxGamePageStyles';
 
@@ -29,7 +29,7 @@
       #${pageId} .rgp-card.mm2{border-color:#7b2630}
       #${pageId} .rgp-card.mm2:hover{border-color:#ff4454}
       #${pageId} .rgp-card img{width:100%;height:155px;object-fit:cover;display:block;filter:saturate(1.08)}
-      #${pageId} .rgp-card:not(.mm2) img{object-fit:contain;background:radial-gradient(ellipse at center,#273d63 0%,#111b30 68%,#071322 100%);padding:8px 16px;box-sizing:border-box}
+      #${pageId} .rgp-card:not(.mm2) img{object-fit:contain;object-position:center;background:radial-gradient(ellipse at center,#29456c 0%,#152641 55%,#071322 100%);padding:10px 22px;box-sizing:border-box}
       #${pageId} .rgp-card-body{padding:18px 20px 20px;background:linear-gradient(180deg,#091827,#06101d)}
       #${pageId} .rgp-card.mm2 .rgp-card-body{background:linear-gradient(180deg,#1a0b10,#0c070a)}
       #${pageId} .rgp-card h3{font-size:24px;margin:0 0 4px}

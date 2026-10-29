@@ -4,6 +4,7 @@
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
   var robloxImage='game-covers/roblox-mark.svg?v=logo-square1';
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
+  var brainrotImage='https://tr.rbxcdn.com/180DAY-0a1cbd9f3000421ffcb5541f5c2f5fac/768/432/Image/Png/noFilter';
   var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
   var styleId='robloxGamePageStyles';
 
@@ -76,9 +77,11 @@
       <div class="rgp-grid">
         <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
         <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2 →</span></div></button>
+        <button class="rgp-card steal" type="button" data-rgp-choice="brainrot"><img src="${brainrotImage}" data-steal-official-icon alt="غلاف ماب Steal a Brainrot الرسمي"><div class="rgp-card-body"><h3>ماب السرقة</h3><p>قرما، لاسيكرت، ولاسبوكي في قسم خاص.</p><span class="rgp-action">دخول ماب السرقة ←</span></div></button>
       </div>
     </div>`;
     document.body.appendChild(p);
+    if(typeof window.refreshRobloxStealCover==='function')window.refreshRobloxStealCover(p);
     p.addEventListener('click',function(e){
       if(e.target.closest('[data-rgp-back]')){closePage();return}
       if(e.target.closest('[data-mm2-back]')){showRobloxPage();return}
@@ -86,6 +89,11 @@
       if(choice.dataset.rgpChoice==='robux'){
         closePage();
         if(typeof window.openRobuxPackages==='function')window.openRobuxPackages();
+        return;
+      }
+      if(choice.dataset.rgpChoice==='brainrot'){
+        if(typeof window.openStealBrainrotCategory==='function')window.openStealBrainrotCategory();
+        else alert('تعذر تحميل ماب السرقة، حدّث الصفحة.');
         return;
       }
       showMm2Page();

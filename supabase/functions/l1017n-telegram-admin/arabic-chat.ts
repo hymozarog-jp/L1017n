@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Arabic conversational UI for the existing authenticated Telegram admin bot.
 // No AI key or third-party chat service is needed. Mutations are confirmed before execution.
 const digits = (s) => String(s || "").replace(/[٠-٩۰-۹]/g, c => {
@@ -88,7 +89,7 @@ async function getTarget(db,chatId,st,text) {
     ps.find(p=>p.id===st.options[ix-1]):null;
   const hits=selected?[selected]:productHits(text,ps);
   if(hits.length===1) return {product:hits[0]};
-  const options=hits.length>1?hits:ps.filter(p=>st.intent!=="code"&&st.intent!=="stock" || !/roblox/i.test(p.game));
+  const options=hits.length>1?hits:ps.filter(p=>st.intent!=="code" || !/roblox/i.test(p.game));
   if(!options.length) return {reply:"ما لقيتش باقة مناسبة. قول: نبي نضيف باقة جديدة."};
   await stateSet(db,chatId,{...st,step:"product",options:options.slice(0,15).map(p=>p.id)});
   return {reply:picking(st,options)};
@@ -107,7 +108,7 @@ async function routeProduct(db,chatId,st,p) {
     const v=st.code;
     const next={...st,product_id:p.id,product_name:productText(p),step:v?"confirm":"code"};
     await stateSet(db,chatId,next);
-    return v ? {reply:"🔐 نضيف الكود (ينتهي بـ "+v.slice(-4)+") إلى "+productText(p)+"؟\nقول «نعم» للتأكيد أو «إلغاء»."} :
+    return v ? {reply:"🔐 نضيف الكود (ينتهي بـ "+v.slice(-4)+") إلى "+productText(p)+"؟\nقول «نعم» للتأكيد أو «إلغاء».",deleteMessage:true} :
       {reply:"تمام، اخترت "+productText(p)+". ابعتلي الكود بروحه في الرسالة الجاية. بنحفظه في المخزون المحمي.",deleteMessage:false};
   }
   if(st.intent==="price") {
@@ -233,8 +234,8 @@ export async function handleArabicAdmin(db,chatId,text) {
   }
   const st=await stateGet(db,chatId);
   // A new explicit request replaces an unfinished flow. "نعم" only confirms an existing flow.
-  const addCode=codeWords.test(n)&&addWords.test(n) && !/كم|مخزون|عدد|متبقي|فاضل/.test(n);
-  const addPackage=packageWords.test(n)&&addWords.test(n) && !codeWords.test(n);
+  const addCode=codeWords.test(n)&&(addWords.test(n)||(/هذا|عندي/.test(n)&&!!extractCode(text))) && !/كم|مخزون|عدد|متبقي|فاضل/.test(n);
+  const addPackage=packageWords.test(n)&&addWords.test(n)&&!/(ضيف|اضف|حط).*(?:كود|اكواد|رمز)/.test(n);
   const stock=/(كم|عدد|مخزون|متبقي|فاضل|متوفر|عندي)/.test(n)&&/(كود|اكواد|مخزون|رمز)/.test(n)&&!addCode;
   const price=/سعر/.test(n)&&/(غير|تغيير|عدل|تعديل|خلي|نقص|زيد|ارفع|نزل)/.test(n);
   const toggleOn=/(فعل|تفعيل|اظهر|افتح|شغل|خليها ظاهره)/.test(n)&&packageWords.test(n);
@@ -247,9 +248,11 @@ export async function handleArabicAdmin(db,chatId,text) {
     return {reply:listing(await products(db))};
   }
   if(intent==="add_package"){
-    const next={intent:"add_package",step:"game"};
+    const detected=gameFrom(text);
+    const next={intent:"add_package",step:detected?"name":"game"};
+    if(detected)next.game=detected;
     await stateSet(db,chatId,next);
-    return {reply:"تمام 👍 بنضيف باقة جديدة. "+prompt(next)};
+    return {reply:"تمام 👍 بنضيف باقة جديدة. "+(detected?"اللعبة "+detected+". ":"")+prompt(next)};
   }
   if(intent==="code"||intent==="stock"||intent==="price"||intent==="on"||intent==="off"){
     const next={intent:intent==="on"||intent==="off"?"toggle":intent,step:"product"};

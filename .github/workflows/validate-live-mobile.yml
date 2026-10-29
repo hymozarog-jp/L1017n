@@ -52,7 +52,13 @@ jobs:
           assert.match(css,/\.ll-roblox-parent\{/);
           assert.match(css,/\.ll-roblox-subcategories\{/);
           assert.match(html,/live-mobile\.js\?v=roblox-group2/);
-          assert.match(html,/live-mobile\.css\?v=roblox-group2/);
+          assert.match(html,/live-mobile\.css\?v=google-avatar-left1/);
+          const header=html.match(/<header class="topbar">([\s\S]*?)<\/header>/)?.[1]||'';
+          assert(header.includes('id="googleProfileButton"'),'Keep authenticated Google photo');
+          assert(!header.includes('<b>L1017n</b>'),'Do not show L1017n text in header');
+          assert.match(css,/#googleProfileButton:not\(\.hidden\)/);
+          assert.match(css,/order:9!important/);
+          assert.doesNotMatch(css,/#googleProfileButton\{display:none!important\}/,'Do not hide Google photo on mobile');
           assert.match(js,/data-ll-nav/);
           assert.match(js,/data-ll-dot/);
           assert.match(js,/new IntersectionObserver/);

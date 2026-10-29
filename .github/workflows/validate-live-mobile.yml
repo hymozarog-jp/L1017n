@@ -1,0 +1,59 @@
+name: Validate live mobile storefront
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'live-mobile.js'
+      - 'live-mobile.css'
+      - 'index.html'
+      - '.github/workflows/validate-live-mobile.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify business JavaScript syntax
+        run: |
+          node --check live-mobile.js
+          node --check premium-home.js
+          node --check store-menu.js
+          node --check legacy-app.js
+          node --check instant-code.js
+          node --check brainrot-store.js
+          node --check pubg-premium.js
+      - name: Validate integration without financial side effects
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs');
+          const assert=require('node:assert/strict');
+          const html=fs.readFileSync('index.html','utf8');
+          const js=fs.readFileSync('live-mobile.js','utf8');
+          const css=fs.readFileSync('live-mobile.css','utf8');
+          const old=fs.readFileSync('legacy-app.js','utf8');
+          const shop=fs.readFileSync('premium-home.js','utf8');
+          assert.match(html,/href="live-mobile\.css\?v=/);
+          assert.match(html,/src="live-mobile\.js\?v=/);
+          assert.equal((html.match(/src="live-mobile\.js/g)||[]).length,1);
+          assert.match(js,/typeof products !== "undefined"/);
+          assert.match(js,/window\.openInstantCodeCheckout\(product\.id, product\.name, product\.price\)/);
+          assert.match(js,/openRobuxPackages\(\)/);
+          assert.match(js,/openStealBrainrotCategory|brainrot/);
+          assert.match(js,/data-ll-buy/);
+          assert.match(js,/data-ll-nav/);
+          assert.match(js,/data-ll-dot/);
+          assert.match(js,/new IntersectionObserver/);
+          assert.match(js,/new MutationObserver/);
+          assert.match(js,/getElementById\("llLanding"\)|q\("#llLanding"\)/);
+          assert.match(css,/backdrop-filter/);
+          assert.match(css,/scroll-snap-type/);
+          assert.match(css,/@media\(max-width:680px\)/);
+          assert.match(css,/prefers-reduced-motion/);
+          assert.match(old,/function switchView\(/);
+          assert.match(shop,/id='phHero'/);
+          assert.doesNotMatch(js,/\.rpc\(|wallet_accounts.*update|demoBuy\(/,'No direct wallet mutations are allowed from landing UI');
+          console.log('Mobile landing integration with live product catalog and existing checkout validated.');
+          JS

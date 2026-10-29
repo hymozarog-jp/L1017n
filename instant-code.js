@@ -50,6 +50,7 @@
     document.body.append(overlay);
     close.focus();
   }
+  window.showInstantCode=showDeliveredCode;
   window.openInstantCodeCheckout=async function(productId, productName, amount){
     if(busy) return;
     const db=client();

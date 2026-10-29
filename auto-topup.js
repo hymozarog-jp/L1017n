@@ -68,8 +68,7 @@
         stopWatcher();return;
       }
       if(data?.sms_status==='matched'){
-        status.textContent='📩 البوت تعرّف على رقمك والمبلغ وطابق رسالة التحويل. '+ 
-          'إذا كانت أول عملية، بانتظار مراجعة الإدارة. لا تكرر التحويل.';
+        status.textContent='📩 البوت طابق إشعار التحويل. جاري انتظار نتيجة الفحص الآلي؛ ما تكررّش التحويل. إذا احتاجت العملية مراجعة، تظهر حالتها هنا.';
       }else{
         status.textContent='⏳ ننتظر إشعار التحويل من ليبيانا. فتح الاتصال لا يعني نجاح التحويل؛ أكّد العملية داخل قائمة USSD. لا تكرر التحويل.';
       }
@@ -122,13 +121,17 @@
         show('warning','الكود هذا لليبيانا فقط','رقمك الموثّق ليس رقم ليبيانا (092 أو 094). لا تستخدم هذا الكود من شبكة المدار.');return;
       }
       if(readiness.error)throw readiness.error;
+      if(readiness.data!==true){
+        show('warning','الشحن الآلي غير متاح حاليًا','لا تحوّل أي رصيد قبل ما يرجع النظام يشتغل. التأكد من التوثيق أو إعدادات الإدارة مطلوب.');
+        return;
+      }
       const {data:intent,error:intentError}=await db.rpc('create_ussd_topup_intent',{p_amount:amount});
       if(run!==generation)return;
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
       currentRequest=intent.request_id;currentAmount=amount;
       if(intent.state==='matched'){
-        show('ok','📩 البوت طابق التحويل','وصل إشعار تحويل من ليبيانا بنفس رقمك الموثّق والمبلغ، والعملية بانتظار الاعتماد. لا تحوّل المبلغ مرة ثانية.');
+        show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ. يفحص النظام الطلب تلقائيًا؛ ما تحولش المبلغ مرة ثانية.');
         const current=host();
         const status=el('div','auto-topup-status','⏳ بانتظار تأكيد رصيد المحفظة.');
         status.id='ussdTransferStatus';
@@ -136,12 +139,8 @@
         watch(intent.request_id);
         return;
       }
-      const linked=readiness.data===true;
-      const area=show(linked?'ok':'warning',
-        linked?'✅ حسابك جاهز للشحن الآلي':'📩 أول تحويل يحتاج مراجعة',
-        linked
-          ?'رقمك موثّق ومربوط مسبقًا بالإدارة. البوت يطابق رسالة ليبيانا ورقمك والمبلغ، والتحويلات المطابقة لشروط الأمان يمكن إضافتها آليًا.'
-          :'رقمك موثّق لكن لم يتم تأكيد أول تحويل وربطه لدى الإدارة بعد. سيطابق البوت رسالتك آليًا، ثم تحتاج الإدارة لتأكيد وصول المبلغ قبل إضافة الرصيد. لا تتوقع شحنًا فوريًا.');
+      const area=show('ok','الشحن الآلي مفعّل لحسابك',
+        'بعد تأكيد التحويل من ليبيانا، يطابق النظام إشعار SMS مع رقمك الموثّق ومبلغ الطلب. أول تحويل والتحويلات التالية قد تُعتمد تلقائيًا إذا اجتازت فحوصات الأمان؛ أي رسالة مشبوهة أو غير مطابقة تحتاج مراجعة.');
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
@@ -163,7 +162,7 @@
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
       refresh.type='button';refresh.addEventListener('click',()=>refreshRequest(intent.request_id));
       panel.append(status,refresh);
-      panel.append(el('p','auto-topup-note','مهم: الاتصال يفتح قائمة تحويل ليبيانا، ولا يخصم من حسابك تلقائيًا دون تأكيدك من شبكة ليبيانا. البوت يقرأ رسالة التحويل التي تصل لهاتف المتجر ويطابق رقم المحوّل والمبلغ مع طلبك. ولا يمكن ضمان صحة رسالة SMS دون تأكيد رسمي من المشغّل.'));
+      panel.append(el('p','auto-topup-note','مهم: الاتصال يفتح خدمة تحويل ليبيانا، وتحتاج تأكيد التحويل بنفسك. شحن المحفظة قد يتم آليًا بعد وصول إشعار SMS مطابق من هاتف المتجر. إشعارات SMS ليست تأكيدًا رسميًا من مشغّل الشبكة؛ التحويلات غير المطابقة تحتاج مراجعة.'));
       area.append(panel);
       refreshRequest(intent.request_id);
     }catch(err){

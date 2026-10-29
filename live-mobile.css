@@ -249,3 +249,77 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
  #llLanding *,#llLanding *::before,#llLanding *::after,#llBottomNav *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
  #llLanding .ll-reveal{opacity:1!important;transform:none!important}
 }
+
+/* Roblox's original parent card: one image, three nested sections. */
+#llLanding .ll-roblox-parent{
+  grid-column:span 2;display:grid;grid-template-columns:minmax(0,43%) minmax(0,57%);
+  min-height:255px;overflow:hidden;isolation:isolate;
+  border:1px solid #8c77cc72;border-radius:23px;
+  background:linear-gradient(135deg,#252044,#151b31 72%);
+  box-shadow:0 14px 35px #09041b60;
+}
+#llLanding .ll-roblox-parent-cover{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  min-width:0;min-height:250px;width:100%;border:0!important;overflow:hidden;
+  border-radius:0!important;background:radial-gradient(circle at 50% 43%,#7462c5 0%,#34245f 64%,#1b1a3a)!important;
+  padding:22px!important;cursor:pointer;transition:filter .2s ease;
+}
+#llLanding .ll-roblox-parent-cover::before{
+  content:"";position:absolute;inset:-45%;border:1px solid #ffffff28;
+  border-radius:40%;transform:rotate(26deg);pointer-events:none
+}
+#llLanding .ll-roblox-parent-cover img{
+  position:relative;z-index:1;display:block;width:min(77%,166px);height:155px;
+  max-width:100%;max-height:170px;object-fit:contain;
+  filter:drop-shadow(0 14px 15px #130e2c7d);transition:transform .24s ease
+}
+#llLanding .ll-roblox-parent-cover:hover img{transform:scale(1.045)}
+#llLanding .ll-roblox-parent-cover:active img{transform:scale(.94)}
+#llLanding .ll-roblox-parent-kicker{
+  position:absolute;z-index:2;top:16px;right:16px;direction:ltr;
+  border-radius:30px;border:1px solid #ffffff38;background:#0d102945;
+  padding:6px 10px;color:#f9f7ff;font:750 10px system-ui,sans-serif;letter-spacing:.7px
+}
+#llLanding .ll-roblox-parent-info{
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:0;padding:22px 22px 20px;direction:rtl
+}
+#llLanding .ll-roblox-parent-label{font-size:10px;font-weight:800;color:#b8a7f6}
+#llLanding .ll-roblox-parent-info h3{
+  font:900 clamp(24px,3.5vw,33px)/1.35 system-ui,'IBM Plex Sans Arabic',sans-serif;
+  margin:5px 0;color:#fff;letter-spacing:-.6px
+}
+#llLanding .ll-roblox-parent-info p{
+  margin:2px 0 13px;font-size:12px;line-height:1.75;color:#b7bdd4
+}
+#llLanding .ll-roblox-subcategories{display:flex;flex-direction:column;gap:7px}
+#llLanding .ll-roblox-subcategory{
+  min-height:45px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  gap:4px 9px;padding:9px 13px!important;cursor:pointer;
+  border:1px solid #bba6fc3b!important;border-radius:12px!important;
+  color:#f8f4ff!important;background:#ffffff0c!important;
+  text-align:right!important;transition:background .2s,transform .15s,border-color .2s
+}
+#llLanding .ll-roblox-subcategory span{font-size:13px;font-weight:850}
+#llLanding .ll-roblox-subcategory small{font-size:10px;color:#bbabd9}
+#llLanding .ll-roblox-subcategory:hover{background:#a08af12b!important;border-color:#bca8f48c!important}
+#llLanding .ll-roblox-subcategory:active{transform:scale(.97)}
+@media(max-width:680px){
+ #llLanding .ll-roblox-parent{min-height:268px;grid-template-columns:minmax(0,40%) minmax(0,60%);border-radius:20px}
+ #llLanding .ll-roblox-parent-cover{min-height:265px;padding:10px!important}
+ #llLanding .ll-roblox-parent-cover img{width:min(91%,135px);height:125px}
+ #llLanding .ll-roblox-parent-kicker{font-size:8px;letter-spacing:0;right:7px;top:11px;padding:5px 6px}
+ #llLanding .ll-roblox-parent-info{padding:16px 11px}
+ #llLanding .ll-roblox-parent-info h3{font-size:25px}
+ #llLanding .ll-roblox-parent-info p{font-size:10px;margin:1px 0 11px}
+ #llLanding .ll-roblox-subcategories{gap:6px}
+ #llLanding .ll-roblox-subcategory{min-height:42px;padding:8px 9px!important;gap:2px 6px}
+ #llLanding .ll-roblox-subcategory span{font-size:12px}
+ #llLanding .ll-roblox-subcategory small{font-size:9px}
+}
+@media(max-width:360px){
+ #llLanding .ll-roblox-parent{grid-template-columns:minmax(0,37%) minmax(0,63%)}
+ #llLanding .ll-roblox-parent-info{padding:14px 8px}
+ #llLanding .ll-roblox-parent-cover img{height:105px;width:90%}
+ #llLanding .ll-roblox-subcategory small{font-size:8px}
+}

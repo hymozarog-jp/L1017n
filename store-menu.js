@@ -14,7 +14,14 @@
     s.textContent=`
       #${pageId}{position:fixed;inset:0;z-index:99990;overflow:auto;background:radial-gradient(ellipse at 70% 0%,#192c58 0%,#080d1e 45%,#050913 100%);color:#fff;padding:22px 18px 44px;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
       #${pageId} .rgp-shell{max-width:860px;margin:auto}
-      #${pageId} .rgp-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+      #${pageId} .rgp-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;min-width:0}
+      #${pageId} .rgp-inner-heading{font-size:clamp(21px,4.5vw,29px);line-height:1.45;font-weight:900;margin:0 0 15px;color:#f6f7ff}
+      #${pageId}.rgp-inner-page .rgp-hero,#${pageId}.rgp-inner-page .rgp-reference-features,#${pageId}.rgp-inner-page .rgp-title{display:none!important}
+      #${pageId}.rgp-inner-page .rgp-top{position:sticky;top:-16px;z-index:5;min-height:65px;margin-bottom:18px;padding:10px 12px;background:rgba(8,15,31,.94);border:1px solid #29405c;border-radius:17px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+      #${pageId}.rgp-inner-page .rgp-brand{min-width:0;overflow-wrap:anywhere;font-size:clamp(19px,4.5vw,24px);letter-spacing:0}
+      #${pageId}.rgp-inner-page .rgp-back{flex-shrink:0;min-height:42px;padding:8px 15px;white-space:nowrap}
+      #${pageId}.rgp-inner-page .rgp-mm2-subcategory{margin-top:0}
+      #${pageId}.rgp-inner-page .rgp-packages{margin-top:10px}
       #${pageId} .rgp-brand{font-weight:800;font-size:20px;letter-spacing:.5px}
       #${pageId} .rgp-back{border:1px solid #23415f;background:#091727;color:#fff;border-radius:999px;padding:10px 18px;cursor:pointer;font:inherit}
       #${pageId} .rgp-hero{position:relative;min-height:245px;border-radius:28px;overflow:hidden;border:1px solid #1268c9;box-shadow:0 25px 80px rgba(0,93,255,.18);background:#071526}
@@ -40,7 +47,7 @@
       #${pageId} .mm2 .rgp-action{background:linear-gradient(110deg,#b84c9c,#7446cb)}
       #${pageId} .rgp-packages{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
       #${pageId} .rgp-mm2-subcategory{margin-top:14px}
-      #${pageId} .rgp-mm2-subcategory .rgp-back{margin-top:5px}
+      #${pageId} .rgp-mm2-subcategory .rgp-inner-heading{margin:0 0 14px}
       #${pageId} .rgp-mm2-subcategory .rgp-packages{margin-top:20px}
       #${pageId} .rgp-package{border:1px solid #214968;background:#091a2b;border-radius:18px;padding:18px;text-align:right;color:#fff;cursor:pointer;font:inherit}
       #${pageId} .rgp-package:hover{border-color:#35a9ff}
@@ -67,24 +74,41 @@
 
   window.openRobloxGameMenu=showRobloxPage;
   function closePage(){var p=document.getElementById(pageId);if(p)p.remove()}
+  function setInnerHeader(root,label,category){
+    if(!root)return;
+    root.classList.add('rgp-inner-page');
+    root.classList.toggle('rgp-mm2-page',category==='mm2');
+    root.classList.toggle('rgp-brainrot-page',category==='brainrot');
+    var brand=root.querySelector('.rgp-brand');
+    if(brand)brand.textContent=label;
+    var back=root.querySelector('[data-rgp-back]');
+    if(back){back.textContent='رجوع';back.setAttribute('aria-label','رجوع إلى أقسام روبلوكس');}
+    var title=root.querySelector('.rgp-title');
+    if(title)title.hidden=true;
+    root.scrollTop=0;
+  }
+  window.setRobloxInnerHeader=setInnerHeader;
   function showRobloxPage(){
     addStyles();closePage();
     var p=document.createElement('div');p.id=pageId;
     p.innerHTML=`<div class="rgp-shell">
-      <div class="rgp-top"><div class="rgp-brand">L1017N · ROBLOX</div><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع للمتجر">→</button></div>
+      <div class="rgp-top"><div class="rgp-brand">روبلوكس</div><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع للمتجر">رجوع</button></div>
       <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>Roblox</h1><span class="rgp-category-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg>باقات ومستلزمات</span><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
       <div class="rgp-reference-features"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختر الباقة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span></div><h2 class="rgp-title">اختر الفئة</h2>
       <div class="rgp-grid">
-        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس →</span></div></button>
-        <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2 →</span></div></button>
-        <button class="rgp-card steal" type="button" data-rgp-choice="brainrot"><img src="${brainrotImage}" data-steal-official-icon alt="غلاف ماب Steal a Brainrot الرسمي"><div class="rgp-card-body"><h3>ماب السرقة</h3><p>قرما، لاسيكرت، ولاسبوكي في قسم خاص.</p><span class="rgp-action">دخول ماب السرقة ←</span></div></button>
+        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-card-body"><h3>روبوكس</h3><p>اشترِ باقات Robux واختر الكمية المناسبة ليك.</p><span class="rgp-action">عرض باقات الروبوكس</span></div></button>
+        <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="ماب MM2"><div class="rgp-card-body"><h3>MM2</h3><p>باقات ومستلزمات ماب Murder Mystery 2.</p><span class="rgp-action">عرض باقات MM2</span></div></button>
+        <button class="rgp-card steal" type="button" data-rgp-choice="brainrot"><img src="${brainrotImage}" data-steal-official-icon alt="غلاف ماب Steal a Brainrot الرسمي"><div class="rgp-card-body"><h3>ماب السرقة</h3><p>قرما، لاسيكرت، ولاسبوكي في قسم خاص.</p><span class="rgp-action">دخول ماب السرقة</span></div></button>
       </div>
     </div>`;
     document.body.appendChild(p);
     if(typeof window.refreshRobloxStealCover==='function')window.refreshRobloxStealCover(p);
     p.addEventListener('click',function(e){
-      if(e.target.closest('[data-rgp-back]')){closePage();return}
-      if(e.target.closest('[data-mm2-back]')){showRobloxPage();return}
+      if(e.target.closest('[data-rgp-back]')){
+        if(p.classList.contains('rgp-inner-page'))showRobloxPage();
+        else closePage();
+        return;
+      }
       var choice=e.target.closest('[data-rgp-choice]');if(!choice)return;
       if(choice.dataset.rgpChoice==='robux'){
         closePage();
@@ -104,10 +128,12 @@
     var p=document.getElementById(pageId);if(!p)return;
     var grid=document.createElement('div');grid.className='rgp-packages';grid.innerHTML='<div class="rgp-empty">جاري تحميل باقات MM2…</div>';
     var section=document.createElement('section');section.className='rgp-mm2-subcategory';
-    var back=document.createElement('button');back.type='button';back.className='rgp-back';back.setAttribute('data-mm2-back','');back.textContent='← رجوع لقائمة روبلوكس';
-    section.append(back,grid);
-    p.querySelector('.rgp-grid').replaceWith(section);
-    p.querySelector('.rgp-title').textContent='روبلوكس ← باقة MM2';
+    var heading=document.createElement('h2');heading.className='rgp-inner-heading';heading.textContent='باقات MM2';
+    section.append(heading,grid);
+    var categoryGrid=p.querySelector('.rgp-grid');
+    if(!categoryGrid)return;
+    categoryGrid.replaceWith(section);
+    setInnerHeader(p,'MM2','mm2');
     try{
       var client=window.supabase.createClient(supabaseUrl,supabaseKey);
       var r=await client.from('products').select('*').eq('active',true).order('sort_order');

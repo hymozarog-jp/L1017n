@@ -128,8 +128,25 @@
     <div id="accountModern" class="hidden">
       <div class="account-id-card">
         <button type="button" id="accountEditName" class="account-edit-name" aria-label="تعديل الاسم">✎</button>
-        <div class="account-id-top"><div class="account-id-avatar" id="accountModernAvatar">L</div><div class="account-id-details"><strong id="accountModernName">L1017n</strong><span id="accountModernEmail"></span><small>● نشط</small></div></div>
-        <div class="account-id-stats"><div><span>المدينة</span><b>طرابلس</b></div><div><span>عضو منذ</span><b id="accountMemberSince">—</b></div><div><span>الحساب</span><b>مسجّل</b></div></div>
+        <span class="account-gold-crown" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4L2 7Z"/></svg></span>
+        <div class="account-id-top">
+          <div class="account-id-portrait">
+            <div class="account-id-avatar" id="accountModernAvatar" aria-label="الصورة الشخصية">L</div>
+            <span class="account-google-badge" id="accountGoogleBadge" aria-label="حساب Google" hidden>G</span>
+          </div>
+          <div class="account-id-details">
+            <strong id="accountModernName">L1017n</strong>
+            <span id="accountModernEmail"></span>
+            <small>نشط</small>
+          </div>
+        </div>
+        <div class="account-id-reference">
+          <button type="button" id="accountCopyId" aria-label="نسخ معرّف الحساب" title="نسخ المعرّف"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="2"/><path d="M16 4V3a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v12a1 1 0 0 0 1 1h1"/></svg></button>
+          <code id="accountModernId" dir="ltr">—</code>
+          <span class="account-id-label">معرّف حسابك</span>
+          <span class="account-id-reference-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M3 9h18M7 14h4M7 17h7"/></svg></span>
+        </div>
+        <span id="accountMemberSince" hidden></span>
       </div>
       <h3 class="account-group-title">الحساب</h3>
       <div class="account-settings-list account-core-settings">
@@ -552,4 +569,5 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="orders-premium.css?v=orders-prime1">
 <script src="wallet-luxe.js?v=wallet-luxe3-candy15-v1" defer></script>
 <script src="live-mobile.js?v=leaderboard-nav4" defer></script>
+<link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 </body></html>

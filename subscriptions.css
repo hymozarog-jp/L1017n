@@ -1,0 +1,143 @@
+/* L1017N | Premium subscriptions showcase. No fake availability or checkout. */
+#subscriptionsView.subs-page{
+  width:min(1180px,100%);margin:0 auto;padding:24px 20px 120px;
+  direction:rtl;color:#f6f5ff;font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#subscriptionsView .subs-banner{position:relative;isolation:isolate;min-height:340px;
+  display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:20px;
+  overflow:hidden;border-radius:30px;border:1px solid #a78aff5a;
+  background:radial-gradient(ellipse at 7% 100%,#10c4dc39,transparent 49%),
+    radial-gradient(ellipse at 65% -20%,#9a64ff66,transparent 59%),
+    linear-gradient(120deg,#12122b 0%,#1e1850 52%,#101427 100%);
+  box-shadow:0 22px 60px #0005,inset 0 1px #ffffff23;
+}
+#subscriptionsView .subs-banner::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.32;
+  background-image:linear-gradient(#ffffff12 1px,transparent 1px),linear-gradient(90deg,#ffffff12 1px,transparent 1px);
+  background-size:52px 52px;mask-image:linear-gradient(90deg,transparent 2%,#000 70%)}
+#subscriptionsView .subs-copy{padding:48px 48px 48px 10px;position:relative;z-index:2}
+#subscriptionsView .subs-kicker{display:inline-flex;gap:9px;align-items:center;padding:7px 13px;
+  color:#cbbcff;font:800 11px/1.7 system-ui,sans-serif;letter-spacing:1.2px;
+  border:1px solid #ab8ff35b;border-radius:50px;background:#af8cff13}
+#subscriptionsView .subs-kicker i{width:7px;height:7px;background:#3ee0de;border-radius:50%;box-shadow:0 0 15px #3ee0de;display:inline-block}
+#subscriptionsView .subs-copy h1{max-width:600px;margin:19px 0 11px;color:#fff;
+  font-size:clamp(29px,4.3vw,54px);font-weight:900;line-height:1.5;letter-spacing:-1.3px}
+#subscriptionsView .subs-copy h1 span{color:#bfa7ff}
+#subscriptionsView .subs-copy p{max-width:485px;color:#c5c7df;font-size:14px;line-height:2;margin:0 0 25px}
+#subscriptionsView .subs-banner-actions{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+#subscriptionsView .subs-cta,#subscriptionsView .subs-back{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:46px;padding:0 20px;border-radius:14px;font-size:13px;font-weight:850;text-decoration:none;
+  transition:transform .22s,box-shadow .22s}
+#subscriptionsView .subs-cta{color:#18112d!important;background:linear-gradient(135deg,#e0ceff,#a988ff)!important;
+  box-shadow:0 10px 25px #7d5be845}
+#subscriptionsView .subs-back{background:#ffffff10!important;color:#ecebff!important;border:1px solid #ffffff33!important}
+#subscriptionsView .subs-cta:hover,#subscriptionsView .subs-back:hover{transform:translateY(-2px)}
+#subscriptionsView .subs-cta:focus-visible,#subscriptionsView .subs-back:focus-visible{
+ outline:3px solid #75eeed;outline-offset:3px}
+#subscriptionsView .subs-art{height:100%;min-height:330px;position:relative;display:grid;place-items:center;
+  perspective:800px;pointer-events:none}
+#subscriptionsView .subs-art::before{content:"";position:absolute;inset:11% 6%;
+ border-radius:50%;background:radial-gradient(circle,#8c69fd61,transparent 65%);filter:blur(18px)}
+#subscriptionsView .subs-glass{position:absolute;border-radius:24px;border:1px solid #ffffff56;
+ box-shadow:0 20px 45px #0006,inset 0 1px #ffffff5c;backdrop-filter:blur(10px)}
+#subscriptionsView .subs-glass-back{width:210px;height:244px;transform:translate(-58px,-6px) rotate(-15deg);
+ background:linear-gradient(142deg,#e64a9da1,#302259bb);opacity:.78}
+#subscriptionsView .subs-glass-mid{width:205px;height:234px;transform:translate(62px,-10px) rotate(13deg);
+ background:linear-gradient(145deg,#54cdd1ab,#1b244fbf);opacity:.88}
+#subscriptionsView .subs-glass-main{width:220px;height:244px;display:flex;flex-direction:column;align-items:center;
+ justify-content:space-between;padding:19px 17px;transform:translate(4px,-4px) rotate(-3deg);
+ background:linear-gradient(144deg,#6552a9ee,#252142ea 77%);animation:subs-float 5s ease-in-out infinite}
+#subscriptionsView .subs-glass-top{display:flex;align-items:center;justify-content:space-between;width:100%;
+ color:#ddd5ff;font:750 11px system-ui,sans-serif;letter-spacing:1.2px}
+#subscriptionsView .subs-glass-dot{width:9px;height:9px;border-radius:50%;background:#6df6df;box-shadow:0 0 13px #6df6df}
+#subscriptionsView .subs-play{display:grid;place-items:center;width:99px;height:99px;border-radius:33px;
+ background:linear-gradient(145deg,#c2adff,#8166f0);box-shadow:0 14px 36px #0b092c8f,inset 0 2px #ffffff77}
+#subscriptionsView .subs-play svg{width:52px;height:52px;fill:#24204e;transform:translateX(-2px)}
+#subscriptionsView .subs-glass-footer{width:100%;display:flex;justify-content:space-between;align-items:center;
+ font:900 13px system-ui,sans-serif;color:#fff}
+#subscriptionsView .subs-glass-footer small{color:#b4a8f5;font-size:10px;letter-spacing:1px}
+#subscriptionsView .subs-art-badge{position:absolute;right:13%;bottom:14%;transform:rotate(8deg);
+ background:#0f1f37e9;border:1px solid #4dd6d9a1;box-shadow:0 12px 28px #0006;border-radius:13px;
+ color:#80f1ef;padding:10px 13px;font:800 11px system-ui,sans-serif;letter-spacing:1px}
+#subscriptionsView .subs-title-row{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:39px 2px 20px}
+#subscriptionsView .subs-title-row small{font:800 11px system-ui,sans-serif;color:#b39afa;letter-spacing:2px}
+#subscriptionsView .subs-title-row h2{color:#fff;font-size:25px;margin:7px 0 0;font-weight:900}
+#subscriptionsView .subs-title-row p{font-size:12px;color:#a4a9c7;margin:6px 0 0}
+#subscriptionsView .subs-coming-badge{display:inline-flex;align-items:center;gap:5px;
+ background:#b7a1ff1c;border:1px solid #b7a1ff4d;border-radius:100px;padding:8px 12px;
+ font-size:11px;font-weight:750;color:#d7c8ff;white-space:nowrap}
+#subscriptionsView .subs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+#subscriptionsView .subs-service{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:13px;
+ padding:19px;min-height:235px;border:1px solid #7869aa4f;border-radius:22px;
+ background:linear-gradient(145deg,#232342,#141b2d 77%);box-shadow:0 10px 32px #0003;
+ transition:transform .25s,border-color .25s}
+#subscriptionsView .subs-service:hover{transform:translateY(-4px);border-color:#b39dff9e}
+#subscriptionsView .subs-service::before{content:"";position:absolute;top:-65px;left:-40px;width:155px;height:155px;
+ border-radius:50%;background:var(--subs-glow,#8e73f5);opacity:.12;filter:blur(28px);pointer-events:none}
+#subscriptionsView .subs-service[data-service="netflix"]{--subs-glow:#e94c5b}
+#subscriptionsView .subs-service[data-service="shahid"]{--subs-glow:#f06bba}
+#subscriptionsView .subs-service[data-service="spotify"]{--subs-glow:#38d09e}
+#subscriptionsView .subs-service[data-service="youtube"]{--subs-glow:#ee6666}
+#subscriptionsView .subs-service-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#subscriptionsView .subs-service-logo{display:grid;place-items:center;width:61px;height:61px;
+ border-radius:19px;background:var(--subs-glow,#8e73f5);color:#fff;
+ box-shadow:0 10px 24px #0005;font:900 31px system-ui,sans-serif}
+#subscriptionsView .subs-service[data-service="netflix"] .subs-service-logo{background:linear-gradient(135deg,#d5233e,#570b21)}
+#subscriptionsView .subs-service[data-service="shahid"] .subs-service-logo{background:linear-gradient(135deg,#d742a9,#6723a4)}
+#subscriptionsView .subs-service[data-service="spotify"] .subs-service-logo{background:linear-gradient(135deg,#24d797,#126b54)}
+#subscriptionsView .subs-service[data-service="youtube"] .subs-service-logo{background:linear-gradient(135deg,#f54b58,#97263b)}
+#subscriptionsView .subs-service-status{font-size:10px;color:#c2b8dd;background:#ffffff0c;border:1px solid #ffffff20;
+ padding:6px 10px;border-radius:50px;font-weight:750}
+#subscriptionsView .subs-service h3{font:900 20px/1.4 system-ui,'IBM Plex Sans Arabic',sans-serif;direction:ltr;
+ text-align:right;letter-spacing:-.4px;color:#fff;margin:0}
+#subscriptionsView .subs-service p{margin:0;color:#9fa8c5;font-size:12px;line-height:1.85}
+#subscriptionsView .subs-service-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;
+ padding-top:12px;border-top:1px solid #ffffff14;color:#d6d2e7;font-size:11px}
+#subscriptionsView .subs-service-foot svg{width:17px;height:17px;stroke:#beaeff}
+#subscriptionsView .subs-note{display:flex;align-items:flex-start;gap:11px;padding:16px 19px;
+ margin-top:24px;border-radius:16px;background:#141c32;border:1px solid #55577f52;
+ color:#aeb7d2;font-size:12px;line-height:1.85}
+#subscriptionsView .subs-note svg{flex:none;width:20px;height:20px;stroke:#d2b7ff;margin-top:1px}
+#subscriptionsView .subs-note p{margin:0}
+@keyframes subs-float{0%,100%{transform:translate(4px,-4px) rotate(-3deg)}50%{transform:translate(4px,-13px) rotate(-1deg)}}
+@media(max-width:900px){
+ #subscriptionsView .subs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #subscriptionsView .subs-banner{grid-template-columns:1fr 0.85fr}
+ #subscriptionsView .subs-copy{padding:36px 28px 36px 8px}
+ #subscriptionsView .subs-glass-back,#subscriptionsView .subs-glass-mid{transform:scale(.83) rotate(10deg)}
+}
+@media(max-width:680px){
+ #subscriptionsView.subs-page{padding:13px 13px calc(115px + env(safe-area-inset-bottom))}
+ #subscriptionsView .subs-banner{grid-template-columns:1fr;min-height:0;border-radius:23px;gap:0}
+ #subscriptionsView .subs-copy{padding:27px 23px 0}
+ #subscriptionsView .subs-copy h1{font-size:clamp(28px,8vw,40px);line-height:1.47;letter-spacing:-.4px;margin:15px 0 8px}
+ #subscriptionsView .subs-copy p{font-size:12px;line-height:1.85;margin-bottom:15px}
+ #subscriptionsView .subs-art{min-height:180px;max-height:185px;overflow:visible}
+ #subscriptionsView .subs-glass-main{width:130px;height:155px;padding:12px;border-radius:19px;transform:translate(0,0) rotate(-4deg);animation:none}
+ #subscriptionsView .subs-glass-back,#subscriptionsView .subs-glass-mid{width:120px;height:139px;opacity:.65;border-radius:18px}
+ #subscriptionsView .subs-glass-back{transform:translate(-56px,0) rotate(-16deg)}
+ #subscriptionsView .subs-glass-mid{transform:translate(56px,0) rotate(16deg)}
+ #subscriptionsView .subs-play{width:59px;height:59px;border-radius:20px}
+ #subscriptionsView .subs-play svg{width:31px;height:31px}
+ #subscriptionsView .subs-glass-top,#subscriptionsView .subs-glass-footer{font-size:8px}
+ #subscriptionsView .subs-glass-footer small{font-size:7px}
+ #subscriptionsView .subs-art-badge{bottom:13%;right:13%;font-size:8px;padding:7px 9px}
+ #subscriptionsView .subs-cta,#subscriptionsView .subs-back{min-height:42px;padding:0 14px;font-size:11px}
+ #subscriptionsView .subs-title-row{margin:29px 1px 15px}
+ #subscriptionsView .subs-title-row h2{font-size:21px}
+ #subscriptionsView .subs-grid{gap:10px}
+ #subscriptionsView .subs-service{min-height:204px;padding:13px;border-radius:18px;gap:10px}
+ #subscriptionsView .subs-service-logo{width:50px;height:50px;font-size:26px;border-radius:15px}
+ #subscriptionsView .subs-service-status{font-size:9px;padding:5px 7px}
+ #subscriptionsView .subs-service h3{font-size:16px}
+ #subscriptionsView .subs-service p{font-size:11px}
+ #subscriptionsView .subs-service-foot{font-size:10px}
+}
+@media(max-width:360px){
+ #subscriptionsView .subs-grid{gap:8px}
+ #subscriptionsView .subs-service{padding:10px}
+ #subscriptionsView .subs-service h3{font-size:14px}
+ #subscriptionsView .subs-service-status{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ #subscriptionsView *,#subscriptionsView *::before,#subscriptionsView *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

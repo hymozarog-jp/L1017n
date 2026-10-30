@@ -349,3 +349,31 @@ body.pubg-account-checkout-open{overflow:hidden!important}
  #pubgCategoryPage.pubg-premium .pubg-choice-info strong{font-size:13px}
  #pubgCategoryPage.pubg-premium .pubg-choice-info small{font-size:9px;line-height:1.5}
 }
+
+/* Illustrated PUBG UC packs, with a safe disabled state until real codes exist. */
+#pubgCategoryPage.pubg-premium .pubg-coin-wrap{min-height:104px!important}
+#pubgCategoryPage.pubg-premium .pubg-uc-art{
+  display:block;width:min(100%,134px);height:114px;object-fit:contain;
+  filter:drop-shadow(0 8px 13px #0008);
+  transition:transform .26s ease
+}
+#pubgCategoryPage.pubg-premium .pubg-pack:hover .pubg-uc-art{transform:translateY(-3px) scale(1.06)}
+#pubgCategoryPage.pubg-premium .pubg-choice-art-codes::before,
+#pubgCategoryPage.pubg-premium .pubg-choice-art-codes::after{display:none!important}
+#pubgCategoryPage.pubg-premium .pubg-choice-uc{
+  display:block;position:relative;width:115px;max-width:100%;
+  height:96px;object-fit:contain;z-index:1;filter:drop-shadow(0 6px 14px #0006)
+}
+#pubgCategoryPage.pubg-premium .pubg-unavailable-note{
+  margin:0 0 10px;text-align:center;color:#f5c987;font-size:11px;line-height:1.6
+}
+#pubgCategoryPage.pubg-premium .pubg-buy[disabled]{
+  color:#bac2cb!important;background:#353d49!important;
+  border:1px solid #7a849157!important;box-shadow:none!important;
+  opacity:.88;cursor:not-allowed!important;transform:none!important
+}
+@media(max-width:760px){
+  #pubgCategoryPage.pubg-premium .pubg-coin-wrap{min-height:88px!important}
+  #pubgCategoryPage.pubg-premium .pubg-uc-art{width:100px;height:88px}
+  #pubgCategoryPage.pubg-premium .pubg-choice-uc{height:81px;width:98px}
+}

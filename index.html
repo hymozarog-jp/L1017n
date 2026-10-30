@@ -130,10 +130,10 @@
         <div class="account-id-stats"><div><span>المدينة</span><b>طرابلس</b></div><div><span>عضو منذ</span><b id="accountMemberSince">—</b></div><div><span>الحساب</span><b>مسجّل</b></div></div>
       </div>
       <h3 class="account-group-title">الحساب</h3>
-      <div class="account-settings-list">
-        <button type="button" data-account-action="personal"><span class="account-row-icon">♙</span><b>المعلومات الشخصية</b><span class="account-row-arrow">‹</span></button>
-        <button type="button" data-account-action="verify"><span class="account-row-icon">♢</span><b>توثيق رقم الهاتف</b><small>من المعلومات الشخصية</small><span class="account-row-arrow">‹</span></button>
-        <button type="button" data-account-action="notifications"><span class="account-row-icon">♧</span><b>الإشعارات والتنبيهات</b><span class="account-row-arrow">‹</span></button>
+      <div class="account-settings-list account-core-settings">
+        <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="notifications"><span class="account-row-icon account-icon-notifications" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="account-core-copy"><b>الإشعارات والتنبيهات</b><small>متابعة حالة طلباتك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
       </div>
       <h3 class="account-group-title">تواصل معنا</h3>
       <div class="account-settings-list account-contact-options">
@@ -201,7 +201,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=manual-delivery2';
+      var s=document.createElement('script');s.src='app.js?v=account-quick3';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -537,6 +537,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
 <link rel="stylesheet" href="live-mobile.css?v=google-avatar-left1">
 <link rel="stylesheet" href="account-contact.css?v=compact-help1">
+<link rel="stylesheet" href="account-settings-fast.css?v=account-quick3">
 <link rel="stylesheet" href="order-handover.css?v=manual-delivery2">
 <link rel="stylesheet" href="topup-reference.css?v=libyana-flex1">
 <link rel="stylesheet" href="topup-return.css?v=return-verifying2">

@@ -37,8 +37,15 @@ jobs:
           }
           for(const amount of [1,5,10,30,50])assert(html.includes('data-amount="'+amount+'"'),'Missing quick amount '+amount);
           assert.match(html,/href="topup-reference\.css\?v=/);
-          assert.match(html,/app\.js\?v=return-verifying2/);
-          assert.match(app,/auto-topup\.js\?v=return-verifying2/);
+          assert.match(html,/app\.js\?v=account-contact2/);
+          assert.match(app,/auto-topup\\.js\\?v=return-verifying2/);
+          assert(app.includes('legacy-app.js?v=account-contact2'),'Fresh account interaction script');
+          assert(html.includes('account-contact.css?v=compact-help1'),'Compact account styles');
+          assert(!html.includes('data-account-action="theme"'),'Remove nonfunctional theme row');
+          assert(!html.includes('data-account-action="language"'),'Remove nonfunctional language row');
+          assert(!html.includes('class="account-group-title">التطبيق</h3>'),'Remove oversized app section');
+          assert(html.includes('data-account-action="help"'),'Keep functional support');
+          assert(html.includes('account-contact-options'),'Compact help and contact layout');
           assert.match(js,/create_ussd_topup_intent/);
           assert.match(js,/get_my_ussd_topup_status/);
           assert.match(js,/renderTopupPhoneStatus/);

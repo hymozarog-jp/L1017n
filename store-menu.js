@@ -156,39 +156,33 @@
     var section=document.createElement('section');section.className='rgp-mm2-subcategory';
     var heading=document.createElement('h2');heading.className='rgp-inner-heading';heading.textContent='باقات MM2';
     section.append(heading,grid);
-    var categoryGrid=p.querySelector('.rgp-grid');
+    var categoryGrid=p.querySelector('.rgp-grid')||p.querySelector('.rgp-mm2-subcategory');
     if(!categoryGrid)return;
     categoryGrid.replaceWith(section);
     setInnerHeader(p,'MM2','mm2');
     try{
       var client=window.supabase.createClient(supabaseUrl,supabaseKey);
-      var r=await client.from('products').select('*').eq('active',true).order('sort_order');
-      // Show only real MM2 items inside the Roblox > MM2 package category.
-      var list=(r.data||[]).filter(function(x){var game=String(x.game||'').trim();var key=String(x.product_key||'');var name=String(x.name||'');return /^(?:mm2|murder[ _-]*mystery[ _-]*2)$/i.test(game)||/^mm2[-_]/i.test(key)||/MM2/i.test(name)});
-      // Minty was sold and disabled by the store owner. Keep its card visible
-      // with a non-clickable out-of-stock label. If it is reactivated in
-      // Supabase, the active product replaces this placeholder automatically.
-      var mintySoldOut=!list.some(function(x){return String(x.product_key)==='mm2-minty-gun'});
-      if(!list.length&&!mintySoldOut){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
+      // This read-only RPC returns MM2 products including sold-out ones;
+      // the actual one-unit reservation is enforced atomically in PostgreSQL.
+      var r=await client.rpc('get_mm2_product_stock');
+      if(r.error)throw r.error;
+      var list=r.data||[];
+      if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var image=mm2Artwork(x);
         var art=image
           ? '<span class="mm2-item-art"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+image+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
-        return '<button class="rgp-package" type="button" data-mm2-id="'+escapeHtml(x.id)+'">'+art+
+        var available=x.active===true;
+        return '<button class="rgp-package'+(available?'':' rgp-soldout')+'" type="button"'+
+          (available?' data-mm2-id="'+escapeHtml(x.id)+'"':' disabled aria-disabled="true"')+'>'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
           '<span class="mm2-price">'+Number(x.price||0).toFixed(2)+' د.ل</span>'+
-          '<small class="mm2-delivery">التسليم داخل اللعبة بعد مراجعة الطلب</small></button>';
-      }).join('')+(mintySoldOut
-        ? '<button class="rgp-package rgp-soldout" type="button" disabled aria-disabled="true">'
-          +'<span class="mm2-item-art"><img loading="lazy" src="'+mm2MintyImage+'" alt="سلاح Minty غير متوفر"></span>'
-          +'<strong>Minty | MM2</strong>'
-          +'<span class="mm2-price">7.00 د.ل</span>'
-          +'<small class="mm2-delivery">غير متوفر حاليًا · نفدت الكمية</small></button>'
-        : '');
+          '<small class="mm2-delivery">'+(available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small></button>';
+      }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;
-        var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});
+        var product=list.find(function(p){return p.active===true&&String(p.id)===String(b.dataset.mm2Id)});
         if(product)showMm2Checkout(product);
       });
     }catch(err){grid.innerHTML='<div class="rgp-empty">تعذر تحميل باقات MM2. حاول مرة ثانية.</div>'}
@@ -254,9 +248,14 @@
         var msg=String(err&&err.message||'');
         state.textContent=/insufficient_balance/i.test(msg)?'رصيد المحفظة غير كافٍ. اشحن المحفظة أولاً.':
           /phone_verification_required_before_purchase/i.test(msg)?'وثّق رقم الهاتف برسالة SMS قبل الشراء.':
-          /product_not_available/i.test(msg)?'المنتج غير متاح حاليًا.':
+          /product_not_available/i.test(msg)?'نفدت الكمية! المنتج أصبح غير متوفر. ما انخصم منك رصيد.':
           'تعذر إكمال الطلب. لم يتم تأكيد أي خصم. حاول لاحقًا.';
-      }finally{send.disabled=false}
+        if(/product_not_available/i.test(msg)){
+          send.disabled=true;
+          void showMm2Page().catch(function(){});
+          return;
+        }
+      }finally{if(!send.disabled)send.disabled=false;else if(!state.textContent.includes('نفدت الكمية'))send.disabled=false}
     });
     form.querySelector('input').focus();
   }

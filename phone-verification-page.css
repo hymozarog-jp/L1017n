@@ -1,0 +1,93 @@
+/* L1017n • dedicated SMS phone verification */
+body.phone-wizard-open{overflow:hidden!important}
+#phoneVerifyWizard{
+ position:fixed;inset:0;z-index:2147482200;display:none;overflow-y:auto;
+ overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+ padding:calc(env(safe-area-inset-top) + 16px) 14px calc(env(safe-area-inset-bottom) + 30px);
+ background:radial-gradient(ellipse at 68% -15%,#375ca74d,transparent 60%),#060d1b;
+ color:#f2f6ff;direction:rtl;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;
+}
+#phoneVerifyWizard.visible{display:block}
+#phoneVerifyWizard *,#phoneVerifyWizard *:before,#phoneVerifyWizard *:after{box-sizing:border-box}
+#phoneVerifyWizard .pv-shell{width:min(100%,480px);margin:0 auto}
+#phoneVerifyWizard .pv-header{
+ display:flex;align-items:center;gap:13px;margin:0 0 37px;
+ font-size:15px;font-weight:800;color:#c0d0eb
+}
+#phoneVerifyWizard .pv-back{
+ flex:0 0 45px;height:45px;border:1px solid #3c5074;background:#15223a;color:#e6edff;
+ border-radius:14px;font-size:31px;display:grid;place-items:center;cursor:pointer;line-height:1
+}
+#phoneVerifyWizard .pv-header-lock{margin-inline-start:auto;color:#b1a6f7;font-size:23px}
+#phoneVerifyWizard .pv-body{max-width:450px;margin:auto;text-align:center}
+#phoneVerifyWizard .pv-icon{
+ width:82px;height:82px;display:grid;place-items:center;
+ background:linear-gradient(135deg,#805ff3,#506bd6);color:#fff;
+ box-shadow:0 15px 42px #5c4bdd54;border:1px solid #a48cff8c;
+ border-radius:25px;margin:0 auto 16px;animation:pv-float .48s ease-out both
+}
+#phoneVerifyWizard .pv-phase{
+ display:inline-flex;padding:6px 14px;border:1px solid #5a6a9e66;
+ border-radius:99px;background:#5b6ac225;color:#bcc4ff;
+ font-size:11px;font-weight:850;margin:0 0 9px;
+}
+#phoneVerifyWizard h1{font-weight:900;font-size:clamp(23px,5.5vw,31px);margin:9px 0;line-height:1.5;color:#fff}
+#phoneVerifyWizard .pv-lead{font-size:13px;line-height:1.95;color:#aabbdb;margin:0 auto 24px;max-width:355px}
+#phoneVerifyWizard .pv-phone,#phoneVerifyWizard .pv-code{
+ background:linear-gradient(150deg,#162441,#101b32);
+ border:1px solid #3b4f78;border-radius:22px;
+ padding:21px 17px;box-shadow:0 12px 32px #0207163d;text-align:right;
+}
+#phoneVerifyWizard :is(.pv-phone,.pv-code)[hidden],#phoneVerifyWizard .pv-done[hidden]{display:none!important}
+#phoneVerifyWizard label{display:block;margin-bottom:12px;font-size:14px;font-weight:850;color:#e6efff}
+#phoneVerifyWizard .pv-input-row{display:flex;direction:ltr;align-items:center;gap:12px;padding:0 14px;background:#0a152d;border:1px solid #45638c;border-radius:14px;min-height:60px}
+#phoneVerifyWizard .pv-input-row>span{color:#9eafe0;font:700 16px Arial,sans-serif}
+#phoneVerifyWizard input{
+ min-width:0;width:100%;outline:none;direction:ltr;
+ color:#f6f9ff;background:transparent;border:0;font:700 20px Arial,sans-serif;
+ letter-spacing:.8px;min-height:53px;
+}
+#phoneVerifyWizard input::placeholder{color:#7d8cac;opacity:1}
+#phoneVerifyWizard input:focus-visible{outline:2px solid #a79cff;outline-offset:-5px;border-radius:7px}
+#phoneVerifyWizard input:read-only{color:#d5e2fa}
+#phoneVerifyWizard .pv-hint{font-size:11px;color:#9dafce;line-height:1.9;margin:10px 0 16px}
+#phoneVerifyWizard .pv-action{
+ display:block;width:100%;min-height:53px;padding:12px 15px;border:0;border-radius:14px;
+ color:#fff;background:linear-gradient(120deg,#9676ff,#6558dd);
+ font:850 14px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer;
+ box-shadow:0 7px 20px #6147df44;transition:filter .18s ease,transform .18s ease;
+}
+#phoneVerifyWizard button:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+#phoneVerifyWizard .pv-action:active:not(:disabled){transform:scale(.987)}
+#phoneVerifyWizard .pv-send:focus-visible,#phoneVerifyWizard .pv-back:focus-visible,#phoneVerifyWizard .pv-resend:focus-visible,#phoneVerifyWizard .pv-action:focus-visible{outline:3px solid #e4dcff;outline-offset:3px}
+#phoneVerifyWizard .pv-sent{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;color:#9beccb;font-size:12px;line-height:1.7;margin:0 0 18px}
+#phoneVerifyWizard .pv-sent b{color:#edf9ff;font:800 13px Arial,sans-serif;unicode-bidi:isolate}
+#phoneVerifyWizard .pv-code-input{
+ display:block;text-align:center;direction:ltr;letter-spacing:.30em;
+ min-height:65px;font-size:27px;border:1px solid #546c9b!important;
+ background:#0a152c!important;border-radius:14px!important;margin-bottom:15px;padding:12px;
+}
+#phoneVerifyWizard .pv-code-tip{color:#a8bcdd;font-size:11px;line-height:1.8;text-align:center;margin:14px 0}
+#phoneVerifyWizard .pv-resend{
+ display:block;margin:4px auto 0;padding:11px 16px;min-height:43px;
+ color:#bfcaff;background:#7288b91b;border:1px solid #526a9c;
+ border-radius:12px;font:800 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer;
+}
+#phoneVerifyWizard .pv-wait{border:1px solid #344864;background:#111e35;border-radius:17px;padding:15px 17px;margin:17px 0 12px;text-align:right}
+#phoneVerifyWizard .pv-wait[hidden]{display:none}
+#phoneVerifyWizard .pv-wait-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#b4c3e2}
+#phoneVerifyWizard .pv-wait-row strong{color:#e3e6ff;font:850 19px Arial,sans-serif;font-variant-numeric:tabular-nums}
+#phoneVerifyWizard .pv-bar{height:6px;border-radius:10px;background:#ffffff16;overflow:hidden;margin:12px 0}
+#phoneVerifyWizard .pv-bar-fill{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#aa8aff,#78ddc2);transition:width .25s linear}
+#phoneVerifyWizard .pv-wait small{font-size:11px;line-height:1.8;color:#92a8c9}
+#phoneVerifyWizard .pv-status{min-height:24px;color:#c1e9d8;font-size:12px;line-height:1.9;margin:10px 0}
+#phoneVerifyWizard .pv-status[data-error="true"]{color:#ffbcb8}
+#phoneVerifyWizard .pv-security{color:#788dad;font-size:11px;line-height:1.8;max-width:365px;margin:20px auto}
+#phoneVerifyWizard .pv-done{border:1px solid #369c78;background:#14433455;border-radius:21px;padding:25px 17px}
+#phoneVerifyWizard .pv-done-icon{display:grid;place-items:center;width:65px;height:65px;border-radius:50%;margin:0 auto 10px;background:#2a9a71;color:#fff;font-size:37px}
+#phoneVerifyWizard .pv-done h3{font-size:22px;color:#bdffdf;margin:8px 0}
+#phoneVerifyWizard .pv-done p{color:#cee6dc;line-height:1.8;font-size:13px}
+#phoneVerifyWizard .pv-done .pv-action{margin-top:18px}
+@keyframes pv-float{from{opacity:0;transform:translateY(13px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:380px){#phoneVerifyWizard{padding-inline:11px}#phoneVerifyWizard .pv-phone,#phoneVerifyWizard .pv-code{padding:18px 13px}#phoneVerifyWizard .pv-header{margin-bottom:24px}}
+@media(prefers-reduced-motion:reduce){#phoneVerifyWizard *,#phoneVerifyWizard *:before,#phoneVerifyWizard *:after{animation:none!important;transition:none!important}}

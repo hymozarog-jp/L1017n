@@ -1,0 +1,108 @@
+/* L1017n account: concise, functional contact actions. */
+#accountModern .account-contact-options{
+  position:relative;
+  border:1px solid #314466;
+  border-radius:19px;
+  background:linear-gradient(160deg,#16213b 0%,#10182d 76%);
+  box-shadow:0 8px 25px #0002;
+  overflow:hidden;
+}
+#accountModern .account-contact-options [data-account-action="help"],
+#accountModern .account-contact-options .account-tiktok-link{
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:63px;
+  padding:11px 14px;
+  color:#f6f8ff;
+  text-align:right;
+  line-height:1.35;
+  transition:background .18s ease,transform .18s ease;
+}
+#accountModern .account-contact-options [data-account-action="help"]{
+  width:100%;
+  border:0;
+  border-bottom:1px solid #263652;
+  background:transparent;
+  cursor:pointer;
+}
+#accountModern .account-contact-options .account-tiktok-link{
+  text-decoration:none;
+  border-bottom:0;
+}
+#accountModern .account-contact-options [data-account-action="help"]:hover,
+#accountModern .account-contact-options .account-tiktok-link:hover{
+  background:#ffffff0c;
+}
+#accountModern .account-contact-options [data-account-action="help"]:active,
+#accountModern .account-contact-options .account-tiktok-link:active{
+  background:#ffffff13;
+  transform:scale(.995);
+}
+#accountModern .account-contact-options .account-row-icon{
+  flex:0 0 39px;
+  width:39px;
+  height:39px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+}
+#accountModern .account-contact-options .account-help-icon{
+  background:linear-gradient(140deg,#223b68,#273d67);
+  color:#91c4ff;
+  border:1px solid #3e5a8a;
+}
+#accountModern .account-contact-options .account-contact-text{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:5px;
+  min-width:0;
+  text-align:right;
+}
+#accountModern .account-contact-options .account-contact-text b{
+  display:block;
+  flex:none;
+  font-size:14px;
+  font-weight:850;
+  color:#f9fbff;
+}
+#accountModern .account-contact-options .account-contact-text small{
+  display:block;
+  font-size:11px;
+  font-weight:500;
+  color:#9caecb;
+  line-height:1.3;
+}
+#accountModern .account-contact-options .account-tiktok-link b{
+  font-size:14px;
+}
+#accountModern .account-contact-options .account-tiktok-link small{
+  font-size:11px;
+}
+#accountModern .account-contact-options .account-row-arrow{
+  flex:0 0 auto;
+  font-size:22px;
+  color:#8194bb;
+}
+#accountModern .account-contact-options :is(button,a):focus-visible{
+  outline:2px solid #94c7ff;
+  outline-offset:-3px;
+  border-radius:13px;
+}
+@media(max-width:600px){
+  #accountModern .account-contact-options [data-account-action="help"],
+  #accountModern .account-contact-options .account-tiktok-link{
+    min-height:61px;
+    padding:10px 12px;
+    gap:10px;
+  }
+  #accountModern .account-contact-options .account-row-icon{
+    width:37px;height:37px;flex-basis:37px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #accountModern .account-contact-options :is(button,a){transition:none!important}
+}

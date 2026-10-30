@@ -39,7 +39,7 @@ function openVerification(page){
  else page.querySelector('#personalPhoneSlot')?.scrollIntoView({behavior:'auto',block:'center'});
 }
 function decorate(page,user,name){
- if(!page||!user||page.dataset.premiumProfile==='ready')return;
+ if(!page||!user)return;
  page.dataset.premiumProfile='ready';
  page.classList.add('premium-personal-profile');
  const header=page.querySelector('.personal-page-header > div');
@@ -119,5 +119,15 @@ function decorate(page,user,name){
  }
  verifiedState(page);
 }
-window.L1017nPersonalPremium=Object.freeze({decorate,refresh:verifiedState});
+async function refreshFromServer(){
+ const page=document.getElementById('personalDetailsPage');
+ if(!page?.classList.contains('visible')||typeof window.renderResalaOtp!=='function')return;
+ try{
+  const client=typeof supabaseClient==='undefined'?null:supabaseClient;
+  if(!client)return;
+  const {data:{session}}=await client.auth.getSession();
+  if(session?.user)await window.renderResalaOtp(session.user);
+ }catch(err){console.warn('[account/personal] Phone status refresh failed',err)}
+}
+window.L1017nPersonalPremium=Object.freeze({decorate,refresh:verifiedState,refreshFromServer});
 })();

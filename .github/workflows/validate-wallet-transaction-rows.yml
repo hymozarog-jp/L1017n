@@ -1,0 +1,62 @@
+name: Validate compact single-line wallet transactions
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'legacy-app.js'
+      - 'index.html'
+      - 'app.js'
+      - 'wallet-transactions.css'
+      - '.github/workflows/validate-wallet-transaction-rows.yml'
+  workflow_dispatch:
+jobs:
+  wallet-rows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test one-line transaction summaries, safe details and filters
+        run: |
+          node --check legacy-app.js
+          node --check app.js
+          node - <<'JS'
+          const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+          const legacy=fs.readFileSync('legacy-app.js','utf8');
+          const css=fs.readFileSync('wallet-transactions.css','utf8');
+          const html=fs.readFileSync('index.html','utf8');
+          const app=fs.readFileSync('app.js','utf8');
+          assert(html.includes('wallet-transactions.css?v=wallet-row1'));
+          assert(html.includes('app.js?v=wallet-row1'));
+          assert(app.includes('legacy-app.js?v=wallet-row1'));
+          assert(legacy.includes('applyWalletTransactionFilter()'));
+          assert(legacy.includes("row.dataset.walletStatus!==selected"));
+          assert(!legacy.includes("$$('#topupHistory .order-tracking-card')"));
+          assert(legacy.includes("walletTransactionRows(list);applyWalletTransactionFilter()"));
+          const start=legacy.indexOf('function applyWalletTransactionFilter(){');
+          const end=legacy.indexOf('function initWalletShowcase(){',start);
+          assert(start>=0&&end>start,'Test real render helpers');
+          const escapeHtml=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          const context={escapeHtml,Date,Number};
+          vm.runInNewContext(legacy.slice(start,end),context);
+          const rows=[
+            {id:'abcdef00-1234',amount:5,method:'libyana',status:'pending',transfer_reference:'',created_at:'2026-10-29T14:52:10Z',admin_note:''},
+            {id:'abcdef01-1234',amount:7.5,method:'almadar',status:'approved',transfer_reference:'R123',created_at:'2026-10-29T14:52:10Z',admin_note:''},
+            {id:'abcdef02-1234',amount:2,method:'libyana',status:'rejected',transfer_reference:'',created_at:'2026-10-29T14:52:10Z',admin_note:'<script>alert(1)</script>'}
+          ];
+          const out=vm.runInNewContext('walletTransactionRows',context)(rows);
+          assert.equal((out.match(/<details class="wallet-transaction"/g)||[]).length,3);
+          assert.equal((out.match(/<summary class="wallet-transaction-line"/g)||[]).length,3);
+          assert.equal((out.match(/<div class="wallet-transaction-detail">/g)||[]).length,3);
+          for(const state of ['pending','approved','rejected'])assert(out.includes('data-wallet-status="'+state+'"'));
+          for(const text of ['شحن ليبيانا','شحن المدار','معلّق','مكتمل','مرفوض','5.00','7.50'])assert(out.includes(text));
+          assert(out.includes('&lt;script&gt;'),'Escaped admin note');
+          assert(!out.includes('<script>'),'No HTML injection');
+          assert(!out.includes('order-progress'),'Do not show big cards by default');
+          assert(css.includes('grid-template-columns:38px minmax(0,1fr) auto auto 13px'),'Single-row responsive layout');
+          assert(css.includes('.wallet-transaction[hidden]'),'Correct hidden filter');
+          assert(css.includes('[open] .wallet-tx-chevron'),'Expanded state');
+          assert(css.includes('prefers-reduced-motion'));
+          console.log('Compact wallet history safe, filterable and accessible');
+          JS

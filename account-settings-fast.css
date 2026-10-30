@@ -1,0 +1,107 @@
+/* L1017n • responsive, compact, immediately tappable account settings */
+#accountModern .account-core-settings{
+  border:1px solid #2e4162;
+  border-radius:19px;
+  background:linear-gradient(165deg,#131e32 0%,#0f182b 100%);
+  overflow:hidden;
+  box-shadow:0 10px 25px #01081922;
+}
+#accountModern .account-core-settings > button[data-account-action]{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  min-height:69px;
+  box-sizing:border-box;
+  padding:11px 14px;
+  border:0;
+  border-bottom:1px solid #283850;
+  text-align:right;
+  color:#f2f6ff;
+  background:transparent;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:background-color .14s ease;
+}
+#accountModern .account-core-settings > button[data-account-action]:last-child{border-bottom:0}
+#accountModern .account-core-settings > button[data-account-action]:active{background:#ffffff10}
+#accountModern .account-core-settings > button[data-account-action]:hover{background:#ffffff08}
+#accountModern .account-core-settings .account-row-icon{
+  flex:0 0 43px;
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  border:1px solid #43608a;
+  background:linear-gradient(145deg,#253c60,#1c2c46);
+  color:#9fc5ff;
+}
+#accountModern .account-core-settings .account-icon-verify{
+  border-color:#4a7390;
+  color:#8bd9e0;
+  background:linear-gradient(140deg,#1c4155,#182b45);
+}
+#accountModern .account-core-settings .account-icon-notifications{
+  border-color:#645b8f;
+  color:#c5aeff;
+  background:linear-gradient(140deg,#353154,#242741);
+}
+#accountModern .account-core-settings .account-row-icon svg{display:block;width:23px;height:23px}
+#accountModern .account-core-settings .account-core-copy{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:4px;
+  flex:1 1 auto;
+  min-width:0;
+  text-align:right;
+}
+#accountModern .account-core-settings .account-core-copy b{
+  flex:initial;
+  color:#f5f8ff;
+  font-size:14px;
+  line-height:1.45;
+  font-weight:850;
+}
+#accountModern .account-core-settings .account-core-copy small{
+  display:block;
+  color:#96a9c8;
+  font-size:11px;
+  font-weight:500;
+  line-height:1.5;
+}
+#accountModern .account-core-settings .account-row-arrow{
+  flex:0 0 auto;
+  color:#96a9c7;
+  line-height:1;
+  font-size:23px;
+}
+#accountModern .account-core-settings > button[data-account-action]:focus-visible{
+  outline:2px solid #a5d4ff;
+  outline-offset:-3px;
+  border-radius:12px;
+}
+#accountModern .account-settings-detail{
+  scroll-margin-top:15px;
+}
+#personalDetailsPage.visible{
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@media(max-width:600px){
+  #accountModern .account-core-settings > button[data-account-action]{
+    min-height:66px;
+    padding:10px 12px;
+    gap:10px;
+  }
+  #accountModern .account-core-settings .account-row-icon{
+    width:40px;height:40px;flex-basis:40px;
+  }
+  #accountModern .account-core-settings .account-core-copy b{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  #accountModern .account-core-settings > button[data-account-action]{transition:none}
+}

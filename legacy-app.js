@@ -591,7 +591,7 @@ async function openPersonalDetails(options={}){
      '<span>توثيق الرقم مطلوب قبل الشراء. لا تشارك رمز التحقق مع أي شخص.</span></div>'+
    '</section>'+
   '</div>';
- window.L1017nPersonalPremium?.decorate(page,user,name);
+ try{window.L1017nPersonalPremium?.decorate(page,user,name)}catch(err){console.warn('[account/premium] Using standard profile layout',err)}
  page.classList.add('visible');
  const slot=page.querySelector('#personalPhoneSlot');
  const gate=document.getElementById('accountPhoneGate');

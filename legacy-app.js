@@ -505,7 +505,7 @@ setTimeout(refreshAdminAccess,0);
  const btn=e.target.closest('[data-account-action]');if(!btn)return;
  const action=btn.dataset.accountAction;
  if(action==='personal'){openPersonalDetails();return}
- else if(action==='verify'){openPersonalDetails({focusPhone:true});return}
+ else if(action==='verify'){if(typeof window.openPhoneVerificationPage==='function')window.openPhoneVerificationPage();else openPersonalDetails({focusPhone:true});return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='help'){
    show('<h3>كيف نقدر نساعدك؟</h3><p>لو عندك طلب شحن أو شراء قيد الانتظار، تقدر تتابع حالته من طلباتي. وممكن تراجع رصيد المحفظة في أي وقت.</p><div class="account-help-actions"><button type="button" id="detailHelpOrders">عرض طلباتي</button><button type="button" id="detailHelpWallet">فتح المحفظة</button></div>');

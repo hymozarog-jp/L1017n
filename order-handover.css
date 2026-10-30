@@ -29,7 +29,7 @@ body.manual-handover-open{overflow:hidden!important}
 #manualOrderHandover :is(button,a,summary):focus-visible{outline:3px solid #d3e3ff;outline-offset:3px}
 #ordersList .orders-manual-handover{grid-column:1/-1;display:grid;gap:7px;width:100%;margin-top:11px;padding:11px;border-radius:13px;border:1px solid #456b9d;background:#172a44}
 #ordersList .orders-manual-handover p{margin:0;font-size:12px;line-height:1.65;color:#c6d9f2}
-#ordersList .orders-manual-handover button{border:0;border-radius:10px;background:linear-gradient(105deg,#2b79c2,#5c79d5);color:white;padding:11px;min-height:43px;cursor:pointer;font:800 13px inherit}
+#ordersList .orders-manual-handover button{border:0;border-radius:10px;background:linear-gradient(105deg,#2b79c2,#5c79d5);color:white;padding:11px;min-height:43px;cursor:pointer;font-weight:800;font-size:13px;font-family:inherit}
 #ordersList .orders-modern-card:has(.orders-manual-handover){flex-wrap:wrap}
 #ordersList .orders-modern-card:has(.orders-manual-handover) .orders-manual-handover{flex-basis:100%}
 @media(max-width:380px){#manualOrderHandover .manual-handover-sheet{padding:21px 13px 14px}#manualOrderHandover .manual-handover-actions{grid-template-columns:1fr}}

@@ -283,7 +283,7 @@
       + '<p class="pubg-hero-description">باقات شدات ببجي مباشرة، اختار باقتك واشحن عن طريق المحفظة.</p>'
       + '<div class="pubg-hero-actions"><span class="pubg-hero-note"><span class="pubg-note-dot"></span> شحن على حساب PUBG • دفع من المحفظة</span></div>'
       + '</div><div class="pubg-hero-visual"><div class="pubg-hero-halo"></div>'
-      + '<img src="game-covers/pubg.svg" alt="" loading="eager" decoding="async">'
+      + '<img src="game-covers/pubg-battlefront.webp" alt="PUBG Mobile" loading="eager" decoding="async">'
       + '<span class="pubg-visual-sticker">LEVEL UP <b>UC STORE</b></span></div>'
       + '<div class="pubg-hero-caption">L1017N <b>×</b> PUBG MOBILE <span>•</span> UC</div>'
       + '</section>'

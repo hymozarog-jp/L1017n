@@ -118,7 +118,7 @@
       +'<span class="sab-dialog-kicker">STEAL A BRAINROT • L1017N</span>'
       +'<h2>'+escapeHtml(product.name)+'</h2>'
       +'<strong class="sab-dialog-price">'+Number(product.price).toFixed(2)+' د.ل</strong>'
-      +'<p>التسليم يدوي داخل اللعبة بعد تأكيد الطلب ومراجعته. لا يتم تسليم كود فوري.</p>'
+      +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'
       +'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'
       +'<input id="sabRobloxUsername" autocomplete="off" minlength="3" maxlength="20" required pattern="[A-Za-z0-9_]{3,20}" placeholder="Roblox username" dir="ltr">'
       +'<div class="sab-dialog-actions"><button type="button" data-sab-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'
@@ -155,7 +155,14 @@
         const main=document.getElementById("robloxGamePage");if(main)main.remove();
         if(typeof renderWallet==="function")Promise.resolve(renderWallet()).catch(()=>{});
         if(typeof renderOrders==="function")Promise.resolve(renderOrders()).catch(()=>{});
-        alert("تم إنشاء طلب "+product.name+" بنجاح. التسليم بعد مراجعة الإدارة.");
+        const order=r.data;
+        const opened=order?.id && window.L1017nManualHandover?.open({
+          id:order.id,product_name:order.product_name||product.name,
+          total_amount:order.total_amount??product.price,
+          roblox_username:order.roblox_username||username,
+          game:"steal-a-brainrot",product_key:product.product_key
+        });
+        if(!opened)alert("تم شراء "+product.name+" بنجاح. افتح «طلباتي» وتواصل مع المتجر عبر واتساب أو تيليجرام لاستلام الغرض.");
       }catch(error){
         const msg=String(error?.message||"");
         status.textContent=/insufficient_balance/i.test(msg)?"رصيدك غير كافٍ، اشحن المحفظة أولًا."

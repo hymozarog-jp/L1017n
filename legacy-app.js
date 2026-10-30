@@ -327,7 +327,36 @@ function renderGoogleHeaderAvatar(user){
  btn.title='حساب '+name;
  btn.classList.remove('hidden');
 }
-async function renderAccountCore(){const user=await currentUser();renderGoogleHeaderAvatar(user);const modernCard=document.getElementById('accountModern');if(modernCard){modernCard.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const name=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';document.getElementById('accountModernName').textContent=name;document.getElementById('accountModernEmail').textContent=user.email||'';document.getElementById('accountModernAvatar').textContent=name.slice(0,1).toUpperCase();document.getElementById('accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}document.body.classList.toggle('auth-screen',!user&&!$('#accountView')?.classList.contains('hidden'));renderCustomerHeaderWallet(user);let profile=$('#signedInProfile');if(!profile){profile=document.createElement('div');profile.id='signedInProfile';profile.style.cssText='display:flex;align-items:center;gap:14px;text-align:right;padding:14px;margin:12px 0;border:1px solid var(--border-color,#ddd);border-radius:16px';const title=$('#accountTitle');title.parentNode.insertBefore(profile,title.nextSibling)}const accountBtn=$('#accountBtn');if(user){const meta=user.user_metadata||{};const displayName=meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'مستخدم';const {data:nickData}=await supabaseClient.from('leaderboard_profiles').select('nickname').eq('user_id',user.id).maybeSingle();const nickname=nickData?.nickname||'';if(accountBtn)accountBtn.textContent=nickname||'حسابي ↗';const avatar=meta.avatar_url||meta.picture||'';profile.classList.remove('hidden');profile.innerHTML=(avatar?'<img src="'+escapeHtml(avatar)+'" alt="الصورة الشخصية" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display=&quot;none&quot;">':'<div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2,#eee);font-size:24px;flex-shrink:0">'+escapeHtml((nickname||displayName).slice(0,1).toUpperCase())+'</div>')+'<div style="min-width:0"><strong style="display:block;font-size:1.05rem">'+escapeHtml(nickname||displayName)+'</strong><span style="display:block;overflow-wrap:anywhere;opacity:.8">'+escapeHtml(user.email||'')+'</span><small style="opacity:.7">تم تسجيل الدخول بنجاح</small></div>';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='هذا ملفك الشخصي المرتبط بحسابك.';$('#authForm').classList.add('hidden');$('#googleSignInBtn')?.classList.add('hidden');$('#logoutBtn').classList.remove('hidden')}else{if(accountBtn)accountBtn.textContent='حسابي ↗';profile.classList.add('hidden');profile.innerHTML='';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='سجّل دخولك بحساب Google أو بالبريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.';$('#authForm').classList.remove('hidden');$('#googleSignInBtn')?.classList.remove('hidden');$('#logoutBtn').classList.add('hidden')}// Phone is a unique account identifier, not proof of SIM ownership.
+/* Google identity card: always use the signed-in account's own data. */
+function paintGoldAccountIdentity(user,name){
+ const avatar=document.getElementById('accountModernAvatar');
+ if(!avatar||!user)return;
+ const googleBadge=document.getElementById('accountGoogleBadge');
+ const isGoogle=user.app_metadata?.provider==='google' || user.identities?.some(i=>i.provider==='google');
+ if(googleBadge)googleBadge.hidden=!isGoogle;
+ const shortId=document.getElementById('accountModernId');
+ if(shortId)shortId.textContent=String(user.id||'').replace(/-/g,'').slice(0,10).toUpperCase()||'—';
+ const meta=user.user_metadata||{};
+ const raw=String(meta.avatar_url||meta.picture||'');
+ let photo='';
+ try{
+  const url=new URL(raw);
+  const host=url.hostname.toLowerCase();
+  if(url.protocol==='https:' && (host==='googleusercontent.com'||host.endsWith('.googleusercontent.com')||host==='ggpht.com'||host.endsWith('.ggpht.com')))photo=url.href;
+ }catch(_){}
+ avatar.replaceChildren();
+ const initial=String(name||'م').slice(0,1).toUpperCase();
+ avatar.textContent=initial;
+ if(photo){
+  const img=document.createElement('img');
+  img.alt='صورة حساب Google';
+  img.referrerPolicy='no-referrer';
+  img.loading='lazy';
+  img.onerror=()=>{if(avatar.contains(img))avatar.textContent=initial};
+  avatar.replaceChildren(img);img.src=photo;
+ }
+}
+async function renderAccountCore(){const user=await currentUser();renderGoogleHeaderAvatar(user);const modernCard=document.getElementById('accountModern');if(modernCard){modernCard.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const name=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';document.getElementById('accountModernName').textContent=name;document.getElementById('accountModernEmail').textContent=user.email||'';paintGoldAccountIdentity(user,name);document.getElementById('accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}document.body.classList.toggle('auth-screen',!user&&!$('#accountView')?.classList.contains('hidden'));renderCustomerHeaderWallet(user);let profile=$('#signedInProfile');if(!profile){profile=document.createElement('div');profile.id='signedInProfile';profile.style.cssText='display:flex;align-items:center;gap:14px;text-align:right;padding:14px;margin:12px 0;border:1px solid var(--border-color,#ddd);border-radius:16px';const title=$('#accountTitle');title.parentNode.insertBefore(profile,title.nextSibling)}const accountBtn=$('#accountBtn');if(user){const meta=user.user_metadata||{};const displayName=meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'مستخدم';const {data:nickData}=await supabaseClient.from('leaderboard_profiles').select('nickname').eq('user_id',user.id).maybeSingle();const nickname=nickData?.nickname||'';if(accountBtn)accountBtn.textContent=nickname||'حسابي ↗';const avatar=meta.avatar_url||meta.picture||'';profile.classList.remove('hidden');profile.innerHTML=(avatar?'<img src="'+escapeHtml(avatar)+'" alt="الصورة الشخصية" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display=&quot;none&quot;">':'<div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2,#eee);font-size:24px;flex-shrink:0">'+escapeHtml((nickname||displayName).slice(0,1).toUpperCase())+'</div>')+'<div style="min-width:0"><strong style="display:block;font-size:1.05rem">'+escapeHtml(nickname||displayName)+'</strong><span style="display:block;overflow-wrap:anywhere;opacity:.8">'+escapeHtml(user.email||'')+'</span><small style="opacity:.7">تم تسجيل الدخول بنجاح</small></div>';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='هذا ملفك الشخصي المرتبط بحسابك.';$('#authForm').classList.add('hidden');$('#googleSignInBtn')?.classList.add('hidden');$('#logoutBtn').classList.remove('hidden')}else{if(accountBtn)accountBtn.textContent='حسابي ↗';profile.classList.add('hidden');profile.innerHTML='';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='سجّل دخولك بحساب Google أو بالبريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.';$('#authForm').classList.remove('hidden');$('#googleSignInBtn')?.classList.remove('hidden');$('#logoutBtn').classList.add('hidden')}// Phone is a unique account identifier, not proof of SIM ownership.
 let phoneGate=$('#accountPhoneGate');
 if(!phoneGate){phoneGate=document.createElement('div');phoneGate.id='accountPhoneGate';phoneGate.className='panel';phoneGate.style.cssText='padding:16px;margin:14px 0';profile.parentNode.insertBefore(phoneGate,profile.nextSibling)}
 if(user){
@@ -343,7 +372,7 @@ if(user){
  if(phoneError)phoneGate.innerHTML='<p>تعذر التحقق من رقم الهاتف. حاول تحديث الصفحة.</p>';
 }else{phoneGate.innerHTML='';phoneGate.classList.add('hidden')}
 if(user)phoneGate.classList.remove('hidden');
-const modern=$('#accountModern');if(modern){modern.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const display=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';$('#accountModernName').textContent=display;$('#accountModernEmail').textContent=user.email||'';$('#accountModernAvatar').textContent=display.slice(0,1).toUpperCase();$('#accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}if(typeof window.renderLeaderboardProfile==='function'){
+const modern=$('#accountModern');if(modern){modern.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const display=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';$('#accountModernName').textContent=display;$('#accountModernEmail').textContent=user.email||'';paintGoldAccountIdentity(user,display);$('#accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}if(typeof window.renderLeaderboardProfile==='function'){
   try{await window.renderLeaderboardProfile()}catch(err){console.warn('[account/leaderboard] Optional rank widget failed:',err)}
  }
  if(typeof window.renderResalaOtp==='function'){
@@ -603,6 +632,15 @@ setTimeout(refreshAdminAccess,0);
  const show=html=>{detail.innerHTML=html;detail.classList.remove('hidden');detail.scrollIntoView({behavior:'auto',block:'nearest'})};
  async function editName(){const user=await currentUser();if(!user)return;const name=prompt('اكتب اسمك الجديد',document.getElementById('accountModernName')?.textContent||'');if(name===null)return;const cleaned=name.trim();if(cleaned.length<2||cleaned.length>60){toast('الاسم لازم يكون بين حرفين و60 حرف');return}const {error}=await supabaseClient.auth.updateUser({data:{full_name:cleaned}});if(error){toast('تعذر حفظ الاسم');return}toast('تم تحديث الاسم');renderAccount()}
  root.addEventListener('click',async function(e){
+ const copy=e.target.closest('#accountCopyId');
+ if(copy){
+  const account=await currentUser();
+  if(account?.id){
+   try{if(!navigator.clipboard?.writeText)throw Error('clipboard_unavailable');await navigator.clipboard.writeText(account.id);toast('تم نسخ معرف حسابك')}
+   catch(_){window.prompt('انسخ معرّف حسابك:',account.id)}
+  }
+  return;
+ }
  const edit=e.target.closest('#accountEditName');if(edit){editName();return}
  const btn=e.target.closest('[data-account-action]');if(!btn)return;
  const action=btn.dataset.accountAction;
@@ -702,7 +740,7 @@ async function openPersonalDetails(options={}){
    if(avatarInitial)avatarInitial.textContent=value.slice(0,1).toUpperCase();
    else page.querySelector('.personal-page-avatar').textContent=value.slice(0,1).toUpperCase();
    document.getElementById('accountModernName').textContent=value;
-   document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
+   paintGoldAccountIdentity(user,value);
  };
  if(gate&&typeof window.renderResalaOtp==='function'){
    // Refresh status without waiting for SMS network response.

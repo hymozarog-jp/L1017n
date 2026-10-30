@@ -50,6 +50,12 @@
       if(requestId!==catalogRequest)return;
       pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true);
       catalogReady=true;
+      const badge=root.querySelector("#pubgFeaturedUc");
+      const uc=pubgCatalog.find(p=>p.product_key==="pubg-60"&&Number(p.amount)===60);
+      if(badge){
+        badge.hidden=!uc;
+        if(uc)badge.textContent="60 شدة · "+Number(uc.price).toFixed(2)+" د.ل · اطلب الآن";
+      }
       refresh();
     } catch(error) {
       if(requestId!==catalogRequest)return;
@@ -288,6 +294,7 @@
       + '<p class="pubg-hero-title-ar">كل ما تحتاجه للمعركة، بمكان واحد.</p>'
       + '<p class="pubg-hero-description">تصفح بطاقات الشدات وأكواد الشحن، واختر الباقة المناسبة لك بتجربة بسيطة وسريعة.</p>'
       + '<div class="pubg-hero-actions"><button type="button" class="pubg-explore" data-pubg-explore>استكشف الباقات <span aria-hidden="true">↙</span></button>'
+      + '<button type="button" id="pubgFeaturedUc" class="pubg-featured-uc" hidden>60 شدة · عرض الباقة</button>'
       + '<span class="pubg-hero-note"><span class="pubg-note-dot"></span> شراء من رصيد المحفظة</span></div>'
       + '</div><div class="pubg-hero-visual"><div class="pubg-hero-halo"></div>'
       + '<img src="game-covers/pubg.svg" alt="" loading="eager" decoding="async">'
@@ -315,6 +322,9 @@
       root.querySelector(".pubg-choice-grid").scrollIntoView({
         behavior: reducedMotion() ? "auto" : "smooth", block: "center"
       });
+    });
+    root.querySelector("#pubgFeaturedUc")?.addEventListener("click",()=>{
+      setCategory(root,"charge",true);
     });
     root.querySelectorAll("[data-pubg-category]").forEach((button) => {
       button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));

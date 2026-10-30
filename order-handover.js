@@ -101,7 +101,7 @@
     }
     tg.addEventListener("click",copyDetails);
     const hint=document.createElement("p");hint.className="manual-handover-note";
-    hint.textContent="في تيليجرام اضغط «بدء» ثم ألصق تفاصيل طلبك وأرسلها. يوصّل البوت الرسالة لإدارة المتجر. ما ترسلش كلمة مرورك أو رمز التحقق.";
+    hint.textContent="في تيليجرام اضغط «بدء» ثم ألصق تفاصيل طلبك وأرسلها. إذا ما استجاب بوت المتجر، استخدم واتساب لإكمال الاستلام. لا ترسل كلمة المرور أو رمز التحقق.";
     const details=document.createElement("details");details.className="manual-handover-message";
     const summary=document.createElement("summary");summary.textContent="عرض رسالة الطلب الجاهزة";
     const textarea=document.createElement("textarea");

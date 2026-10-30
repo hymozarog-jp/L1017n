@@ -166,7 +166,7 @@
     overlay.innerHTML='<div class="mm2-checkout-box"><img src="'+mm2MintyImage+'" alt="سلاح Minty">'+
       '<h2 style="margin:14px 0 7px">'+escapeHtml(product.name)+'</h2>'+
       '<p style="color:#92e8a9;font-size:22px;font-weight:800;margin:0 0 12px">'+Number(product.price).toFixed(2)+' د.ل</p>'+
-      '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox حتى يقدر فريق المتجر يسلمك السلاح داخل MM2. سيتم خصم المبلغ من محفظتك بعد تأكيد الطلب، والتسليم بعد مراجعة الإدارة.</p>'+
+      '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox. بعد إتمام الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام السلاح داخل MM2.</p>'+
       '<form><label for="mm2RobloxName">اسم مستخدم Roblox</label>'+
       '<input id="mm2RobloxName" type="text" pattern="[A-Za-z0-9_]{3,20}" minlength="3" maxlength="20" autocomplete="off" required placeholder="Roblox username">'+
       '<div class="mm2-actions"><button type="button" data-mm2-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'+
@@ -198,8 +198,17 @@
         close();closePage();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(function(){});
         if(typeof renderOrders==='function')Promise.resolve(renderOrders()).catch(function(){});
-        if(typeof toast==='function')toast('تم طلب '+product.name+' بمبلغ '+Number(product.price).toFixed(2)+' د.ل — بانتظار التنفيذ.');
-        else alert('تم إنشاء الطلب بنجاح، والتسليم بعد مراجعة الإدارة.');
+        var order=result.data;
+        var opened=order&&order.id&&window.L1017nManualHandover&&window.L1017nManualHandover.open({
+          id:order.id,product_name:order.product_name||product.name,
+          total_amount:order.total_amount??product.price,
+          roblox_username:order.roblox_username||username,
+          game:"mm2",product_key:product.product_key
+        });
+        if(!opened){
+          if(typeof toast==='function')toast('تم الشراء بنجاح. افتح طلباتي وتواصل مع المتجر عبر واتساب أو تيليجرام لاستلام السلاح.');
+          else alert('تم الشراء بنجاح. افتح طلباتي وتواصل مع المتجر لاستلام السلاح.');
+        }
       }catch(err){
         var msg=String(err&&err.message||'');
         state.textContent=/insufficient_balance/i.test(msg)?'رصيد المحفظة غير كافٍ. اشحن المحفظة أولاً.':

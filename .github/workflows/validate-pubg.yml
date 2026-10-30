@@ -41,13 +41,13 @@ jobs:
           assert.match(premium,/key: "codes"/);
           assert.match(premium,/key: "charge"/);
           // PUBG now uses two switchable categories, with 60 UC under Codes.
-          assert.match(premium,/CATEGORIES\\.map\\(/);
-          assert.match(premium,/setCategory\\(root,"codes",false\\)/);
-          assert.match(premium,/product_key \\|\\| ""\\)\\.toLowerCase\\(\\) === "pubg-60"\\) return "codes"/);
-          assert.match(premium,/game-covers\\/pubg-uc\\.svg/);
+          assert.ok(premium.includes('CATEGORIES.map('));
+          assert.ok(premium.includes('setCategory(root,"codes",false)'));
+          assert.ok(premium.includes('=== "pubg-60") return "codes"'));
+          assert.ok(premium.includes('game-covers/pubg-uc.svg'));
           assert.match(premium,/noCodeAvailable/);
           assert.match(premium,/disabled aria-label="كود 60 UC غير متوفر حاليًا"/);
-          assert.match(premium,/categoryProducts\\(key\\)/);
+          assert.ok(premium.includes('categoryProducts(key)'));
           assert.ok(fs.existsSync('game-covers/pubg-uc.svg'));
           assert.match(premium,/supabaseClient\.from\("products"\)/);
           assert.match(premium,/openPubgAccountCheckout\(selected\)/);

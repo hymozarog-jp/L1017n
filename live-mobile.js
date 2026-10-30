@@ -9,6 +9,7 @@
     orders: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
     profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
     wallet: '<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/>',
+    subscriptions: '<rect x="3" y="6" width="18" height="15" rx="3"/><path d="M8 6V4m8 2V4M3 11h18m-14 5h4m-4 3h7"/>',
     chevron: '<path d="m14 6-6 6 6 6"/>',
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>'
   };
@@ -25,7 +26,8 @@
   const HEROES = [
     { headline: "عالم روبلوكس", more: "صار أقرب لك", desc: "باقات Robux ومستلزمات المابات في مكان واحد.", label: "ROBLOX · L1017N", action: "roblox", button: "استكشف روبلوكس", theme: "violet", art: "R" },
     { headline: "شدات ببجي", more: "بكل سهولة", desc: "شوف بطاقات PUBG المتوفرة وأسعارها الحقيقية.", label: "PUBG MOBILE · UC", action: "pubg", button: "تصفح ببجي", theme: "gold", art: "UC" },
-    { headline: "ماب السرقة", more: "شخصياتك هنا", desc: "قرما ولاسيكرت ولاسبوكي في قسم واحد.", label: "STEAL A BRAINROT", action: "steal-a-brainrot", button: "تصفح الماب", theme: "aqua", art: "01" }
+    { headline: "ماب السرقة", more: "شخصياتك هنا", desc: "قرما ولاسيكرت ولاسبوكي في قسم واحد.", label: "STEAL A BRAINROT", action: "steal-a-brainrot", button: "تصفح الماب", theme: "aqua", art: "01" },
+    { headline: "الاشتراكات", more: "قريبًا في L1017N", desc: "صفحة جديدة لخدمات الترفيه والموسيقى، اكتشفها الآن.", label: "DIGITAL SUBSCRIPTIONS · L1017N", action: "subscriptions", button: "استكشف الاشتراكات", theme: "violet", art: "✦" }
   ];
   const q = selector => document.querySelector(selector);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -133,6 +135,7 @@
   }
   function openGame(key) {
     try {
+      if (key === "subscriptions") { routeView("subscriptions"); return; }
       if (key === "roblox" || key === "mm2" || key === "steal-a-brainrot") {
         if (typeof window.openRobloxGameMenu !== "function") { notify("القسم مازال يتحمّل. جرّب تحديث الصفحة."); return; }
         window.openRobloxGameMenu();
@@ -307,6 +310,7 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
+      ["subscriptions", "اشتراكات", "subscriptions"],
       ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],

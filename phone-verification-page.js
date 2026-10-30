@@ -43,6 +43,8 @@ async function invoke(action,code){
 function verified(){
  locked=true;stop();step("done");status("");
  $(".pv-verified-number").textContent="0"+saved;
+ if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
+   void window.L1017nPersonalPremium.refreshFromServer();
 }
 function setBusy(on){
  busy=on;$(".pv-check").disabled=on;$(".pv-number").disabled=on||!!saved;

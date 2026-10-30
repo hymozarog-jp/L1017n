@@ -61,9 +61,18 @@
       if(original)original.click();
       else if(typeof window.loadLeaderboard==='function')void window.loadLeaderboard();
     });
-    privacy.addEventListener('click',function(){
-      var accountControl=document.querySelector('[data-account-action="ranking-privacy"]');
-      if(accountControl)accountControl.click();
+    privacy.addEventListener('click',async function(){
+      try{
+        var auth=typeof supabaseClient!=='undefined'?await supabaseClient.auth.getUser():null;
+        if(!auth?.data?.user){
+          var login=document.querySelector('#llBottomNav [data-ll-nav="account"]')||
+            document.querySelector('.mobile-nav [data-view="account"]');
+          if(login)login.click();
+          return;
+        }
+        var accountControl=document.querySelector('[data-account-action="ranking-privacy"]');
+        if(accountControl)accountControl.click();
+      }catch(error){console.warn('[ranking/privacy] Could not open settings',error);}
     });
     function sync(){
       var visible=!page.classList.contains('hidden');

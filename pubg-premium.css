@@ -155,3 +155,56 @@ body.pubg-premium-open{overflow:hidden!important}
 @media(prefers-reduced-motion:reduce){
  #pubgCategoryPage.pubg-premium *,#pubgCategoryPage.pubg-premium *::before,#pubgCategoryPage.pubg-premium *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* PUBG Mobile — manual 60 UC account top-up (UID), not a digital-code delivery. */
+body.pubg-account-checkout-open{overflow:hidden!important}
+#pubgAccountCheckoutOverlay{box-sizing:border-box;position:fixed;inset:0;z-index:2147483200;
+ display:grid;place-items:center;overflow:auto;overscroll-behavior:contain;
+ padding:16px;background:#03070ccd;backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);
+ color:#f7f8fc;direction:rtl;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+#pubgAccountCheckoutOverlay *{box-sizing:border-box}
+#pubgAccountCheckoutOverlay .pubg-account-checkout{position:relative;width:min(440px,100%);
+ max-height:calc(100dvh - 35px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+ border:1px solid #bb915875;border-radius:27px;
+ background:radial-gradient(ellipse at 83% -12%,#946d3145,transparent 53%),
+   linear-gradient(150deg,#23202a,#101b2d 67%,#0c1420);
+ padding:30px 23px 24px;box-shadow:0 25px 90px #000a,inset 0 1px #f8d39837}
+#pubgAccountCheckoutOverlay .pubg-account-close{position:absolute;top:12px;left:12px;display:grid;place-items:center;
+ border:1px solid #ffffff31;color:#fff;background:#ffffff14;
+ border-radius:12px;width:39px;height:39px;font-size:26px;cursor:pointer}
+#pubgAccountCheckoutOverlay .pubg-account-icon{display:grid;place-items:center;
+ width:65px;height:65px;border-radius:18px;background:linear-gradient(140deg,#f6d397,#d29650);
+ border:3px solid #ffe4a5;color:#36220d;font:950 24px system-ui;
+ box-shadow:0 7px 20px #c98a4270;margin:0 0 17px;transform:rotate(-6deg)}
+#pubgAccountCheckoutOverlay .pubg-eyebrow{font:800 10px system-ui;letter-spacing:1.4px;color:#eac08a}
+#pubgAccountCheckoutOverlay h2{font-size:27px;line-height:1.3;margin:9px 0 8px;color:white}
+#pubgAccountCheckoutOverlay .pubg-account-explainer{font-size:12px;line-height:1.95;color:#bfc9d9;margin:0 0 18px}
+#pubgAccountCheckoutOverlay .pubg-account-summary{display:flex;align-items:center;justify-content:space-between;
+ padding:13px 16px;border:1px solid #dda95d6b;border-radius:15px;background:#dba75716;margin-bottom:19px}
+#pubgAccountCheckoutOverlay .pubg-account-summary span{font-size:13px;color:#d4d7e5}
+#pubgAccountCheckoutOverlay .pubg-account-summary strong{font:950 23px system-ui;color:#f5ce8c}
+#pubgAccountCheckoutOverlay form{display:grid;gap:10px}
+#pubgAccountCheckoutOverlay label{font-size:13px;font-weight:850}
+#pubgAccountCheckoutOverlay input{width:100%;min-height:50px;border-radius:13px;
+ border:1px solid #51647a!important;background:#111f31!important;color:white!important;
+ font:700 18px system-ui,sans-serif;text-align:center;letter-spacing:1px;padding:10px;outline-offset:3px}
+#pubgAccountCheckoutOverlay input:focus{border-color:#f2b75f!important}
+#pubgAccountCheckoutOverlay form small{color:#aebaca;font-size:11px}
+#pubgAccountCheckoutOverlay .pubg-account-confirm,#pubgAccountCheckoutOverlay .pubg-account-orders{
+ width:100%;margin-top:8px;border:0;border-radius:14px;background:linear-gradient(125deg,#ffdd9c,#e5a557);
+ color:#21160a;font:900 14px 'IBM Plex Sans Arabic',sans-serif;min-height:49px;cursor:pointer}
+#pubgAccountCheckoutOverlay .pubg-account-orders{background:#ffffff16;color:#f4d9a6;border:1px solid #f3bc686b}
+#pubgAccountCheckoutOverlay .pubg-account-orders[hidden]{display:none!important}
+#pubgAccountCheckoutOverlay .pubg-account-confirm:disabled{opacity:.58;cursor:wait}
+#pubgAccountCheckoutOverlay #pubgAccountStatus{min-height:22px;margin:4px 0 0;
+ font-size:12px;line-height:1.8;color:#e8ca91;overflow-wrap:anywhere}
+#pubgAccountCheckoutOverlay .pubg-account-disclaimer{font-size:11px;line-height:1.85;color:#9daac1;
+ border-top:1px solid #ffffff1b;margin-top:18px;padding-top:15px}
+@media(max-width:430px){#pubgAccountCheckoutOverlay{padding:9px}
+ #pubgAccountCheckoutOverlay .pubg-account-checkout{padding:23px 16px 19px;border-radius:22px}
+ #pubgAccountCheckoutOverlay h2{font-size:24px}}
+@media(prefers-reduced-motion:no-preference){
+ #pubgAccountCheckoutOverlay .pubg-account-checkout{animation:pubgPurchaseEnter .28s ease-out both}
+ @keyframes pubgPurchaseEnter{from{opacity:.4;transform:translateY(13px) scale(.97)}to{opacity:1;transform:none}}
+}

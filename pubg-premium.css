@@ -230,8 +230,7 @@ body.pubg-account-checkout-open{overflow:hidden!important}
 #pubgCategoryPage .pubg-featured-uc[hidden]{display:none!important}
 
 
-/* PUBG direct catalog: open the game like Roblox, with packs immediately below.
-   No "redeem codes / account top-up / offers" intermediate category cards. */
+/* PUBG compact layout with two real purchase methods above the catalog. */
 #pubgCategoryPage.pubg-premium .pubg-topbar{height:64px;min-height:64px}
 #pubgCategoryPage.pubg-premium .pubg-hero{
   display:flex!important;grid-template-columns:none!important;grid-template-rows:none!important;
@@ -329,4 +328,24 @@ body.pubg-account-checkout-open{overflow:hidden!important}
   #pubgCategoryPage.pubg-premium .pubg-hero-visual{width:90px!important;flex-basis:90px!important}
   #pubgCategoryPage.pubg-premium .pubg-hero-description{display:none}
   #pubgCategoryPage.pubg-premium .pubg-hero h1{font-size:26px!important}
+}
+
+/* PUBG Mobile: two selectable shopping paths, responsive on phones. */
+#pubgCategoryPage.pubg-premium .pubg-category-section{margin-top:19px}
+#pubgCategoryPage.pubg-premium .pubg-category-section .pubg-section-label{margin:0 2px 14px}
+#pubgCategoryPage.pubg-premium .pubg-category-section .pubg-section-label h2{font-size:clamp(19px,3vw,25px)}
+#pubgCategoryPage.pubg-premium .pubg-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+#pubgCategoryPage.pubg-premium .pubg-choice{min-height:156px;padding:13px 17px!important}
+#pubgCategoryPage.pubg-premium .pubg-choice-art{min-height:61px;transform:rotate(-7deg)}
+#pubgCategoryPage.pubg-premium .pubg-choice-info{gap:7px}
+#pubgCategoryPage.pubg-premium .pubg-choice-info strong{font-size:16px}
+#pubgCategoryPage.pubg-premium .pubg-choice-info small{font-size:11px}
+#pubgCategoryPage.pubg-premium .pubg-choice[aria-pressed="true"]{border-color:#f5c783!important;box-shadow:0 0 0 1px #f5c78350,0 9px 25px #0005}
+@media(max-width:760px){
+ #pubgCategoryPage.pubg-premium .pubg-category-section{margin-top:16px}
+ #pubgCategoryPage.pubg-premium .pubg-choice-grid{gap:9px}
+ #pubgCategoryPage.pubg-premium .pubg-choice{min-height:142px;padding:10px 11px 12px!important}
+ #pubgCategoryPage.pubg-premium .pubg-choice-art{min-height:65px}
+ #pubgCategoryPage.pubg-premium .pubg-choice-info strong{font-size:13px}
+ #pubgCategoryPage.pubg-premium .pubg-choice-info small{font-size:9px;line-height:1.5}
 }

@@ -66,7 +66,10 @@
     return normalize(searchable).includes(query);
   }
   function displayList() {
-    const available = catalog().filter(item => item && item.active !== false && Number(item.price) > 0 && !isRobloxFamily(gameKey(item)));
+    // Game-level catalog only: PUBG UC stays inside PUBG, just like Robux/MM2
+    // stay inside Roblox. Never expose manual PUBG UC as a quick-buy product.
+    const available = catalog().filter(item => item && item.active !== false && Number(item.price) > 0 &&
+      !isRobloxFamily(gameKey(item)) && gameKey(item) !== "pubg");
     return available.filter(item => {
       const category = gameKey(item);
       if (chosen !== "all" && category !== chosen) return false;
@@ -88,6 +91,31 @@
       + '<button type="button" data-ll-game="roblox" class="ll-roblox-subcategory"><span>Robux</span><small>باقات الروبوكس</small></button>'
       + '<button type="button" data-ll-game="mm2" class="ll-roblox-subcategory"><span>MM2</span><small>مستلزمات الماب</small></button>'
       + '<button type="button" data-ll-game="steal-a-brainrot" class="ll-roblox-subcategory"><span>ماب السرقة</span><small>قرما · لاسيكرت · لاسبوكي</small></button>'
+      + '</div></div></article>';
+  }
+  // Show exactly one PUBG game category on the landing screen, even when
+  // there are several UC packages. Keep them nested in PUBG's own catalog.
+  function hasPubgCategory() {
+    const items = catalog().filter(p => p && p.active !== false && gameKey(p) === "pubg");
+    if (!items.length || (chosen !== "all" && chosen !== "pubg")) return false;
+    if (!query) return true;
+    const searchable = [
+      "PUBG", "PUBG Mobile", "ببجي", "شدات", "شدة", "شحن", "UC",
+      ...items.map(p => [p.name, p.product_key, p.game, p.amount].join(" "))
+    ].join(" ");
+    return normalize(searchable).includes(query);
+  }
+  function pubgParentCard() {
+    return '<article class="ll-roblox-parent ll-pubg-parent ll-reveal" aria-label="ببجي موبايل: باقات شدات PUBG">'
+      + '<button type="button" class="ll-roblox-parent-cover ll-pubg-parent-cover" data-ll-game="pubg" aria-label="فتح باقات ببجي موبايل">'
+      + '<span class="ll-roblox-parent-kicker">L1017N / PUBG MOBILE</span>'
+      + '<img src="game-covers/pubg.svg" alt="PUBG Mobile" loading="lazy" decoding="async">'
+      + '</button>'
+      + '<div class="ll-roblox-parent-info ll-pubg-parent-info">'
+      + '<span class="ll-roblox-parent-label">شدات ببجي</span><h3>PUBG Mobile</h3>'
+      + '<p>كل باقات UC داخل قسم ببجي</p>'
+      + '<div class="ll-roblox-subcategories">'
+      + '<button type="button" data-ll-game="pubg" class="ll-roblox-subcategory ll-pubg-entry"><span>عرض باقات الشدات</span><small>60 UC والمزيد</small></button>'
       + '</div></div></article>';
   }
   function notify(message) {
@@ -140,8 +168,9 @@
       } else openGame("roblox");
       return;
     }
-    if (key === "pubg" && typeof window.openInstantCodeCheckout === "function") {
-      window.openInstantCodeCheckout(product.id, product.name, product.price);
+    if (key === "pubg") {
+      // 60 UC is an account top-up requiring the player's UID, not a voucher.
+      openGame("pubg");
       return;
     }
     // MM2 and Steal A Brainrot are manual delivery; their official flows
@@ -194,7 +223,8 @@
     const productsToShow = displayList();
     const all = catalog().filter(p => p && p.active !== false);
     const showRoblox = hasRobloxCategory();
-    const visibleCount = productsToShow.length + (showRoblox ? 1 : 0);
+    const showPubg = hasPubgCategory();
+    const visibleCount = productsToShow.length + (showRoblox ? 1 : 0) + (showPubg ? 1 : 0);
     q("#llItemCount").textContent = all.length ? visibleCount + " قسم وباقة" : "جاري تحميل المنتجات";
     if (!all.length) {
       root.innerHTML = '<div class="ll-empty">جاري تحميل باقات المتجر الحقيقية…</div>';
@@ -204,9 +234,11 @@
       root.innerHTML = '<div class="ll-empty">ما فيش منتجات تطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
       return;
     }
-    // One Roblox parent image with all three subcategories, never standalone
-    // MM2 or Steal a Brainrot top-level cards.
-    root.innerHTML = (showRoblox ? robloxParentCard() : "") + productsToShow.map(card).join("");
+    // Parent game cards only: PUBG UC and Roblox inventory remain in their
+    // own dedicated pages, never beside the games as individual quick-buy tiles.
+    root.innerHTML = (showRoblox ? robloxParentCard() : "")
+      + (showPubg ? pubgParentCard() : "")
+      + productsToShow.map(card).join("");
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {

@@ -37,9 +37,9 @@ jobs:
           }
           for(const amount of [1,5,10,30,50])assert(html.includes('data-amount="'+amount+'"'),'Missing quick amount '+amount);
           assert.match(html,/href="topup-reference\.css\?v=/);
-          assert.match(html,/app\.js\?v=wallet-row1/);
+          assert.match(html,/app\.js\?v=profile-glow2/);
           assert(app.includes('auto-topup.js?v=return-verifying2'),'Keep existing top-up loader version');
-          assert(app.includes('legacy-app.js?v=wallet-row1'),'Fresh account interaction script');
+          assert(app.includes('legacy-app.js?v=profile-glow2'),'Fresh account interaction script');
           assert(html.includes('account-contact.css?v=compact-help1'),'Compact account styles');
           assert(!html.includes('data-account-action="theme"'),'Remove nonfunctional theme row');
           assert(!html.includes('data-account-action="language"'),'Remove nonfunctional language row');

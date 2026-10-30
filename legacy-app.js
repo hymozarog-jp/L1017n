@@ -559,7 +559,7 @@ setTimeout(refreshAdminAccess,0);
 async function openPersonalDetails(options={}){
  let page=document.getElementById('personalDetailsPage');
  if(page&&page.classList.contains('visible')){
-   if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});
+   if(options.focusPhone){if(typeof window.openPhoneVerificationPage==='function')window.openPhoneVerificationPage();else page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});}
    return;
  }
  // Local session is for immediate UI only. Saving data and SMS proof of
@@ -591,6 +591,7 @@ async function openPersonalDetails(options={}){
      '<span>توثيق الرقم مطلوب قبل الشراء. لا تشارك رمز التحقق مع أي شخص.</span></div>'+
    '</section>'+
   '</div>';
+ window.L1017nPersonalPremium?.decorate(page,user,name);
  page.classList.add('visible');
  const slot=page.querySelector('#personalPhoneSlot');
  const gate=document.getElementById('accountPhoneGate');
@@ -635,7 +636,9 @@ async function openPersonalDetails(options={}){
    if(error){status.textContent='تعذر حفظ الاسم، حاول مرة ثانية';return}
    status.textContent='تم حفظ الاسم بنجاح';
    page.querySelector('#personalDisplayName').textContent=value;
-   page.querySelector('.personal-page-avatar').textContent=value.slice(0,1).toUpperCase();
+   const avatarInitial=page.querySelector('.premium-avatar-initial');
+   if(avatarInitial)avatarInitial.textContent=value.slice(0,1).toUpperCase();
+   else page.querySelector('.personal-page-avatar').textContent=value.slice(0,1).toUpperCase();
    document.getElementById('accountModernName').textContent=value;
    document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
  };
@@ -643,7 +646,7 @@ async function openPersonalDetails(options={}){
    // Refresh status without waiting for SMS network response.
    void Promise.resolve(window.renderResalaOtp(user)).catch(e=>console.warn('[personal/verify] Unable to refresh status:',e));
  }
- if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});
+ if(options.focusPhone){if(typeof window.openPhoneVerificationPage==='function')window.openPhoneVerificationPage();else page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});}
 }
 window.openPersonalDetails=openPersonalDetails;
 

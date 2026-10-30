@@ -228,3 +228,105 @@ body.pubg-account-checkout-open{overflow:hidden!important}
   animation:pubg-pack-in .32s ease both;
 }
 #pubgCategoryPage .pubg-featured-uc[hidden]{display:none!important}
+
+
+/* PUBG direct catalog: open the game like Roblox, with packs immediately below.
+   No "redeem codes / account top-up / offers" intermediate category cards. */
+#pubgCategoryPage.pubg-premium .pubg-topbar{height:64px;min-height:64px}
+#pubgCategoryPage.pubg-premium .pubg-hero{
+  display:flex!important;grid-template-columns:none!important;grid-template-rows:none!important;
+  min-height:206px!important;height:auto!important;
+  margin:0!important;border-radius:22px!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero-copy{
+  flex:1 1 0!important;min-width:0!important;
+  padding:23px 22px!important;align-items:flex-start!important;justify-content:center!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero h1{
+  font-size:clamp(33px,5.4vw,48px)!important;margin:10px 0 3px!important;line-height:1!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero h1 span{display:inline;color:#fac27c}
+#pubgCategoryPage.pubg-premium .pubg-hero-title-ar{
+  font-size:16px!important;margin:7px 0 0!important;line-height:1.45!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero-description{
+  font-size:12px!important;line-height:1.65!important;
+  margin:7px 0 8px!important;max-width:360px!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero-actions{gap:6px!important}
+#pubgCategoryPage.pubg-premium .pubg-hero-note{font-size:11px!important;line-height:1.6}
+#pubgCategoryPage.pubg-premium .pubg-hero-visual{
+  display:block!important;flex:0 0 225px!important;max-width:34%!important;
+  width:225px!important;height:auto!important;min-height:205px!important;
+  grid-row:auto!important;overflow:hidden;
+}
+#pubgCategoryPage.pubg-premium .pubg-hero-visual img{
+  width:100%!important;height:100%!important;top:0!important;
+  left:0!important;right:auto!important;object-fit:contain!important;
+  object-position:center!important;padding:7px!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-visual-sticker,
+#pubgCategoryPage.pubg-premium .pubg-hero-caption{display:none!important}
+#pubgCategoryPage.pubg-premium .pubg-results{
+  margin-top:16px!important;min-height:180px!important;
+  padding:20px!important;border-radius:21px!important;
+  background:linear-gradient(148deg,#172037,#0d1525)!important;
+  border:1px solid #c19b5e60!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-results-heading{
+  align-items:center!important;padding-bottom:12px!important;margin-bottom:15px!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-results-heading h2{
+  font-size:clamp(19px,4vw,27px)!important;margin:5px 0 2px!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-results-heading p{font-size:11px!important;line-height:1.65!important}
+#pubgCategoryPage.pubg-premium .pubg-packages{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+#pubgCategoryPage.pubg-premium .pubg-pack{
+  min-height:232px;padding:14px 14px 15px;
+  background:radial-gradient(ellipse at 50% 25%,#78532b35,transparent 55%),linear-gradient(130deg,#252735,#101827 80%)!important;
+  border:1px solid #c99c586d;border-radius:19px;
+}
+#pubgCategoryPage.pubg-premium .pubg-coin-wrap{min-height:68px!important}
+#pubgCategoryPage.pubg-premium .pubg-coin{width:58px;height:58px}
+#pubgCategoryPage.pubg-premium .pubg-pack-quantity{font-size:30px!important}
+#pubgCategoryPage.pubg-premium .pubg-pack-name{font-size:12px!important;margin:7px 0 13px!important}
+#pubgCategoryPage.pubg-premium .pubg-price strong{font-size:19px!important}
+@media(max-width:760px){
+  #pubgCategoryPage.pubg-premium{padding:0 12px calc(env(safe-area-inset-bottom) + 38px)!important}
+  #pubgCategoryPage.pubg-premium .pubg-hero{
+    min-height:171px!important;border-radius:18px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-hero-copy{
+    padding:17px 12px 17px 16px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-kicker{
+    padding:6px 8px!important;font-size:7px!important;letter-spacing:.7px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-hero h1{
+    font-size:clamp(26px,7vw,36px)!important;letter-spacing:-1.5px!important;
+    margin:9px 0 5px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-hero-title-ar{font-size:13px!important}
+  #pubgCategoryPage.pubg-premium .pubg-hero-description{font-size:10px!important;margin:5px 0!important}
+  #pubgCategoryPage.pubg-premium .pubg-hero-note{font-size:9px!important}
+  #pubgCategoryPage.pubg-premium .pubg-hero-visual{
+    flex:0 0 117px!important;width:117px!important;max-width:36%!important;
+    min-height:170px!important;height:auto!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-hero-visual img{
+    height:100%!important;width:100%!important;top:0!important;
+    object-fit:contain!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-results{
+    padding:15px 12px 18px!important;margin-top:12px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-packages{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #pubgCategoryPage.pubg-premium .pubg-pack{min-height:216px!important;padding:12px 10px!important}
+  #pubgCategoryPage.pubg-premium .pubg-pack-bottom{gap:9px}
+  #pubgCategoryPage.pubg-premium .pubg-buy{min-height:39px!important}
+}
+@media(max-width:360px){
+  #pubgCategoryPage.pubg-premium .pubg-hero-visual{width:90px!important;flex-basis:90px!important}
+  #pubgCategoryPage.pubg-premium .pubg-hero-description{display:none}
+  #pubgCategoryPage.pubg-premium .pubg-hero h1{font-size:26px!important}
+}

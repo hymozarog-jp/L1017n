@@ -29,8 +29,8 @@ jobs:
           const js=fs.readFileSync('legacy-app.js','utf8');
           const css=fs.readFileSync('account-settings-fast.css','utf8');
           assert(html.includes('account-settings-fast.css?v=account-quick3'));
-          assert(html.includes('app.js?v=phone-otp4'));
-          assert(app.includes('legacy-app.js?v=phone-otp4'));
+          assert(html.includes('app.js?v=wallet-luxe3'));
+          assert(app.includes('legacy-app.js?v=wallet-luxe3'));
           for(const action of ['personal','verify','notifications']){
             assert(html.includes('data-account-action="'+action+'"'),'Missing '+action+' account option');
           }

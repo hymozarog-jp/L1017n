@@ -49,10 +49,20 @@ jobs:
           assert.match(js,/data-ll-game="steal-a-brainrot"/);
           assert.match(js,/!isRobloxFamily\(gameKey\(item\)\)/);
           assert.match(js,/showRoblox \? robloxParentCard\(\)/);
+          // PUBG UC stays inside its game category, not a home-page quick buy.
+          assert.match(js,/function hasPubgCategory\(\)/);
+          assert.match(js,/function pubgParentCard\(\)/);
+          assert.match(js,/showPubg \? pubgParentCard\(\)/);
+          assert.match(js,/gameKey\(item\) !== "pubg"/);
+          assert.match(js,/if \(key === "pubg"\) \{[\s\S]*?openGame\("pubg"\)/);
+          assert.match(css,/\.ll-pubg-parent\{/);
+          assert.doesNotMatch(js,/key === "pubg" && typeof window\.openInstantCodeCheckout/,
+            'PUBG 60 UC must never be routed to the instant-code checkout');
           assert.match(css,/\.ll-roblox-parent\{/);
           assert.match(css,/\.ll-roblox-subcategories\{/);
-          assert.match(html,/live-mobile\.js\?v=leaderboard-nav4/);
-          assert.match(html,/live-mobile\.css\?v=google-avatar-left1/);
+          // Accept versioned cache-busting URLs without pinning stale versions.
+          assert.match(html,/live-mobile\.js\?v=[^"']+/);
+          assert.match(html,/live-mobile\.css\?v=[^"']+/);
           const header=html.match(/<header class="topbar">([\s\S]*?)<\/header>/)?.[1]||'';
           assert(header.includes('id="googleProfileButton"'),'Keep authenticated Google photo');
           assert(!header.includes('<b>L1017n</b>'),'Do not show L1017n text in header');

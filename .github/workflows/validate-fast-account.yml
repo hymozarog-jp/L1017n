@@ -29,8 +29,8 @@ jobs:
           const js=fs.readFileSync('legacy-app.js','utf8');
           const css=fs.readFileSync('account-settings-fast.css','utf8');
           assert(html.includes('account-settings-fast.css?v=account-quick3'));
-          assert(html.includes('app.js?v=account-quick3'));
-          assert(app.includes('legacy-app.js?v=account-quick3'));
+          assert(html.includes('app.js?v=phone-otp4'));
+          assert(app.includes('legacy-app.js?v=phone-otp4'));
           for(const action of ['personal','verify','notifications']){
             assert(html.includes('data-account-action="'+action+'"'),'Missing '+action+' account option');
           }
@@ -48,7 +48,7 @@ jobs:
           assert(personal.includes("page.classList.add('visible')"),'Show immediately');
           assert(personal.includes('slot.replaceChildren(foundGate)'),'Load fallback phone form safely');
           assert(personal.includes('if(!page.classList.contains(\'visible\'))return;'),'No widgets on a closed page');
-          assert(js.includes("if(action==='verify'){openPersonalDetails({focusPhone:true});return}"),'Phone button focuses phone section');
+          assert(js.includes("window.openPhoneVerificationPage()"),'Phone button opens dedicated verification page');
           assert(js.includes("if(action==='personal'){openPersonalDetails();return}"),'Profile button opens details');
           assert(js.includes("if(action==='notifications')show("),'Notifications still work');
           assert(js.includes("detail.scrollIntoView({behavior:'auto'"),'No slow scroll animation');

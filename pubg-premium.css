@@ -217,3 +217,14 @@ body.pubg-account-checkout-open{overflow:hidden!important}
   min-height:43px;padding:9px 17px!important;font-weight:850;cursor:pointer;
 }
 #pubgCategoryPage .pubg-retry-catalog:focus-visible{outline:3px solid #f6d394;outline-offset:3px}
+
+#pubgCategoryPage .pubg-featured-uc:not([hidden]){
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:45px;padding:9px 15px!important;border-radius:13px!important;
+  background:linear-gradient(125deg,#243723,#1b2d25)!important;
+  border:1px solid #8cce8e8f!important;color:#dcffe3!important;
+  font-size:13px!important;font-weight:900!important;
+  box-shadow:0 0 20px #48985632;cursor:pointer;
+  animation:pubg-pack-in .32s ease both;
+}
+#pubgCategoryPage .pubg-featured-uc[hidden]{display:none!important}

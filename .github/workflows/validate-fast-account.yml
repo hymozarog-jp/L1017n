@@ -1,0 +1,59 @@
+name: Validate fast account settings
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'legacy-app.js'
+      - 'app.js'
+      - 'account-settings-fast.css'
+      - '.github/workflows/validate-fast-account.yml'
+  workflow_dispatch:
+jobs:
+  account:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check app syntax, icon markup and fast account navigation
+        run: |
+          node --check app.js
+          node --check legacy-app.js
+          node --check resala-otp.js
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('index.html','utf8');
+          const app=fs.readFileSync('app.js','utf8');
+          const js=fs.readFileSync('legacy-app.js','utf8');
+          const css=fs.readFileSync('account-settings-fast.css','utf8');
+          assert(html.includes('account-settings-fast.css?v=account-quick3'));
+          assert(html.includes('app.js?v=account-quick3'));
+          assert(app.includes('legacy-app.js?v=account-quick3'));
+          for(const action of ['personal','verify','notifications']){
+            assert(html.includes('data-account-action="'+action+'"'),'Missing '+action+' account option');
+          }
+          assert(html.includes('account-core-settings'));
+          assert(html.includes('account-icon-personal'));
+          assert(html.includes('account-icon-verify'));
+          assert(html.includes('account-icon-notifications'));
+          assert(html.includes('<rect x="6.5" y="2" width="11" height="20" rx="2.4"/>'),'Phone icon must be a smartphone');
+          assert(!html.includes('<span class="account-row-icon">♢</span>'));
+          assert(!html.includes('<span class="account-row-icon">♧</span>'));
+          const personal=js.slice(js.indexOf('async function openPersonalDetails('),js.indexOf('window.openPersonalDetails=openPersonalDetails;'));
+          assert(personal.includes('supabaseClient.auth.getSession()'),'Read cached auth');
+          assert(!personal.includes('await renderAccount()'),'Do not wait for full account render');
+          assert(!personal.includes('await window.renderResalaOtp(user)'),'Do not await remote SMS status');
+          assert(personal.includes("page.classList.add('visible')"),'Show immediately');
+          assert(personal.includes('slot.replaceChildren(foundGate)'),'Load fallback phone form safely');
+          assert(personal.includes('if(!page.classList.contains(\'visible\'))return;'),'No widgets on a closed page');
+          assert(js.includes("if(action==='verify'){openPersonalDetails({focusPhone:true});return}"),'Phone button focuses phone section');
+          assert(js.includes("if(action==='personal'){openPersonalDetails();return}"),'Profile button opens details');
+          assert(js.includes("if(action==='notifications')show("),'Notifications still work');
+          assert(js.includes("detail.scrollIntoView({behavior:'auto'"),'No slow scroll animation');
+          assert(css.includes('touch-action:manipulation'));
+          assert(css.includes('prefers-reduced-motion'));
+          assert(!/\.rpc\(['"]sms_auto_credit_receipt/.test(js),'No change to money approvals');
+          console.log('Fast account navigation, smartphone icon, and verification gate validated.');
+          JS

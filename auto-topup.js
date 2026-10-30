@@ -125,7 +125,9 @@
       root.dataset.state='approved';
       title.textContent='تم الشحن ✓';
       desc.textContent='تم قبول طلبك من الإدارة وإضافة مبلغ الشحن إلى محفظتك بنجاح.';
-      foot.textContent='صار الرصيد متاحًا في محفظتك. يمكنك متابعة التسوق.';
+      foot.textContent='صار الرصيد متاحًا في محفظتك. اضغط «شاهد رصيدك» لمشاهدة حركة الشحن.';
+      const goWallet=root.querySelector('.tpv-dismiss');
+      if(goWallet)goWallet.textContent='شاهد رصيدك';
       forgetVerifier();
       clearDialHandoff();
       return;
@@ -187,10 +189,11 @@
       Number.isFinite(Number(amount))&&Number(amount)>0?Number(amount).toFixed(2):'—';
     root.querySelector('.tpv-close').addEventListener('click',closeVerifier);
     root.querySelector('.tpv-dismiss').addEventListener('click',()=>{
+      const credited=root.dataset.state==='approved';
       closeVerifier();
       const page=document.getElementById('topupDedicatedPage');
       if(page)page.querySelector('.topup-dedicated-back')?.click();
-      if(typeof switchView==='function')switchView('orders');
+      if(typeof switchView==='function')switchView(credited?'wallet':'orders');
     });
     root.querySelector('.tpv-refresh').addEventListener('click',()=>refreshRequest(id));
     document.body.appendChild(root);

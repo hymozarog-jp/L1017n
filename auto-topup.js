@@ -259,6 +259,9 @@
       updateVerifier(id,data);
       if(data.status==='approved'){
         if(status)status.textContent='✅ تم الشحن! أُضيف الرصيد إلى محفظتك.';
+        // Only a verified credited transaction (not an SMS or pending request)
+        // can launch the falling balance animation.
+        void window.L1017nCreditDrop?.approved?.(String(id));
         stopWatcher();chosen=false;forgetVerifier();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(()=>{});
         return;

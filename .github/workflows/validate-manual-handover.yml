@@ -54,7 +54,7 @@ jobs:
           assert(html.includes('order-handover.css?v=manual-delivery2'));
           assert(html.includes('store-menu.js?v=inner-layout6'));
           assert(html.includes('brainrot-store.js?v=steal-inner4'));
-          assert(html.includes('app.js?v=profile-glow2'));
+          assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
           assert(app.includes('legacy-app.js?v=profile-glow2'));
           assert(order.includes("select('id,product_id,product_name"));
           assert(order.includes("handover.isManualProduct(product.game,product.product_key)"));

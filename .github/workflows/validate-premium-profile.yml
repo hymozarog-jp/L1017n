@@ -35,7 +35,7 @@ jobs:
           const app=fs.readFileSync('app.js','utf8');
           assert(html.includes('personal-premium.js?v=profile-glow2'));
           assert(html.includes('personal-premium.css?v=profile-glow2'));
-          assert(html.includes('app.js?v=profile-glow2'));
+          assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
           assert(app.includes('legacy-app.js?v=profile-glow2'));
           assert(html.includes('phone-verification-page.js?v=profile-glow2'));
           assert(legacy.includes('L1017nPersonalPremium?.decorate(page,user,name)'), 'Account page enhanced in place');

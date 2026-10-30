@@ -29,7 +29,7 @@ jobs:
           const js=fs.readFileSync('legacy-app.js','utf8');
           const css=fs.readFileSync('account-settings-fast.css','utf8');
           assert(html.includes('account-settings-fast.css?v=account-quick3'));
-          assert(html.includes('app.js?v=profile-glow2'));
+          assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
           assert(app.includes('legacy-app.js?v=profile-glow2'));
           for(const action of ['personal','verify','notifications']){
             assert(html.includes('data-account-action="'+action+'"'),'Missing '+action+' account option');

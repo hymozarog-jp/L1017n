@@ -255,10 +255,19 @@
           void showMm2Page().catch(function(){});
           return;
         }
-      }finally{if(!send.disabled)send.disabled=false;else if(!state.textContent.includes('نفدت الكمية'))send.disabled=false}
+      }finally{if(!state.textContent.includes('نفدت الكمية'))send.disabled=false}
     });
     form.querySelector('input').focus();
   }
+
+  // Refresh visible MM2 stock when returning to the store on mobile.
+  // Browsers with an already-open checkout still rely on the atomic DB guard.
+  window.addEventListener('focus',function(){
+    var p=document.getElementById(pageId);
+    if(p&&p.classList.contains('rgp-mm2-page')&&!document.getElementById('rgpMm2Checkout')){
+      void showMm2Page().catch(function(){});
+    }
+  });
 
   function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 

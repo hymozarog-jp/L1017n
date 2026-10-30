@@ -1,0 +1,173 @@
+/* L1017n / Ranking Room — dedicated, mobile-first page. */
+body.l1017-rank-open,
+body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
+#leaderboardView.l1017-rank-ready:not(.hidden){
+  position:fixed!important;inset:0!important;top:0!important;
+  box-sizing:border-box!important;display:block!important;
+  z-index:2147482000!important;overflow-y:auto!important;
+  width:100%!important;max-width:none!important;height:100dvh!important;
+  min-height:100dvh!important;margin:0!important;border:0!important;
+  padding:max(18px,env(safe-area-inset-top)) clamp(14px,3.3vw,40px) calc(70px + env(safe-area-inset-bottom))!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(ellipse 85% 35% at 83% -6%,#59422838 0%,transparent 77%),
+    radial-gradient(ellipse 86% 35% at -26% 46%,#49296128 0%,transparent 80%),
+    linear-gradient(167deg,#0b101b 0%,#0d1526 52%,#080c16 100%)!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  scroll-padding-top:95px;
+}
+#leaderboardView.l1017-rank-ready:not(.hidden) > *{
+  width:100%;max-width:880px;margin-right:auto;margin-left:auto;
+}
+#leaderboardView .l1017-rank-toolbar{
+  position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:54px;margin-bottom:23px!important;
+}
+#leaderboardView .l1017-rank-back,
+#leaderboardView .l1017-rank-refresh{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid #4b4a50;border-radius:16px;background:#ffffff0a;
+  color:#f8f3e6;font:700 14px 'IBM Plex Sans Arabic',sans-serif;
+  min-height:44px;cursor:pointer;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+#leaderboardView .l1017-rank-back{padding:7px 13px}
+#leaderboardView .l1017-rank-refresh{width:44px;padding:7px}
+#leaderboardView .l1017-rank-back svg,
+#leaderboardView .l1017-rank-refresh svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2}
+#leaderboardView .l1017-rank-toolbar-brand{text-align:center;line-height:1.15;display:grid;gap:6px}
+#leaderboardView .l1017-rank-toolbar-brand b{font-size:16px;letter-spacing:2px;color:#f7cf79}
+#leaderboardView .l1017-rank-toolbar-brand small{font:600 9px system-ui,sans-serif;letter-spacing:2px;color:#9aa6bd}
+#leaderboardView .l1017-rank-hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  border:1px solid #94733f88;border-radius:30px;
+  min-height:222px;padding:clamp(22px,5vw,40px);
+  background:radial-gradient(ellipse at 91% 16%,#94703c60,transparent 42%),
+     linear-gradient(140deg,#242232,#121b2d 65%,#101828);
+  box-shadow:inset 0 1px 0 #f6d58b45,0 19px 56px #0007;
+  margin-bottom:30px!important;
+}
+#leaderboardView .l1017-rank-hero:after{
+  content:'';position:absolute;z-index:-1;right:-57px;top:-42px;
+  width:240px;height:240px;border:1px solid #d3a45240;
+  border-radius:50%;box-shadow:0 0 0 28px #d3a45212,0 0 0 57px #d3a45209;
+}
+#leaderboardView .l1017-rank-hero .l1017-hero-crown{
+  position:absolute;left:clamp(15px,5%,52px);top:29px;
+  width:clamp(49px,11vw,88px);height:clamp(49px,11vw,88px);
+  opacity:.88;color:#f2bc58;filter:drop-shadow(0 7px 16px #d59b423a);
+  transform:rotate(-12deg);
+}
+#leaderboardView .l1017-rank-hero .l1017-hero-crown svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.45}
+#leaderboardView .l1017-rank-hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;font-size:11px;color:#e8ce8c;
+  border:1px solid #c5a26455;border-radius:99px;background:#cb9e3017;
+  padding:5px 12px;font-weight:800;
+}
+#leaderboardView .l1017-rank-hero-kicker:before{
+  content:'';width:7px;height:7px;background:#68e4b9;border-radius:50%;box-shadow:0 0 12px #68e4b9;
+}
+#leaderboardView .l1017-rank-hero-title{
+  font-size:clamp(33px,7vw,60px);line-height:1.2;color:#f8f8fb;font-weight:900;
+  letter-spacing:-.8px;margin:14px 0 8px;max-width:85%;
+}
+#leaderboardView .l1017-rank-hero-title em{font-style:normal;color:#f7ca69}
+#leaderboardView .l1017-rank-hero-sub{max-width:440px;color:#bcc4d6;font-size:13px;line-height:1.9;margin:0}
+#leaderboardView .l1017-rank-hero-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+#leaderboardView .l1017-rank-hero-tags span{border-radius:9px;background:#ffffff0d;border:1px solid #ffffff1b;padding:6px 9px;color:#d0d5e2;font-size:11px}
+#leaderboardView .lb-glass-title{display:none!important}
+#leaderboardView .l1017-rank-mini-heading{
+  display:flex;align-items:center;gap:9px;font-weight:900;color:#f6eddb;
+  font-size:16px;margin-bottom:12px!important;
+}
+#leaderboardView .l1017-rank-mini-heading svg{width:20px;height:20px;stroke:#f3bf6b;stroke-width:1.9;fill:none}
+#leaderboardView .lb-self{border:1px solid #be9c5d9c!important;border-radius:23px!important;
+  background:radial-gradient(ellipse at 93% 0%,#a27e3433,transparent 50%),linear-gradient(132deg,#252336,#141c2b 70%)!important;
+  box-shadow:inset 0 1px #ffe5a733,0 13px 33px #02060d4f!important;
+}
+#leaderboardView .lb-section-label{margin-top:26px!important}
+#leaderboardView .lb-section-label h2{font-size:clamp(17px,4vw,23px)!important}
+#leaderboardView .lb-prize{border-radius:20px!important;background:linear-gradient(105deg,#5c462b45,#181c2b)!important;
+  margin-top:28px!important;
+}
+#leaderboardView .leaderboard-privacy{border-top:1px solid #ffffff1d;padding-top:17px;
+  font-size:11px!important;color:#9fa9bd!important;line-height:1.85;
+}
+#leaderboardView .l1017-rank-settings-link{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid #b48c5188;border-radius:13px;background:#c69d4b18;
+  padding:11px 13px;color:#f2d7a3;font:700 13px 'IBM Plex Sans Arabic',sans-serif;
+  cursor:pointer;margin-top:8px!important;
+}
+#leaderboardView .l1017-rank-settings-link svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+/* Privacy controls open as a full, independent page instead of an inline account card. */
+#l1017RankPrivacyPage{
+  display:none;position:fixed;inset:0;z-index:2147482100;
+  background:radial-gradient(ellipse at 70% -8%,#85643532,transparent 50%),
+    linear-gradient(160deg,#0b101c,#101b2e 68%,#090e19);
+  color:#f8f5f0;direction:rtl;overflow-y:auto;
+  padding:max(16px,env(safe-area-inset-top)) 16px calc(35px + env(safe-area-inset-bottom));
+  font-family:'IBM Plex Sans Arabic',sans-serif;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+#l1017RankPrivacyPage.is-visible{display:block}
+#l1017RankPrivacyPage *{box-sizing:border-box}
+#l1017RankPrivacyPage .rank-privacy-shell{max-width:650px;margin:0 auto}
+#l1017RankPrivacyPage .rank-privacy-topbar{display:flex;align-items:center;justify-content:space-between;
+  gap:14px;margin:0 0 26px;min-height:50px}
+#l1017RankPrivacyPage .rank-privacy-back{display:flex;align-items:center;gap:7px;justify-content:center;
+  border:1px solid #4a4e5c;border-radius:14px;background:#fff1;color:#fff;
+  font:700 14px 'IBM Plex Sans Arabic',sans-serif;padding:9px 14px;min-height:43px;cursor:pointer}
+#l1017RankPrivacyPage .rank-privacy-back svg{height:18px;width:18px;stroke:currentColor;stroke-width:2;fill:none}
+#l1017RankPrivacyPage .rank-privacy-top-title{color:#eac57d;font-size:15px;font-weight:900}
+#l1017RankPrivacyPage .rank-privacy-lead{margin:0 0 18px;border:1px solid #96744787;
+  border-radius:26px;padding:25px 19px;background:radial-gradient(ellipse at 0 0,#815e3642,transparent 62%),
+    linear-gradient(140deg,#252331,#141d30);box-shadow:0 15px 38px #0005}
+#l1017RankPrivacyPage .rank-privacy-lead .rank-privacy-mark{display:grid;place-items:center;
+  width:57px;height:57px;border:1px solid #cba15f88;color:#f2cd85;border-radius:17px;
+  background:#a7773429;margin-bottom:18px}
+#l1017RankPrivacyPage .rank-privacy-mark svg{width:31px;height:31px;stroke:currentColor;stroke-width:1.7;fill:none}
+#l1017RankPrivacyPage .rank-privacy-lead h1{font-size:clamp(26px,5vw,35px);margin:0 0 9px;color:#fff}
+#l1017RankPrivacyPage .rank-privacy-lead p{margin:0;color:#b9c3d5;font-size:13px;line-height:1.95}
+#l1017RankPrivacyPage .rank-privacy-content{display:grid;gap:13px}
+#l1017RankPrivacyPage .rank-privacy-content>h3{font-size:17px;margin:8px 0 0;color:#f4e0b6}
+#l1017RankPrivacyPage .rank-privacy-content>p{font-size:12px;color:#9baac3;line-height:1.85;margin:0}
+#l1017RankPrivacyPage .account-rank-privacy-controls{display:grid;gap:13px;margin:8px 0}
+#l1017RankPrivacyPage .account-rank-privacy-option{display:flex;align-items:center;justify-content:space-between;
+  border:1px solid #374863;border-radius:21px;background:linear-gradient(135deg,#1a2841,#111c2e);
+  padding:17px 16px;gap:15px;cursor:pointer;min-height:106px}
+#l1017RankPrivacyPage .account-rank-privacy-option:has(input:checked){border-color:#b89456a1;background:linear-gradient(135deg,#342d30,#162136)}
+#l1017RankPrivacyPage .account-rank-option-copy{display:grid;gap:7px;min-width:0}
+#l1017RankPrivacyPage .account-rank-option-copy b{font-size:15px;color:#fff;line-height:1.5}
+#l1017RankPrivacyPage .account-rank-option-copy small{font-size:11px;line-height:1.75;color:#9baec8}
+#l1017RankPrivacyPage .account-rank-privacy-option input[type="checkbox"]{
+  flex:none;position:relative;appearance:none;-webkit-appearance:none;
+  width:49px;height:30px;border-radius:99px;background:#465064;border:1px solid #778298;
+  cursor:pointer;transition:.2s background,.2s border;outline-offset:3px}
+#l1017RankPrivacyPage .account-rank-privacy-option input[type="checkbox"]:after{
+  content:'';position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:white;
+  box-shadow:0 2px 6px #0005;transition:transform .2s}
+#l1017RankPrivacyPage .account-rank-privacy-option input[type="checkbox"]:checked{
+  background:#c59c55;border-color:#e6c578}
+#l1017RankPrivacyPage .account-rank-privacy-option input[type="checkbox"]:checked:after{transform:translateX(-19px)}
+#l1017RankPrivacyPage .account-rank-privacy-option input[type="checkbox"]:disabled{opacity:.45;cursor:not-allowed}
+#l1017RankPrivacyPage .account-rank-privacy-status{min-height:24px;font-size:12px;color:#e9c886!important;margin-top:3px!important}
+#l1017RankPrivacyPage .rank-privacy-safety{display:flex;align-items:flex-start;gap:10px;
+  color:#b2bed0;background:#101c2d;border:1px solid #36455e;border-radius:17px;
+  margin-top:18px;padding:14px;line-height:1.85;font-size:11px}
+#l1017RankPrivacyPage .rank-privacy-safety svg{width:20px;height:20px;flex:none;stroke:#dfba78;fill:none;stroke-width:1.8}
+@media(max-width:520px){
+ #leaderboardView.l1017-rank-ready:not(.hidden){padding: max(12px,env(safe-area-inset-top)) 12px calc(45px + env(safe-area-inset-bottom))!important}
+ #leaderboardView .l1017-rank-hero{min-height:217px;padding:24px 17px;border-radius:23px}
+ #leaderboardView .l1017-rank-hero-title{max-width:90%;font-size:38px}
+ #leaderboardView .l1017-rank-hero-sub{font-size:12px;max-width:80%}
+ #leaderboardView .l1017-rank-hero .l1017-hero-crown{left:12px;top:34px}
+ #leaderboardView .lb-podium{gap:8px}
+ #l1017RankPrivacyPage{padding-left:12px;padding-right:12px}
+ #l1017RankPrivacyPage .rank-privacy-lead{padding:22px 17px}
+}
+@media(prefers-reduced-motion:no-preference){
+ #leaderboardView.l1017-rank-ready:not(.hidden) .l1017-rank-hero{animation:l1017RankEnter .4s ease-out both}
+ #leaderboardView.l1017-rank-ready:not(.hidden) .lb-podium-card{animation:l1017RankEnter .4s ease-out both}
+ #l1017RankPrivacyPage.is-visible .rank-privacy-lead{animation:l1017RankEnter .3s ease-out both}
+ @keyframes l1017RankEnter{from{opacity:.45;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+}

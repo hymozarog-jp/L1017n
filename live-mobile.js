@@ -109,7 +109,7 @@
     return '<article class="ll-roblox-parent ll-pubg-parent ll-reveal" aria-label="ببجي موبايل: باقات شدات PUBG">'
       + '<button type="button" class="ll-roblox-parent-cover ll-pubg-parent-cover" data-ll-game="pubg" aria-label="فتح باقات ببجي موبايل">'
       + '<span class="ll-roblox-parent-kicker">L1017N / PUBG MOBILE</span>'
-      + '<img src="game-covers/pubg.svg" alt="PUBG Mobile" loading="lazy" decoding="async">'
+      + '<img src="game-covers/pubg-battlefront.webp" alt="PUBG Mobile" loading="lazy" decoding="async">'
       + '</button>'
       + '<div class="ll-roblox-parent-info ll-pubg-parent-info">'
       + '<span class="ll-roblox-parent-label">شدات ببجي</span><h3>PUBG Mobile</h3>'

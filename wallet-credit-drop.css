@@ -1,0 +1,53 @@
+/* L1017n verified wallet top-up: coin falls from above into the balance. */
+/* Visual effect ONLY: all monetary accounting remains in Supabase. */
+.l1017n-credit-fly-layer{
+  position:fixed;inset:0;z-index:2147483000;pointer-events:none;
+  overflow:hidden;isolation:isolate;
+  font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;
+}
+.l1017n-credit-fly-pill{
+  position:absolute;top:0;left:0;display:flex;align-items:center;gap:10px;
+  white-space:nowrap;direction:ltr;
+  width:max-content;transform:translate(-500px,-500px);
+  padding:10px 14px 10px 10px;
+  color:#fbf7ff;font-size:clamp(15px,4vw,19px);font-weight:950;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px;
+  background:linear-gradient(125deg,#44305f,#7b34a4 60%,#4c286c);
+  border:1px solid #e7b5ffbb;border-radius:999px;
+  box-shadow:0 9px 34px #823cba99,inset 0 1px 0 #fff7,0 0 0 5px #b370ee2a;
+  will-change:transform,opacity,filter;
+}
+.l1017n-credit-coin{
+  display:grid;place-items:center;flex:none;
+  width:36px;height:36px;border-radius:50%;
+  background:radial-gradient(circle at 34% 25%,#fffbd2,#ffd36b 38%,#d4921d 75%,#a26a12);
+  color:#7c4a08;font-family:system-ui,sans-serif;font-weight:1000;font-size:24px;
+  border:2px solid #fff5c7;box-shadow:0 0 19px #ffd36c88,inset 0 1px 0 #fff;
+}
+#walletView .wallet-hero.l1017n-credit-landed,
+#customerWalletChip.l1017n-credit-landed{
+  animation:l1017n-credit-landing 1s ease-out both!important;
+}
+#walletView .wallet-hero.l1017n-credit-landed #walletShowcaseBalance,
+#customerWalletChip.l1017n-credit-landed #customerHeaderBalance{
+  animation:l1017n-credit-balance-glow .85s ease-out both!important;
+}
+@keyframes l1017n-credit-landing{
+  0%{filter:brightness(1);box-shadow:0 12px 30px #4c13504d}
+  25%{filter:brightness(1.32);box-shadow:0 0 0 3px #f9b4ff9e,0 0 34px #d262efbd}
+  100%{filter:brightness(1);box-shadow:0 12px 30px #4c13504d}
+}
+@keyframes l1017n-credit-balance-glow{
+  0%{color:#fff;transform:scale(1)}
+  32%{color:#fcf3a8;transform:scale(1.13);text-shadow:0 0 20px #ffe694}
+  100%{color:#fff;transform:scale(1);text-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .l1017n-credit-fly-pill{will-change:auto}
+  #walletView .wallet-hero.l1017n-credit-landed,
+  #customerWalletChip.l1017n-credit-landed,
+  #walletView .wallet-hero.l1017n-credit-landed #walletShowcaseBalance,
+  #customerWalletChip.l1017n-credit-landed #customerHeaderBalance{
+    animation:none!important;
+  }
+}

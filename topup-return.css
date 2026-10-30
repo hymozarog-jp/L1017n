@@ -46,3 +46,20 @@ body.tpv-open{overflow:hidden!important}
 @keyframes tpv-enter{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:380px){#tpReturnVerify{padding:12px}#tpReturnVerify .tpv-card{padding:20px 16px 19px;border-radius:24px}#tpReturnVerify .tpv-visual{width:124px;height:124px}#tpReturnVerify .tpv-visual-icon{width:77px;height:77px}#tpReturnVerify .tpv-steps{font-size:10px}}
 @media(prefers-reduced-motion:reduce){#tpReturnVerify *,#tpReturnVerify *::before,#tpReturnVerify *::after{animation:none!important;transition:none!important}#tpReturnVerify .tpv-progress-fill{width:68%}}
+
+
+/* A completed approval replaces the waiting screen with a clear success state. */
+#tpReturnVerify[data-state="approved"] .tpv-progress,
+#tpReturnVerify[data-state="approved"] .tpv-steps,
+#tpReturnVerify[data-state="approved"] .tpv-spark{display:none}
+#tpReturnVerify[data-state="approved"] .tpv-visual{margin-bottom:18px}
+#tpReturnVerify[data-state="approved"] .tpv-title{color:#93f5c5}
+#tpReturnVerify[data-state="approved"] .tpv-subtitle{color:#d7fae7}
+#tpReturnVerify[data-state="approved"] .tpv-visual-icon{animation:tpv-finish .55s ease-out both}
+#tpReturnVerify[data-state="approved"] .tpv-brand{border-color:#62dba866;background:#1d765033;color:#a5f8ce}
+#tpReturnVerify[data-state="approved"] .tpv-refresh{display:none}
+#tpReturnVerify[data-state="approved"] .tpv-dismiss{background:linear-gradient(115deg,#31b889,#8aedc2);color:#081c14;border:0}
+#tpReturnVerify[data-state="rejected"] .tpv-progress,
+#tpReturnVerify[data-state="rejected"] .tpv-steps{display:none}
+@keyframes tpv-finish{0%{transform:scale(.66);opacity:.25}65%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){#tpReturnVerify[data-state="approved"] .tpv-visual-icon{animation:none}}

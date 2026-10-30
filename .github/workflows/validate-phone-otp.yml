@@ -37,11 +37,11 @@ jobs:
           const app=fs.readFileSync('app.js','utf8');
           const oldOtp=fs.readFileSync('resala-otp.js','utf8');
           const css=fs.readFileSync('phone-verification-page.css','utf8');
-          assert(html.includes('phone-verification-page.js?v=phone-otp4'));
+          assert(html.includes('phone-verification-page.js?v=profile-glow2'));
           assert(html.includes('phone-verification-page.css?v=phone-otp4'));
           assert(html.includes('resala-otp.js?v=otp-four-minutes2'));
-          assert(html.includes('app.js?v=wallet-row1'));
-          assert(app.includes('legacy-app.js?v=wallet-row1'));
+          assert(html.includes('app.js?v=profile-glow2'));
+          assert(app.includes('legacy-app.js?v=profile-glow2'));
           assert(old.includes('window.openPhoneVerificationPage()'));
           assert(js.includes("save_my_libyana_phone"),'Number may be saved only by existing auth RPC');
           assert(js.includes('l1017n-resala-otp'),'Authenticated Resala Edge Function required');

@@ -204,7 +204,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=telegram-approval1';
+      var s=document.createElement('script');s.src='app.js?v=verification-live2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -545,7 +545,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="account-settings-fast.css?v=account-quick3">
 <link rel="stylesheet" href="order-handover.css?v=manual-delivery2">
 <link rel="stylesheet" href="topup-reference.css?v=libyana-flex1">
-<link rel="stylesheet" href="topup-return.css?v=return-verifying2">
+<link rel="stylesheet" href="topup-return.css?v=verification-live2">
 <link rel="stylesheet" href="wallet-luxe.css?v=wallet-luxe3-candy15-v1">
 <link rel="stylesheet" href="wallet-transactions.css?v=wallet-row1">
 <link rel="stylesheet" href="personal-premium.css?v=profile-glow2">

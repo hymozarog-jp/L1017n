@@ -10,7 +10,7 @@
   ];
 
   let lastFocused = null;
-  let currentCategory = "charge";
+  let currentCategory = "all";
   let pubgCatalog = [];
   let catalogReady = false;
   let catalogError = "";
@@ -34,12 +34,7 @@
     catalogError="";
     const refresh=()=> {
       if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
-      root.querySelectorAll("[data-pubg-category]").forEach(button=>{
-        const count=categoryProducts(button.dataset.pubgCategory).length;
-        const badge=button.querySelector(".pubg-choice-info small");
-        if(badge)badge.textContent=countLabel(count);
-      });
-      setCategory(root,currentCategory,false);
+      setCategory(root,"all",false);
     };
     try {
       if(typeof supabaseClient==="undefined")throw new Error("خدمة المنتجات غير جاهزة");
@@ -50,12 +45,6 @@
       if(requestId!==catalogRequest)return;
       pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true);
       catalogReady=true;
-      const badge=root.querySelector("#pubgFeaturedUc");
-      const uc=pubgCatalog.find(p=>p.product_key==="pubg-60"&&Number(p.amount)===60);
-      if(badge){
-        badge.hidden=!uc;
-        if(uc)badge.textContent="60 شدة · "+Number(uc.price).toFixed(2)+" د.ل · اطلب الآن";
-      }
       refresh();
     } catch(error) {
       if(requestId!==catalogRequest)return;
@@ -73,7 +62,7 @@
     return "charge";
   }
   function categoryProducts(key) {
-    return allPubgProducts().filter((p) => categoryFor(p) === key);
+    return key==="all" ? allPubgProducts() : allPubgProducts().filter((p) => categoryFor(p) === key);
   }
   function countLabel(count) {
     return count ? count + " باقة" : "قريبًا";
@@ -212,12 +201,11 @@
   }
 
   function paintOffers(panel, key) {
-    const match = CATEGORIES.find((item) => item.key === key) || CATEGORIES[0];
-    const list = categoryProducts(match.key);
+    const list = categoryProducts("all");
     panel.innerHTML = '<div class="pubg-results-heading"><div>'
-      + '<span class="pubg-eyebrow">L1017N / ' + safe(match.latin) + '</span>'
-      + '<h2>' + safe(match.title) + '</h2>'
-      + '<p>' + safe(match.subtitle) + '</p></div><span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
+      + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / UC</span>'
+      + '<h2>باقات ببجي</h2>'
+      + '<p>اختار باقة الشدات اللي تبيها، وكمّل الطلب بمعرّف اللاعب UID.</p></div><span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError
@@ -227,7 +215,7 @@
         : '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div>'
           + '<strong>ما فيش باقات متوفرة في القسم حاليًا</strong>'
           + '<p>أول ما نضيف باقات جديدة للمتجر، بتظهر هنا تلقائيًا.</p></div>')
-      + '<p class="pubg-purchase-note">التسليم الفوري للأكواد المتاحة فقط، ويتم تأكيد المخزون والمبلغ قبل خصم رصيد المحفظة.</p>';
+      + '<p class="pubg-purchase-note">شحن الشدات يتم على معرّف اللاعب UID بعد تنفيذ الطلب من الإدارة. الرصيد يُخصم فقط عند نجاح الدفع.</p>';
 
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
       void fetchPubgProducts(document.getElementById(PAGE_ID));
@@ -276,7 +264,7 @@
   function openPremiumPubg() {
     lastFocused = document.activeElement;
     const root = page();
-    currentCategory="charge";
+    currentCategory="all";
     catalogReady=false;
     catalogError="";
     pubgCatalog=[];
@@ -292,45 +280,21 @@
       + '<div class="pubg-hero-copy"><span class="pubg-kicker"><i></i> BATTLE-READY DIGITAL STORE</span>'
       + '<h1 id="pubgHeroTitle">PUBG <span>MOBILE</span></h1>'
       + '<p class="pubg-hero-title-ar">كل ما تحتاجه للمعركة، بمكان واحد.</p>'
-      + '<p class="pubg-hero-description">تصفح بطاقات الشدات وأكواد الشحن، واختر الباقة المناسبة لك بتجربة بسيطة وسريعة.</p>'
-      + '<div class="pubg-hero-actions"><button type="button" class="pubg-explore" data-pubg-explore>استكشف الباقات <span aria-hidden="true">↙</span></button>'
-      + '<button type="button" id="pubgFeaturedUc" class="pubg-featured-uc" hidden>60 شدة · عرض الباقة</button>'
-      + '<span class="pubg-hero-note"><span class="pubg-note-dot"></span> شراء من رصيد المحفظة</span></div>'
+      + '<p class="pubg-hero-description">باقات شدات ببجي مباشرة، اختار باقتك واشحن عن طريق المحفظة.</p>'
+      + '<div class="pubg-hero-actions"><span class="pubg-hero-note"><span class="pubg-note-dot"></span> شحن على حساب PUBG • دفع من المحفظة</span></div>'
       + '</div><div class="pubg-hero-visual"><div class="pubg-hero-halo"></div>'
       + '<img src="game-covers/pubg.svg" alt="" loading="eager" decoding="async">'
       + '<span class="pubg-visual-sticker">LEVEL UP <b>UC STORE</b></span></div>'
-      + '<div class="pubg-hero-caption">L1017N <b>×</b> PUBG MOBILE <span>•</span> DIGITAL ITEMS</div>'
+      + '<div class="pubg-hero-caption">L1017N <b>×</b> PUBG MOBILE <span>•</span> UC</div>'
       + '</section>'
-      + '<div class="pubg-section-label"><div><span class="pubg-eyebrow">CHOOSE YOUR CATEGORY</span><h2>استكشف الأقسام</h2><p>كل قسم له باقاته الخاصة. اختَر اللي يناسبك.</p></div><span class="pubg-section-number">01 — 03</span></div>'
-      + '<div class="pubg-choice-grid" role="group" aria-label="أقسام ببجي">'
-      + CATEGORIES.map((item, i) => {
-          const count = categoryProducts(item.key).length;
-          return '<button type="button" class="pubg-choice ' + (item.key === currentCategory ? "selected" : "") + '" data-pubg-category="' + safe(item.key) + '" aria-pressed="' + String(item.key === currentCategory) + '">'
-            + '<span class="pubg-choice-step">0' + (i + 1) + '<span aria-hidden="true">↗</span></span>'
-            + '<span class="pubg-choice-art pubg-choice-art-' + safe(item.key) + '"><i>' + safe(item.visual) + '</i></span>'
-            + '<span class="pubg-choice-info"><strong>' + safe(item.title) + '</strong><small>' + countLabel(count) + '</small></span>'
-            + '</button>';
-        }).join("")
-      + '</div><div id="pubgCategoryResults" class="pubg-results" aria-live="polite"></div>'
-      + '<footer class="pubg-footer"><span>L1017N STORE</span><span>تسوّق بسهولة، واستلم كودك بعد إتمام الشراء.</span></footer>'
+      + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite"></div>'
+      + '<footer class="pubg-footer"><span>L1017N STORE</span><span>شحن شدات ببجي على معرّف اللاعب UID.</span></footer>'
       + '</div>';
 
     document.body.classList.add("pubg-premium-open");
     root.scrollTop = 0;
     root.querySelector("[data-pubg-close]").addEventListener("click", closePremiumPubg);
-    root.querySelector("[data-pubg-explore]").addEventListener("click", () => {
-      root.querySelector(".pubg-choice-grid").scrollIntoView({
-        behavior: reducedMotion() ? "auto" : "smooth", block: "center"
-      });
-    });
-    root.querySelector("#pubgFeaturedUc")?.addEventListener("click",()=>{
-      setCategory(root,"charge",true);
-    });
-    root.querySelectorAll("[data-pubg-category]").forEach((button) => {
-      button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));
-    });
-    const selected = CATEGORIES.some((entry) => entry.key === currentCategory) ? currentCategory : "charge";
-    setCategory(root, selected, false);
+    setCategory(root,"all",false);
     void fetchPubgProducts(root);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }

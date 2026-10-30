@@ -107,6 +107,7 @@
           <span class="auth-google-label">المتابعة باستخدام Google</span>
         </button>
         <p class="auth-google-caption">أنشئ حسابًا أو ادخل مباشرة بحساب Google، وبعدها اربط رقم هاتفك مرة واحدة.</p>
+        <p class="auth-profile-public-notice" role="note">خصوصية التسجيل: الحسابات الجديدة تظهر تلقائيًا في التصنيف. عند التسجيل بـGoogle يظهر اسمك وصورتك للزوار، وتقدر تخفي الصورة والاسم أو حسابك كاملًا من «حسابي ← خصوصية التصنيف» في أي وقت.</p>
         <div class="auth-google-divider" aria-hidden="true"><span>أو باستخدام البريد الإلكتروني</span></div>
       </div>
       <div class="auth-field"><label for="authEmail">البريد الإلكتروني</label><div class="auth-input-wrap">
@@ -122,6 +123,7 @@
       </div></div>
       <button id="forgotPassword" class="text-button" type="button">نسيت كلمة المرور؟</button>
       <p id="authStatus" class="form-note" role="status" aria-live="polite"></p>
+      <p class="auth-profile-public-notice auth-email-notice" role="note">عند إنشاء حساب جديد، يظهر ترتيبك في التصنيف تلقائيًا. تقدر تغيّر إعدادات الظهور من «حسابي ← خصوصية التصنيف».</p>
       <button id="authSubmit" class="btn btn-primary full-width" type="submit">تسجيل الدخول</button>
       <div class="auth-alternate"><p id="authAlternateText">ليس لديك حساب؟</p><button type="button" id="authAlternate">إنشاء حساب</button></div>
     </form>
@@ -152,6 +154,7 @@
       <div class="account-settings-list account-core-settings">
         <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="ranking-privacy" aria-label="خصوصية التصنيف وإظهار الاسم وصورة Google"><span class="account-row-icon account-icon-ranking-privacy" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5.2-3.5 8.5-8 10-4.5-1.5-8-4.8-8-10V7l8-4Z"/><path d="M9 12.3l2.1 2.1 4.1-4.4"/></svg></span><span class="account-core-copy"><b>خصوصية التصنيف</b><small>إظهار أو إخفاء اسمك وصورتك وترتيبك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="notifications"><span class="account-row-icon account-icon-notifications" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="account-core-copy"><b>الإشعارات والتنبيهات</b><small>متابعة حالة طلباتك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
       </div>
       <h3 class="account-group-title">تواصل معنا</h3>
@@ -199,7 +202,7 @@
   <div class="lb-section-label"><h2><span class="lb-gold-icon" aria-hidden="true">♛</span> المتصدرين الثلاثة</h2><button class="lb-refresh" id="refreshLeaderboard" type="button">↻ تحديث</button></div>
   <div id="leaderboardList" aria-live="polite"><p class="lb-empty-message">جاري تحميل الترتيب…</p></div>
   <div class="lb-prize">🏆 جائزة المركز الأول: <strong>100 روبوكس</strong></div>
-  <p class="leaderboard-privacy">التصنيف ظاهر للجميع. لما المتسوق يلغي الإخفاء، يوافق على إظهار الاسم وصورة Google للزوار. أرقام الهواتف والبريد وتفاصيل الطلبات تبقى خاصة.</p>
+  <p class="leaderboard-privacy">الحسابات الجديدة تظهر في التصنيف تلقائيًا. اسم وصورة Google يظهران للحسابات الجديدة المسجلة بـGoogle، وتقدر تتحكم في ظهورهما أو تخفي حسابك بالكامل من «حسابي ← خصوصية التصنيف». أرقام الهواتف والبريد وتفاصيل الطلبات تبقى خاصة.</p>
 </section>
 <footer><a class="brand" href="#"><span class="brand-mark">L</span><span><b>L1017n</b><small>متجرك الرقمي</small></span></a><span>© <span id="year"></span> L1017n. صنع بحب في ليبيا.</span><span class="footer-status"><i></i> المتجر متصل بقاعدة البيانات</span></footer>
 <nav class="mobile-nav"><button data-view="home" class="active"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button><button data-view="wallet"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg><span>المحفظة</span></button><button data-view="orders"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10M7 8h10M7 12h10M7 16h6"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg><span>طلباتي</span></button><button data-view="leaderboard"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg><span>التصنيف</span></button><button data-view="account"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>حسابي</span></button></nav>

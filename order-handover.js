@@ -88,7 +88,7 @@
     wa.target="_blank";wa.rel="noopener noreferrer";wa.textContent="التواصل عبر واتساب";
     wa.setAttribute("aria-label","فتح محادثة واتساب للمتجر مع تفاصيل الطلب");
     const tg=document.createElement("a");tg.className="manual-handover-btn manual-handover-tg";
-    tg.href="https://t.me/"+TELEGRAM_BOT;tg.target="_blank";tg.rel="noopener noreferrer";
+    tg.href="https://t.me/"+TELEGRAM_BOT+"?start=weborder_"+o.id.slice(0,8);tg.target="_blank";tg.rel="noopener noreferrer";
     tg.textContent="التواصل عبر تيليجرام";
     tg.setAttribute("aria-label","نسخ تفاصيل الطلب وفتح بوت متجر L1017n في تيليجرام");
     const draft=textFor(o);
@@ -101,7 +101,7 @@
     }
     tg.addEventListener("click",copyDetails);
     const hint=document.createElement("p");hint.className="manual-handover-note";
-    hint.textContent="تيليجرام يفتح بوت المتجر. انسخ تفاصيل الطلب وأرسلها في المحادثة. ما ترسلش كلمة مرورك أو رموز التحقق.";
+    hint.textContent="في تيليجرام اضغط «بدء» ثم ألصق تفاصيل طلبك وأرسلها. يوصّل البوت الرسالة لإدارة المتجر. ما ترسلش كلمة مرورك أو رمز التحقق.";
     const details=document.createElement("details");details.className="manual-handover-message";
     const summary=document.createElement("summary");summary.textContent="عرض رسالة الطلب الجاهزة";
     const textarea=document.createElement("textarea");

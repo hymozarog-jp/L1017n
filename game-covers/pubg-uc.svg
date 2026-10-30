@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="350" viewBox="0 0 400 350" role="img" aria-labelledby="title desc">
+<title id="title">60 UC PUBG-style currency tokens</title>
+<desc id="desc">Illustrated metallic gold and graphite UC game currency tokens on a transparent background.</desc>
+<defs>
+  <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff3ba"/><stop offset=".22" stop-color="#e7b961"/><stop offset=".46" stop-color="#8d5523"/><stop offset=".67" stop-color="#ffdd91"/><stop offset="1" stop-color="#a56a27"/></linearGradient>
+  <linearGradient id="edge" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff4c0"/><stop offset=".5" stop-color="#ba782c"/><stop offset="1" stop-color="#633916"/></linearGradient>
+  <linearGradient id="dark" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#343941"/><stop offset=".5" stop-color="#0f1117"/><stop offset="1" stop-color="#2e3034"/></linearGradient>
+  <linearGradient id="textGold" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fff4c0"/><stop offset=".43" stop-color="#f9cc70"/><stop offset="1" stop-color="#b77829"/></linearGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="13" flood-color="#000" flood-opacity=".45"/></filter>
+</defs>
+<ellipse cx="196" cy="304" rx="142" ry="25" fill="#000" opacity=".16"/>
+<g transform="rotate(17 230 172)" filter="url(#shadow)">
+  <path d="M105 79 130 59H320L344 79V247L319 267H130L105 247Z" fill="#8b5a23" stroke="#ffdd92" stroke-width="5"/>
+  <path d="M116 85 136 72H315L330 85V242L315 254H136L116 241Z" fill="url(#dark)" stroke="url(#gold)" stroke-width="6"/>
+</g>
+<g transform="rotate(5 223 178)" filter="url(#shadow)">
+  <path d="M90 89 114 67H301L326 89V254L302 274H114L90 254Z" fill="url(#edge)" stroke="#ffe5a0" stroke-width="4"/>
+  <path d="M104 97 120 81H295L312 97V246L295 260H121L104 247Z" fill="url(#dark)" stroke="#a97129" stroke-width="5"/>
+</g>
+<g transform="rotate(-12 194 181)" filter="url(#shadow)">
+  <path d="M78 76 102 54H289L316 77V267L288 290H102L78 268Z" fill="url(#edge)" stroke="#f9d889" stroke-width="5"/>
+  <path d="M88 82 108 65H281L305 83V261L281 278H108L88 261Z" fill="url(#gold)" stroke="#765025" stroke-width="2"/>
+  <path d="M102 94 117 78H273L292 94V250L274 264H117L102 250Z" fill="url(#dark)" stroke="#fff0ad" stroke-width="5"/>
+  <path d="M116 103 129 91H263L278 104V239L263 253H130L116 239Z" fill="none" stroke="#d0a25d" stroke-opacity=".6" stroke-width="2"/>
+  <text x="197" y="204" font-size="90" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="#523517" stroke="#523517" stroke-width="4" text-anchor="middle" letter-spacing="-5">UC</text>
+  <text x="195" y="200" font-size="90" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="url(#textGold)" text-anchor="middle" letter-spacing="-5">UC</text>
+  <path d="M117 106 154 90H254" fill="none" stroke="#fff2be" stroke-width="3" opacity=".6" stroke-linecap="round"/>
+</g>
+<path d="M336 80v20m-10-10h20" stroke="#ffdda1" stroke-width="4" stroke-linecap="round" opacity=".78"/>
+<path d="M67 208v13m-7-6.5h14" stroke="#e7ae62" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg>

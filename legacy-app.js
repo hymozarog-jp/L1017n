@@ -474,9 +474,11 @@ setTimeout(refreshAdminAccess,0);
  if(action==='personal'){openPersonalDetails();return}
  else if(action==='verify'){openPersonalDetails({focusPhone:true});return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
- else if(action==='theme')show('<h3>المظهر</h3><p>التصميم الداكن هو المظهر الحالي للموقع.</p>');
- else if(action==='language')show('<h3>اللغة</h3><p>اللغة المتوفرة حالياً: العربية.</p>');
- else if(action==='help')show('<h3>المساعدة والدعم</h3><p>لو عندك مشكلة في طلب أو شحن، افتح طلباتي وراجع حالة الطلب.</p><button type="button" id="detailHelpOrders">فتح طلباتي</button>'),detail.querySelector('#detailHelpOrders').onclick=()=>switchView('orders');
+ else if(action==='help'){
+   show('<h3>كيف نقدر نساعدك؟</h3><p>لو عندك طلب شحن أو شراء قيد الانتظار، تقدر تتابع حالته من طلباتي. وممكن تراجع رصيد المحفظة في أي وقت.</p><div class="account-help-actions"><button type="button" id="detailHelpOrders">عرض طلباتي</button><button type="button" id="detailHelpWallet">فتح المحفظة</button></div>');
+   detail.querySelector('#detailHelpOrders').onclick=()=>switchView('orders');
+   detail.querySelector('#detailHelpWallet').onclick=()=>switchView('wallet');
+ }
  });
 })();
 

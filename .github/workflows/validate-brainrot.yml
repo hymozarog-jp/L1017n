@@ -62,7 +62,7 @@ jobs:
           assert(!menu.includes('روبلوكس ← باقة MM2'),'No breadcrumb arrows in MM2 page title');
           assert(!browser.includes('روبلوكس ← ماب السرقة'),'No breadcrumb arrows in Brainrot page title');
           assert(menu.includes('if(p.classList.contains(\'rgp-inner-page\'))showRobloxPage()'),'Back from inner page returns to Roblox categories');
-          assert(html.includes('store-menu.js?v=inner-layout5'),'Fresh Roblox menu asset version');
+          assert(html.includes('store-menu.js?v=inner-layout6'),'Fresh Roblox menu asset version');
           assert(html.includes('brainrot-store.css?v=inner-layout5'),'Fresh layout stylesheet');
           assert(fs.existsSync('game-covers/steal-a-brainrot-original.png'), 'Original Roblox icon is missing');
           console.log('Roblox Steal a Brainrot inner category verified.');

@@ -258,7 +258,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=approval-realtime3&purchase-notify=1&whatsapp-help=1&rank-topup-only=1&rank-identity-settings=1&ranking-room=1&credit-drop=2&pubg-uc60=1&new-art=1';
+      var s=document.createElement('script');s.src='app.js?v=subscriptions-route1&purchase-notify=1&credit-drop=2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -594,7 +594,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="pubg-premium.css?v=20261031-uc60-codes3">
 <script src="pubg-premium.js?v=20261031-uc60-codes3" defer></script>
 <!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
-<link rel="stylesheet" href="live-mobile.css?v=pubg-nested-1">
+<link rel="stylesheet" href="live-mobile.css?v=subscriptions-nav1">
 <link rel="stylesheet" href="subscriptions.css?v=subs-premium-1">
 <link rel="stylesheet" href="account-contact.css?v=compact-help1">
 <link rel="stylesheet" href="account-settings-fast.css?v=account-quick3&rank-identity-settings=1">
@@ -608,7 +608,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="wallet-credit-drop.css?v=credit-drop1">
 <script src="wallet-luxe.js?v=wallet-luxe3-candy15-v1" defer></script>
 <script src="wallet-credit-drop.js?v=credit-drop3" defer></script>
-<script src="live-mobile.js?v=pubg-nested-1&new-art=1" defer></script>
+<script src="live-mobile.js?v=subscriptions-hero1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="ranking-room.css?v=room-v1">
 <script defer src="ranking-room.js?v=room-v2"></script>

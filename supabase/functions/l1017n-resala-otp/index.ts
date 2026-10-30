@@ -84,17 +84,31 @@ Deno.serve(async (request: Request) => {
     .select("libyana_phone").eq("user_id", user.id).maybeSingle();
   if (walletError) return json({ error: "database_unavailable" }, 503, origin);
   const phone = String(wallet?.libyana_phone || "");
-  if (!/^9[1-4][0-9]{7}$/.test(phone))
+  const phoneReady = /^9[1-4][0-9]{7}$/.test(phone);
+  if (!phoneReady && action !== "status")
     return json({ error: "phone_required" }, 400, origin);
 
   const apiKey = (Deno.env.get("RESALA_API_KEY") || "").trim();
   if (action === "status") {
     if (!apiKey) return json({ configured: false, verified: false }, 200, origin);
+    if (!phoneReady)
+      return json({ configured: true, verified: false, phone: null,
+        retry_after_seconds: 0, code_pending: false, expires_in_seconds: 0 }, 200, origin);
     const { data, error } = await db.from("resala_otp_sessions")
-      .select("verified_phone,verified_at").eq("user_id", user.id).maybeSingle();
+      .select("phone,verified_phone,verified_at,last_sent_at,expires_at,pin_hash")
+      .eq("user_id", user.id).maybeSingle();
     if (error) return json({ error: "database_unavailable" }, 503, origin);
+    const now = Date.now();
+    const samePhone = data?.phone === phone;
+    const elapsed = data?.last_sent_at ? now - Date.parse(data.last_sent_at) : Infinity;
+    const retrySeconds = samePhone && Number.isFinite(elapsed)
+      ? Math.max(0, Math.ceil((240000 - elapsed) / 1000)) : 0;
+    const expires = samePhone && data?.expires_at
+      ? Math.max(0, Math.ceil((Date.parse(data.expires_at) - now) / 1000)) : 0;
     return json({ configured: true, verified: data?.verified_phone === phone && !!data?.verified_at,
-      phone: "0" + phone }, 200, origin);
+      phone: "0" + phone, retry_after_seconds: retrySeconds,
+      expires_in_seconds: expires,
+      code_pending: !!(samePhone && data?.pin_hash && expires > 0) }, 200, origin);
   }
   if (!apiKey) return json({ error: "not_configured" }, 503, origin);
 
@@ -104,9 +118,19 @@ Deno.serve(async (request: Request) => {
       { p_user: user.id, p_phone: phone, p_token: token });
     if (reserveError) return json({ error: "database_unavailable" }, 503, origin);
     if (reserved === "verified") return json({ verified: true }, 200, origin);
-    if (reserved !== "reserved")
-      return json({ error: reserved || "send_unavailable" },
+    if (reserved !== "reserved") {
+      let retrySeconds = 0;
+      if (reserved === "cooldown") {
+        const { data: state } = await db.from("resala_otp_sessions")
+          .select("last_sent_at,phone").eq("user_id", user.id).maybeSingle();
+        if (state?.phone === phone && state?.last_sent_at) {
+          retrySeconds = Math.max(0, Math.ceil(
+            (240000 - (Date.now() - Date.parse(state.last_sent_at))) / 1000));
+        }
+      }
+      return json({ error: reserved || "send_unavailable", retry_after_seconds: retrySeconds },
         ["cooldown", "hour_limit", "day_limit"].includes(reserved) ? 429 : 400, origin);
+    }
 
     let result: Response;
     try {
@@ -141,7 +165,7 @@ Deno.serve(async (request: Request) => {
       console.error("Resala OTP state persistence failed");
       return json({ error: "database_unavailable" }, 503, origin);
     }
-    return json({ sent: true, expires_in_seconds: 300, retry_after_seconds: 60 }, 200, origin);
+    return json({ sent: true, expires_in_seconds: 300, retry_after_seconds: 240 }, 200, origin);
   }
 
   const code = String(payload.code ?? "").trim();

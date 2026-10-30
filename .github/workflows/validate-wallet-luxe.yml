@@ -37,8 +37,8 @@ jobs:
           assert(html.includes('wallet-transactions.css?v=wallet-row1'));
           assert(legacy.includes('walletTransactionRows(list)'),'History should use compact rows');
           assert(html.includes('wallet-luxe.js?v=wallet-luxe3'));
-          assert(html.includes('app.js?v=wallet-row1'));
-          assert(app.includes('legacy-app.js?v=wallet-row1'));
+          assert(html.includes('app.js?v=profile-glow2'));
+          assert(app.includes('legacy-app.js?v=profile-glow2'));
           assert(html.includes('aria-controls="walletSendSheet"'));
           assert(legacy.includes("window.L1017nWalletLuxe.openSend()"),'Send button opens real preview');
           assert(legacy.includes("window.L1017nWalletLuxe.animateBalance"),'Animate only data from authenticated wallet');

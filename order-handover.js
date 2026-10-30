@@ -7,6 +7,7 @@
   const TELEGRAM_BOT="LibyanStoreNotifyBot";
   const MANUAL_GAMES=new Set(["mm2","steal-a-brainrot"]);
   let activeDialog=null;
+  let activeEscapeHandler=null;
   function isManualProduct(game,key){
     const g=String(game||"").trim().toLowerCase();
     const k=String(key||"").trim().toLowerCase();
@@ -44,6 +45,10 @@
   function close(){
     if(!activeDialog)return;
     const old=activeDialog;activeDialog=null;
+    if(activeEscapeHandler){
+      document.removeEventListener("keydown",activeEscapeHandler);
+      activeEscapeHandler=null;
+    }
     old.remove();document.body.classList.remove("manual-handover-open");
   }
   function open(order){
@@ -114,8 +119,8 @@
     box.append(closeBtn,icon,tag,heading,sub,info,caption,buttons,hint,details,later);
     overlay.appendChild(box);
     overlay.addEventListener("click",e=>{if(e.target===overlay)close()});
-    const escapeHandler=e=>{if(e.key==="Escape"){close();document.removeEventListener("keydown",escapeHandler)}};
-    document.addEventListener("keydown",escapeHandler,{once:true});
+    activeEscapeHandler=e=>{if(e.key==="Escape")close()};
+    document.addEventListener("keydown",activeEscapeHandler);
     document.body.appendChild(overlay);document.body.classList.add("manual-handover-open");
     activeDialog=overlay;
     closeBtn.focus({preventScroll:true});

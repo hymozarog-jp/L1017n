@@ -6,10 +6,11 @@
  'use strict';
  if(window.L1017nCreditDrop)return;
  const storagePrefix='l1017n-wallet-credits-seen-v1:';
+ const shownPrefix='l1017n-wallet-credits-shown-v1:';
  const maxAge=12*60*1000;
  const trackedLimit=35;
  let activeUser='',seen=new Set(),hasBaseline=false,polling=false;
- let channel=null,queue=[],isPlaying=false,initializing=null;
+ let channel=null,queue=[],isPlaying=false,shown=new Set();
  const client=()=>typeof supabaseClient!=='undefined'?supabaseClient:null;
  const reduce=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
  const valid=entry=>entry&&entry.id&&Number.isFinite(Number(entry.amount))&&Number(entry.amount)>0&&entry.transaction_type==='topup';
@@ -20,6 +21,10 @@
  function saveSeen(){
    if(!activeUser)return;
    try{sessionStorage.setItem(key(activeUser),JSON.stringify(Array.from(seen).slice(-trackedLimit)))}catch(_){}
+ }
+ function saveShown(){
+   if(!activeUser)return;
+   try{sessionStorage.setItem(shownPrefix+activeUser,JSON.stringify(Array.from(shown).slice(-trackedLimit)))}catch(_){}
  }
  function remember(id){
    if(!id||seen.has(id))return false;
@@ -35,7 +40,10 @@
  function changeUser(user){
    if(user===activeUser)return;
    releaseChannel();activeUser=user||'';queue=[];hasBaseline=false;
-   seen=new Set();
+   seen=new Set();shown=new Set();
+   if(activeUser){
+     try{const old=JSON.parse(sessionStorage.getItem(shownPrefix+activeUser)||'[]');if(Array.isArray(old))old.slice(-trackedLimit).forEach(id=>shown.add(String(id)))}catch(_){}
+   }
    const stored=activeUser?loadSeen(activeUser):null;
    if(stored){stored.forEach(id=>seen.add(id));hasBaseline=true}
    if(activeUser)listen();
@@ -62,7 +70,9 @@
    const wallet=document.getElementById('walletView');
    const card=document.querySelector('#walletView .wallet-hero');
    const value=document.getElementById('walletShowcaseBalance');
-   const open=wallet&&!wallet.classList.contains('hidden')&&card&&value&&card.getClientRects().length>0;
+   const box=value?.getBoundingClientRect();
+   const open=wallet&&!wallet.classList.contains('hidden')&&card&&value&&
+     box&&box.width>0&&box.height>0&&box.top<innerHeight-20&&box.bottom>20;
    if(open)return {element:value,card:card};
    const chip=document.getElementById('customerWalletChip');
    const amount=document.getElementById('customerHeaderBalance');
@@ -132,13 +142,16 @@
    }
    await refreshBalances();
  }
- function enqueue(entry){
+ function enqueue(entry,explicitApproved){
    if(!valid(entry)||!activeUser)return;
-   if(!remember(String(entry.id)))return;
+   const id=String(entry.id);
+   const newCredit=remember(id);
+   // A callback for the approved request can announce a credit that an
+   // overlapping initial scan silently included in its baseline.
+   if((!newCredit&&!explicitApproved)||shown.has(id))return;
    const created=Date.parse(entry.created_at||'');
-   if(Number.isFinite(created)&&Date.now()-created>maxAge){
-     return;
-   }
+   if(Number.isFinite(created)&&Date.now()-created>maxAge)return;
+   shown.add(id);saveShown(); // one celebration per approved ledger credit
    queue.push(entry);
    void drain();
  }
@@ -192,7 +205,7 @@
      .eq('user_id',user).eq('topup_request_id',String(requestId))
      .eq('transaction_type','topup').gt('amount',0).limit(1);
    if(result.error)return;
-   (result.data||[]).forEach(enqueue);
+   (result.data||[]).forEach(row=>enqueue(row,true));
  }
  function init(){
    void scan();

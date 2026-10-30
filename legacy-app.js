@@ -18,7 +18,7 @@ function renderProducts(){
  const games=[
  {name:'روبلوكس',category:'ألعاب',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
  {name:'فري فاير',category:'ألعاب',image:'https://images.launchbox-app.com/1a210ab9-e0f5-46f0-967b-ec5703e7e28c.jpg',key:'freefire',count:products.filter(p=>/free ?fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
- {name:'ببجي موبايل',category:'ألعاب',image:'https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
+ {name:'ببجي موبايل',category:'ألعاب',image:'game-covers/pubg-battlefront.webp',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
  {name:'فورت نايت',category:'ألعاب',image:'https://images.launchbox-app.com/5aca9e55-9c6d-421e-b6f9-8910b82c11fc.jpg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
  ];
  // MM2 is a Roblox subcategory, never an independent game on the home page.
@@ -759,7 +759,7 @@ window.openPersonalDetails=openPersonalDetails;
 /* PUBG Mobile category selector — separate from Roblox checkout */
 function openPubgCategories(){
  if(typeof window.renderPremiumPubg === "function") { window.renderPremiumPubg(); return; }
- const image='https://images.launchbox-app.com/163b970a-fe91-412a-b1c8-16b1a5b4410c.jpg';
+ const image='game-covers/pubg-battlefront.webp';
  let page=document.getElementById('pubgCategoryPage');
  if(!page){page=document.createElement('section');page.id='pubgCategoryPage';document.body.appendChild(page)}
  page.innerHTML='<button class="pubg-back" type="button" aria-label="رجوع">➜</button><div class="pubg-hero"><img src="'+image+'" alt="PUBG Mobile"><h1>PUBG Mobile</h1><span class="pubg-badge">▣ &nbsp; أكواد وبطاقات</span></div><div class="pubg-features"><span>♧<small>دعم متواصل</small></span><span>♢<small>دفع آمن</small></span><span>ϟ<small>كود فوري</small></span></div><h2>اختر الفئة</h2><div class="pubg-category-grid">'+[['codes','أكواد'],['charge','نشحنها لك'],['offers','العروض']].map(([key,label])=>'<button type="button" class="pubg-category" data-pubg-category="'+key+'"><img src="'+image+'" alt=""><strong>'+label+'</strong></button>').join('')+'</div><div id="pubgCategoryResults" class="hidden"></div>';

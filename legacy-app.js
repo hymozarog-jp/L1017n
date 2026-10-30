@@ -34,6 +34,12 @@ function renderProducts(){
 }
 /* Non-Roblox digital items use the atomic wallet-to-code delivery checkout. */
 function showGameProductPreview(key){
+ // Always route PUBG to its dedicated catalog: 60 UC is a manual player-ID
+ // top-up and must never be sent through the automatic voucher checkout.
+ if(String(key||'').trim().toLowerCase()==='pubg'&&typeof window.renderPremiumPubg==='function'){
+   window.renderPremiumPubg();
+   return;
+ }
  // Never present an MM2 item as a standalone digital game or instant code.
  if(/mm2|murder[\s_-]*mystery/i.test(String(key||''))){
    if(typeof window.openRobloxGameMenu==='function')window.openRobloxGameMenu();

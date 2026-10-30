@@ -8,7 +8,7 @@
   const host=()=>document.getElementById('transferInstructions');
   const amountInput=()=>document.getElementById('topupAmount');
   let chosen=false, generation=0, currentRequest=null, currentAmount=null;
-  let watcher=null, watcherId=null, refreshBusy=false;
+  let watcher=null, watcherId=null, refreshBusy=false, liveChannel=null;
   const VERIFY_SESSION_KEY='l1017n-active-topup-verify-v2';
   function rememberVerifier(id,amount){
     try{sessionStorage.setItem(VERIFY_SESSION_KEY,JSON.stringify({id:String(id),amount:Number(amount),savedAt:Date.now()}))}catch(_){}
@@ -54,7 +54,15 @@
     root.replaceChildren(msg);
     return root;
   }
-  function stopWatcher(){if(watcher){clearInterval(watcher);watcher=null}watcherId=null;refreshBusy=false}
+  function stopWatcher(){
+    if(watcher){clearInterval(watcher);watcher=null}
+    watcherId=null;refreshBusy=false;
+    if(liveChannel){
+      const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
+      try{void db?.removeChannel(liveChannel)}catch(_){}
+      liveChannel=null;
+    }
+  }
   function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
@@ -100,6 +108,8 @@
   function updateVerifier(id,data,networkError){
     const root=document.getElementById('tpReturnVerify');
     if(!root||root.dataset.requestId!==String(id))return;
+    // A confirmed result can never be replaced with an old pending network response.
+    if(root.dataset.state==='approved'||root.dataset.state==='rejected')return;
     const title=root.querySelector('.tpv-title');
     const desc=root.querySelector('.tpv-subtitle');
     const foot=root.querySelector('.tpv-footnote');
@@ -220,31 +230,47 @@
     if(!id)return;
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db)return;
+    const root=document.getElementById('tpReturnVerify');
+    // The visible request is authoritative: a new wallet render must not
+    // silently detach its approval watcher from the customer-facing dialog.
+    if(root && root.dataset.requestId!==String(id))return;
     try{
-      const {data,error}=await db.rpc('get_my_ussd_topup_status',{p_request_id:id});
+      // Read the actual approved/rejected status directly with user-scoped RLS.
+      // The older SMS detail RPC is optional; its failure must not hide an
+      // already-approved wallet credit.
+      const {data:row,error}=await db.from('topup_requests')
+        .select('id,status,amount')
+        .eq('id',String(id)).maybeSingle();
       if(error)throw error;
+      if(!row){
+        if(root)updateVerifier(id,null,true);
+        return;
+      }
+      const data={status:row.status,amount:row.amount,sms_status:'not_received'};
+      if(row.status==='pending'){
+        try{
+          const detail=await db.rpc('get_my_ussd_topup_status',{p_request_id:id});
+          if(!detail.error && detail.data?.sms_status)data.sms_status=detail.data.sms_status;
+        }catch(_){/* status from RLS table remains authoritative */}
+      }
       const status=document.getElementById('ussdTransferStatus');
-      if(currentRequest!==String(id))return;
+      if(root?.dataset.requestId===String(id))currentRequest=String(id);
+      if(currentRequest!==String(id) && !root)return;
       updateVerifier(id,data);
-      if(data?.status==='approved'){
+      if(data.status==='approved'){
         if(status)status.textContent='✅ تم الشحن! أُضيف الرصيد إلى محفظتك.';
-        stopWatcher();chosen=false;
-        forgetVerifier();
+        stopWatcher();chosen=false;forgetVerifier();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(()=>{});
         return;
       }
-      if(data?.status==='rejected'){
+      if(data.status==='rejected'){
         if(status)status.textContent='⛔ تم رفض طلب الشحن. تواصل مع إدارة المتجر مع رقم الطلب.';
         stopWatcher();forgetVerifier();return;
       }
-      if(data?.status==='not_found'){
-        if(status)status.textContent='تعذر العثور على طلب الشحن في حسابك.';
-        closeVerifier();return;
-      }
-      if(data?.sms_status==='matched'){
-        if(status)status.textContent='📩 البوت طابق إشعار التحويل. جاري انتظار نتيجة الفحص الآلي؛ ما تكررّش التحويل. إذا احتاجت العملية مراجعة، تظهر حالتها هنا.';
-      }else{
-        if(status)status.textContent='⏳ ننتظر إشعار التحويل من ليبيانا. فتح الاتصال لا يعني نجاح التحويل؛ أكّد العملية داخل قائمة USSD. لا تكرر التحويل.';
+      if(data.sms_status==='matched'){
+        if(status)status.textContent='📩 وصل إشعار تحويل مطابق. ننتظر موافقة الإدارة لإضافة الرصيد.';
+      }else if(status){
+        status.textContent='⏳ جاري التحقق من التحويل وانتظار قرار الإدارة. لا تكرر التحويل.';
       }
     }catch(e){
       updateVerifier(id,null,true);
@@ -255,17 +281,33 @@
     stopWatcher();
     watcherId=String(id);
     void refreshRequest(id);
-    // No five-minute cutoff: the customer sees the decision when the
-    // administrator reviews the request, even if that takes longer.
+    const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
+    // Realtime pushes approved/rejected updates as soon as Telegram
+    // changes the request. Polling remains a fallback for in-app browsers.
+    if(db?.channel){
+      try{
+        liveChannel=db.channel('l1017n-topup-'+String(id))
+          .on('postgres_changes',{
+            event:'UPDATE',schema:'public',table:'topup_requests',filter:'id=eq.'+String(id)
+          },()=>{if(document.getElementById('tpReturnVerify')?.dataset.requestId===String(id))void refreshRequest(id)})
+          .subscribe();
+      }catch(err){console.warn('Realtime unavailable, using polling',err)}
+    }
     watcher=setInterval(()=>{
       if(watcherId===String(id)&&document.visibilityState==='visible'&&!refreshBusy){
         refreshBusy=true;
         Promise.resolve(refreshRequest(id)).finally(()=>{refreshBusy=false});
       }
-    },8000);
+    },3000);
   }
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible'&&watcherId&&!refreshBusy)void refreshRequest(watcherId);
+  });
+  window.addEventListener('pageshow',()=>{
+    if(watcherId)void refreshRequest(watcherId);
+  });
+  window.addEventListener('online',()=>{
+    if(watcherId)void refreshRequest(watcherId);
   });
   async function render(){
     const root=host(), amountEl=amountInput();

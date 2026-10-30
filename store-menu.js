@@ -6,6 +6,16 @@
   var mm2Image='https://www.thespike.gg/_next/image?q=75&url=https%3A%2F%2Fthespike-strapi-cms.s3.us-east-1.amazonaws.com%2Fimage11_74d86f53e8.jpg&w=3840';
   var brainrotImage='game-covers/steal-a-brainrot-original.png';
   var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
+  // Product-specific cutout PNG artwork: no black screenshot background.
+  var mm2DeathshardImage='https://cdn.shopify.com/s/files/1/0627/7696/7426/files/41_bc761126-5f31-4679-ab4a-4992ae16d3cf.png?v=1777750571';
+  var mm2ElderwoodBladeImage='https://mm2.best/cdn/shop/files/36_2cdb7694-f6e2-4d0a-bce4-9d73dec83f2e.png?v=1758461018';
+  function mm2Artwork(product){
+    var key=String(product&&product.product_key||'');
+    if(key==='mm2-minty-gun')return mm2MintyImage;
+    if(key==='mm2-deathshard')return mm2DeathshardImage;
+    if(key==='mm2-elderwood-blade')return mm2ElderwoodBladeImage;
+    return '';
+  }
   var styleId='robloxGamePageStyles';
 
   function addStyles(){
@@ -60,13 +70,14 @@
       #${pageId} .rgp-package.rgp-soldout .mm2-price{color:#c4bbcd!important}
       #${pageId} .rgp-package.rgp-soldout .mm2-delivery{color:#ffb3bc;font-weight:800}
       #${pageId} .rgp-package strong{display:block;font-size:18px}
-      #${pageId} .rgp-package .mm2-item-art{display:flex;align-items:center;justify-content:center;height:150px;background:radial-gradient(circle at 50% 45%,#473126 0%,#211822 55%,#0d111c 100%);border-radius:14px;margin-bottom:12px;overflow:hidden}
+      #${pageId} .rgp-package .mm2-item-art{display:flex;align-items:center;justify-content:center;height:150px;background:radial-gradient(ellipse at 50% 35%,#484a78 0%,#283355 53%,#1a2740 100%);border-radius:14px;margin-bottom:12px;overflow:hidden}
+      #${pageId} .rgp-package .mm2-item-art img{background:transparent!important;mix-blend-mode:normal;filter:drop-shadow(0 9px 12px #0007)}
       #${pageId} .rgp-package .mm2-item-art img{max-height:132px;max-width:94%;width:auto;height:auto;object-fit:contain;border-radius:8px}
       #${pageId} .rgp-package .mm2-price{display:block;color:#93f5b0!important;font-size:20px;font-weight:800;margin-top:8px}
       #${pageId} .rgp-package .mm2-delivery{display:block;color:#a8b5c8;font-size:12px;margin-top:5px}
       #rgpMm2Checkout{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.82);direction:rtl}
       #rgpMm2Checkout .mm2-checkout-box{width:min(100%,430px);background:#121a2d;color:#fff;border:1px solid #644d85;border-radius:22px;padding:22px;box-shadow:0 25px 90px #0009}
-      #rgpMm2Checkout .mm2-checkout-box img{width:100%;height:145px;object-fit:contain;background:radial-gradient(circle,#44322b,#141a2a);border-radius:14px}
+      #rgpMm2Checkout .mm2-checkout-box img{width:100%;height:145px;object-fit:contain;background:radial-gradient(ellipse at center,#484a78,#202d49);border-radius:14px;padding:7px;box-sizing:border-box}
       #rgpMm2Checkout .mm2-checkout-box input{display:block;width:100%;box-sizing:border-box;border:1px solid #5f6c84;border-radius:11px;padding:13px;margin:9px 0 14px;background:#0b1324;color:#fff;font:inherit;direction:ltr}
       #rgpMm2Checkout .mm2-actions{display:flex;gap:10px}
       #rgpMm2Checkout .mm2-actions button{flex:1;cursor:pointer;padding:13px;border-radius:11px;font:inherit;font-weight:700;border:1px solid #654e86;background:#272139;color:#fff}
@@ -75,6 +86,13 @@
       #rgpMm2Checkout .mm2-state{font-size:13px;color:#f8ca95;min-height:20px;margin-top:12px;line-height:1.7}
       #${pageId} .rgp-package span{display:block;color:#62b9ff;margin-top:5px}
       #${pageId} .rgp-empty{padding:30px;text-align:center;border:1px dashed #28455e;border-radius:18px;color:#9bb0c5}
+      @media(max-width:700px){
+        #${pageId} .rgp-mm2-subcategory .rgp-packages{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        #${pageId} .rgp-mm2-subcategory .rgp-package{min-width:0;padding:12px 9px}
+        #${pageId} .rgp-mm2-subcategory .rgp-package strong{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+        #${pageId} .rgp-mm2-subcategory .rgp-package .mm2-item-art{height:124px}
+        #${pageId} .rgp-mm2-subcategory .rgp-package .mm2-item-art img{max-height:118px}
+      }
       @media(max-width:720px){#${pageId}{padding:16px 12px 35px}#${pageId} .rgp-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#${pageId} .rgp-hero{min-height:210px}#${pageId} .rgp-hero-content{min-height:210px;padding:22px}#${pageId} .rgp-hero h1{font-size:40px}#${pageId} .rgp-hero p{font-size:13px}#${pageId} .rgp-card{min-height:0;border-radius:18px}#${pageId} .rgp-card img{height:130px}#${pageId} .rgp-card-body{padding:12px 10px 15px}#${pageId} .rgp-card h3{font-size:17px}#${pageId} .rgp-card p{font-size:12px;line-height:1.6}#${pageId} .rgp-action{font-size:11px;padding:8px 9px}#${pageId} .rgp-title{font-size:21px}}
     `;
     document.head.appendChild(s);
@@ -153,8 +171,9 @@
       var mintySoldOut=!list.some(function(x){return String(x.product_key)==='mm2-minty-gun'});
       if(!list.length&&!mintySoldOut){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
-        var art=String(x.product_key)==='mm2-minty-gun'
-          ? '<span class="mm2-item-art"><img loading="lazy" src="'+mm2MintyImage+'" alt="سلاح Minty فقط"></span>'
+        var image=mm2Artwork(x);
+        var art=image
+          ? '<span class="mm2-item-art"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+image+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
         return '<button class="rgp-package" type="button" data-mm2-id="'+escapeHtml(x.id)+'">'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
@@ -181,7 +200,8 @@
     var overlay=document.createElement('div');overlay.id='rgpMm2Checkout';
     overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
     overlay.setAttribute('aria-label','طلب سلاح MM2');
-    overlay.innerHTML='<div class="mm2-checkout-box"><img src="'+mm2MintyImage+'" alt="سلاح Minty">'+
+    var checkoutArt=mm2Artwork(product);
+    overlay.innerHTML='<div class="mm2-checkout-box">'+(checkoutArt?'<img loading="eager" referrerpolicy="no-referrer" src="'+checkoutArt+'" alt="سلاح '+escapeHtml(product.name)+'">':'')+
       '<h2 style="margin:14px 0 7px">'+escapeHtml(product.name)+'</h2>'+
       '<p style="color:#92e8a9;font-size:22px;font-weight:800;margin:0 0 12px">'+Number(product.price).toFixed(2)+' د.ل</p>'+
       '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox. بعد إتمام الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام السلاح داخل MM2.</p>'+

@@ -151,6 +151,9 @@
         if(!await window.ensurePurchasePhone())return;
         const r=await client.rpc("create_purchase_order",{p_product_id:product.id,p_roblox_username:username});
         if(r.error)throw r.error;
+        if(r.data?.id)void client.functions.invoke('l1017n-purchase-notify',{body:{order_id:r.data.id}})
+          .then(({error})=>{if(error)console.warn('[purchase] Telegram notification pending')})
+          .catch(()=>console.warn('[purchase] Telegram notification unavailable'));
         closeCheckout();
         const main=document.getElementById("robloxGamePage");if(main)main.remove();
         if(typeof renderWallet==="function")Promise.resolve(renderWallet()).catch(()=>{});

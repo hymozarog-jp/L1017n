@@ -119,6 +119,15 @@ function activate(){
  }
  requestAnimationFrame(focusCard);
 }
+function resetBalance(el){
+ if(!el)return;
+ const previous=requests.get(el);
+ if(previous)cancelAnimationFrame(previous);
+ requests.delete(el);
+ lastBalances.set(el,0);
+ el.textContent="0.000";
+ el.classList.remove("wallet-luxe-tick");
+}
 function animateBalance(el,amount){
  if(!el)return;
  const end=Number(amount);
@@ -149,5 +158,5 @@ function start(){
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")focusCard()});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
-window.L1017nWalletLuxe=Object.freeze({openSend,animateBalance,activate,closeSend:close});
+window.L1017nWalletLuxe=Object.freeze({openSend,animateBalance,resetBalance,activate,closeSend:close});
 })();

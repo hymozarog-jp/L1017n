@@ -1,6 +1,6 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=account-quick3';
+  s.src='legacy-app.js?v=phone-otp4';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');

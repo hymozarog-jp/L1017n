@@ -49,7 +49,7 @@ function makeMoneyMeter(amount, topValue, compact){
   const button=node('button','lb-money-action');
   button.type='button';
   button.setAttribute('aria-expanded','false');
-  button.setAttribute('aria-label','افتح تفاصيل مشتريات المتسوق بالدينار الليبي: '+formatDinar(value)+' د.ل، ونسبتها من مشتريات المتصدر '+Math.round(percent)+' بالمئة');
+  button.setAttribute('aria-label','افتح تفاصيل شحن رصيد المتسوق بالدينار الليبي: '+formatDinar(value)+' د.ل، ونسبتها من شحن المتصدر '+Math.round(percent)+' بالمئة');
   const headline=node('span','lb-money-topline');
   headline.append(
     node('span','lb-money-label','💰 مقارنة بالمتصدر'),
@@ -63,8 +63,8 @@ function makeMoneyMeter(amount, topValue, compact){
   button.appendChild(track);
   const details=node('div','lb-money-details');
   details.hidden=true;
-  details.appendChild(node('span','', '💵 مشتريات المتسوق: '+formatDinar(value)+' د.ل'));
-  details.appendChild(node('span','', '🏆 مشتريات المتصدر: '+formatDinar(highest)+' د.ل'));
+  details.appendChild(node('span','', '💵 إجمالي شحن المتسوق: '+formatDinar(value)+' د.ل'));
+  details.appendChild(node('span','', '🏆 إجمالي شحن المتصدر: '+formatDinar(highest)+' د.ل'));
   details.appendChild(node('strong','', highest>0?'الفارق: '+formatDinar(gap)+' د.ل':'كل المشاركين عندهم 0.00 د.ل حاليًا'));
   button.addEventListener('click',function(){
     const wasOpen=button.getAttribute('aria-expanded')==='true';
@@ -85,7 +85,7 @@ function makePodiumCard(item,rank,topValue){
   card.appendChild(avatar);
   card.appendChild(node('strong','lb-podium-name',item?publicName(item,rank):'المركز متاح'));
   card.appendChild(node('div','lb-podium-amount',item?'💰 '+formatDinar(item.points)+' د.ل':'—'));
-  card.appendChild(node('small','',item?'إجمالي المشتريات':'بانتظار متسوق'));
+  card.appendChild(node('small','',item?'إجمالي الشحن':'بانتظار متسوق'));
   if(item)card.appendChild(makeMoneyMeter(item.points,topValue,false));
   return card;
 }
@@ -129,7 +129,7 @@ async function renderOwnRank(){
   who.appendChild(whoText);
   top.appendChild(who);
   const total=node('div','lb-self-spend');
-  total.appendChild(node('small','','إجمالي مشترياتك المكتملة'));
+  total.appendChild(node('small','','إجمالي شحن رصيدك'));
   total.appendChild(node('strong','',formatDinar(spent)+' د.ل'));
   top.appendChild(total);
   const position=node('div','lb-self-position');
@@ -143,7 +143,7 @@ async function renderOwnRank(){
   if(rank===1){progress=100;message='أنت المتصدر حاليًا 🏆'}
   else if(rank>1){progress=Math.min(99,Math.round(100*spent/Math.max(spent+gap,0.01)));message='باقي لك '+formatDinar(gap+0.01)+' د.ل لتتقدم إلى المركز #'+(rank-1);}
   else if(!participating){message='فعّل المشاركة في التصنيف من الخيارات الموجودة تحت بطاقتك.'}
-  else{message='أول ما تكمل عملية شراء، يبدأ يظهر ترتيبك بين المتسوقين.'}
+  else{message='شحن رصيد المحفظة يزيد ترتيبك بين المتسوقين.'}
   fill.style.width=progress+'%';
   track.appendChild(fill);
   root.appendChild(track);
@@ -201,7 +201,7 @@ function addRankPrivacyToggle(root,user,isVisible) {
   root.appendChild(row);
   root.appendChild(node('p','lb-hide-notice',hasGoogle(user)
     ? 'إلغاء الإخفاء يعني موافقتك على إظهار اسمك وصورتك من Google للجميع.'
-    : 'عند إلغاء الإخفاء، يظهر ترتيبك وإجمالي مشترياتك بالدينار للزوار بدون بيانات شخصية.'));
+    : 'عند إلغاء الإخفاء، يظهر ترتيبك وإجمالي شحن رصيدك بالدينار للزوار بدون بيانات شخصية.'));
   const status=node('p','lb-hide-status');
   status.setAttribute('role','status');
   status.setAttribute('aria-live','polite');

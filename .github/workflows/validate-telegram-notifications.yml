@@ -10,6 +10,7 @@ on:
       - 'auto-topup.js'
       - 'supabase/functions/l1017n-topup-notify/**'
       - 'supabase/functions/l1017n-purchase-notify/**'
+      - 'supabase/functions/l1017n-telegram-admin/**'
       - '.github/workflows/validate-telegram-notifications.yml'
   workflow_dispatch:
 jobs:
@@ -55,5 +56,20 @@ jobs:
           }
           assert(!topup.includes('"setWebhook"'),'Do not reconfigure the bot on every top-up');
           assert(purchase.includes('order.user_id!==auth.user.id'),'Only order owner may notify');
-          console.log('Purchase paths, once-only claims, customer authentication, and no spam checks passed.');
+          const admin=read('supabase/functions/l1017n-telegram-admin/index.ts');
+          assert(purchase.includes('po:done:')&&purchase.includes('po:check:'),
+            'Manual orders must include status and fulfillment buttons');
+          assert(purchase.includes('isInstantCode||completed'),
+            'Completed instant codes must not receive manual fulfillment buttons');
+          assert(admin.includes('command === "orders"'),
+            'Bot must report manual order statuses on request');
+          assert(admin.includes('manualChoice[1] === "done"')&&admin.includes('manualChoice[1] === "check"')===false,
+            'Bot must handle explicit fulfillment without accidentally changing status on check');
+          assert(admin.includes('.eq("status","paid_pending_fulfillment")'),
+            'Status change must be atomic and only for pending orders');
+          assert(admin.includes('.neq("roblox_username","DIGITAL_CODE")'),
+            'Instant code orders must never use manual fulfillment controls');
+          assert(admin.includes('String(actor) !== adminId')&&admin.includes('sameSecret(supplied, webhookSecret)'),
+            'Only authenticated private Telegram admin may update status');
+          console.log('Manual order statuses, code exemption, private admin authorization, and once-only notifications passed.');
           JS

@@ -4,10 +4,12 @@
 (function(){
 "use strict";
 let lastSentFor="";
+let resendTicker=null;
+function stopResendTicker(){if(resendTicker){clearInterval(resendTicker);resendTicker=null}}
 const messages={
  unauthorized:"انتهت جلسة تسجيل الدخول. ادخل لحسابك من جديد.",
  phone_required:"احفظ رقم هاتفك في المعلومات الشخصية أولاً.",
- cooldown:"تقدر تطلب رمزًا جديدًا بعد دقيقة.",
+ cooldown:"يمكنك طلب رمز جديد بعد انتهاء عدّاد الأربع دقائق.",
  hour_limit:"وصلت لحد الرسائل المسموح خلال الساعة. جرّب بعدين.",
  day_limit:"وصلت لحد الرسائل اليومي. جرّب بكرة.",
  invalid:"الرمز مش صحيح، تأكد منه وحاول ثانية.",
@@ -55,7 +57,7 @@ async function invoke(action,code){
  try{key=(await error.context.json()).error||key}catch(_){}
  throw new Error(messages[key]||"تعذر إكمال العملية. حاول ثانية.");
 }
-function clear(){document.getElementById("resalaVerifyBox")?.remove()}
+function clear(){stopResendTicker();document.getElementById("resalaVerifyBox")?.remove()}
 function badge(state){
  const el=document.getElementById("personalPhoneBadge");
  if(!el)return;
@@ -65,6 +67,7 @@ function badge(state){
  el.dataset.state=state.verified?"verified":"unverified";
 }
 window.renderResalaOtp=async function(user){
+ stopResendTicker();
  const gate=document.getElementById("accountPhoneGate");
  if(!user||!gate){clear();badge(null);return}
  let state;
@@ -108,17 +111,38 @@ window.renderResalaOtp=async function(user){
  box.querySelector("b").textContent=phone;
  const send=box.querySelector(".resala-send"),form=box.querySelector(".resala-code-form"),field=box.querySelector(".resala-code"),status=box.querySelector(".resala-status");
  const key=user.id+":"+phone;
- if(lastSentFor===key){form.hidden=false;send.textContent="إعادة إرسال الرمز"}
+ if(lastSentFor===key||state.code_pending){form.hidden=false;send.textContent="إعادة إرسال الرمز"}
+ function applyCooldown(seconds){
+   stopResendTicker();
+   const deadline=Date.now()+Math.max(0,Number(seconds)||0)*1000;
+   function tick(){
+     if(!box.isConnected){stopResendTicker();return}
+     const remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
+     send.disabled=remaining>0;
+     send.textContent=remaining>0?"رمز جديد بعد "+String(Math.floor(remaining/60)).padStart(2,"0")+":"+String(remaining%60).padStart(2,"0")
+       :"إعادة إرسال الرمز";
+     if(remaining===0)stopResendTicker();
+   }
+   tick();
+   if(Date.now()<deadline)resendTicker=setInterval(tick,1000);
+ }
+ applyCooldown(state.retry_after_seconds||0);
  send.addEventListener("click",async function(){
   send.disabled=true;status.textContent="جاري إرسال الرمز…";
   try{
    const result=await invoke("send");
    if(result.verified){await window.renderResalaOtp(user);return}
    if(!result.sent)throw Error("تعذر إرسال الرمز.");
-   lastSentFor=key;status.textContent="تم طلب الرسالة. أدخل الرمز اللي وصلك، ويمكن إعادة الإرسال بعد دقيقة.";
-   form.hidden=false;send.textContent="إعادة إرسال الرمز";field.focus();
-  }catch(error){status.textContent=error.message||"تعذر إرسال الرمز."}
-  finally{send.disabled=false}
+   lastSentFor=key;status.textContent="تم طلب رمز SMS. يمكنك طلب رمز جديد بعد 4 دقائق.";
+   form.hidden=false;applyCooldown(result.retry_after_seconds||240);field.focus();
+  }catch(error){
+   status.textContent=error.message||"تعذر إرسال الرمز.";
+   if(String(error.message||"").includes("عدّاد")||String(error.message||"").includes("دقائق")){
+     try{const latest=await invoke("status");applyCooldown(latest.retry_after_seconds||0);if(latest.code_pending)form.hidden=false}
+     catch(_){}
+   }
+  }
+  finally{if(!resendTicker)send.disabled=false}
  });
  form.addEventListener("submit",async function(event){
   event.preventDefault();

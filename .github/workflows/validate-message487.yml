@@ -5,6 +5,7 @@ on:
     paths:
       - 'supabase/functions/l1017n-message487-ingest/**'
       - 'MESSAGE487-SETUP-AR.md'
+      - 'supabase/migrations/20261030_message487_strict_guarded_auto_credit.sql'
       - '.github/workflows/validate-message487.yml'
   workflow_dispatch:
 jobs:
@@ -15,13 +16,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check inbound transport and manual-review boundaries
+      - name: Verify authenticated Message487, restricted auto-credit and manual fallback
         run: |
           node - <<'JS'
           const fs=require('node:fs'),assert=require('node:assert/strict');
           const code=fs.readFileSync('supabase/functions/l1017n-message487-ingest/index.ts','utf8');
           const doc=fs.readFileSync('MESSAGE487-SETUP-AR.md','utf8');
-          const old='supabase/functions/l1017n-sms-ingest/index.ts';
+          const sql=fs.readFileSync('supabase/migrations/20261030_message487_strict_guarded_auto_credit.sql','utf8');
           assert.match(code,/MESSAGE487_BEARER_TOKEN/);
           assert.match(code,/SMS_FORWARD_HMAC_KEY/);
           assert.match(code,/validToken\(claimed\[1\],secret\)/);
@@ -32,9 +33,20 @@ jobs:
           assert.match(code,/duplicate:true/);
           assert.match(code,/sms_match_pending_receipts/);
           assert.match(code,/sender_label:"message487-libyana"/);
-          assert.match(code,/next:"admin_verification_required"/);
-          assert.doesNotMatch(code,/db\.rpc\(["']sms_auto_credit_receipt["']/);
+          assert.match(code,/sms_auto_credit_receipt/);
+          assert.match(code,/p_review_number:data\.review_number/);
+          assert.match(code,/next:autoCredited\?"credited"/);
+          assert.match(code,/auto_credited:autoCredited/);
+          assert.match(code,/message487_duplicate_credit_check_failed/);
+          assert.match(sql,/r\.sender_label='message487-libyana'/,'Only Message487 provenance was added to restricted RPC');
+          for(const guard of ['phone_not_verified','possible_duplicate','intent_mismatch','large_transfer_requires_review','additional_transfer_requires_review','old_or_delayed','sender_link_conflict']){
+            assert(sql.includes(guard),'Must retain auto-credit guard '+guard);
+          }
+          assert.match(sql,/sender_count>=3/);
+          assert.match(sql,/r\.amount > 10/);
+          assert.match(sql,/TO service_role/);
+          assert.match(doc,/التحويل المطابق والمؤهّل/);
           assert.doesNotMatch(code,/wallet_accounts["']\)\.update|wallet_transactions["']\)\.insert/);
           assert.match(doc,/Message487/);
-          console.log('Message487 schema, authentication, dedup, and manual-only payment rules validated');
+          console.log('Message487 schema, authentication, dedup, bounded auto-credit, and manual fallback verified');
           JS

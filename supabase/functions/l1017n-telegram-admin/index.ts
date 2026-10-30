@@ -51,6 +51,9 @@ const HELP = [
   "في أي وقت قول «إلغاء» أو «مساعدة».",
   "الأوامر المختصرة القديمة ما زالت تشتغل: /list /games /add /code /stock /price /rename /on /off /id.",
   "⚠️ تسليم الأكواد الفوري للباقات الرقمية فقط. روبلوكس حاليًا تنفيذ يدوي.",
+  "📋 /orders — حالات طلبات الشراء اليدوية، بدون الأكواد الرقمية.",
+  "📨 /sms لرسائل التحويل، /smsbind رقم EMAIL لربط حساب المحوّل مرة واحدة، /smsok رقم لاعتماد رصيده بدون طلب، /smsno رقم للرفض.",
+  "🤖 /smsauto status لمعرفة حالة الشحن الآلي، /smsauto off للإيقاف، /smsauto on للتفعيل.",
 ].join("\n");
 
 const textPart = (text: string): string[] =>
@@ -87,7 +90,7 @@ Deno.serve(async (request: Request) => {
   if (Number(request.headers.get("content-length") || "0") > 10000)
     return json({ error: "payload_too_large" }, 413);
 
-  let update: { action?: string; message?: { message_id?: number; text?: string; chat?: { id?: number; type?: string }; from?: { id?: number } } };
+  let update: { action?: string; callback_query?: { id: string; data?: string; from?: { id?: number }; message?: { message_id?: number; text?: string; chat?: { id?: number; type?: string } } }; message?: { message_id?: number; text?: string; chat?: { id?: number; type?: string }; from?: { id?: number } } };
   try { update = await request.json(); }
   catch { return json({ error: "invalid_json" }, 400); }
 
@@ -103,12 +106,119 @@ Deno.serve(async (request: Request) => {
       body: JSON.stringify({
         url,
         secret_token: webhookSecret,
-        allowed_updates: ["message"],
+        allowed_updates: ["message", "callback_query"],
         drop_pending_updates: false,
       }),
     });
     const data = await result.json().catch(() => ({ ok: false }));
     return json({ ok: result.ok && data.ok === true, description: data.description ?? "Webhook setup response" }, result.ok && data.ok === true ? 200 : 502);
+  }
+  // Inline approvals operate only on authenticated Telegram webhook updates
+  // from the exact authorized private admin account.
+  if (update?.callback_query) {
+    const cb = update.callback_query;
+    const adminChat = cb.message?.chat?.id;
+    const actor = cb.from?.id;
+    if (!adminId || String(adminChat) !== adminId || String(actor) !== adminId ||
+        cb.message?.chat?.type !== "private") return json({ ok:true });
+    // Manual purchase fulfillment (Robux, MM2 and Brainrot).
+    // Customer payment is already complete; only the store owner can mark
+    // a manually delivered order as fulfilled. Never mark code orders here.
+    const manualChoice = /^po:(done|check):([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(cb.data ?? "");
+    if (manualChoice) {
+      const notify = async (method: string, params: unknown) => {
+        const response = await fetch("https://api.telegram.org/bot" + token + "/" + method, {
+          method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(params)
+        });
+        return response.ok;
+      };
+      const databaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const key = serviceRoleKey();
+      if (!databaseUrl || !key) {
+        await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"خدمة الطلبات غير جاهزة، جرّب لاحقًا",show_alert:true});
+        return json({ok:true});
+      }
+      const db = createClient(databaseUrl,key,{auth:{persistSession:false,autoRefreshToken:false}});
+      const orderId = manualChoice[2];
+      let {data:order,error:readError} = await db.from("purchase_orders")
+        .select("id,roblox_username,status").eq("id",orderId).maybeSingle();
+      if (readError || !order || order.roblox_username === "DIGITAL_CODE") {
+        await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"الطلب غير موجود أو تم تسليم الكود آليًا",show_alert:true});
+        return json({ok:true});
+      }
+      if (manualChoice[1] === "done" && order.status === "paid_pending_fulfillment") {
+        // Atomic, status-guarded change: no wallet credits, refunds, codes,
+        // or inventory operations. Repeated clicks cannot complete twice.
+        const {data:updated,error:updateError} = await db.from("purchase_orders")
+          .update({
+            status:"completed",
+            reviewed_at:new Date().toISOString(),
+            admin_note:"تم تأكيد تنفيذ وتسليم الطلب بواسطة إدارة المتجر عبر تيليجرام"
+          })
+          .eq("id",orderId)
+          .eq("status","paid_pending_fulfillment")
+          .neq("roblox_username","DIGITAL_CODE")
+          .select("id,status").maybeSingle();
+        if (updateError) {
+          await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر تأكيد تنفيذ الطلب، حاول لاحقًا",show_alert:true});
+          return json({ok:true});
+        }
+        if (updated) order={...order,status:"completed"};
+        else {
+          // Another administrator may have reviewed this same order in the website.
+          const latest=await db.from("purchase_orders").select("id,status,roblox_username").eq("id",orderId).maybeSingle();
+          if(latest.error||!latest.data) {
+            await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر قراءة حالة الطلب",show_alert:true});
+            return json({ok:true});
+          }
+          order=latest.data;
+        }
+      }
+      const statusLabel=order.status==="completed"?"✅ تم التنفيذ"
+        :order.status==="rejected"?"❌ مرفوض وأُرجع الرصيد"
+        :order.status==="refunded"?"↩️ تم إرجاع الرصيد"
+        :"⏳ لم يتم التنفيذ بعد";
+      if(order.status!=="paid_pending_fulfillment"&&cb.message?.message_id){
+        const baseText=cb.message.text||"🛍️ طلب شراء — L1017n\\n🆔 رقم الطلب: "+orderId;
+        const updatedText=/📋 الحالة:[^\n]*/.test(baseText)
+          ? baseText.replace(/📋 الحالة:[^\n]*/, "📋 الحالة: "+statusLabel)
+          : baseText+"\n\n📋 الحالة: "+statusLabel;
+        await notify("editMessageText",{
+          chat_id:adminChat,message_id:cb.message.message_id,
+          text:updatedText.slice(0,3900),
+          reply_markup:{inline_keyboard:[]}
+        });
+      }
+      await notify("answerCallbackQuery",{
+        callback_query_id:cb.id,
+        text: statusLabel,
+        show_alert:false
+      });
+      return json({ok:true});
+    }
+    const choice = /^wt:([ar]):([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(cb.data ?? "");
+    if (!choice) return json({ ok:true });
+    const callTelegram=async(method:string,body:unknown)=>{
+      const response=await fetch("https://api.telegram.org/bot"+token+"/"+method,{
+        method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)
+      });
+      return response.ok;
+    };
+    const databaseUrl=Deno.env.get("SUPABASE_URL")||"";
+    const serviceKey=serviceRoleKey();
+    if(!databaseUrl||!serviceKey) return json({error:"database_not_configured"},503);
+    const db=createClient(databaseUrl,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
+    const approve=choice[1]==="a";
+    const {data,error}=await db.rpc("telegram_review_topup_request",{p_request_id:choice[2],p_approve:approve});
+    if(error){
+      const already=String(error.message||"").includes("request_already_reviewed");
+      await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:already?"هذا الطلب تمت مراجعته سابقًا.":"تعذر تنفيذ القرار، جرّب لاحقًا.",show_alert:!already});
+      return json({ok:true});
+    }
+    const label=approve?"✅ تمت الموافقة وإضافة الرصيد":"❌ تم رفض الطلب";
+    await callTelegram("editMessageText",{chat_id:adminChat,message_id:cb.message?.message_id,text:(cb.message?.text||"طلب شحن المحفظة").slice(0,3500)+"\n\n"+label,reply_markup:{inline_keyboard:[]}});
+    await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:approve?"تم قبول الطلب":"تم رفض الطلب"});
+    return json({ok:true});
   }
   const message = update?.message;
   const chatId = message?.chat?.id;
@@ -138,7 +248,144 @@ Deno.serve(async (request: Request) => {
   try {
     let reply = "";
     let deleteSensitiveMessage = false;
-    if (!command) {
+    if (command === "orders") {
+      const {data:orders,error:listError}=await db.from("purchase_orders")
+        .select("id,product_name,total_amount,roblox_username,status")
+        .neq("roblox_username","DIGITAL_CODE")
+        .order("created_at",{ascending:false}).limit(15);
+      if(listError)reportError(listError);
+      reply=!orders?.length?"📋 لا توجد طلبات تنفيذ يدوي حاليًا."
+        :"📋 آخر الطلبات اليدوية (بدون الأكواد):\n\n"
+        +orders.map(o=>
+          "📦 "+String(o.product_name||"طلب").slice(0,90)
+          +" — "+Number(o.total_amount).toFixed(2)+" د.ل"
+          +"\n🎮 @"+String(o.roblox_username||"—").slice(0,40)
+          +"\n"+(o.status==="completed"?"✅ تم التنفيذ":o.status==="paid_pending_fulfillment"?"⏳ لم يُنفذ بعد":o.status==="rejected"?"❌ رُفض وأُرجع الرصيد":"↩️ تم إرجاع الرصيد")
+          +"\n🆔 "+o.id
+        ).join("\n\n");
+    } else if (command === "smsauto") {
+      const action = payload.toLowerCase();
+      if (!action || action === "status") {
+        const { data: cfg, error: cfgError } = await db.from("sms_auto_credit_settings")
+          .select("enabled").eq("id",1).single();
+        if (cfgError) reportError(cfgError);
+        reply = "🤖 الشحن الآلي: " + (cfg?.enabled ? "✅ مفعّل" : "⏸️ متوقف") +
+          "\nيعتمد تحويلات ليبيانا الحديثة للحسابات المربوطة فقط (حتى 10 د.ل للتحويل)." +
+          "\nللإيقاف: /smsauto off  |  للتشغيل: /smsauto on";
+      } else if (action === "on" || action === "off") {
+        const { error: setError } = await db.from("sms_auto_credit_settings")
+          .update({enabled:action==="on",activated_at:new Date().toISOString()}).eq("id",1);
+        if (setError) reportError(setError);
+        reply = action === "on"
+          ? "✅ فعلت الشحن الآلي للرسائل الجديدة فقط، للأرقام المرتبطة بالحسابات، مع حد 10 د.ل للتحويل."
+          : "⏸️ أوقفت الشحن الآلي. تظل الرسائل تصل للمراجعة يدويًا.";
+      } else reply = "الصيغة: /smsauto status أو /smsauto on أو /smsauto off";
+    } else if (command === "sms") {
+      const { error: matchError } = await db.rpc("sms_match_pending_receipts");
+      if (matchError) reportError(matchError);
+      const { data: receipts, error: listError } = await db.from("sms_topup_receipts")
+        .select("review_number,status,provider,amount,transfer_phone,received_at,request_id,note")
+        .in("status", ["matched","unmatched","approved"]).order("received_at", { ascending: false }).limit(15);
+      if (listError) reportError(listError);
+      const phones = [...new Set((receipts ?? []).map(r => String(r.transfer_phone)))];
+      let linked = new Set<string>();
+      if (phones.length) {
+        const { data: links, error: linkError } = await db.from("sms_sender_wallet_links")
+          .select("provider,transfer_phone").in("transfer_phone", phones);
+        if (linkError) reportError(linkError);
+        linked = new Set((links ?? []).map(l => l.provider + ":" + l.transfer_phone));
+      }
+      reply = !receipts?.length ? "📨 ما فيش رسائل تحويل جديدة للمراجعة." :
+        "📨 رسائل التحويل (آخر 15):\n\n" + receipts.map(r => {
+          const hasLink = linked.has(r.provider + ":" + r.transfer_phone);
+          const state = r.status === "approved"
+            ? (r.note === "AUTO_SMS_V1" ? "🤖 تم الشحن آليًا" : "✅ تم اعتماد الرصيد")
+            : r.status === "matched"
+              ? "✅ طلب شحن مطابق"
+              : hasLink ? "✅ رقم مربوط بحساب — جاهز للشحن الآلي للرسائل الجديدة" : "⚠️ رقم غير مربوط بحساب";
+          return "رقم " + r.review_number + " | " +
+            (r.provider === "libyana" ? "ليبيانا" : "المدار") +
+            " | " + Number(r.amount).toFixed(3) + " د.ل" +
+            " | ***" + String(r.transfer_phone).slice(-4) +
+            "\n" + state +
+            "\n" + (r.status === "approved" ? "🔒 أُضيف الرصيد بالفعل" :
+              (r.status === "matched" || hasLink ? "/smsok " + r.review_number + "    " : "") +
+              "/smsno " + r.review_number +
+              (!hasLink && r.status !== "matched" ? "\nلربط الرقم مرة واحدة: /smsbind " + r.review_number + " EMAIL" : ""));
+        }).join("\n\n") +
+        "\n\n⚠️ رسالة SMS مش إثبات من مشغّل الشبكة. ما تعتمدش إلا بعد التحقق. كل رسالة تُستخدم مرة واحدة.";
+    } else if (command === "smsbind") {
+      const m = payload.match(/^([0-9]{1,15})\s+([^\s]{5,254})$/);
+      if (!m || !Number.isSafeInteger(Number(m[1])) || Number(m[1]) < 1 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m[2])) {
+        reply = "الصيغة: /smsbind 1 email@example.com\nاربط الرقم بحساب الزبون بعد التأكد من ملكيته فقط. هذا الإجراء مرة واحدة.";
+      } else {
+        const { data: bind, error: bindError } = await db.rpc("sms_link_sender_wallet", {
+          p_review_number: Number(m[1]), p_email: m[2]
+        });
+        if (bindError) {
+          if (bindError.message?.includes("store_account_not_found"))
+            reply = "🚫 ما لقيتش حسابًا بهذا البريد. خلي الزبون يسجّل في المتجر أولاً.";
+          else if (bindError.message?.includes("phone_already_linked_to_other_account"))
+            reply = "🚫 الرقم مربوط مسبقًا بحساب ثاني، وما غيرناش الربط.";
+          else if (bindError.message?.includes("registered_account_phone_does_not_match_sender"))
+            reply = "🚫 رقم المحوّل ما يطابقش رقم الهاتف المسجّل في حساب الزبون. خلّيه يسجّل بالرقم الصحيح وتحقق من ملكيته أولًا.";
+          else reportError(bindError);
+        } else reply = "✅ ربطت رقم المحوّل في الرسالة " + bind.review_number +
+          " بحساب " + bind.account_email +
+          ". من توا ما يحتاجش الزبون يقدم طلب شحن في كل مرة.\n" +
+          "بعد مراجعة وصول التحويل الحقيقي، اعتمده بالأمر /smsok " + bind.review_number;
+      }
+    } else if (command === "smsok" || command === "smsno") {
+      const number = Number(payload);
+      if (!/^[0-9]{1,15}$/.test(payload) || !Number.isSafeInteger(number) || number < 1) {
+        reply = "اكتب رقم الرسالة، مثلاً: /smsok 1 أو /smsno 1";
+      } else {
+        const { error: matchError } = await db.rpc("sms_match_pending_receipts");
+        if (matchError) reportError(matchError);
+        const { data: receipt, error: readError } = await db.from("sms_topup_receipts")
+          .select("review_number,status,amount,provider,transfer_phone,request_id")
+          .eq("review_number",number).maybeSingle();
+        if (readError) reportError(readError);
+        if (!receipt) reply = "ما لقيتش رسالة بهذا الرقم. استخدم /sms";
+        else if (receipt.status === "approved" || receipt.status === "rejected")
+          reply = "هذه الرسالة تمت مراجعتها سابقًا، وما نقدرش نعتمدها مرة ثانية.";
+        else {
+          const decision = command === "smsok" ? "approved" : "rejected";
+          const isOldMatched = receipt.status === "matched" && !!receipt.request_id;
+          let senderLinked = false;
+          if (!isOldMatched && decision === "approved") {
+            const { data: link, error: linkError } = await db.from("sms_sender_wallet_links")
+              .select("user_id").eq("provider",receipt.provider)
+              .eq("transfer_phone",receipt.transfer_phone).maybeSingle();
+            if (linkError) reportError(linkError);
+            senderLinked = !!link;
+          }
+          if (!isOldMatched && decision === "approved" && !senderLinked) {
+            reply = "🚫 رقم المحوّل مش مربوط بحساب زبون. تأكد من صاحب الرقم ثم اربطه مرة واحدة:\n/smsbind " +
+              number + " email@example.com\nوبعدها استخدم /smsok " + number;
+          } else {
+            const rpc = isOldMatched ? "sms_review_topup" : "sms_review_direct_topup";
+            const { data: reviewed, error: reviewError } = await db.rpc(rpc, {
+              p_review_number:number, p_decision:decision
+            });
+            if (reviewError) {
+              if (reviewError.message?.includes("requires_manual_verification"))
+                reply = "⚠️ المبلغ أو تاريخ التحويل يحتاج مراجعة خارج مسار SMS. لم يُضف رصيد.";
+              else if (reviewError.message?.includes("sender_phone_not_linked"))
+                reply = "🚫 رقم المحوّل مش مربوط بحساب. استخدم /smsbind أولاً.";
+              else if (reviewError.message?.includes("receipt_already_reviewed"))
+                reply = "الرسالة تمت مراجعتها مسبقًا، وما نقدرش نضيف رصيدًا مرتين.";
+              else reportError(reviewError);
+            } else reply = decision === "approved"
+              ? "✅ اعتمدت التحويل رقم " + number + "، وأضفت " +
+                Number(reviewed?.amount ?? receipt.amount).toFixed(3) +
+                " د.ل لمحفظة الزبون " + (isOldMatched ? "حسب طلبه." : "مباشرةً، بدون طلب شحن.") +
+                "\n🔒 نفس الرسالة ما تقدرش تنشحن مرتين."
+              : "⛔ رفضت رسالة التحويل رقم " + number + ". ما أضفناش أي رصيد.";
+          }
+        }
+      }
+    } else if (!command) {
       const natural = await handleArabicAdmin(db, chatId!, text);
       reply = natural.reply;
       deleteSensitiveMessage = !!natural.deleteMessage;

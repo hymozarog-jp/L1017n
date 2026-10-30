@@ -67,18 +67,31 @@ Deno.serve(async(req:Request)=>{
  const price=Number.isFinite(amount)?amount.toFixed(2):"—";
  const product=String(order.product_name||"منتج رقمي").slice(0,140);
  const username=String(order.roblox_username||"").slice(0,50);
+ const isInstantCode=username==="DIGITAL_CODE";
  const completed=order.status==="completed";
  const msg="🛍️ طلب شراء جديد — L1017n\n\n"
    +"📦 المنتج: "+product+"\n"
    +"💰 المدفوع من المحفظة: "+price+" د.ل\n"
    +(username && username!=="DIGITAL_CODE"?"🎮 اسم Roblox: "+username+"\n":"")
-   +"📋 الحالة: "+(completed?"✅ تم تسليم الكود آليًا":"⏳ بانتظار التنفيذ والتسليم")+"\n"
+   +"📋 الحالة: "+(isInstantCode?"✅ تم تسليم الكود آليًا":completed?"✅ تم التنفيذ":"⏳ لم يتم التنفيذ بعد")+"\n"
    +"🆔 رقم الطلب: "+id+"\n\n"
    +"✅ هذا إشعار بعملية شراء ناجحة، وليس طلب دفع جديد.";
  try{
    const response=await fetch("https://api.telegram.org/bot"+token+"/sendMessage",{
      method:"POST",headers:{"content-type":"application/json"},
-     body:JSON.stringify({chat_id:Number(chat),text:msg,disable_web_page_preview:true})
+     body:JSON.stringify({
+       chat_id:Number(chat),
+       text:msg,
+       disable_web_page_preview:true,
+       // Codes are already delivered automatically: no manual fulfillment actions.
+       // All other orders keep one Telegram message with inline status controls.
+       ...(isInstantCode||completed ? {} : {
+         reply_markup:{inline_keyboard:[[
+           {text:"✅ تم التنفيذ",callback_data:"po:done:"+id},
+           {text:"🔄 فحص الحالة",callback_data:"po:check:"+id}
+         ]]}
+       })
+     })
    });
    const data=await response.json().catch(()=>({ok:false}));
    if(!response.ok||data.ok!==true)

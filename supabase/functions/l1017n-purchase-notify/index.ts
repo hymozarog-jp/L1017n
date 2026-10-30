@@ -68,11 +68,12 @@ Deno.serve(async(req:Request)=>{
  const product=String(order.product_name||"منتج رقمي").slice(0,140);
  const username=String(order.roblox_username||"").slice(0,50);
  const isInstantCode=username==="DIGITAL_CODE";
+ const isPubg=/pubg|ببجي|بوبجي/i.test(product);
  const completed=order.status==="completed";
  const msg="🛍️ طلب شراء جديد — L1017n\n\n"
    +"📦 المنتج: "+product+"\n"
    +"💰 المدفوع من المحفظة: "+price+" د.ل\n"
-   +(username && username!=="DIGITAL_CODE"?"🎮 اسم Roblox: "+username+"\n":"")
+   +(username && username!=="DIGITAL_CODE"?(isPubg?"🎮 معرف لاعب PUBG (UID): ":"🎮 اسم Roblox: ")+username+"\n":"")
    +"📋 الحالة: "+(isInstantCode?"✅ تم تسليم الكود آليًا":completed?"✅ تم التنفيذ":"⏳ لم يتم التنفيذ بعد")+"\n"
    +"🆔 رقم الطلب: "+id+"\n\n"
    +"✅ هذا إشعار بعملية شراء ناجحة، وليس طلب دفع جديد.";

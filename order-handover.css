@@ -1,0 +1,37 @@
+/* MM2 and Steal A Brainrot • buyer handover call to action */
+body.manual-handover-open{overflow:hidden!important}
+#manualOrderHandover{position:fixed;inset:0;z-index:2147482500;background:#060a18e8;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:auto;display:grid;place-items:center;padding:16px 12px calc(16px + env(safe-area-inset-bottom));direction:rtl;color:#f4f6ff}
+#manualOrderHandover *{box-sizing:border-box}
+#manualOrderHandover .manual-handover-sheet{position:relative;width:min(100%,460px);margin:auto;border-radius:26px;padding:25px 19px 19px;background:radial-gradient(circle at 50% -15%,#3c5fa365,transparent 55%),#111a2b;border:1px solid #395278;box-shadow:0 30px 90px #000a;text-align:center;animation:manual-handover-rise .24s ease-out}
+#manualOrderHandover .manual-handover-close{position:absolute;top:11px;left:12px;border:1px solid #ffffff26;color:#d6e5ff;background:#ffffff0e;border-radius:10px;width:35px;height:35px;font-size:24px;cursor:pointer}
+#manualOrderHandover .manual-handover-mark{margin:0 auto 8px;width:66px;height:66px;display:grid;place-items:center;border:1px solid #6195e5;border-radius:19px;background:linear-gradient(145deg,#3569b7,#243d78);color:#fff;box-shadow:0 13px 31px #245ba244}
+#manualOrderHandover .manual-handover-mark svg{width:33px;height:33px}
+#manualOrderHandover .manual-handover-tag{color:#95c0ff;font-size:11px;font-weight:800}
+#manualOrderHandover h2{font-size:25px;font-weight:900;margin:9px 0;color:#fff}
+#manualOrderHandover .manual-handover-intro{font-size:13px;line-height:1.85;color:#b9cae4;margin:0 0 16px}
+#manualOrderHandover .manual-handover-info{border:1px solid #2b4265;border-radius:15px;padding:5px 13px;background:#091326;margin-bottom:15px}
+#manualOrderHandover .manual-handover-info-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;text-align:start;border-bottom:1px solid #253750}
+#manualOrderHandover .manual-handover-info-row:last-child{border:0}
+#manualOrderHandover .manual-handover-info-row small{font-size:11px;color:#9aabc7;white-space:nowrap}
+#manualOrderHandover .manual-handover-info-row strong{font-size:12px;color:#f6faff;overflow-wrap:anywhere;text-align:end}
+#manualOrderHandover .manual-handover-caption{font-size:13px;font-weight:800;margin:7px 0 12px}
+#manualOrderHandover .manual-handover-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#manualOrderHandover .manual-handover-btn{text-decoration:none;border-radius:14px;min-height:50px;display:flex;justify-content:center;align-items:center;text-align:center;padding:10px 6px;color:#fff;font-size:13px;font-weight:850;transition:transform .18s}
+#manualOrderHandover .manual-handover-btn:active{transform:scale(.97)}
+#manualOrderHandover .manual-handover-wa{background:#17844f;border:1px solid #2cbd78}
+#manualOrderHandover .manual-handover-tg{background:#2379ba;border:1px solid #5cabeb}
+#manualOrderHandover .manual-handover-note{font-size:11px;line-height:1.7;color:#9fb4cd;margin:12px 0}
+#manualOrderHandover .manual-handover-message{border:1px solid #2d4062;border-radius:11px;padding:9px 10px;text-align:start}
+#manualOrderHandover .manual-handover-message summary{font-size:12px;color:#bcd0ff;cursor:pointer}
+#manualOrderHandover .manual-handover-message textarea{display:block;margin:10px 0 8px;width:100%;resize:vertical;min-height:105px;background:#081322;border:1px solid #3a5579;border-radius:9px;padding:10px;color:#edf4ff;font-size:12px}
+#manualOrderHandover .manual-handover-copy{border:1px solid #6a83b9;color:#fff;background:#203d63;border-radius:9px;padding:8px 13px;font-size:12px;cursor:pointer}
+#manualOrderHandover .manual-handover-later{display:block;margin:13px auto 0;background:transparent;color:#b6cae2;border:0;padding:8px;font-size:12px;cursor:pointer}
+#manualOrderHandover :is(button,a,summary):focus-visible{outline:3px solid #d3e3ff;outline-offset:3px}
+#ordersList .orders-manual-handover{grid-column:1/-1;display:grid;gap:7px;width:100%;margin-top:11px;padding:11px;border-radius:13px;border:1px solid #456b9d;background:#172a44}
+#ordersList .orders-manual-handover p{margin:0;font-size:12px;line-height:1.65;color:#c6d9f2}
+#ordersList .orders-manual-handover button{border:0;border-radius:10px;background:linear-gradient(105deg,#2b79c2,#5c79d5);color:white;padding:11px;min-height:43px;cursor:pointer;font:800 13px inherit}
+#ordersList .orders-modern-card:has(.orders-manual-handover){flex-wrap:wrap}
+#ordersList .orders-modern-card:has(.orders-manual-handover) .orders-manual-handover{flex-basis:100%}
+@media(max-width:380px){#manualOrderHandover .manual-handover-sheet{padding:21px 13px 14px}#manualOrderHandover .manual-handover-actions{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#manualOrderHandover .manual-handover-sheet{animation:none}}
+@keyframes manual-handover-rise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}

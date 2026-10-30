@@ -67,6 +67,9 @@
       const {data,error}=await db.rpc('buy_instant_code',{p_product_id:productId});
       if(error)throw error;
       if(!data||typeof data.code!=='string')throw new Error('unexpected_response');
+      if(data.order_id)void db.functions.invoke('l1017n-purchase-notify',{body:{order_id:data.order_id}})
+        .then(({error})=>{if(error)console.warn('[purchase] Telegram notification pending')})
+        .catch(()=>console.warn('[purchase] Telegram notification unavailable'));
       showDeliveredCode(String(data.product_name||productName),data.code);
       try{if(typeof renderWallet==='function')await renderWallet();}catch(_){}
       try{if(typeof renderOrders==='function')await renderOrders();}catch(_){}

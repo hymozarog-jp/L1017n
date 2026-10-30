@@ -281,6 +281,11 @@
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
       currentRequest=intent.request_id;currentAmount=amount;
+      // Notify the store owner in Telegram; never treat intent creation as payment confirmation.
+      void db.functions.invoke('l1017n-topup-notify',{body:{request_id:intent.request_id}})
+        .then(({data,error})=>{
+          if(error||!data?.ok)console.warn('[wallet/topup] Telegram notification pending; request remains reviewable.');
+        }).catch(()=>console.warn('[wallet/topup] Could not notify Telegram.'));
       if(intent.state==='matched'){
         show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ. يفحص النظام الطلب تلقائيًا؛ ما تحولش المبلغ مرة ثانية.');
         const current=host();

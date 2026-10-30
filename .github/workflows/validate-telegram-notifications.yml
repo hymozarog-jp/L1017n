@@ -1,0 +1,59 @@
+name: Validate single Telegram notification per top-up and purchase
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'instant-code.js'
+      - 'store-menu.js'
+      - 'brainrot-store.js'
+      - 'legacy-app.js'
+      - 'auto-topup.js'
+      - 'supabase/functions/l1017n-topup-notify/**'
+      - 'supabase/functions/l1017n-purchase-notify/**'
+      - '.github/workflows/validate-telegram-notifications.yml'
+  workflow_dispatch:
+jobs:
+  notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify checkout hooks, authentication and no duplicate Telegram sends
+        run: |
+          node --check instant-code.js
+          node --check store-menu.js
+          node --check brainrot-store.js
+          node --check legacy-app.js
+          node --check auto-topup.js
+          node - <<'JS'
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const read=p=>fs.readFileSync(p,'utf8');
+          const purchases=['instant-code.js','store-menu.js','brainrot-store.js','legacy-app.js'];
+          for(const file of purchases){
+            const src=read(file);
+            assert(src.includes("functions.invoke('l1017n-purchase-notify'"),
+              'Missing purchase notification hook: '+file);
+            assert(!src.includes('TG_BOT_TOKEN'),'Bot secret cannot be in browser JS: '+file);
+          }
+          const topupJs=read('auto-topup.js');
+          assert(topupJs.includes("functions.invoke('l1017n-topup-notify'"));
+          const topup=read('supabase/functions/l1017n-topup-notify/index.ts');
+          const purchase=read('supabase/functions/l1017n-purchase-notify/index.ts');
+          for(const [kind,src] of [['topup',topup],['purchase',purchase]]){
+            assert(src.includes('auth.getUser('),'Require authenticated customer: '+kind);
+            assert(src.includes('.is("telegram_notification_claimed_at",null)'),
+              'Atomic single-send claim must exist: '+kind);
+            assert(src.includes('.is("telegram_notified_at",null)'),
+              'Already-delivered messages must not be sent again: '+kind);
+            assert(!src.includes('telegram_notification_claimed_at:null'),
+              'Never automatically retry an ambiguous delivered message: '+kind);
+            assert(src.includes('TG_BOT_TOKEN')&&src.includes('TG_ADMIN_ID'),
+              'Telegram credentials must remain server-side: '+kind);
+          }
+          assert(!topup.includes('"setWebhook"'),'Do not reconfigure the bot on every top-up');
+          assert(purchase.includes('order.user_id!==auth.user.id'),'Only order owner may notify');
+          console.log('Purchase paths, once-only claims, customer authentication, and no spam checks passed.');
+          JS

@@ -201,7 +201,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=account-quick3';
+      var s=document.createElement('script');s.src='app.js?v=phone-otp4';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -217,7 +217,8 @@
 <script src="store-menu.js?v=inner-layout6"></script>
 <script src="brainrot-store.js?v=steal-inner4" defer></script>
 <!-- Legacy duplicate Libyana phone form removed; accountPhoneGate and Resala OTP remain active. -->
-<script src="resala-otp.js?v=personal-phone12"></script>
+<script src="resala-otp.js?v=otp-four-minutes2"></script>
+<script src="phone-verification-page.js?v=phone-otp4"></script>
 <script src="purchase-phone.js?v=personal-phone12"></script>
 <script src="instant-code.js?v=resala-required2"></script>
 <script src="nav-bubble.js?v=account-recovery9"></script>
@@ -530,6 +531,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="premium-home.css?v=swipe-carousel11">
 <script src="premium-home.js?v=swipe-carousel11" defer></script>
 <link rel="stylesheet" href="personal-phone.css?v=personal-phone12">
+<link rel="stylesheet" href="phone-verification-page.css?v=phone-otp4">
 <link rel="stylesheet" href="storefront-polish.css?v=inner-categories-3">
 <link rel="stylesheet" href="brainrot-store.css?v=inner-layout5">
 <link rel="stylesheet" href="pubg-premium.css?v=20261029-lux3">

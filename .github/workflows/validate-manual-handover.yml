@@ -1,0 +1,71 @@
+name: Validate MM2 and Brainrot order handover
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'order-handover.js'
+      - 'order-handover.css'
+      - 'legacy-app.js'
+      - 'store-menu.js'
+      - 'brainrot-store.js'
+      - 'index.html'
+      - 'app.js'
+      - '.github/workflows/validate-manual-handover.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify JavaScript syntax and real checkout handover
+        run: |
+          node --check order-handover.js
+          node --check legacy-app.js
+          node --check store-menu.js
+          node --check brainrot-store.js
+          node --check app.js
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict'),vm=require('node:vm');
+          const js=fs.readFileSync('order-handover.js','utf8');
+          const html=fs.readFileSync('index.html','utf8');
+          const order=fs.readFileSync('legacy-app.js','utf8');
+          const mm2=fs.readFileSync('store-menu.js','utf8');
+          const brainrot=fs.readFileSync('brainrot-store.js','utf8');
+          const app=fs.readFileSync('app.js','utf8');
+          const context={window:{},navigator:{},document:{}};
+          vm.runInNewContext(js,context);
+          const logic=context.window.L1017nManualHandover;
+          assert(logic,'handover helper should be global');
+          assert(logic.isManualProduct('mm2','mm2-minty-gun'));
+          assert(logic.isManualProduct('steal-a-brainrot','steal-garama'));
+          assert(logic.isManualProduct('','steal-los-secret'));
+          assert(!logic.isManualProduct('roblox','robux-100'));
+          assert(!logic.isManualProduct('pubg','pubg-uc'));
+          assert(!logic.isManualProduct('',''));
+          const msg=logic.textFor({id:'8f9d64d9-1d30-4ac5-9aba-88bb60fce123',game:'steal-a-brainrot',product_name:'قرما',roblox_username:'Buyer_321',total_amount:7});
+          assert(msg.includes('قرما') && msg.includes('Buyer_321'));
+          assert(msg.includes('8f9d64d9-1d30-4ac5-9aba-88bb60fce123'));
+          assert(msg.includes('ماب السرقة'));
+          assert(!/كلمة المرور:[^\n]*Buyer_321/.test(msg));
+          assert(html.includes('order-handover.js?v=manual-delivery2'));
+          assert(html.includes('order-handover.css?v=manual-delivery2'));
+          assert(html.includes('store-menu.js?v=inner-layout6'));
+          assert(html.includes('brainrot-store.js?v=steal-inner4'));
+          assert(html.includes('app.js?v=manual-delivery2'));
+          assert(app.includes('legacy-app.js?v=manual-delivery2'));
+          assert(order.includes("select('id,product_id,product_name"));
+          assert(order.includes("handover.isManualProduct(product.game,product.product_key)"));
+          assert(order.includes('data-order-contact'));
+          assert(order.includes("g==='pending'"));
+          assert(mm2.includes("window.L1017nManualHandover.open"));
+          assert(brainrot.includes("window.L1017nManualHandover?.open"));
+          assert(mm2.includes("create_purchase_order"));
+          assert(brainrot.includes("create_purchase_order"));
+          assert(js.includes("wa.me/")&&js.includes("t.me/"));
+          assert(js.includes("weborder_"));
+          assert(!js.includes("wallet_accounts")&&!js.includes("wallet_transactions"));
+          console.log('Manual delivery and customer contact regression checks passed.');
+          JS

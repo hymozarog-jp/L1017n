@@ -9,7 +9,7 @@
   ];
 
   let lastFocused = null;
-  let currentCategory = "charge";
+  let currentCategory = "codes";
   let pubgCatalog = [];
   let catalogReady = false;
   let catalogError = "";
@@ -55,6 +55,9 @@
     }
   }
   function categoryFor(p) {
+    // Display existing 60 UC under codes, but do not imply it is in stock.
+    // The backend still blocks instant redemption of this manual product.
+    if (String(p.product_key || "").toLowerCase() === "pubg-60") return "codes";
     const label = [p.name, p.product_key, p.description].join(" ").toLowerCase();
     if (/كود|code|بطاق[ةه]|card|redeem|voucher/.test(label)) return "codes";
     return "charge";
@@ -81,14 +84,18 @@
     const price = Number(product.price);
     const priceText = (Number.isFinite(price) ? price : 0).toFixed(2);
     const isVoucher = categoryFor(product) === "codes";
+    const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
     return '<article class="pubg-pack" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : 'شحن على UID') + '</span>'
       + '<span class="pubg-pack-arrow" aria-hidden="true">↗</span></div>'
-      + '<div class="pubg-coin-wrap"><span class="pubg-coin" aria-hidden="true"><b>UC</b></span></div>'
+      + '<div class="pubg-coin-wrap"><img class="pubg-uc-art" src="game-covers/pubg-uc.svg" alt="" loading="lazy" decoding="async"></div>'
       + '<div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
       + '<h3 class="pubg-pack-name">' + name + '</h3>'
+      + (noCodeAvailable ? '<p class="pubg-unavailable-note">كود 60 UC غير متوفر في المخزون حاليًا</p>' : '')
       + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>السعر</small><strong>' + priceText + ' <span>د.ل</span></strong></div>'
-      + '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">' + (isVoucher ? "شراء الكود" : "نشحنها لك") + ' <span aria-hidden="true">←</span></button></div>'
+      + (noCodeAvailable
+        ? '<button type="button" class="pubg-buy" disabled aria-label="كود 60 UC غير متوفر حاليًا">غير متوفر</button>'
+        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">' + (isVoucher ? "شراء الكود" : "نشحنها لك") + ' <span aria-hidden="true">←</span></button>') + '</div>'
       + '</article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
@@ -225,7 +232,7 @@
     panel.querySelectorAll("[data-pubg-buy]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
-        if (!selected) return;
+        if (!selected || String(selected.product_key || "").toLowerCase() === "pubg-60") return;
         if (categoryFor(selected) === "charge") {
           openPubgAccountCheckout(selected);
         } else if (typeof window.openInstantCodeCheckout === "function") {
@@ -266,7 +273,7 @@
   function openPremiumPubg() {
     lastFocused = document.activeElement;
     const root = page();
-    currentCategory="charge";
+    currentCategory="codes";
     catalogReady=false;
     catalogError="";
     pubgCatalog=[];
@@ -295,7 +302,7 @@
       + CATEGORIES.map((item, index) =>
         '<button type="button" class="pubg-choice" data-pubg-category="' + item.key + '" aria-pressed="false">'
         + '<span class="pubg-choice-step">' + item.latin + '<span aria-hidden="true">0' + (index + 1) + '</span></span>'
-        + '<span class="pubg-choice-art pubg-choice-art-' + item.key + '" aria-hidden="true"><i>' + item.visual + '</i></span>'
+        + '<span class="pubg-choice-art pubg-choice-art-' + item.key + '" aria-hidden="true">' + (item.key === "codes" ? '<img class="pubg-choice-uc" src="game-covers/pubg-uc.svg" alt="" loading="lazy">' : '<i>' + item.visual + '</i>') + '</span>'
         + '<span class="pubg-choice-info"><strong>' + item.title + '</strong><small>' + item.subtitle + '</small></span>'
         + '</button>').join("")
       + '</div></section>'
@@ -309,7 +316,7 @@
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
       button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));
     });
-    setCategory(root,"charge",false);
+    setCategory(root,"codes",false);
     void fetchPubgProducts(root);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }

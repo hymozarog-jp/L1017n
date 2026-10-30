@@ -1,0 +1,107 @@
+/* L1017n: gold-on-graphite Google profile identity only.
+   The existing account settings, wallet, Plus area, and bottom tabs are unchanged. */
+#accountModern .account-id-card{
+  isolation:isolate!important;position:relative!important;overflow:hidden!important;
+  display:flex!important;align-items:center!important;flex-direction:column!important;
+  background:radial-gradient(circle at 49% 9%,#5c452c66 0%,transparent 40%),
+    radial-gradient(circle at 0% 76%,#8c571b39 0%,transparent 42%),
+    linear-gradient(148deg,#171614 0%,#10131b 58%,#0b121e 100%)!important;
+  color:#fff!important;
+  border:1px solid #b68c4b8c!important;border-radius:28px!important;
+  box-shadow:0 18px 50px #0008,inset 0 1px 0 #fae4aa22,0 0 26px #e6a64e15!important;
+  padding:30px 20px 25px!important;margin:14px 0 25px!important;
+  text-align:center;min-height:unset!important;
+}
+#accountModern .account-id-card:before{
+  content:''!important;position:absolute!important;left:-24%;bottom:21%;
+  width:85%;height:38%;border-radius:50%;border-top:2px solid #e2ab53ab;
+  transform:rotate(-22deg);box-shadow:0 -15px 32px #e39f2a18;
+  pointer-events:none;z-index:0;font-size:0!important;color:transparent!important;
+}
+#accountModern .account-id-card:after{
+  content:'';position:absolute;right:-23%;top:18%;width:86%;height:53%;
+  border-radius:50%;border-bottom:2px solid #e5b45f8c;transform:rotate(-19deg);
+  box-shadow:0 18px 35px #d28a2522;pointer-events:none;z-index:0;
+}
+#accountModern .account-edit-name{
+  position:absolute!important;top:18px!important;left:18px!important;z-index:3!important;
+  display:grid!important;place-items:center!important;width:44px!important;height:44px!important;
+  color:#f0ca83!important;background:linear-gradient(135deg,#72522b55,#15191f88)!important;
+  border:1px solid #b991527d!important;border-radius:14px!important;font-size:22px!important;
+  cursor:pointer;backdrop-filter:blur(8px);
+}
+#accountModern .account-edit-name:focus-visible,
+#accountModern #accountCopyId:focus-visible{outline:3px solid #ffe19a!important;outline-offset:3px}
+#accountModern .account-gold-crown{position:absolute;right:20px;top:22px;z-index:2;color:#eac06a;font-size:29px;line-height:1;text-shadow:0 0 12px #eac06a55}
+#accountModern .account-id-top{
+  position:relative!important;z-index:1!important;display:flex!important;
+  flex-direction:column!important;align-items:center!important;gap:12px!important;
+  width:100%!important;min-height:0!important;
+}
+#accountModern .account-id-portrait{position:relative;width:138px;height:138px;flex:none;margin:3px auto 5px}
+#accountModern .account-id-avatar{
+  position:relative!important;width:138px!important;height:138px!important;
+  display:grid!important;place-items:center!important;overflow:hidden!important;
+  flex-shrink:0!important;border:5px solid #eac16d!important;border-radius:50%!important;
+  background:radial-gradient(circle at 35% 27%,#294967,#111e31)!important;
+  box-shadow:0 0 0 4px #332718,0 0 0 6px #e7b45d45,0 0 26px #d9a54571!important;
+  color:#fbe8ae!important;font-size:53px!important;font-weight:800!important;
+}
+#accountModern .account-id-avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+#accountModern .account-google-badge{
+  position:absolute;right:0;bottom:2px;z-index:2;display:grid;place-items:center;
+  width:37px;height:37px;background:#fff;border:3px solid #141920;
+  border-radius:50%;box-shadow:0 3px 10px #0008;
+  font:bold 24px Arial,sans-serif;color:#4285f4;
+}
+#accountModern .account-google-badge[hidden]{display:none!important}
+#accountModern .account-id-details{
+  position:relative!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;gap:7px!important;min-width:0!important;width:100%;
+}
+#accountModern .account-id-details strong{
+  font-size:clamp(24px,5vw,31px)!important;font-weight:850!important;
+  line-height:1.3!important;max-width:100%;overflow-wrap:anywhere;color:#fff!important;
+}
+#accountModern .account-id-details span{
+  font-size:clamp(12px,3.2vw,15px)!important;line-height:1.6;color:#aeb4c6!important;
+  max-width:100%;overflow-wrap:anywhere;direction:ltr;text-align:center;
+}
+#accountModern .account-id-details small{
+  align-self:center!important;color:#8af0ba!important;
+  background:#0787622a!important;border:1px solid #20bb8171!important;
+  border-radius:999px!important;padding:5px 17px!important;font-size:12px!important;
+}
+#accountModern .account-id-details small::before{content:'';display:inline-block;width:7px;height:7px;background:#42e292;border-radius:50%;margin-inline-end:7px;box-shadow:0 0 10px #42e292}
+#accountModern .account-id-reference{
+  position:relative;z-index:1;width:min(100%,440px);
+  margin-top:24px;padding:10px 12px;
+  display:flex;gap:8px;align-items:center;justify-content:center;
+  border:1px solid #b38d546c;border-radius:17px;
+  background:linear-gradient(95deg,#3e332638,#27231fdf,#373026a8);
+  color:#d7d4d1;font-size:12px;
+}
+#accountModern .account-id-reference .account-id-label{white-space:nowrap;color:#bfc0c9}
+#accountModern .account-id-reference code{font:750 12px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.7px;color:#fff;direction:ltr;white-space:nowrap}
+#accountModern #accountCopyId{
+  flex:none;display:grid;place-items:center;min-width:39px;min-height:39px;
+  border:0;border-radius:12px;background:#ffffff16;color:#f4e6ce;cursor:pointer;
+}
+#accountModern #accountCopyId svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8}
+#accountModern .account-id-reference-icon{color:#e2bc78;flex-shrink:0}
+#accountModern .account-id-reference-icon svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8}
+#accountModern #accountMemberSince{display:none!important}
+@media(max-width:420px){
+ #accountModern .account-id-card{padding:23px 14px 21px!important;border-radius:25px!important}
+ #accountModern .account-id-portrait{width:112px;height:112px;margin-top:5px}
+ #accountModern .account-id-avatar{width:112px!important;height:112px!important;font-size:42px!important}
+ #accountModern .account-google-badge{width:31px;height:31px;font-size:21px}
+ #accountModern .account-id-reference{gap:6px;padding:9px 7px;font-size:11px}
+ #accountModern .account-id-reference code{font-size:11px}
+}
+@media(prefers-reduced-motion:no-preference){
+ #accountModern .account-id-avatar{animation:l1017n-gold-avatar-arrive .5s ease-out both}
+ #accountModern .account-id-card:before{animation:l1017n-gold-wave 8s ease-in-out infinite alternate}
+ @keyframes l1017n-gold-avatar-arrive{from{opacity:.45;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+ @keyframes l1017n-gold-wave{from{filter:brightness(.82)}to{filter:brightness(1.22)}}
+}

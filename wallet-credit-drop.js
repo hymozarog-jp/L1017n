@@ -66,6 +66,18 @@
        }).subscribe();
    }catch(e){console.warn('[wallet-credit] Realtime unavailable, polling active',e)}
  }
+ function waitForApprovedDialog(){
+   const dialog=document.getElementById('tpReturnVerify');
+   if(!dialog||dialog.dataset.state!=='approved')return Promise.resolve();
+   // Don't animate behind the successful-approval dialog; wait until they
+   // choose "شاهد رصيدك" and reveal their wallet.
+   return new Promise(resolve=>{
+     const observer=new MutationObserver(()=>{
+       if(!dialog.isConnected){observer.disconnect();resolve()}
+     });
+     observer.observe(document.body,{childList:true,subtree:true});
+   });
+ }
  function target(){
    const wallet=document.getElementById('walletView');
    const card=document.querySelector('#walletView .wallet-hero');
@@ -98,6 +110,7 @@
    window.setTimeout(()=>card.classList.remove('l1017n-credit-landed'),1100);
  }
  async function fly(entry){
+   await waitForApprovedDialog();
    const found=target();
    const amount=Number(entry.amount);
    if(!found){
@@ -108,7 +121,6 @@
    const rect=el.getBoundingClientRect();
    const toX=Math.max(20,Math.min(innerWidth-20,rect.left+rect.width/2));
    const toY=Math.max(20,Math.min(innerHeight-20,rect.top+rect.height/2));
-   const startX=Math.max(78,Math.min(innerWidth-78,toX+20));
    const fromY=-85;
    const host=document.createElement('div');
    host.className='l1017n-credit-fly-layer';
@@ -121,17 +133,22 @@
    const caption=document.createElement('span');caption.textContent=creditLabel(amount);
    drop.append(glyph,caption);host.appendChild(drop);
    document.body.appendChild(host);
+   const pillWidth=drop.offsetWidth||175;
+   const pillHeight=drop.offsetHeight||55;
+   const endX=Math.max(5,Math.min(innerWidth-pillWidth-5,toX-pillWidth/2));
+   const endY=toY-pillHeight/2;
+   const startX=Math.max(5,Math.min(innerWidth-pillWidth-5,endX+24));
    const duration=reduce()?150:1250;
    if(!reduce()&&drop.animate){
      const animation=drop.animate([
        {transform:'translate('+startX+'px,'+fromY+'px) scale(.88)',opacity:0,filter:'blur(5px)',offset:0},
-       {transform:'translate('+startX+'px,'+(Math.max(45,toY-210))+'px) scale(1.07)',opacity:1,filter:'blur(0)',offset:.28},
-       {transform:'translate('+(toX-8)+'px,'+(toY-36)+'px) scale(1.06)',opacity:1,filter:'blur(0)',offset:.82},
-       {transform:'translate('+toX+'px,'+toY+'px) scale(.35)',opacity:0,filter:'blur(0)',offset:1}
+       {transform:'translate('+startX+'px,'+(Math.max(45,endY-210))+'px) scale(1.07)',opacity:1,filter:'blur(0)',offset:.28},
+       {transform:'translate('+(endX-8)+'px,'+(endY-36)+'px) scale(1.06)',opacity:1,filter:'blur(0)',offset:.82},
+       {transform:'translate('+endX+'px,'+endY+'px) scale(.35)',opacity:0,filter:'blur(0)',offset:1}
      ],{duration,easing:'cubic-bezier(.16,.78,.28,1)',fill:'forwards'});
      try{await animation.finished}catch(_){}
    }else{
-     drop.style.transform='translate('+toX+'px,'+toY+'px)';
+     drop.style.transform='translate('+endX+'px,'+endY+'px)';
      await new Promise(resolve=>setTimeout(resolve,150));
    }
    host.remove();sparkle(card);

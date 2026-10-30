@@ -7,8 +7,8 @@
   var brainrotImage='game-covers/steal-a-brainrot-original.png';
   var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
   // Product-specific cutout PNG artwork: no black screenshot background.
-  var mm2DeathshardImage='https://cdn.shopify.com/s/files/1/0627/7696/7426/files/41_bc761126-5f31-4679-ab4a-4992ae16d3cf.png?v=1777750571';
-  var mm2ElderwoodBladeImage='https://mm2.best/cdn/shop/files/36_2cdb7694-f6e2-4d0a-bce4-9d73dec83f2e.png?v=1758461018';
+  var mm2DeathshardImage='game-covers/mm2-deathshard.png?v=local-cutout1';
+  var mm2ElderwoodBladeImage='game-covers/mm2-elderwood-blade.png?v=local-cutout1';
   function mm2Artwork(product){
     var key=String(product&&product.product_key||'');
     if(key==='mm2-minty-gun')return mm2MintyImage;

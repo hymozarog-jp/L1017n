@@ -201,7 +201,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=account-contact2';
+      var s=document.createElement('script');s.src='app.js?v=manual-delivery2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -213,8 +213,9 @@
 })();
 </script>
 <script src="game-transitions.js?v=quick-motion2"></script>
-<script src="store-menu.js?v=inner-layout5"></script>
-<script src="brainrot-store.js?v=steal-inner3" defer></script>
+<script src="order-handover.js?v=manual-delivery2"></script>
+<script src="store-menu.js?v=inner-layout6"></script>
+<script src="brainrot-store.js?v=steal-inner4" defer></script>
 <!-- Legacy duplicate Libyana phone form removed; accountPhoneGate and Resala OTP remain active. -->
 <script src="resala-otp.js?v=personal-phone12"></script>
 <script src="purchase-phone.js?v=personal-phone12"></script>
@@ -536,6 +537,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
 <link rel="stylesheet" href="live-mobile.css?v=google-avatar-left1">
 <link rel="stylesheet" href="account-contact.css?v=compact-help1">
+<link rel="stylesheet" href="order-handover.css?v=manual-delivery2">
 <link rel="stylesheet" href="topup-reference.css?v=libyana-flex1">
 <link rel="stylesheet" href="topup-return.css?v=return-verifying2">
 <script src="live-mobile.js?v=leaderboard-nav4" defer></script>

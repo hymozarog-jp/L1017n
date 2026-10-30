@@ -1,0 +1,75 @@
+name: Verify phone OTP flow and four-minute resend
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'phone-verification-page.js'
+      - 'phone-verification-page.css'
+      - 'resala-otp.js'
+      - 'supabase/functions/l1017n-resala-otp/index.ts'
+      - 'supabase/migrations/20261030_resala_otp_four_minute_resend.sql'
+      - 'legacy-app.js'
+      - 'index.html'
+      - 'app.js'
+      - '.github/workflows/validate-phone-otp.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate dedicated verification page and cooldown security
+        run: |
+          node --check phone-verification-page.js
+          node --check resala-otp.js
+          node --check legacy-app.js
+          node --check app.js
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict'),vm=require('node:vm');
+          const js=fs.readFileSync('phone-verification-page.js','utf8');
+          const old=fs.readFileSync('legacy-app.js','utf8');
+          const api=fs.readFileSync('supabase/functions/l1017n-resala-otp/index.ts','utf8');
+          const sql=fs.readFileSync('supabase/migrations/20261030_resala_otp_four_minute_resend.sql','utf8');
+          const html=fs.readFileSync('index.html','utf8');
+          const app=fs.readFileSync('app.js','utf8');
+          const oldOtp=fs.readFileSync('resala-otp.js','utf8');
+          const css=fs.readFileSync('phone-verification-page.css','utf8');
+          assert(html.includes('phone-verification-page.js?v=phone-otp4'));
+          assert(html.includes('phone-verification-page.css?v=phone-otp4'));
+          assert(html.includes('resala-otp.js?v=otp-four-minutes2'));
+          assert(html.includes('app.js?v=phone-otp4'));
+          assert(app.includes('legacy-app.js?v=phone-otp4'));
+          assert(old.includes('window.openPhoneVerificationPage()'));
+          assert(js.includes("save_my_libyana_phone"),'Number may be saved only by existing auth RPC');
+          assert(js.includes('l1017n-resala-otp'),'Authenticated Resala Edge Function required');
+          assert(js.includes('const {data:{session}}=await c.auth.getSession()'));
+          assert(js.includes('Date.now()'),'Timer uses wall clock, not counts');
+          assert(js.includes('state')===false || js.includes('retry_after_seconds'));
+          assert(js.includes('data.retry_after_seconds'),'Restored cooldown from server');
+          assert(js.includes('data.code_pending'),'Pending code restorable after page reload');
+          assert(js.includes('inputmode="numeric"'),'SMS code field exists');
+          assert(js.includes('autocomplete="one-time-code"'));
+          assert(js.includes('maxlength="6"'));
+          assert(js.includes('sendCode')===false || js.includes('invoke("send")'));
+          assert(js.includes('invoke("verify",code)'),'Must actually verify on server');
+          assert(js.includes('if(!r.sent)throw Error'),'Only sent response advances wizard');
+          assert(!js.includes("localStorage"),'No local token-based OTP verification');
+          assert(!js.includes('wallet_transactions'),'UI cannot credit wallets');
+          assert(api.includes('retry_after_seconds: 240'),'Server returns 240-second cooldown');
+          assert(api.includes('code_pending: !!'),'Server recognizes pending code');
+          assert(api.includes('last_sent_at'),'Server determines cooldown from DB');
+          assert(sql.includes("interval '240 seconds'"),'Database must enforce same cooldown');
+          assert(sql.includes('hour_sends >= 4') && sql.includes('day_sends >= 10'),'Keep abuse controls');
+          assert(sql.includes('for update'),'Serialization prevents parallel sends');
+          assert(oldOtp.includes('result.retry_after_seconds||240'),'Old settings must also respect new timeout');
+          assert(css.includes('#phoneVerifyWizard.visible'));
+          assert(css.includes('prefers-reduced-motion'));
+          const sandbox={window:{},document:{},setInterval:()=>1,clearInterval:()=>{}};
+          vm.runInNewContext(js,sandbox);
+          assert.equal(typeof sandbox.window.openPhoneVerificationPage,'function');
+          assert.equal(typeof sandbox.window.closePhoneVerificationPage,'function');
+          console.log('Phone wizard, server cooldown, and OTP gating verified.');
+          JS

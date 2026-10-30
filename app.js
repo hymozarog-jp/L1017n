@@ -8,7 +8,7 @@
     auto.onerror=function(){console.error('تعذر تحميل الشحن الآلي');var b=document.getElementById('transferInstructions');if(b)b.textContent='تعذر تحميل خدمة الشحن الآلي؛ لا تحوّل حتى يتم إصلاحها.'};
     document.body.appendChild(auto);
     var ranking=document.createElement('script');
-    ranking.src='google-leaderboard.js?v=account-recovery9';
+    ranking.src='google-leaderboard.js?v=account-recovery9&topup-only=1';
     ranking.onerror=function(){console.error('تعذر تحميل عرض Google في التصنيف')};
     document.body.appendChild(ranking);
   };

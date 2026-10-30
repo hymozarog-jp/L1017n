@@ -105,3 +105,43 @@
 @media(prefers-reduced-motion:reduce){
   #accountModern .account-core-settings > button[data-account-action]{transition:none}
 }
+
+
+/* Account ranking privacy: compact, accessible toggles with independent controls. */
+#accountModern .account-core-settings .account-icon-ranking-privacy{
+  border-color:#ad8959;color:#ffe0a1;
+  background:linear-gradient(145deg,#59432d,#282637);
+}
+#accountModern .account-settings-detail .account-rank-privacy-controls{
+  display:grid;gap:10px;margin:14px 0;
+}
+#accountModern .account-settings-detail .account-rank-privacy-option{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  border:1px solid #3b4c67;border-radius:15px;
+  padding:12px 13px;cursor:pointer;background:linear-gradient(110deg,#1c2940,#101b30);
+}
+#accountModern .account-settings-detail .account-rank-option-copy{
+  display:flex;flex-direction:column;min-width:0;gap:3px;
+}
+#accountModern .account-settings-detail .account-rank-option-copy b{
+  font-size:14px;font-weight:800;color:#fff;
+}
+#accountModern .account-settings-detail .account-rank-option-copy small{
+  font-size:11px;line-height:1.6;color:#aebbd0;
+}
+#accountModern .account-settings-detail .account-rank-privacy-option input[type="checkbox"]{
+  flex:0 0 22px;width:22px;height:22px;margin:0;accent-color:#dcb56a;
+  cursor:pointer;background:transparent;
+}
+#accountModern .account-settings-detail .account-rank-privacy-option input[type="checkbox"]:disabled{
+  opacity:.45;cursor:not-allowed;
+}
+#accountModern .account-settings-detail .account-rank-privacy-status{
+  font-size:12px;color:#b4d5e8;min-height:20px;line-height:1.65;
+}
+#accountView .auth-profile-public-notice{
+  border:1px solid #b7975999;border-radius:13px;
+  background:linear-gradient(115deg,#2f271d,#14213a);
+  color:#efd6aa;padding:11px 13px;font-size:12px;line-height:1.85;
+  margin:11px 0;
+}

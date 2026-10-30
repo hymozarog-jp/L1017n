@@ -51,6 +51,14 @@
       #${pageId} .rgp-mm2-subcategory .rgp-packages{margin-top:20px}
       #${pageId} .rgp-package{border:1px solid #214968;background:#091a2b;border-radius:18px;padding:18px;text-align:right;color:#fff;cursor:pointer;font:inherit}
       #${pageId} .rgp-package:hover{border-color:#35a9ff}
+      #${pageId} .rgp-package.rgp-soldout{
+        cursor:not-allowed;opacity:.79;
+        border-color:#894658;background:linear-gradient(155deg,#251b28,#121a2b);
+      }
+      #${pageId} .rgp-package.rgp-soldout:hover{border-color:#894658}
+      #${pageId} .rgp-package.rgp-soldout .mm2-item-art img{filter:grayscale(.38) brightness(.83)}
+      #${pageId} .rgp-package.rgp-soldout .mm2-price{color:#c4bbcd!important}
+      #${pageId} .rgp-package.rgp-soldout .mm2-delivery{color:#ffb3bc;font-weight:800}
       #${pageId} .rgp-package strong{display:block;font-size:18px}
       #${pageId} .rgp-package .mm2-item-art{display:flex;align-items:center;justify-content:center;height:150px;background:radial-gradient(circle at 50% 45%,#473126 0%,#211822 55%,#0d111c 100%);border-radius:14px;margin-bottom:12px;overflow:hidden}
       #${pageId} .rgp-package .mm2-item-art img{max-height:132px;max-width:94%;width:auto;height:auto;object-fit:contain;border-radius:8px}
@@ -139,7 +147,11 @@
       var r=await client.from('products').select('*').eq('active',true).order('sort_order');
       // Show only real MM2 items inside the Roblox > MM2 package category.
       var list=(r.data||[]).filter(function(x){var game=String(x.game||'').trim();var key=String(x.product_key||'');var name=String(x.name||'');return /^(?:mm2|murder[ _-]*mystery[ _-]*2)$/i.test(game)||/^mm2[-_]/i.test(key)||/MM2/i.test(name)});
-      if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
+      // Minty was sold and disabled by the store owner. Keep its card visible
+      // with a non-clickable out-of-stock label. If it is reactivated in
+      // Supabase, the active product replaces this placeholder automatically.
+      var mintySoldOut=!list.some(function(x){return String(x.product_key)==='mm2-minty-gun'});
+      if(!list.length&&!mintySoldOut){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var art=String(x.product_key)==='mm2-minty-gun'
           ? '<span class="mm2-item-art"><img loading="lazy" src="'+mm2MintyImage+'" alt="سلاح Minty فقط"></span>'
@@ -148,7 +160,13 @@
           '<strong>'+escapeHtml(x.name)+'</strong>'+
           '<span class="mm2-price">'+Number(x.price||0).toFixed(2)+' د.ل</span>'+
           '<small class="mm2-delivery">التسليم داخل اللعبة بعد مراجعة الطلب</small></button>';
-      }).join('');
+      }).join('')+(mintySoldOut
+        ? '<button class="rgp-package rgp-soldout" type="button" disabled aria-disabled="true">'
+          +'<span class="mm2-item-art"><img loading="lazy" src="'+mm2MintyImage+'" alt="سلاح Minty غير متوفر"></span>'
+          +'<strong>Minty | MM2</strong>'
+          +'<span class="mm2-price">7.00 د.ل</span>'
+          +'<small class="mm2-delivery">غير متوفر حاليًا · نفدت الكمية</small></button>'
+        : '');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;
         var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});

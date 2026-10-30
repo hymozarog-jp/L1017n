@@ -186,8 +186,8 @@ window.loadLeaderboard=async function(){
   }
 };
 
-// Account privacy is controlled by one switch inside the customer's own rank card.
-// Unchecking "hide" is an explicit opt-in to publish Google name/photo to visitors.
+// Ranking can be hidden in the podium or under Account > Ranking privacy.
+// The name/photo preference is separate and is never overridden by hiding the rank.
 function addRankPrivacyToggle(root,user,isVisible) {
   const row=node('label','lb-hide-row');
   const title=node('span','lb-hide-label','◉  إخفاء حسابي من التصنيف');
@@ -200,8 +200,8 @@ function addRankPrivacyToggle(root,user,isVisible) {
   row.append(title,toggle);
   root.appendChild(row);
   root.appendChild(node('p','lb-hide-notice',hasGoogle(user)
-    ? 'إلغاء الإخفاء يعني موافقتك على إظهار اسمك وصورتك من Google للجميع.'
-    : 'عند إلغاء الإخفاء، يظهر ترتيبك وإجمالي شحن رصيدك بالدينار للزوار بدون بيانات شخصية.'));
+    ? 'تقدر تتحكم في ظهور اسمك وصورتك من «حسابي ← خصوصية التصنيف».'
+    : 'ترتيبك ومجموع الشحن يظهران فقط عندما تختار المشاركة؛ البريد والهاتف خاصّان.'));
   const status=node('p','lb-hide-status');
   status.setAttribute('role','status');
   status.setAttribute('aria-live','polite');
@@ -212,13 +212,14 @@ function addRankPrivacyToggle(root,user,isVisible) {
     status.textContent='جاري الحفظ…';
     try{
       const prior=await supabaseClient.from('leaderboard_profiles')
-        .select('nickname').eq('user_id',user.id).maybeSingle();
+        .select('nickname,share_google_profile').eq('user_id',user.id).maybeSingle();
       if(prior.error)throw prior.error;
       const nickname=prior.data?.nickname||'متسوق'+user.id.replace(/-/g,'').slice(0,14);
       const result=await supabaseClient.from('leaderboard_profiles').upsert({
         user_id:user.id,nickname,
         public_visible:!hide,
-        share_google_profile:!hide&&hasGoogle(user),
+        // Keep their independent Google identity-sharing preference unchanged.
+        share_google_profile:prior.data?.share_google_profile===true,
         updated_at:new Date().toISOString()
       },{onConflict:'user_id'});
       if(result.error)throw result.error;
@@ -233,6 +234,92 @@ function addRankPrivacyToggle(root,user,isVisible) {
     }
   });
 }
+// Account settings entry: the customer can control public rank and personal
+// Google name/photo separately, without changing their wallet or orders.
+async function showAccountRankingPrivacy(){
+  const user=await currentUser();
+  const detail=document.getElementById('accountSettingsDetail');
+  if(!user||!detail)return;
+  detail.replaceChildren();
+  detail.classList.remove('hidden');
+  const heading=node('h3','','خصوصية التصنيف');
+  const intro=node('p','','في الحسابات الجديدة يظهر الاسم وصورة Google في التصنيف تلقائيًا. تقدر تخفيهما أو تخفي حسابك كاملًا هنا.');
+  const controls=node('div','account-rank-privacy-controls');
+  function preference(id,title,desc){
+    const label=node('label','account-rank-privacy-option');
+    const text=node('span','account-rank-option-copy');
+    text.append(node('b','',title),node('small','',desc));
+    const input=document.createElement('input');
+    input.type='checkbox';input.id=id;
+    input.setAttribute('aria-label',title);
+    label.append(text,input);controls.appendChild(label);
+    return input;
+  }
+  const visible=preference('accountRankPublic','إظهار حسابي في التصنيف','يعرض ترتيبي وإجمالي الشحن للزوار');
+  const identity=preference('accountRankGoogle','إظهار اسمي وصورتي من Google','عند إيقافها يظهر اسمي وصورتي بشكل مجهول في التصنيف');
+  const status=node('p','account-rank-privacy-status','جاري قراءة إعداداتك…');
+  status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+  detail.append(heading,intro,controls,status);
+  detail.scrollIntoView({behavior:'auto',block:'nearest'});
+  visible.disabled=true;identity.disabled=true;
+  const google=hasGoogle(user);
+  try{
+    const {data,error}=await supabaseClient.from('leaderboard_profiles')
+      .select('nickname,public_visible,share_google_profile')
+      .eq('user_id',user.id).maybeSingle();
+    if(error)throw error;
+    let saved={
+      nickname:data?.nickname||'متسوق'+user.id.replace(/-/g,'').slice(0,12),
+      public_visible:data?.public_visible??true,
+      share_google_profile:data?.share_google_profile??false
+    };
+    visible.checked=saved.public_visible;
+    identity.checked=google&&saved.share_google_profile;
+    visible.disabled=false;
+    identity.disabled=!google;
+    status.textContent=google
+      ?'الإعدادات تُحفظ مباشرة، ولن تتأثر المحفظة أو الطلبات.'
+      :'حسابك غير مرتبط بـGoogle حاليًا؛ تقدر تغيّر ظهور ترتيبك.';
+    async function save(){
+      const nextPublic=visible.checked,nextShare=google&&identity.checked;
+      visible.disabled=true;identity.disabled=true;
+      status.textContent='جاري حفظ التغيير…';
+      try{
+        const {error:saveError}=await supabaseClient.from('leaderboard_profiles').upsert({
+          user_id:user.id,nickname:saved.nickname,
+          public_visible:nextPublic,share_google_profile:nextShare,
+          updated_at:new Date().toISOString()
+        },{onConflict:'user_id'});
+        if(saveError)throw saveError;
+        saved={...saved,public_visible:nextPublic,share_google_profile:nextShare};
+        status.textContent=!nextPublic?'تم إخفاء حسابك من التصنيف.'
+          :nextShare?'اسمك وصورتك ظاهران في التصنيف.'
+          :'ترتيبك ظاهر بدون اسمك وصورتك من Google.';
+        safelyRefreshRanks();
+      }catch(err){
+        console.warn('[rank/account-settings] Save failed',err);
+        visible.checked=saved.public_visible;
+        identity.checked=google&&saved.share_google_profile;
+        status.textContent='تعذر الحفظ. حاول مرة ثانية.';
+      }finally{
+        visible.disabled=false;identity.disabled=!google;
+      }
+    }
+    visible.addEventListener('change',save);
+    identity.addEventListener('change',save);
+  }catch(err){
+    console.warn('[rank/account-settings] Read failed',err);
+    status.textContent='تعذر قراءة إعدادات التصنيف. افتح الإعدادات مرة ثانية.';
+  }
+}
+// Capture before the generic account menu click handler.
+document.addEventListener('click',function(event){
+  const btn=event.target.closest('[data-account-action="ranking-privacy"]');
+  if(!btn)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  void showAccountRankingPrivacy();
+},true);
+
 // Keep the legacy account screen clean; ranking settings live only in the rank card.
 window.renderLeaderboardProfile=async function(){
   const old=document.querySelector('.account-panel #leaderboardProfileForm');

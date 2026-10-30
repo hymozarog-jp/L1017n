@@ -41,6 +41,16 @@ jobs:
           assert.match(premium,/key: "codes"/);
           assert.match(premium,/key: "charge"/);
           assert.match(premium,/key: "offers"/);
+          // Opening PUBG must show all active packs immediately, not an
+          // intermediate codes / account top-up / offers menu.
+          assert.match(premium,/categoryProducts\("all"\)/);
+          assert.match(premium,/setCategory\(root,"all",false\)/);
+          assert.doesNotMatch(premium,/CHOOSE YOUR CATEGORY/);
+          assert.doesNotMatch(premium,/CATEGORIES\.map\(/);
+          assert.match(premium,/supabaseClient\.from\("products"\)/);
+          assert.match(premium,/openPubgAccountCheckout\(selected\)/);
+          assert.match(premium,/p_roblox_username:uid/);
+          assert.match(premium,/create_purchase_order/);
           assert.match(css,/#pubgCategoryPage\.pubg-premium\.visible/);
           assert.match(css,/@media\(max-width:760px\)/);
           console.log('Premium PUBG page references and checkout wiring verified.');

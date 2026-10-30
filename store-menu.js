@@ -195,6 +195,9 @@
         }
         var result=await client.rpc('create_purchase_order',{p_product_id:product.id,p_roblox_username:username});
         if(result.error)throw result.error;
+        if(result.data?.id)void client.functions.invoke('l1017n-purchase-notify',{body:{order_id:result.data.id}})
+          .then(({error})=>{if(error)console.warn('[purchase] Telegram notification pending')})
+          .catch(()=>console.warn('[purchase] Telegram notification unavailable'));
         close();closePage();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(function(){});
         if(typeof renderOrders==='function')Promise.resolve(renderOrders()).catch(function(){});

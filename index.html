@@ -135,14 +135,9 @@
         <button type="button" data-account-action="verify"><span class="account-row-icon">♢</span><b>توثيق رقم الهاتف</b><small>من المعلومات الشخصية</small><span class="account-row-arrow">‹</span></button>
         <button type="button" data-account-action="notifications"><span class="account-row-icon">♧</span><b>الإشعارات والتنبيهات</b><span class="account-row-arrow">‹</span></button>
       </div>
-      <h3 class="account-group-title">التطبيق</h3>
-      <div class="account-settings-list">
-        <button type="button" data-account-action="theme"><span class="account-row-icon">◐</span><b>المظهر</b><small id="accountThemeLabel">داكن</small><span class="account-row-arrow">‹</span></button>
-        <button type="button" data-account-action="language"><span class="account-row-icon">文</span><b>اللغة</b><small>العربية</small><span class="account-row-arrow">‹</span></button>
-        <button type="button" data-account-action="help"><span class="account-row-icon">?</span><b>المساعدة والدعم</b><span class="account-row-arrow">‹</span></button>
-      </div>
       <h3 class="account-group-title">تواصل معنا</h3>
-      <div class="account-settings-list">
+      <div class="account-settings-list account-contact-options">
+        <button type="button" data-account-action="help" aria-label="المساعدة والدعم، متابعة الطلبات والشحن"><span class="account-row-icon account-help-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.7-2.5 2.1-2.5 3.8"/><path d="M12 17h.01" stroke-width="2.7"/></svg></span><span class="account-contact-text"><b>المساعدة والدعم</b><small>طلبات الشحن والمشتريات</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <a class="account-tiktok-link" href="https://www.tiktok.com/@l1017n" target="_blank" rel="noopener noreferrer" aria-label="افتح حساب L1017n على تيك توك"><span class="account-row-icon account-tiktok-icon"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><path fill="#25F4EE" d="M15.5 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3a9.3 9.3 0 0 1-6.5-2.4v7.6c0 4.2-3.2 7.3-7.2 7.3-2 0-3.8-.8-5.1-2.2a7.2 7.2 0 0 1 6.3-11.9v3.5a3.8 3.8 0 0 0-3.9 3.7 3.7 0 0 0 3.7 3.7c2 0 3.4-1.5 3.4-3.8V2z" transform="translate(-1 1)"/><path fill="#FE2C55" d="M16.3 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3a9.3 9.3 0 0 1-6.5-2.4v7.6c0 4.2-3.2 7.3-7.2 7.3-2 0-3.8-.8-5.1-2.2a7.2 7.2 0 0 1 6.3-11.9v3.5a3.8 3.8 0 0 0-3.9 3.7 3.7 0 0 0 3.7 3.7c2 0 3.4-1.5 3.4-3.8V2z" transform="translate(1 -1)"/><path fill="#fff" d="M16 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3A9.3 9.3 0 0 1 16 6.7v7.6c0 4.2-3.2 7.3-7.2 7.3a7.2 7.2 0 0 1 0-14.4v3.5a3.7 3.7 0 1 0 3.7 3.7V2z"/></svg></span><b>تيك توك</b><small>@l1017n</small><span class="account-row-arrow">‹</span></a>
       </div>
       <div id="accountSettingsDetail" class="account-settings-detail hidden" aria-live="polite"></div>
@@ -540,6 +535,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <script src="pubg-premium.js?v=20261029-lux2" defer></script>
 <!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
 <link rel="stylesheet" href="live-mobile.css?v=google-avatar-left1">
+<link rel="stylesheet" href="account-contact.css?v=compact-help1">
 <link rel="stylesheet" href="topup-reference.css?v=libyana-flex1">
 <link rel="stylesheet" href="topup-return.css?v=return-verifying2">
 <script src="live-mobile.js?v=leaderboard-nav4" defer></script>

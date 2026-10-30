@@ -1,8 +1,10 @@
 /**
  * Message487 -> L1017n. Authenticated SMS transport, not payment attestation.
  *
- * IMPORTANT: Never auto-credit wallets here. Receipts are recorded for
- * admin verification, matched by the preexisting, service-only RPC.
+ * Auto-credit only a newly matched, timely, authenticated receipt that
+ * passes the preexisting restricted database RPC (verified account phone,
+ * exact USSD intent, deduplication and guarded small-value limits).
+ * The transport SMS is not carrier attestation; anything else stays pending.
  * Legacy SMS Forwarder/HMAC endpoint remains unchanged.
  */
 import { createClient } from "npm:@supabase/supabase-js@2.75.0";
@@ -56,17 +58,19 @@ function isUUID(s:string):boolean{
 function ack(eventId:string,details:Record<string,unknown>={}){
   return respond({status:"accepted",event_id:eventId,...details});
 }
-async function notifyAdmin(reviewNumber:number, amount:number, phone:string,matched:boolean){
+async function notifyAdmin(reviewNumber:number, amount:number, phone:string,matched:boolean,autoCredited:boolean,reason:string){
   const token=Deno.env.get("TG_BOT_TOKEN")||"";
   const owner=Deno.env.get("TG_ADMIN_ID")||"";
   if(!token||!/^\d{5,15}$/.test(owner))return;
   const message="📩 رسالة تحويل من Message487\n"+
     "💰 "+amount.toFixed(3)+" د.ل\n📱 رقم المحوّل: ***"+phone.slice(-4)+"\n"+
     "🔎 المرجع: "+reviewNumber+"\n"+
-    (matched?"✅ طابق النظام طلب شحن معلقًا.":"⚠️ لم تُطابق أي طلب. راجع الرقم والمبلغ.")+
-    "\n⏳ ليست إثبات دفع رسميًا؛ تأكد من وصول الرصيد لخط المتجر قبل الاعتماد."+
-    "\nللمراجعة: /sms\nبعد التأكد فقط: /smsok "+reviewNumber+
-    "\nللرفض: /smsno "+reviewNumber;
+    (autoCredited?"✅ أضيف الرصيد آليًا بعد فحوصات الطلب والتوثيق ومنع التكرار.":matched
+      ?"⏳ تم مطابقة الطلب لكنه يحتاج مراجعة قبل إضافة الرصيد.":"⚠️ لم تتم مطابقة الطلب مع حساب موثّق.")+
+    (autoCredited?"\n🔒 اعتمد النظام هذا التحويل مرة واحدة.":
+      "\n🔎 سبب المراجعة: "+reason+"\nتأكد من وصول الرصيد فعليًا قبل الاعتماد."+
+      "\nللمراجعة: /sms\nبعد التأكد فقط: /smsok "+reviewNumber+
+      "\nللرفض: /smsno "+reviewNumber);
   try{
     const r=await fetch("https://api.telegram.org/bot"+token+"/sendMessage",{
       method:"POST",
@@ -118,17 +122,30 @@ Deno.serve(async(req:Request)=>{
   if(!url||!key)return respond({error:"database_unconfigured"},503);
   const db=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
   const fp=await fingerprint(secret,deviceId,eventId);
-  // Use a sender label distinct from carrier-authenticated channels to
-  // prevent accidentally qualifying for the legacy automatic-credit RPC.
+  // Dedicated, authenticated receiver provenance. Only our restricted
+  // service-role RPC can decide eligibility; the SMS itself proves no payment.
   const {data,error}=await db.from("sms_topup_receipts").insert({
     fingerprint:fp,provider:"libyana",sender_label:"message487-libyana",
     transfer_phone:receipt.transfer_phone,amount:receipt.amount,
     sms_received_at:new Date(stamp).toISOString()
   }).select("review_number").single();
   if(error?.code==="23505"){
+    // A retried event uses the same fingerprint; never create another receipt.
+    // If a previous execution stopped after insert, safely retry the guarded
+    // auto-approval of THAT receipt, not a new credit.
+    const {data:existing}=await db.from("sms_topup_receipts")
+      .select("review_number").eq("fingerprint",fp).maybeSingle();
     const {error:reMatchError}=await db.rpc("sms_match_pending_receipts");
     if(reMatchError)console.error("message487_duplicate_rematch_failed",reMatchError.code);
-    return ack(eventId,{stored:false,duplicate:true,auto_credited:false});
+    let autoCredited=false;
+    if(existing?.review_number){
+      const {data:retry,error:retryError}=await db.rpc("sms_auto_credit_receipt",{
+        p_review_number:existing.review_number
+      });
+      if(retryError)console.error("message487_duplicate_credit_check_failed",retryError.code);
+      autoCredited=!retryError&&retry?.credited===true;
+    }
+    return ack(eventId,{stored:false,duplicate:true,auto_credited:autoCredited});
   }
   if(error||!data){
     console.error("message487_receipt_insert_error",error?.code||"unknown");
@@ -139,8 +156,23 @@ Deno.serve(async(req:Request)=>{
   const {data:latest}=await db.from("sms_topup_receipts")
     .select("status").eq("review_number",data.review_number).maybeSingle();
   const matched=latest?.status==="matched";
-  await notifyAdmin(data.review_number,receipt.amount,receipt.transfer_phone,matched);
-  // No sms_auto_credit_receipt() call here, no wallet mutations.
-  return ack(eventId,{stored:true,matched,auto_credited:false,review_number:data.review_number,
-    next:"admin_verification_required"});
+  // Only the database decides whether this verified, matched transfer may be
+  // credited without manual action. Anything questionable remains pending.
+  let autoCredited=false;
+  let approvalReason="no_matching_request";
+  if(matched&&!matchError){
+    const {data:decision,error:decisionError}=await db.rpc("sms_auto_credit_receipt",{
+      p_review_number:data.review_number
+    });
+    if(decisionError){
+      console.error("message487_guarded_auto_credit_failed",decisionError.code);
+      approvalReason="server_check_failed";
+    }else{
+      autoCredited=decision?.credited===true;
+      approvalReason=String(decision?.reason||"review_required");
+    }
+  }else if(matchError){approvalReason="matching_failed";}
+  await notifyAdmin(data.review_number,receipt.amount,receipt.transfer_phone,matched,autoCredited,approvalReason);
+  return ack(eventId,{stored:true,matched,auto_credited:autoCredited,review_number:data.review_number,
+    next:autoCredited?"credited":matched?"review_required":"awaiting_matching_request"});
 });

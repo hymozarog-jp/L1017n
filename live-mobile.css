@@ -334,3 +334,33 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
  #llLanding .ll-roblox-parent-cover img{height:105px;width:90%}
  #llLanding .ll-roblox-subcategory small{font-size:8px}
 }
+
+
+/* PUBG is a parent game card, exactly like Roblox; UC packs stay inside it. */
+#llLanding .ll-pubg-parent{
+  border:1px solid #be8e547d;
+  background:linear-gradient(135deg,#35271d,#171c2b 73%);
+  box-shadow:0 14px 38px #27120550;
+}
+#llLanding .ll-pubg-parent-cover{
+  background:radial-gradient(ellipse at 46% 30%,#b68150 0%,#6d482a 55%,#241f2b 100%)!important;
+}
+#llLanding .ll-pubg-parent-cover img{
+  width:min(72%,155px);height:175px;object-fit:contain!important;
+  filter:drop-shadow(0 14px 20px #18101999);
+}
+#llLanding .ll-pubg-parent .ll-roblox-parent-label{color:#f6ca86}
+#llLanding .ll-pubg-parent .ll-roblox-subcategory{
+  border-color:#edbc786d!important;
+  background:linear-gradient(110deg,#b9803926,#ffd88e0c)!important;
+}
+#llLanding .ll-pubg-parent .ll-roblox-subcategory:hover{
+  border-color:#ffd59ca8!important;background:#b9803940!important;
+}
+#llLanding .ll-pubg-parent .ll-roblox-subcategory small{color:#e5bd80}
+@media(max-width:680px){
+  #llLanding .ll-pubg-parent-cover img{height:144px;width:min(92%,135px)}
+}
+@media(max-width:360px){
+  #llLanding .ll-pubg-parent-cover img{height:113px}
+}

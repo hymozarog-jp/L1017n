@@ -158,6 +158,68 @@ async function renderOrders(){
    return '<article class="orders-modern-card" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup':'')+'">'+icon(x)+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">🔑 عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?'✓ ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
  }).join('');
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';
+
+ // Premium orders dashboard; all metrics are derived from the signed-in user's existing order records.
+ const primeCounts={all:orders.length,pending:0,completed:0,refunded:0};
+ orders.forEach(order=>{primeCounts[group(order)]++});
+ const primeIntro='<div class="orders-prime-heading"><div><strong>طلباتك تحت المتابعة</strong><p>حالة كل طلب وتفاصيله في مكان واحد</p></div>'
+  +'<button type="button" class="orders-prime-refresh" data-orders-reload aria-label="تحديث الطلبات"><svg viewBox="0 0 24 24" aria-hidden="true">'
+  +'<path d="M20 11a8 8 0 1 0-2.1 5.4M20 4v7h-7" stroke-linecap="round" stroke-linejoin="round"/></svg>تحديث</button></div>';
+ const primeStats='<div class="orders-prime-stats" aria-label="إحصائيات الطلبات">'
+  +'<div class="orders-prime-stat"><span>كل الطلبات</span><strong>'+primeCounts.all+'</strong></div>'
+  +'<div class="orders-prime-stat"><span>قيد التنفيذ</span><strong>'+primeCounts.pending+'</strong></div>'
+  +'<div class="orders-prime-stat"><span>مكتملة</span><strong>'+primeCounts.completed+'</strong></div></div>';
+ root.insertAdjacentHTML('afterbegin',primeIntro+primeStats);
+ root.querySelectorAll('[data-order-filter]').forEach(button=>{
+   const count=document.createElement('span');count.className='orders-tab-count';
+   count.textContent=String(primeCounts[button.dataset.orderFilter]||0);button.appendChild(count);
+ });
+ [...root.querySelectorAll('.orders-modern-card')].forEach((card,index)=>{
+   const order=orders[index],state=group(order);
+   const help=state==='completed'
+     ?(order.kind==='topup'?'تم اعتماد شحن المحفظة وفق حالة الطلب.':'تم إكمال طلبك وفق الحالة المسجلة.')
+     :state==='refunded'?'تم إغلاق هذا الطلب؛ راجع ملاحظات المتجر إن وجدت.'
+     :order.kind==='topup'?'طلب شحن المحفظة مسجل، وستتغير حالته بعد التحقق من التحويل.'
+     :'تم تسجيل طلب الشراء، وسيتم تحديث حالته بعد التنفيذ.';
+   const stages=state==='refunded'?['تم تسجيل الطلب','قيد المراجعة','أُغلق الطلب']:['تم تسجيل الطلب','قيد المعالجة','مكتمل'];
+   const stepIndex=state==='pending'?1:2;
+   const track='<div class="orders-stage-track" aria-label="مراحل الطلب">'
+      +stages.map((step,i)=>'<span class="'+(i<=stepIndex?'is-on':'')+'">'+step+'</span>').join('')+'</div>';
+   const details=document.createElement('details');details.className='orders-extra-details';
+   details.innerHTML='<summary>عرض تفاصيل الطلب</summary><div class="orders-detail-body">'
+       +'<p class="orders-detail-help">'+help+'</p>'+track
+       +(order.kind==='topup'&&order.transfer_reference?'<div class="orders-detail-ref">'
+        +'<span>مرجع التحويل</span><b>'+escapeHtml(order.transfer_reference)+'</b></div>':'')
+       +'<div class="orders-detail-actions"></div></div>';
+   const actions=details.querySelector('.orders-detail-actions');
+   const id=card.querySelector('.orders-card-id');if(id)actions.appendChild(id);
+   const copy=document.createElement('button');copy.type='button';copy.className='orders-copy-id';
+   copy.dataset.orderCopy=String(order.id);copy.textContent='نسخ رقم الطلب';actions.appendChild(copy);
+   const note=card.querySelector('.orders-card-note');if(note)actions.appendChild(note);
+   const codeButton=card.querySelector('[data-order-code]');
+   if(codeButton){codeButton.textContent='عرض الكود الرقمي';actions.appendChild(codeButton)}
+   card.appendChild(details);
+ });
+ if(!orders.length){
+   const list=root.querySelector('.orders-modern-list');
+   if(list)list.innerHTML='<div class="orders-empty-state"><span class="orders-empty-mark" aria-hidden="true">▤</span>'
+     +'<h3>ما عندكش طلبات حتى الآن</h3><p>أول ما تشحن محفظتك أو تطلب منتج، بتشوف طلبك هنا.</p>'
+     +'<button type="button" data-orders-shop>تصفح المنتجات</button></div>';
+ }else{
+   root.insertAdjacentHTML('beforeend','<div class="orders-prime-note"><span class="orders-note-mark" aria-hidden="true">i</span>'
+      +'<div><strong>كيف تتابع طلبك؟</strong><p>افتح تفاصيل الطلب لمتابعة الحالة أو نسخ رقم الطلب، وعرض الكود والملاحظات إن وجدت.</p></div></div>');
+ }
+ root.querySelector('[data-orders-reload]')?.addEventListener('click',()=>{void renderOrders()});
+ root.querySelector('[data-orders-shop]')?.addEventListener('click',()=>switchView('store'));
+ root.querySelectorAll('[data-order-copy]').forEach(button=>button.addEventListener('click',async()=>{
+   const id=button.dataset.orderCopy;
+   try{
+     if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
+     await navigator.clipboard.writeText(id);button.textContent='تم نسخ الرقم';
+     setTimeout(()=>{if(button.isConnected)button.textContent='نسخ رقم الطلب'},1700);
+   }catch(_){toast('رقم طلبك: '+id)}
+ }));
+
  root.querySelectorAll('[data-order-contact]').forEach(btn=>btn.addEventListener('click',()=>{
    const order=manualOrders.get(btn.dataset.orderContact);
    if(order&&handover)handover.open(order);

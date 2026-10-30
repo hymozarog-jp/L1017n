@@ -11,6 +11,10 @@
 
   let lastFocused = null;
   let currentCategory = "charge";
+  let pubgCatalog = [];
+  let catalogReady = false;
+  let catalogError = "";
+  let catalogRequest = 0;
 
   function safe(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) =>
@@ -20,10 +24,41 @@
     return !!window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
   function allPubgProducts() {
-    const catalog = typeof products === "undefined" ? [] : products;
-    return (Array.isArray(catalog) ? catalog : []).filter((p) =>
-      /pubg|ببجي|بوبجي/i.test([p.game, p.name, p.product_key].join(" "))
-    );
+    // Source of truth: the live products API. Do not depend on the separate
+    // legacy global products array, which can still be empty when PUBG opens.
+    return pubgCatalog;
+  }
+  async function fetchPubgProducts(root) {
+    const requestId=++catalogRequest;
+    catalogReady=false;
+    catalogError="";
+    const refresh=()=> {
+      if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
+      root.querySelectorAll("[data-pubg-category]").forEach(button=>{
+        const count=categoryProducts(button.dataset.pubgCategory).length;
+        const badge=button.querySelector(".pubg-choice-info small");
+        if(badge)badge.textContent=countLabel(count);
+      });
+      setCategory(root,currentCategory,false);
+    };
+    try {
+      if(typeof supabaseClient==="undefined")throw new Error("خدمة المنتجات غير جاهزة");
+      const {data,error}=await supabaseClient.from("products")
+        .select("id,product_key,name,description,game,amount,price,active,sort_order")
+        .eq("game","pubg").eq("active",true).order("sort_order");
+      if(error)throw error;
+      if(requestId!==catalogRequest)return;
+      pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true);
+      catalogReady=true;
+      refresh();
+    } catch(error) {
+      if(requestId!==catalogRequest)return;
+      pubgCatalog=[];
+      catalogReady=true;
+      catalogError="تعذر تحميل باقات ببجي. تأكد من اتصال الإنترنت وأعد المحاولة.";
+      console.warn("[pubg] Live catalog loading failed",error);
+      refresh();
+    }
   }
   function categoryFor(p) {
     const label = [p.name, p.product_key, p.description].join(" ").toLowerCase();
@@ -177,12 +212,20 @@
       + '<span class="pubg-eyebrow">L1017N / ' + safe(match.latin) + '</span>'
       + '<h2>' + safe(match.title) + '</h2>'
       + '<p>' + safe(match.subtitle) + '</p></div><span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
-      + (list.length ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
+      + (!catalogReady
+        ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
+        : catalogError
+        ? '<div class="pubg-empty-state" role="alert"><strong>' + safe(catalogError) + '</strong><button type="button" class="pubg-retry-catalog">إعادة المحاولة</button></div>'
+        : list.length
+        ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
         : '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div>'
           + '<strong>ما فيش باقات متوفرة في القسم حاليًا</strong>'
           + '<p>أول ما نضيف باقات جديدة للمتجر، بتظهر هنا تلقائيًا.</p></div>')
       + '<p class="pubg-purchase-note">التسليم الفوري للأكواد المتاحة فقط، ويتم تأكيد المخزون والمبلغ قبل خصم رصيد المحفظة.</p>';
 
+    panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
+      void fetchPubgProducts(document.getElementById(PAGE_ID));
+    });
     panel.querySelectorAll("[data-pubg-buy]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
@@ -218,6 +261,7 @@
     const root = document.getElementById(PAGE_ID);
     if (!root || !root.classList.contains("visible")) return;
     root.classList.remove("visible");
+    ++catalogRequest; // Ignore any late response after closing.
     root.setAttribute("aria-hidden", "true");
     document.body.classList.remove("pubg-premium-open");
     if (lastFocused && lastFocused.isConnected) lastFocused.focus({ preventScroll: true });
@@ -226,8 +270,10 @@
   function openPremiumPubg() {
     lastFocused = document.activeElement;
     const root = page();
-    const list = allPubgProducts();
-    const featured = list.filter((p) => categoryFor(p) === "codes").length;
+    currentCategory="charge";
+    catalogReady=false;
+    catalogError="";
+    pubgCatalog=[];
     root.className = "pubg-premium visible";
     root.setAttribute("role", "dialog");
     root.setAttribute("aria-modal", "true");
@@ -275,6 +321,7 @@
     });
     const selected = CATEGORIES.some((entry) => entry.key === currentCategory) ? currentCategory : "charge";
     setCategory(root, selected, false);
+    void fetchPubgProducts(root);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }
 

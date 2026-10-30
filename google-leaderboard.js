@@ -238,11 +238,47 @@ function addRankPrivacyToggle(root,user,isVisible) {
 // Google name/photo separately, without changing their wallet or orders.
 async function showAccountRankingPrivacy(){
   const user=await currentUser();
-  const detail=document.getElementById('accountSettingsDetail');
-  if(!user||!detail)return;
+  if(!user)return;
+  let page=document.getElementById('l1017RankPrivacyPage');
+  if(!page){
+    page=document.createElement('section');
+    page.id='l1017RankPrivacyPage';
+    page.setAttribute('role','dialog');
+    page.setAttribute('aria-modal','true');
+    page.setAttribute('aria-label','خصوصية التصنيف');
+    page.innerHTML='<div class="rank-privacy-shell">'+
+      '<header class="rank-privacy-topbar">'+
+        '<button type="button" class="rank-privacy-back" aria-label="إغلاق إعدادات التصنيف">'+
+          '<svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>رجوع</button>'+
+        '<span class="rank-privacy-top-title">إعدادات حسابك</span></header>'+
+      '<section class="rank-privacy-lead">'+
+        '<span class="rank-privacy-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3 8-8 10-5-2-8-5-8-10V7l8-4Z"/><path d="m9 12 2 2 4-4"/></svg></span>'+
+        '<h1>تحكم بظهور حسابك</h1>'+
+        '<p>إنت اللي تختار شنو يبان للناس في ترتيب المتسوقين. غيّر الخيارات في أي وقت، وكل تغيير يتحفظ مباشرة.</p>'+
+      '</section>'+
+      '<div class="rank-privacy-content"></div>'+
+      '<div class="rank-privacy-safety">'+
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3 8-8 10-5-2-8-5-8-10V7l8-4Z"/><path d="M9 12l2 2 4-4"/></svg>'+
+        '<span>رقم هاتفك وبريدك وطلباتك ورصيد محفظتك ما يظهروش في التصنيف. إعدادات الخصوصية ما تأثرش على الشحن أو الشراء.</span>'+
+      '</div></div>';
+    document.body.appendChild(page);
+    page.querySelector('.rank-privacy-back').addEventListener('click',()=>{
+      page.classList.remove('is-visible');
+      document.body.classList.remove('l1017-rank-privacy-open');
+    });
+    page.addEventListener('keydown',event=>{
+      if(event.key==='Escape'){event.preventDefault();page.querySelector('.rank-privacy-back').click();}
+    });
+  }
+  const oldInline=document.getElementById('accountSettingsDetail');
+  if(oldInline){oldInline.classList.add('hidden');oldInline.replaceChildren();}
+  page.classList.add('is-visible');
+  document.body.classList.add('l1017-rank-privacy-open');
+  page.scrollTop=0;
+  const detail=page.querySelector('.rank-privacy-content');
   detail.replaceChildren();
-  detail.classList.remove('hidden');
-  const heading=node('h3','','خصوصية التصنيف');
+  page.querySelector('.rank-privacy-back').focus({preventScroll:true});
+  const heading=node('h3','','اختار اللي يبان في التصنيف');
   const intro=node('p','','في الحسابات الجديدة يظهر الاسم وصورة Google في التصنيف تلقائيًا. تقدر تخفيهما أو تخفي حسابك كاملًا هنا.');
   const controls=node('div','account-rank-privacy-controls');
   function preference(id,title,desc){
@@ -260,7 +296,7 @@ async function showAccountRankingPrivacy(){
   const status=node('p','account-rank-privacy-status','جاري قراءة إعداداتك…');
   status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   detail.append(heading,intro,controls,status);
-  detail.scrollIntoView({behavior:'auto',block:'nearest'});
+
   visible.disabled=true;identity.disabled=true;
   const google=hasGoogle(user);
   try{

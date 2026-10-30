@@ -40,13 +40,15 @@ jobs:
           assert.match(premium,/window\.openInstantCodeCheckout\(selected\.id, selected\.name, selected\.price\)/);
           assert.match(premium,/key: "codes"/);
           assert.match(premium,/key: "charge"/);
-          assert.match(premium,/key: "offers"/);
-          // Opening PUBG must show all active packs immediately, not an
-          // intermediate codes / account top-up / offers menu.
-          assert.match(premium,/categoryProducts\("all"\)/);
-          assert.match(premium,/setCategory\(root,"all",false\)/);
-          assert.doesNotMatch(premium,/CHOOSE YOUR CATEGORY/);
-          assert.doesNotMatch(premium,/CATEGORIES\.map\(/);
+          // PUBG now uses two switchable categories, with 60 UC under Codes.
+          assert.match(premium,/CATEGORIES\\.map\\(/);
+          assert.match(premium,/setCategory\\(root,"codes",false\\)/);
+          assert.match(premium,/product_key \\|\\| ""\\)\\.toLowerCase\\(\\) === "pubg-60"\\) return "codes"/);
+          assert.match(premium,/game-covers\\/pubg-uc\\.svg/);
+          assert.match(premium,/noCodeAvailable/);
+          assert.match(premium,/disabled aria-label="كود 60 UC غير متوفر حاليًا"/);
+          assert.match(premium,/categoryProducts\\(key\\)/);
+          assert.ok(fs.existsSync('game-covers/pubg-uc.svg'));
           assert.match(premium,/supabaseClient\.from\("products"\)/);
           assert.match(premium,/openPubgAccountCheckout\(selected\)/);
           assert.match(premium,/p_roblox_username:uid/);

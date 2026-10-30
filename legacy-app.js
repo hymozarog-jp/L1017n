@@ -498,7 +498,7 @@ setTimeout(refreshAdminAccess,0);
 (function(){
  const root=document.getElementById('accountModern');if(!root)return;
  const detail=document.getElementById('accountSettingsDetail');
- const show=html=>{detail.innerHTML=html;detail.classList.remove('hidden');detail.scrollIntoView({behavior:'smooth',block:'nearest'})};
+ const show=html=>{detail.innerHTML=html;detail.classList.remove('hidden');detail.scrollIntoView({behavior:'auto',block:'nearest'})};
  async function editName(){const user=await currentUser();if(!user)return;const name=prompt('اكتب اسمك الجديد',document.getElementById('accountModernName')?.textContent||'');if(name===null)return;const cleaned=name.trim();if(cleaned.length<2||cleaned.length>60){toast('الاسم لازم يكون بين حرفين و60 حرف');return}const {error}=await supabaseClient.auth.updateUser({data:{full_name:cleaned}});if(error){toast('تعذر حفظ الاسم');return}toast('تم تحديث الاسم');renderAccount()}
  root.addEventListener('click',async function(e){
  const edit=e.target.closest('#accountEditName');if(edit){editName();return}
@@ -517,15 +517,16 @@ setTimeout(refreshAdminAccess,0);
 
 /* Dedicated personal details screen: actual user name and phone, no city */
 async function openPersonalDetails(options={}){
- const user=await currentUser();if(!user)return;
  let page=document.getElementById('personalDetailsPage');
  if(page&&page.classList.contains('visible')){
-   if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'smooth',block:'center'});
+   if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});
    return;
  }
- // The saved phone and SMS widget are rendered by the existing account
- // code and moved here: no second registration system, no bypass of Resala.
- await renderAccount();
+ // Local session is for immediate UI only. Saving data and SMS proof of
+ // phone ownership continue through the server's authorization checks.
+ const {data:localAuth}=await supabaseClient.auth.getSession();
+ const user=localAuth?.session?.user||await currentUser();
+ if(!user)return;
  const meta=user.user_metadata||{},name=meta.full_name||meta.name||user.email?.split('@')[0]||'مستخدم';
  if(!page){page=document.createElement('div');page.id='personalDetailsPage';document.body.appendChild(page)}
  page.innerHTML=
@@ -557,7 +558,23 @@ async function openPersonalDetails(options={}){
  if(gate){gate.classList.remove('hidden');slot.appendChild(gate)}
  if(otp)slot.appendChild(otp);
  if(!gate){
-   slot.innerHTML='<p class="personal-phone-loading">تعذر تحميل رقم الهاتف. أغلق الصفحة وافتحها مرة ثانية.</p>';
+   slot.innerHTML='<p class="personal-phone-loading">جاري تحميل إعدادات رقم الهاتف…</p>';
+   // First account render may still be loading. Do not block this screen.
+   void renderAccount().then(()=>{
+     if(!page.classList.contains('visible'))return;
+     const foundGate=document.getElementById('accountPhoneGate');
+     const foundOtp=document.getElementById('resalaVerifyBox');
+     if(foundGate){
+       foundGate.classList.remove('hidden');
+       slot.replaceChildren(foundGate);
+       if(foundOtp)slot.appendChild(foundOtp);
+       if(typeof window.renderResalaOtp==='function')
+         void Promise.resolve(window.renderResalaOtp(user)).catch(err=>console.warn('[personal/phone] Status refresh failed:',err));
+     }else slot.textContent='تعذر تحميل الهاتف. حاول إغلاق الصفحة وفتحها.';
+   }).catch(err=>{
+     console.warn('[personal/phone] Unable to load account form',err);
+     if(page.classList.contains('visible'))slot.textContent='تعذر تحميل الهاتف. حاول مرة ثانية.';
+   });
  }
  const close=()=>{
    const oldGate=document.getElementById('accountPhoneGate');
@@ -582,11 +599,11 @@ async function openPersonalDetails(options={}){
    document.getElementById('accountModernName').textContent=value;
    document.getElementById('accountModernAvatar').textContent=value.slice(0,1).toUpperCase();
  };
- if(typeof window.renderResalaOtp==='function'){
-   try{await window.renderResalaOtp(user)}
-   catch(e){console.warn('[personal/verify] Unable to refresh status:',e)}
+ if(gate&&typeof window.renderResalaOtp==='function'){
+   // Refresh status without waiting for SMS network response.
+   void Promise.resolve(window.renderResalaOtp(user)).catch(e=>console.warn('[personal/verify] Unable to refresh status:',e));
  }
- if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'smooth',block:'center'});
+ if(options.focusPhone)page.querySelector('#personalPhoneSection')?.scrollIntoView({behavior:'auto',block:'center'});
 }
 window.openPersonalDetails=openPersonalDetails;
 

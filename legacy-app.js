@@ -70,7 +70,7 @@ async function renderOrders(){
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
  const [pr,tr]=await Promise.all([
-  supabaseClient.from('purchase_orders').select('id,product_name,total_amount,roblox_username,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
+  supabaseClient.from('purchase_orders').select('id,product_id,product_name,total_amount,roblox_username,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
   supabaseClient.from('topup_requests').select('id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50)
  ]);
  if(pr.error||tr.error){root.innerHTML='<p class="orders-empty">تعذر تحميل الطلبات. حاول مرة ثانية.</p>';return}
@@ -79,6 +79,18 @@ async function renderOrders(){
   try{receivedCodes=await window.getMyInstantCodes()}catch(_){receivedCodes=[]}
  }
  const codeMap=new Map(receivedCodes.map(x=>[String(x.order_id),String(x.code)]));
+ // Identify item category by the actual linked product, not only item name.
+ // This matters for characters named "قرما" or "لاسيكرت".
+ const handover=window.L1017nManualHandover;
+ const productIds=[...new Set((pr.data||[]).map(x=>x.product_id).filter(Boolean))];
+ const categories=new Map();
+ if(handover&&productIds.length){
+   try{
+     const {data:linked,error:lookupError}=await supabaseClient.from('products')
+       .select('id,game,product_key').in('id',productIds);
+     if(!lookupError)(linked||[]).forEach(p=>categories.set(String(p.id),p));
+   }catch(err){console.warn('[orders/handover] Product lookup failed',err)}
+ }
 
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...(tr.data||[]).map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||x.status==='approved'?'completed':'pending';
@@ -87,8 +99,29 @@ async function renderOrders(){
  const label=x=>x.kind==='topup'?'شحن '+(x.method==='libyana'?'ليبيانا':'المدار الجديد'):(x.product_name||'طلب شراء');
  const date=x=>new Date(x.created_at).toLocaleDateString('en-GB');
  const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مسترجعة</button></div>';
- const cards=orders.map(x=>{const g=group(x),title=escapeHtml(label(x)),amount=Number(x.kind==='topup'?x.amount:x.total_amount||0).toFixed(3),details=escapeHtml(x.kind==='topup'?'شحن محفظة':(x.roblox_username==='DIGITAL_CODE'?'كود رقمي تم تسليمه':(x.roblox_username?'@'+x.roblox_username:'طلب شراء'))),note=x.admin_note?'<p class="orders-card-note">'+escapeHtml(x.admin_note)+'</p>':'';return '<article class="orders-modern-card" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup':'')+'">'+icon(x)+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">🔑 عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?'✓ ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div></article>'}).join('');
+ const manualOrders=new Map();
+ const cards=orders.map(x=>{
+   const g=group(x),title=escapeHtml(label(x)),
+     amount=Number(x.kind==='topup'?x.amount:x.total_amount||0).toFixed(3),
+     details=escapeHtml(x.kind==='topup'?'شحن محفظة':(x.roblox_username==='DIGITAL_CODE'?'كود رقمي تم تسليمه':(x.roblox_username?'@'+x.roblox_username:'طلب شراء'))),
+     note=x.admin_note?'<p class="orders-card-note">'+escapeHtml(x.admin_note)+'</p>':'';
+   const product=categories.get(String(x.product_id))||null;
+   const manual=!!(x.kind==='purchase'&&g==='pending'&&x.roblox_username!=='DIGITAL_CODE'&&handover
+     && (product?handover.isManualProduct(product.game,product.product_key)
+       :/MM2|Murder Mystery 2|steal a brainrot|ماب السرقة/i.test(x.product_name||'')));
+   if(manual)manualOrders.set(String(x.id),{
+     id:x.id,product_name:x.product_name,total_amount:x.total_amount,
+     roblox_username:x.roblox_username,game:product?.game||(/steal a brainrot|ماب السرقة/i.test(x.product_name||'')?'steal-a-brainrot':'mm2'),
+     product_key:product?.product_key||''
+   });
+   const contact=manual?'<div class="orders-manual-handover"><p>لتستلم الغرض داخل الماب، لازم تكلم المتجر عبر واتساب أو تيليجرام وتذكر رقم الطلب.</p><button type="button" data-order-contact="'+escapeHtml(x.id)+'">تواصل لاستلام الغرض</button></div>':'';
+   return '<article class="orders-modern-card" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup':'')+'">'+icon(x)+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">🔑 عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?'✓ ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
+ }).join('');
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';
+ root.querySelectorAll('[data-order-contact]').forEach(btn=>btn.addEventListener('click',()=>{
+   const order=manualOrders.get(btn.dataset.orderContact);
+   if(order&&handover)handover.open(order);
+ }));
  root.querySelectorAll('[data-order-code]').forEach(btn=>btn.addEventListener('click',()=>{
   const code=codeMap.get(btn.dataset.orderCode);
   if(code&&typeof window.showInstantCode==='function')window.showInstantCode('الكود الخاص بطلبك',code);

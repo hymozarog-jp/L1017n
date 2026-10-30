@@ -10,7 +10,7 @@
  const maxAge=12*60*1000;
  const trackedLimit=35;
  let activeUser='',seen=new Set(),hasBaseline=false,polling=false;
- let channel=null,queue=[],isPlaying=false,shown=new Set();
+ let channel=null,queue=[],isPlaying=false,shown=new Set(),pending=new Set();
  const client=()=>typeof supabaseClient!=='undefined'?supabaseClient:null;
  const reduce=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
  const valid=entry=>entry&&entry.id&&Number.isFinite(Number(entry.amount))&&Number(entry.amount)>0&&entry.transaction_type==='topup';
@@ -40,7 +40,7 @@
  function changeUser(user){
    if(user===activeUser)return;
    releaseChannel();activeUser=user||'';queue=[];hasBaseline=false;
-   seen=new Set();shown=new Set();
+   seen=new Set();shown=new Set();pending=new Set();
    if(activeUser){
      try{const old=JSON.parse(sessionStorage.getItem(shownPrefix+activeUser)||'[]');if(Array.isArray(old))old.slice(-trackedLimit).forEach(id=>shown.add(String(id)))}catch(_){}
    }
@@ -165,22 +165,39 @@
    const newCredit=remember(id);
    // A callback for the approved request can announce a credit that an
    // overlapping initial scan silently included in its baseline.
-   if((!newCredit&&!explicitApproved)||shown.has(id))return;
+   if((!newCredit&&!explicitApproved)||shown.has(id)||pending.has(id))return;
    const created=Date.parse(entry.created_at||'');
    if(Number.isFinite(created)&&Date.now()-created>maxAge)return;
-   shown.add(id);saveShown(); // one celebration per approved ledger credit
+   // Mark a credit as shown only after the customer has returned to this tab.
+   // Otherwise an approval arriving during the phone call would be lost.
+   pending.add(id);
    queue.push(entry);
    void drain();
+ }
+ function whenVisible(){
+   if(document.visibilityState!=='hidden')return Promise.resolve();
+   return new Promise(resolve=>{
+     const done=()=>{
+       if(document.visibilityState!=='hidden'){
+         document.removeEventListener('visibilitychange',done);
+         resolve();
+       }
+     };
+     document.addEventListener('visibilitychange',done);
+   });
  }
  async function drain(){
    if(isPlaying||!queue.length)return;
    isPlaying=true;
    while(queue.length){
-     const row=queue.shift();
-     if(document.visibilityState==='hidden')await refreshBalances();
-     else{
-       try{await fly(row)}catch(e){console.warn('[wallet-credit] Animation unavailable',e);await refreshBalances()}
-     }
+     const row=queue[0];
+     await whenVisible();
+     queue.shift();
+     const id=String(row.id);
+     if(activeUser!==row.user_id){pending.delete(id);continue}
+     shown.add(id);saveShown();
+     try{await fly(row)}catch(e){console.warn('[wallet-credit] Animation unavailable',e);await refreshBalances()}
+     pending.delete(id);
    }
    isPlaying=false;
  }

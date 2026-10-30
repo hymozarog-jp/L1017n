@@ -54,8 +54,8 @@ jobs:
           assert(html.includes('order-handover.css?v=manual-delivery2'));
           assert(html.includes('store-menu.js?v=inner-layout6'));
           assert(html.includes('brainrot-store.js?v=steal-inner4'));
-          assert(html.includes('app.js?v=wallet-luxe3'));
-          assert(app.includes('legacy-app.js?v=wallet-luxe3'));
+          assert(html.includes('app.js?v=wallet-row1'));
+          assert(app.includes('legacy-app.js?v=wallet-row1'));
           assert(order.includes("select('id,product_id,product_name"));
           assert(order.includes("handover.isManualProduct(product.game,product.product_key)"));
           assert(order.includes('data-order-contact'));

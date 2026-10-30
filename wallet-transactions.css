@@ -1,0 +1,154 @@
+/* L1017n wallet: one compact line per transaction, expanded details on tap */
+#walletView .wallet-recent-head{
+  margin:12px 2px 9px!important;gap:12px!important;
+}
+#walletView .wallet-recent-head h3{
+  font-size:21px!important;font-weight:850!important;white-space:nowrap!important;
+  line-height:1.45!important;letter-spacing:-.25px;
+}
+#walletView .history-panel{
+  padding:7px!important;
+  border-radius:19px!important;
+  background:linear-gradient(145deg,#121c31,#0d1729)!important;
+}
+#walletView #topupHistory{
+  display:flex;flex-direction:column;gap:0;
+  min-width:0;width:100%;
+}
+#walletView #topupHistory .wallet-transaction{
+  display:block;min-width:0;margin:0;
+  background:transparent;border:0;border-radius:13px;
+  transition:background .18s ease;
+}
+#walletView #topupHistory .wallet-transaction:not(:last-child){
+  border-bottom:1px solid #293a56;
+  border-radius:0;
+}
+#walletView #topupHistory .wallet-transaction[hidden]{display:none!important}
+#walletView #topupHistory .wallet-transaction:hover,
+#walletView #topupHistory .wallet-transaction[open]{
+  background:#ffffff09;
+}
+#walletView #topupHistory .wallet-transaction-line{
+  display:grid;grid-template-columns:38px minmax(0,1fr) auto auto 13px;
+  align-items:center;column-gap:9px;
+  list-style:none;min-width:0;min-height:65px;
+  padding:10px 9px;cursor:pointer;direction:rtl;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#walletView #topupHistory .wallet-transaction-line::-webkit-details-marker{display:none}
+#walletView #topupHistory .wallet-transaction-line::marker{content:""}
+#walletView #topupHistory .wallet-transaction-line:focus-visible{
+  outline:2px solid #c7a9ff;outline-offset:-3px;border-radius:12px;
+}
+#walletView #topupHistory .wallet-tx-icon{
+  display:grid;place-items:center;
+  width:38px;height:38px;flex:0 0 38px;border-radius:12px;
+  background:linear-gradient(130deg,#4d295e,#302045);
+  border:1px solid #a56dc95b;color:#dfb0fb;
+}
+#walletView #topupHistory .wallet-tx-icon.wallet-tx-madar{
+  background:linear-gradient(130deg,#1a5144,#173e39);
+  color:#8af0ce;border-color:#4cbea070;
+}
+#walletView #topupHistory .wallet-tx-icon svg{
+  display:block;width:19px;height:19px;
+}
+#walletView #topupHistory .wallet-tx-name{
+  display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-size:12px;font-weight:830;
+  color:#f4f2ff;line-height:1.45;
+}
+#walletView #topupHistory .wallet-tx-amount{
+  display:flex;align-items:baseline;justify-content:end;gap:3px;
+  white-space:nowrap;font-size:13px;font-weight:850;
+  color:#fff;direction:ltr;font-variant-numeric:tabular-nums;
+}
+#walletView #topupHistory .wallet-tx-amount small{
+  font-size:10px;color:#bdc6dc;font-weight:650;
+}
+#walletView #topupHistory .wallet-tx-badge{
+  display:inline-grid;place-items:center;
+  min-height:26px;padding:4px 9px;
+  white-space:nowrap;border-radius:9px;
+  border:1px solid transparent;font-size:10px;font-weight:850;
+}
+#walletView #topupHistory .wallet-tx-badge.pending{
+  color:#fbd694;background:#e2a9481a;border-color:#c69c5366;
+}
+#walletView #topupHistory .wallet-tx-badge.approved{
+  color:#92ebc3;background:#25b67f22;border-color:#48d09b59;
+}
+#walletView #topupHistory .wallet-tx-badge.rejected{
+  color:#ffb0bd;background:#f66a8020;border-color:#ef71865e;
+}
+#walletView #topupHistory .wallet-tx-chevron{
+  display:block;width:13px;height:13px;color:#97a9ce;
+  transition:transform .18s ease;transform:rotate(180deg);
+}
+#walletView #topupHistory .wallet-transaction[open] .wallet-tx-chevron{
+  transform:rotate(90deg);
+}
+#walletView #topupHistory .wallet-transaction-detail{
+  padding:2px 12px 14px 57px;
+  color:#b7c5e4;
+  animation:walletDetailSlide .18s ease-out;
+}
+#walletView #topupHistory .wallet-tx-detail-row{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:10px;padding:7px 0;font-size:11px;line-height:1.6;
+  border-bottom:1px dashed #334560;
+}
+#walletView #topupHistory .wallet-tx-detail-row span{
+  color:#96a7c5;white-space:nowrap;flex-shrink:0;
+}
+#walletView #topupHistory .wallet-tx-detail-row b{
+  font-size:11px;color:#dee8fa;text-align:end;
+  overflow-wrap:anywhere;word-break:break-word;font-weight:650;
+}
+#walletView #topupHistory .wallet-tx-process{
+  display:flex;align-items:center;gap:7px;padding:13px 0 0;
+  color:#a1acc9;font-size:10px;line-height:1.6;
+}
+#walletView #topupHistory .wallet-tx-process i{
+  flex:1;min-width:12px;height:1px;background:#3d5274;
+}
+#walletView #topupHistory .wallet-tx-process span{
+  white-space:normal;
+}
+#walletView #topupHistory .wallet-tx-process .complete{color:#8de2bc}
+#walletView #topupHistory .wallet-tx-process .current{color:#f5cd88}
+#walletView #topupHistory .wallet-tx-process .done{color:#8de2bc}
+#walletView #topupHistory .wallet-tx-process .stopped{color:#ffabb8}
+#walletView #topupHistory .wallet-tx-admin-note{
+  margin:12px 0 0;padding:10px;border-radius:10px;
+  background:#b98e3720;border:1px solid #c3974d46;
+  color:#efd3a0;font-size:11px;line-height:1.8;
+}
+#walletView #topupHistory .wallet-transactions-empty{
+  margin:0;padding:21px 12px;text-align:center;
+  font-size:12px;color:#9eb0cf;line-height:1.85;
+}
+@keyframes walletDetailSlide{
+  from{opacity:.45;transform:translateY(-5px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:390px){
+  #walletView .history-panel{padding:5px!important}
+  #walletView #topupHistory .wallet-transaction-line{
+    grid-template-columns:34px minmax(0,1fr) auto auto 11px;
+    column-gap:6px;padding:9px 6px;min-height:60px;
+  }
+  #walletView #topupHistory .wallet-tx-icon{
+    width:34px;height:34px;border-radius:11px
+  }
+  #walletView #topupHistory .wallet-tx-name{font-size:11px}
+  #walletView #topupHistory .wallet-tx-amount{font-size:12px}
+  #walletView #topupHistory .wallet-tx-amount small{font-size:9px}
+  #walletView #topupHistory .wallet-tx-badge{padding:4px 6px;font-size:9px}
+  #walletView #topupHistory .wallet-transaction-detail{padding:3px 9px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #walletView #topupHistory .wallet-transaction-detail{animation:none!important}
+ #walletView #topupHistory .wallet-tx-chevron{transition:none!important}
+}

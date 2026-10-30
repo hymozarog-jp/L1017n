@@ -28,8 +28,8 @@ jobs:
           const html=fs.readFileSync('index.html','utf8');
           const app=fs.readFileSync('app.js','utf8');
           assert(html.includes('wallet-transactions.css?v=wallet-row1'));
-          assert(html.includes('app.js?v=wallet-row1'));
-          assert(app.includes('legacy-app.js?v=wallet-row1'));
+          assert(html.includes('app.js?v=profile-glow2'));
+          assert(app.includes('legacy-app.js?v=profile-glow2'));
           assert(legacy.includes('applyWalletTransactionFilter()'));
           assert(legacy.includes("row.dataset.walletStatus!==selected"));
           assert(!legacy.includes("$$('#topupHistory .order-tracking-card')"));

@@ -105,7 +105,34 @@ function focusCard(){
  });
  cards.forEach((c,i)=>c.classList.toggle("is-wallet-visible",i===best));
 }
+const cardEffects=new WeakMap();
+function candyFeedback(card,event,increase){
+ if(!card||reduce()||!card.animate)return;
+ const old=cardEffects.get(card);if(old)old.cancel();
+ const effect=card.animate(increase?[
+  {filter:'brightness(1)'},{filter:'brightness(1.18)',offset:.35},{filter:'brightness(1)'}
+ ]:[{translate:'0 0',scale:'1'},{translate:'0 2px',scale:'.975',offset:.28},{translate:'0 0',scale:'1'}],{duration:increase?850:420,easing:'cubic-bezier(.2,.8,.2,1)'});
+ cardEffects.set(card,effect);
+ card.querySelector('.wallet-candy-ripple')?.remove();
+ const box=card.getBoundingClientRect(),ripple=document.createElement('span');
+ ripple.className='wallet-candy-ripple';ripple.setAttribute('aria-hidden','true');
+ ripple.style.left=(event?.clientX?event.clientX-box.left:box.width/2)+'px';
+ ripple.style.top=(event?.clientY?event.clientY-box.top:box.height/2)+'px';card.appendChild(ripple);
+ const wave=ripple.animate([{transform:'scale(0)',opacity:.55},{transform:'scale(55)',opacity:0}],{duration:700,easing:'ease-out'});
+ wave.onfinish=()=>ripple.remove();
+}
+function bindCandyCard(){
+ const card=document.querySelector('#walletView .wallet-hero');
+ if(!card||card.dataset.candyReady)return;
+ card.dataset.candyReady='1';card.tabIndex=0;card.setAttribute('role','group');card.setAttribute('aria-label','محفظة ليبيانا');
+ const button=document.createElement('button');button.type='button';button.className='wallet-candy-topup';button.textContent='شحن +';
+ button.addEventListener('click',()=>document.getElementById('walletActionTopup')?.click());card.appendChild(button);
+ const gain=document.createElement('span');gain.className='wallet-candy-gain';gain.setAttribute('role','status');gain.setAttribute('aria-live','polite');card.appendChild(gain);
+ card.addEventListener('click',event=>candyFeedback(card,event,false));
+ card.addEventListener('keydown',event=>{if(event.target===card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();candyFeedback(card,null,false)}});
+}
 function activate(){
+ bindCandyCard();
  if(!activated){
   const track=document.querySelector("#walletView .wallet-carousel");
   if(track)track.addEventListener("scroll",()=>{
@@ -124,7 +151,8 @@ function resetBalance(el){
  const previous=requests.get(el);
  if(previous)cancelAnimationFrame(previous);
  requests.delete(el);
- lastBalances.set(el,0);
+ lastBalances.delete(el);
+ const gain=el.closest(".wallet-hero")?.querySelector(".wallet-candy-gain");if(gain)gain.textContent="";
  el.textContent="0.000";
  el.classList.remove("wallet-luxe-tick");
 }
@@ -133,15 +161,23 @@ function animateBalance(el,amount){
  const end=Number(amount);
  if(!Number.isFinite(end))return;
  const previous=lastBalances.get(el);
- const current=previous===undefined?0:previous;
+ const displayed=Number(el.textContent);
+ const current=Number.isFinite(displayed)?displayed:end;
  lastBalances.set(el,end);
  const old=requests.get(el);
  if(old)cancelAnimationFrame(old);
- if(reduce()||Math.abs(end-current)<0.0005){
+ const card=el.closest('.wallet-hero');
+ if(previous!==undefined&&end>previous+0.0005){
+  candyFeedback(card,null,true);
+  const gain=card?.querySelector('.wallet-candy-gain');
+  if(gain){clearTimeout(gain._hideTimer);gain.textContent='+'+(end-previous).toFixed(3)+' د.ل';gain._hideTimer=setTimeout(()=>{gain.textContent=''},2400)}
+ }
+ // Initial account load is a baseline, never a top-up celebration.
+ if(previous===undefined||reduce()||Math.abs(end-current)<0.0005){
   el.textContent=end.toFixed(3);
   return;
  }
- const start=performance.now(),duration=560;
+ const start=performance.now(),duration=780;
  el.classList.remove("wallet-luxe-tick");
  void el.offsetWidth;
  el.classList.add("wallet-luxe-tick");

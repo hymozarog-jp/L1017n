@@ -10,7 +10,7 @@
   ];
 
   let lastFocused = null;
-  let currentCategory = "codes";
+  let currentCategory = "charge";
 
   function safe(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) =>
@@ -63,6 +63,113 @@
       + '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن <span aria-hidden="true">←</span></button></div>'
       + '</article>';
   }
+  // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
+  // The existing secured purchase RPC authorizes and debits the wallet atomically.
+  function openPubgAccountCheckout(product) {
+    const old = document.getElementById("pubgAccountCheckoutOverlay");
+    if (old) old.remove();
+    const overlay = document.createElement("section");
+    overlay.id = "pubgAccountCheckoutOverlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "pubgCheckoutTitle");
+    overlay.dir = "rtl";
+    const amount = Number(product.amount) || 60;
+    const price = Number(product.price) || 0;
+    overlay.innerHTML = '<div class="pubg-account-checkout">' +
+      '<button type="button" class="pubg-account-close" aria-label="إغلاق طلب الشحن">×</button>' +
+      '<div class="pubg-account-icon" aria-hidden="true">UC</div>' +
+      '<span class="pubg-eyebrow">PUBG MOBILE / ACCOUNT TOP-UP</span>' +
+      '<h2 id="pubgCheckoutTitle">شحن ' + Math.trunc(amount) + ' شدة</h2>' +
+      '<p class="pubg-account-explainer">اكتب معرف اللاعب (UID) في ببجي بدقة. بعد الدفع من رصيد محفظتك يوصل الطلب للإدارة، ويتم شحن حسابك بعد تنفيذ الطلب.</p>' +
+      '<div class="pubg-account-summary"><span>السعر</span><strong>' + price.toFixed(2) + ' د.ل</strong></div>' +
+      '<form id="pubgAccountPurchaseForm" novalidate>' +
+        '<label for="pubgAccountUid">معرف لاعب ببجي (UID)</label>' +
+        '<input id="pubgAccountUid" name="pubg_uid" inputmode="numeric" pattern="[0-9]{5,20}" maxlength="20" autocomplete="off" dir="ltr" placeholder="مثلاً: 5123456789" required aria-describedby="pubgUidHint">' +
+        '<small id="pubgUidHint">معرف اللاعب فقط، مش اسمك في اللعبة.</small>' +
+        '<button type="submit" class="pubg-account-confirm">تأكيد طلب الشحن بالمحفظة</button>' +
+        '<p id="pubgAccountStatus" role="status" aria-live="polite"></p>' +
+      '</form>' +
+      '<button type="button" class="pubg-account-orders" hidden>عرض طلباتي</button>' +
+      '<p class="pubg-account-disclaimer">لا يتم تسليم الشدات تلقائيًا، ولا يتم خصم أي رصيد قبل تأكيد الطلب بنجاح.</p>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.body.classList.add("pubg-account-checkout-open");
+    const close = () => {
+      overlay.remove();
+      document.body.classList.remove("pubg-account-checkout-open");
+    };
+    const closeButton=overlay.querySelector(".pubg-account-close");
+    const ordersButton=overlay.querySelector(".pubg-account-orders");
+    closeButton.addEventListener("click", close);
+    overlay.addEventListener("click", event => { if(event.target === overlay)close(); });
+    overlay.addEventListener("keydown", event => {
+      if(event.key === "Escape"){event.preventDefault();close();}
+      if(event.key === "Tab"){
+        const focusable=[...overlay.querySelectorAll('button:not([disabled]):not([hidden]),input:not([disabled])')].filter(el=>el.getClientRects().length>0);
+        if(!focusable.length)return;
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      }
+    });
+    ordersButton.addEventListener("click",()=>{
+      close();closePremiumPubg();
+      if(typeof switchView === "function")switchView("orders");
+    });
+    const form=overlay.querySelector("#pubgAccountPurchaseForm");
+    const submit=form.querySelector('button[type="submit"]');
+    const status=overlay.querySelector("#pubgAccountStatus");
+    const input=form.querySelector("#pubgAccountUid");
+    form.addEventListener("submit",async event=>{
+      event.preventDefault();
+      if(submit.disabled)return;
+      const uid=input.value.trim();
+      if(!/^[0-9]{5,20}$/.test(uid)){
+        status.textContent="اكتب معرف اللاعب UID بالأرقام (من 5 إلى 20 رقم).";
+        input.focus();return;
+      }
+      submit.disabled=true;
+      status.textContent="جاري التحقق من حسابك ورصيد المحفظة…";
+      try{
+        if(typeof supabaseClient === "undefined")throw new Error("تعذر الاتصال بقاعدة البيانات.");
+        const {data:auth,error:authError}=await supabaseClient.auth.getUser();
+        if(authError||!auth?.user)throw new Error("سجّل دخولك أولاً لإكمال الشراء.");
+        if(typeof window.ensurePurchasePhone !== "function")
+          throw new Error("خدمة توثيق الهاتف غير جاهزة. حدّث الصفحة وحاول مجددًا.");
+        if(!await window.ensurePurchasePhone()){
+          throw new Error("لازم توثّق رقم هاتفك من «حسابي» قبل الدفع.");
+        }
+        const {data:order,error}=await supabaseClient.rpc("create_purchase_order",{
+          p_product_id:product.id,p_roblox_username:uid
+        });
+        if(error)throw error;
+        if(!order?.id)throw new Error("لم نستلم رقم الطلب من المتجر.");
+        status.textContent="✅ تم دفع الطلب بنجاح. شحن الشدات بانتظار تنفيذ الإدارة. تابع الحالة من طلباتي.";
+        form.querySelectorAll("input").forEach(el=>el.disabled=true);
+        ordersButton.hidden=false;
+        submit.textContent="تم إنشاء الطلب";
+        // Manual order, not a digital-code delivery. Existing Telegram admin
+        // notification is best-effort and not required to record the order.
+        void supabaseClient.functions.invoke("l1017n-purchase-notify",{body:{order_id:order.id}})
+          .catch(err=>console.warn("[pubg/order] Telegram notification unavailable",err));
+        if(typeof loadProducts==="function")void loadProducts();
+        if(typeof renderWallet==="function")void renderWallet();
+        if(typeof renderOrders==="function")void renderOrders();
+      }catch(error){
+        console.warn("[pubg/order]",error);
+        const message=String(error?.message||"تعذر إنشاء الطلب");
+        status.textContent=/insufficient_balance/i.test(message)
+          ?"رصيد المحفظة غير كافٍ. اشحن المحفظة وحاول مرة أخرى."
+          :/product_not_available/i.test(message)?"الباقة غير متوفرة حاليًا."
+          :/invalid_roblox_username/i.test(message)?"معرف اللاعب غير صحيح. تأكد من UID."
+          :message;
+        submit.disabled=false;
+      }
+    });
+    input.focus({preventScroll:true});
+  }
+
   function paintOffers(panel, key) {
     const match = CATEGORIES.find((item) => item.key === key) || CATEGORIES[0];
     const list = categoryProducts(match.key);
@@ -80,10 +187,12 @@
       button.addEventListener("click", () => {
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
         if (!selected) return;
-        if (typeof window.openInstantCodeCheckout === "function") {
+        if (categoryFor(selected) !== "codes") {
+          openPubgAccountCheckout(selected);
+        } else if (typeof window.openInstantCodeCheckout === "function") {
           window.openInstantCodeCheckout(selected.id, selected.name, selected.price);
         } else {
-          window.alert("خدمة الشراء غير جاهزة الآن. حدّث الصفحة وحاول مرة أخرى.");
+          window.alert("خدمة شراء الأكواد غير جاهزة حاليًا. حدّث الصفحة وحاول مرة أخرى.");
         }
       });
     });
@@ -164,7 +273,7 @@
     root.querySelectorAll("[data-pubg-category]").forEach((button) => {
       button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));
     });
-    const selected = CATEGORIES.some((entry) => entry.key === currentCategory) ? currentCategory : "codes";
+    const selected = CATEGORIES.some((entry) => entry.key === currentCategory) ? currentCategory : "charge";
     setCategory(root, selected, false);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }

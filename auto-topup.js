@@ -8,7 +8,22 @@
   const host=()=>document.getElementById('transferInstructions');
   const amountInput=()=>document.getElementById('topupAmount');
   let chosen=false, generation=0, currentRequest=null, currentAmount=null;
-  let watcher=null, watcherCount=0;
+  let watcher=null, watcherId=null, refreshBusy=false;
+  const VERIFY_SESSION_KEY='l1017n-active-topup-verify-v2';
+  function rememberVerifier(id,amount){
+    try{sessionStorage.setItem(VERIFY_SESSION_KEY,JSON.stringify({id:String(id),amount:Number(amount),savedAt:Date.now()}))}catch(_){}
+  }
+  function forgetVerifier(){try{sessionStorage.removeItem(VERIFY_SESSION_KEY)}catch(_){}}
+  function restoreVerifier(){
+    if(document.getElementById('tpReturnVerify'))return;
+    try{
+      const saved=JSON.parse(sessionStorage.getItem(VERIFY_SESSION_KEY)||'null');
+      if(!saved)return;
+      if(!/^[0-9a-f-]{36}$/i.test(String(saved.id))||!Number.isFinite(saved.savedAt)
+        ||Date.now()-saved.savedAt>24*60*60*1000){forgetVerifier();return}
+      showVerifier(saved.id,saved.amount);
+    }catch(_){forgetVerifier()}
+  }
 
   const style=document.createElement('style');
   style.id='auto-topup-css';
@@ -39,7 +54,7 @@
     root.replaceChildren(msg);
     return root;
   }
-  function stopWatcher(){if(watcher){clearInterval(watcher);watcher=null}watcherCount=0}
+  function stopWatcher(){if(watcher){clearInterval(watcher);watcher=null}watcherId=null;refreshBusy=false}
   function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
@@ -79,6 +94,8 @@
   function closeVerifier(){
     document.getElementById('tpReturnVerify')?.remove();
     document.body.classList.remove('tpv-open');
+    stopWatcher();
+    forgetVerifier();
   }
   function updateVerifier(id,data,networkError){
     const root=document.getElementById('tpReturnVerify');
@@ -96,9 +113,10 @@
     }
     if(data?.status==='approved'){
       root.dataset.state='approved';
-      title.textContent='تم اعتماد الشحن!';
-      desc.textContent='أكد النظام اعتماد الطلب وإضافة المبلغ لمحفظتك بنجاح.';
-      foot.textContent='يمكنك إغلاق النافذة أو متابعة طلباتك.';
+      title.textContent='تم الشحن ✓';
+      desc.textContent='تم قبول طلبك من الإدارة وإضافة مبلغ الشحن إلى محفظتك بنجاح.';
+      foot.textContent='صار الرصيد متاحًا في محفظتك. يمكنك متابعة التسوق.';
+      forgetVerifier();
       clearDialHandoff();
       return;
     }
@@ -107,15 +125,16 @@
       title.textContent='لم يتم اعتماد الشحن';
       desc.textContent='لم تتم الموافقة على الطلب. راجع حالة الطلب أو تواصل مع الإدارة.';
       foot.textContent='لا تكرر التحويل قبل معرفة سبب الرفض.';
+      forgetVerifier();
       clearDialHandoff();
       return;
     }
     root.dataset.state='pending';
     title.textContent='جاري التحقق من التحويل';
     if(data?.sms_status==='matched'){
-      desc.textContent='وصل إشعار مطابق لرقمك ومبلغ طلبك. ننتظر الاعتماد النهائي قبل إضافة الرصيد.';
+      desc.textContent='وصل إشعار تحويل مطابق لطلبك. جاري التحقق وننتظر موافقة إدارة المتجر.';
     }else{
-      desc.textContent='ننتظر وصول إشعار التحويل ومطابقته مع طلبك. قد يستغرق ذلك قليلًا.';
+      desc.textContent='ننتظر مطابقة إشعار تحويل ليبيانا وموافقة الإدارة. راح تظهر نتيجة الشحن هنا تلقائيًا.';
     }
     foot.textContent='الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.';
   }
@@ -169,6 +188,7 @@
     root.querySelector('.tpv-title')?.focus({preventScroll:true});
     currentRequest=String(id);
     currentAmount=Number(amount);
+    rememberVerifier(id,amount);
     watch(id);
   }
   function maybeShowReturnVerify(){
@@ -192,11 +212,12 @@
   });
   window.addEventListener('focus',()=>setTimeout(maybeShowReturnVerify,270));
   window.addEventListener('pageshow',()=>setTimeout(maybeShowReturnVerify,430));
-  // The browser may reload the page after handing off to Phone.
-  setTimeout(maybeShowReturnVerify,700);
+  // Restore an active verification view after a browser reload; permissions
+  // are checked again server-side for the logged-in customer.
+  setTimeout(()=>{maybeShowReturnVerify();if(!document.getElementById('tpReturnVerify'))restoreVerifier()},1150);
 
   async function refreshRequest(id){
-    if(!id||!host())return;
+    if(!id)return;
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db)return;
     try{
@@ -206,14 +227,19 @@
       if(currentRequest!==String(id))return;
       updateVerifier(id,data);
       if(data?.status==='approved'){
-        if(status)status.textContent='✅ تم اعتماد التحويل وإضافة الرصيد لمحفظتك.';
+        if(status)status.textContent='✅ تم الشحن! أُضيف الرصيد إلى محفظتك.';
         stopWatcher();chosen=false;
+        forgetVerifier();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(()=>{});
         return;
       }
       if(data?.status==='rejected'){
-        if(status)status.textContent='⛔ لم يُعتمد التحويل. تواصل مع إدارة المتجر مع رقم الطلب.';
-        stopWatcher();return;
+        if(status)status.textContent='⛔ تم رفض طلب الشحن. تواصل مع إدارة المتجر مع رقم الطلب.';
+        stopWatcher();forgetVerifier();return;
+      }
+      if(data?.status==='not_found'){
+        if(status)status.textContent='تعذر العثور على طلب الشحن في حسابك.';
+        closeVerifier();return;
       }
       if(data?.sms_status==='matched'){
         if(status)status.textContent='📩 البوت طابق إشعار التحويل. جاري انتظار نتيجة الفحص الآلي؛ ما تكررّش التحويل. إذا احتاجت العملية مراجعة، تظهر حالتها هنا.';
@@ -227,12 +253,20 @@
   }
   function watch(id){
     stopWatcher();
-    refreshRequest(id);
+    watcherId=String(id);
+    void refreshRequest(id);
+    // No five-minute cutoff: the customer sees the decision when the
+    // administrator reviews the request, even if that takes longer.
     watcher=setInterval(()=>{
-      if(++watcherCount>45){stopWatcher();return}
-      if(document.visibilityState==='visible')refreshRequest(id);
-    },7000);
+      if(watcherId===String(id)&&document.visibilityState==='visible'&&!refreshBusy){
+        refreshBusy=true;
+        Promise.resolve(refreshRequest(id)).finally(()=>{refreshBusy=false});
+      }
+    },8000);
   }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'&&watcherId&&!refreshBusy)void refreshRequest(watcherId);
+  });
   async function render(){
     const root=host(), amountEl=amountInput();
     if(!root||!amountEl)return;
@@ -292,7 +326,7 @@
         const status=el('div','auto-topup-status','⏳ بانتظار تأكيد رصيد المحفظة.');
         status.id='ussdTransferStatus';
         current?.append(status);
-        watch(intent.request_id);
+        showVerifier(intent.request_id,amount);
         return;
       }
       const area=show('ok','تم تجهيز طلب شحن '+amount+' د.ل',
@@ -317,7 +351,14 @@
         catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
       panel.append(copy);
-      const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. بعد الاتصال، أكد التحويل كما تطلب ليبيانا.');
+      const confirm=el('button','btn btn-primary full-width','حوّلت الرصيد — متابعة التحقق');
+      confirm.type='button';
+      confirm.addEventListener('click',()=>{
+        clearDialHandoff();
+        showVerifier(intent.request_id,amount);
+      });
+      panel.append(confirm);
+      const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. بعد تأكيد التحويل، اضغط «حوّلت الرصيد — متابعة التحقق».');
       status.id='ussdTransferStatus';
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
       refresh.type='button';refresh.addEventListener('click',()=>{

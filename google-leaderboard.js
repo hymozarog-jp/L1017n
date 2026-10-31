@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-/* Google leaderboard: public rankings, explicit consent for name/photo. */
+/* Unified Google and email leaderboard. Name/photo remain customer controlled. */
 
 function hasGoogle(user){
   return !!user && (user.app_metadata?.provider==='google' ||
@@ -11,7 +11,8 @@ function photoUrl(value){
   try{
     const u=new URL(String(value||''));
     const h=u.hostname.toLowerCase();
-    if(u.protocol==='https:'&&(h==='googleusercontent.com'||h.endsWith('.googleusercontent.com')||h==='ggpht.com'||h.endsWith('.ggpht.com')))return u.href;
+    if(u.protocol==='https:'&&(h==='googleusercontent.com'||h.endsWith('.googleusercontent.com')||h==='ggpht.com'||h.endsWith('.ggpht.com')||
+        (h==='cmtxsjlehjworqypbxjz.supabase.co' && u.pathname.startsWith('/storage/v1/object/public/gamebox-avatars/'))))return u.href;
   }catch(e){}
   return '';
 }
@@ -121,7 +122,7 @@ async function renderOwnRank(){
   const top=node('div','lb-self-top');
   const who=node('div','lb-self-user');
   const avatar=node('span','lb-self-avatar',realName.slice(0,1).toUpperCase());
-  attachImage(avatar,meta.avatar_url||meta.picture,'صورتك في Google');
+  attachImage(avatar,meta.avatar_url||meta.picture,'صورتك الشخصية');
   who.appendChild(avatar);
   const whoText=node('span','lb-self-name');
   whoText.appendChild(node('strong','',realName));
@@ -199,9 +200,7 @@ function addRankPrivacyToggle(root,user,isVisible) {
   toggle.setAttribute('aria-label','إخفاء حسابي من التصنيف');
   row.append(title,toggle);
   root.appendChild(row);
-  root.appendChild(node('p','lb-hide-notice',hasGoogle(user)
-    ? 'تقدر تتحكم في ظهور اسمك وصورتك من «حسابي ← خصوصية التصنيف».'
-    : 'ترتيبك ومجموع الشحن يظهران فقط عندما تختار المشاركة؛ البريد والهاتف خاصّان.'));
+  root.appendChild(node('p','lb-hide-notice','تقدر تتحكم في ظهور اسمك وصورتك من «حسابي ← خصوصية التصنيف»؛ البريد والهاتف خاصّان.'));
   const status=node('p','lb-hide-status');
   status.setAttribute('role','status');
   status.setAttribute('aria-live','polite');
@@ -279,7 +278,7 @@ async function showAccountRankingPrivacy(){
   detail.replaceChildren();
   page.querySelector('.rank-privacy-back').focus({preventScroll:true});
   const heading=node('h3','','اختار اللي يبان في التصنيف');
-  const intro=node('p','','في الحسابات الجديدة يظهر الاسم وصورة Google في التصنيف تلقائيًا. تقدر تخفيهما أو تخفي حسابك كاملًا هنا.');
+  const intro=node('p','','تقدر تعرض اسمك وصورتك الشخصية في التصنيف سواء سجلت بالبريد أو Google. ويمكنك إخفاؤهما أو إخفاء ترتيبك بالكامل.');
   const controls=node('div','account-rank-privacy-controls');
   function preference(id,title,desc){
     const label=node('label','account-rank-privacy-option');
@@ -292,13 +291,12 @@ async function showAccountRankingPrivacy(){
     return input;
   }
   const visible=preference('accountRankPublic','إظهار حسابي في التصنيف','يعرض ترتيبي وإجمالي الشحن للزوار');
-  const identity=preference('accountRankGoogle','إظهار اسمي وصورتي من Google','عند إيقافها يظهر اسمي وصورتي بشكل مجهول في التصنيف');
+  const identity=preference('accountRankGoogle','إظهار اسمي وصورتي الشخصية','عند إيقافها يبقى ترتيبك ظاهرًا بصورة واسم مجهولين');
   const status=node('p','account-rank-privacy-status','جاري قراءة إعداداتك…');
   status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   detail.append(heading,intro,controls,status);
 
   visible.disabled=true;identity.disabled=true;
-  const google=hasGoogle(user);
   try{
     const {data,error}=await supabaseClient.from('leaderboard_profiles')
       .select('nickname,public_visible,share_google_profile')
@@ -310,14 +308,12 @@ async function showAccountRankingPrivacy(){
       share_google_profile:data?.share_google_profile??false
     };
     visible.checked=saved.public_visible;
-    identity.checked=google&&saved.share_google_profile;
+    identity.checked=saved.share_google_profile;
     visible.disabled=false;
-    identity.disabled=!google;
-    status.textContent=google
-      ?'الإعدادات تُحفظ مباشرة، ولن تتأثر المحفظة أو الطلبات.'
-      :'حسابك غير مرتبط بـGoogle حاليًا؛ تقدر تغيّر ظهور ترتيبك.';
+    identity.disabled=false;
+    status.textContent='الإعدادات تُحفظ مباشرة لجميع أنواع الحسابات، ولن تتأثر المحفظة أو الطلبات.';
     async function save(){
-      const nextPublic=visible.checked,nextShare=google&&identity.checked;
+      const nextPublic=visible.checked,nextShare=identity.checked;
       visible.disabled=true;identity.disabled=true;
       status.textContent='جاري حفظ التغيير…';
       try{
@@ -330,15 +326,15 @@ async function showAccountRankingPrivacy(){
         saved={...saved,public_visible:nextPublic,share_google_profile:nextShare};
         status.textContent=!nextPublic?'تم إخفاء حسابك من التصنيف.'
           :nextShare?'اسمك وصورتك ظاهران في التصنيف.'
-          :'ترتيبك ظاهر بدون اسمك وصورتك من Google.';
+          :'ترتيبك ظاهر بدون اسمك وصورتك الشخصية.';
         safelyRefreshRanks();
       }catch(err){
         console.warn('[rank/account-settings] Save failed',err);
         visible.checked=saved.public_visible;
-        identity.checked=google&&saved.share_google_profile;
+        identity.checked=saved.share_google_profile;
         status.textContent='تعذر الحفظ. حاول مرة ثانية.';
       }finally{
-        visible.disabled=false;identity.disabled=!google;
+        visible.disabled=false;identity.disabled=false;
       }
     }
     visible.addEventListener('change',save);

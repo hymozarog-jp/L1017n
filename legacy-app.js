@@ -238,128 +238,159 @@ async function renderOrders(){
    Uses active catalog prices; an arbitrary input is an estimate, never a checkout SKU.
    Exact checkout still calls the existing server-validated product RPC. */
 function mountRobuxQuantityCalculator(modal,robux){
- // Only listed products are purchasable; the price must always come from the live catalog.
+ // The customer can enter ANY integer Robux quantity, not only catalog packages.
+ // The server computes and validates the authoritative price and checks inventory.
  const offers=robux.map(p=>({id:String(p.id),amount:Number(p.amount),price:Number(p.price)}))
    .filter(p=>Number.isSafeInteger(p.amount)&&p.amount>0&&Number.isFinite(p.price)&&p.price>0)
    .sort((a,b)=>a.amount-b.amount||a.price-b.price);
- const uniqueOffers=offers.filter((offer,index)=>offers.findIndex(x=>x.amount===offer.amount)===index);
  const anchor=modal.querySelector('.robux-reference-section');
- if(!anchor||!uniqueOffers.length)return;
- const firstAmount=uniqueOffers[0].amount;
+ if(!anchor||!offers.length)return;
+ const firstAmount=Math.min(100,Math.max(1,robuxAvailable));
  const section=document.createElement('section');
  section.className='robux-quantity-calculator';
  section.setAttribute('aria-label','اختيار كمية الروبوكس');
- section.innerHTML='<div class="rqc-heading"><div><small>GAMEBOXLY · ROBUX</small><h2>اختار كمية الروبوكس</h2></div><span class="rqc-icon" aria-hidden="true">◆</span></div>'
-  +'<label class="rqc-label" for="robuxCustomQuantity">الكمية اللي تبيها</label>'
-  +'<div class="rqc-picker">'
-  +'<button class="rqc-step rqc-plus" type="button" aria-label="زيادة الروبوكس">+</button>'
-  +'<div class="rqc-input-box"><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="7" autocomplete="off" value="'+String(firstAmount)+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب الكمية"><span>Robux</span></div>'
-  +'<button class="rqc-step rqc-minus" type="button" aria-label="تقليل الروبوكس">−</button>'
-  +'</div>'
-  +'<div class="rqc-quick-label">أو اختار العدد مباشرة</div>'
-  +'<div class="rqc-quick-amounts" role="group" aria-label="كميات الروبوكس المتاحة">'
-  +uniqueOffers.map(x=>'<button class="rqc-amount-chip" type="button" data-rqc-amount="'+x.amount+'">'+x.amount+'</button>').join('')
-  +'</div>'
-  +'<div class="rqc-total"><span>السعر الإجمالي</span><strong id="robuxQuantityPrice" dir="ltr">—</strong></div>'
-  +'<p id="robuxQuantityFeedback" class="rqc-feedback" role="status" aria-live="polite"></p>'
-  +'<button type="button" class="rqc-select" disabled>متابعة للشراء</button>';
+ section.innerHTML='<div class="rqc-heading"><div><small>GAMEBOXLY · ROBUX</small><h2>اختار أي كمية روبوكس</h2></div><span class="rqc-icon" aria-hidden="true">◆</span></div>'
+   +'<label class="rqc-label" for="robuxCustomQuantity">اكتب العدد اللي تبيه، حتى لو مش موجود في الباقات</label>'
+   +'<div class="rqc-picker"><button class="rqc-step rqc-plus" type="button" aria-label="زيادة روبوكس واحد">+</button>'
+   +'<div class="rqc-input-box"><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" value="'+firstAmount+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب العدد"><span>Robux</span></div>'
+   +'<button class="rqc-step rqc-minus" type="button" aria-label="تقليل روبوكس واحد">−</button></div>'
+   +'<div class="rqc-quick-label">اختيارات سريعة (مو إجبارية)</div>'
+   +'<div class="rqc-quick-amounts" role="group" aria-label="اختيارات روبوكس سريعة">'
+   +[100,200,300,500,750,1000].map(q=>'<button class="rqc-amount-chip" type="button" data-rqc-amount="'+q+'">'+q+'</button>').join('')
+   +'</div>'
+   +'<div class="rqc-total"><span>سعر '+ '<b id="robuxQuantitySelected">'+firstAmount+'</b>'+' روبوكس</span><strong id="robuxQuantityPrice" dir="ltr">—</strong></div>'
+   +'<p id="robuxQuantityFeedback" class="rqc-feedback" aria-live="polite"></p>'
+   +'<button type="button" class="rqc-select" disabled>جاري حساب السعر…</button>';
  anchor.before(section);
  const input=section.querySelector('#robuxCustomQuantity');
- const price=section.querySelector('#robuxQuantityPrice');
+ const priceEl=section.querySelector('#robuxQuantityPrice');
+ const selectedEl=section.querySelector('#robuxQuantitySelected');
  const feedback=section.querySelector('#robuxQuantityFeedback');
  const button=section.querySelector('.rqc-select');
  const plus=section.querySelector('.rqc-plus');
  const minus=section.querySelector('.rqc-minus');
  const chips=[...section.querySelectorAll('[data-rqc-amount]')];
  const money=n=>Number(n).toFixed(2)+' د.ل';
- const normalizedDigits=value=>String(value).replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+ const normalize=value=>String(value).replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
    .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).trim();
- const tileFor=x=>[...modal.querySelectorAll('.robux-package[data-robux]')]
-   .find(el=>el.dataset.robux===x.id);
- const available=()=>uniqueOffers.filter(x=>{
-   const tile=tileFor(x);
-   return tile&&!tile.disabled;
- });
- function clearSelected(){
+ let quoteSeq=0,quoteTimer=null,confirmed=null;
+ const maxQuantity=()=>Math.min(100000,Math.max(0,Number(robuxAvailable)||0));
+ function clearPrevious(){
    modal.querySelectorAll('.robux-package.selected').forEach(tile=>{
      tile.classList.remove('selected');
-     const mark=tile.querySelector('.robux-plus');
-     if(mark)mark.textContent='＋';
+     const plusIcon=tile.querySelector('.robux-plus');
+     if(plusIcon)plusIcon.textContent='＋';
    });
    modal.querySelector('.robux-checkout-bar')?.classList.remove('visible');
  }
- function setQuantity(q){
+ function chooseQuantity(q){
    input.value=String(q);
-   clearSelected();
-   render();
+   clearPrevious();
+   update();
  }
- function render(){
-   const typed=normalizedDigits(input.value);
-   const isNumber=/^[0-9]{1,7}$/.test(typed);
-   const q=isNumber?Number(typed):NaN;
-   const exact=Number.isSafeInteger(q)?uniqueOffers.find(x=>x.amount===q):null;
-   const stocked=available();
-   const active=exact&&stocked.find(x=>x.amount===q);
-   const next=stocked.find(x=>x.amount>q);
-   const previous=stocked.slice().reverse().find(x=>x.amount<q);
-   plus.disabled=!stocked.length||(Number.isFinite(q)?!next:false);
-   minus.disabled=!stocked.length||(Number.isFinite(q)?!previous:false);
+ function localEstimate(quantity){
+   if(!Number.isSafeInteger(quantity)||quantity<1||!offers.length)return null;
+   let lower=offers.filter(p=>p.amount<=quantity).slice(-1)[0];
+   let upper=offers.find(p=>p.amount>=quantity);
+   if(!lower)lower=upper;
+   if(!upper)upper=lower;
+   if(!lower||!upper)return null;
+   const result=lower.amount===upper.amount
+     ?lower.price*quantity/lower.amount
+     :lower.price+(upper.price-lower.price)*(quantity-lower.amount)/(upper.amount-lower.amount);
+   return Math.ceil(result*100-1e-8)/100;
+ }
+ function update(){
+   const seq=++quoteSeq;
+   if(quoteTimer)clearTimeout(quoteTimer);
+   confirmed=null;
+   const typed=normalize(input.value),valid=/^[0-9]{1,6}$/.test(typed);
+   const quantity=valid?Number(typed):NaN;
+   const limit=maxQuantity();
+   const allowed=Number.isSafeInteger(quantity)&&quantity>=1&&quantity<=limit;
+   selectedEl.textContent=valid?String(quantity):'—';
+   plus.disabled=!Number.isSafeInteger(quantity)||quantity>=limit;
+   minus.disabled=!Number.isSafeInteger(quantity)||quantity<=1;
    chips.forEach(chip=>{
-     const amount=Number(chip.dataset.rqcAmount);
-     const offer=uniqueOffers.find(x=>x.amount===amount);
-     const inStock=offer&&stocked.some(x=>x.id===offer.id);
-     chip.disabled=!inStock;
-     chip.classList.toggle('is-selected',q===amount);
-     chip.setAttribute('aria-pressed',String(q===amount));
-     chip.title=inStock?money(offer.price):'غير متوفر حاليًا';
+     const n=Number(chip.dataset.rqcAmount);
+     chip.disabled=n>limit;
+     chip.classList.toggle('is-selected',quantity===n);
+     chip.setAttribute('aria-pressed',String(quantity===n));
    });
-   price.textContent=exact?money(exact.price):'—';
-   button.disabled=!active;
-   button.dataset.productId=active?active.id:'';
-   button.textContent=active?'متابعة لشراء '+q+' روبوكس':'اختار كمية متوفرة للشراء';
-   if(!typed){
-     feedback.textContent='اكتب عدد الروبوكس أو اختاره من الأرقام فوق.';
-   }else if(!isNumber||!Number.isSafeInteger(q)||q<=0){
-     feedback.textContent='اكتب عدد روبوكس صحيح بالأرقام.';
-   }else if(!exact){
-     const lower=uniqueOffers.slice().reverse().find(x=>x.amount<q);
-     const higher=uniqueOffers.find(x=>x.amount>q);
-     const options=[lower,higher].filter(Boolean).map(x=>x.amount).join(' أو ');
-     feedback.textContent='العدد '+q+' مش ضمن باقات المتجر. اختار '+(options||'إحدى الكميات المتاحة')+' روبوكس.';
-   }else if(!active){
-     feedback.textContent='باقة '+q+' روبوكس غير متوفرة حاليًا؛ اختار عدد ثاني من الكميات المتاحة.';
-   }else{
-     feedback.textContent='السعر مأخوذ من باقات متجرك. راجع العدد ثم تابع للشراء.';
+   priceEl.textContent='—';
+   button.disabled=true;
+   button.textContent='متابعة للشراء';
+   button.dataset.customQuantity='';
+   if(!typed){feedback.textContent='اكتب أي كمية روبوكس تبيها.';return;}
+   if(!valid||!Number.isSafeInteger(quantity)||quantity<=0){
+     feedback.textContent='لازم تكتب عدد صحيح من روبوكس.';return;
    }
+   if(quantity>limit){
+     feedback.textContent=limit>0?'المخزون الحالي '+limit+' روبوكس، اختار كمية أصغر.':'الروبوكس غير متوفر حاليًا.';
+     return;
+   }
+   const estimate=localEstimate(quantity);
+   if(estimate!==null)priceEl.textContent='≈ '+money(estimate);
+   feedback.textContent='جاري تأكيد السعر من المتجر…';
+   quoteTimer=setTimeout(async()=>{
+     try{
+       const {data,error}=await supabaseClient.rpc('quote_custom_robux',{p_amount:quantity});
+       if(seq!==quoteSeq||!modal.isConnected||modal.classList.contains('hidden'))return;
+       if(error)throw error;
+       const quoted=Number(data);
+       if(!Number.isFinite(quoted)||quoted<=0)throw new Error('invalid_quote');
+       if(quantity>maxQuantity()){update();return;}
+       confirmed={amount:quantity,price:Number(quoted.toFixed(2))};
+       priceEl.textContent=money(confirmed.price);
+       feedback.textContent='السعر نهائي لهذه الكمية حاليًا، ويُراجع عند تأكيد الشراء.';
+       button.disabled=false;
+       button.dataset.customQuantity=String(quantity);
+       button.textContent='متابعة لشراء '+quantity+' روبوكس';
+     }catch(err){
+       if(seq!==quoteSeq)return;
+       priceEl.textContent='—';
+       button.disabled=true;
+       feedback.textContent='تعذر تأكيد السعر. تحقق من الاتصال وحاول من جديد.';
+       console.warn('[robux/quote] Quote unavailable',err);
+     }
+   },180);
  }
- section.querySelectorAll('[data-rqc-amount]').forEach(chip=>chip.addEventListener('click',()=>setQuantity(Number(chip.dataset.rqcAmount))));
  plus.addEventListener('click',()=>{
-   const q=Number(normalizedDigits(input.value));
-   const list=available();
-   const next=list.find(x=>x.amount>q);
-   if(next)setQuantity(next.amount);
+   const q=Number(normalize(input.value));
+   if(Number.isSafeInteger(q)&&q<maxQuantity())chooseQuantity(q+1);
  });
  minus.addEventListener('click',()=>{
-   const q=Number(normalizedDigits(input.value));
-   const list=available();
-   const prev=list.slice().reverse().find(x=>x.amount<q);
-   if(prev)setQuantity(prev.amount);
+   const q=Number(normalize(input.value));
+   if(Number.isSafeInteger(q)&&q>1)chooseQuantity(q-1);
  });
- input.addEventListener('input',()=>{clearSelected();render()});
+ chips.forEach(chip=>chip.addEventListener('click',()=>chooseQuantity(Number(chip.dataset.rqcAmount))));
+ input.addEventListener('input',()=>{clearPrevious();update()});
  button.addEventListener('click',()=>{
-   const match=offers.find(x=>x.id===button.dataset.productId);
-   const tile=match&&tileFor(match);
-   if(!tile||tile.disabled){render();return}
-   tile.click(); // Reuse the existing checkout flow, including phone and server checks.
+   const q=Number(normalize(input.value));
+   if(!confirmed||confirmed.amount!==q||button.disabled||q>maxQuantity()){update();return}
+   const grid=modal.querySelector('.package-grid');
+   if(!grid)return;
+   let tile=grid.querySelector('.robux-custom-package');
+   if(!tile){
+     tile=document.createElement('button');tile.type='button';
+     tile.className='robux-package robux-custom-package';
+     tile.style.cssText='display:none!important';
+     grid.appendChild(tile);
+   }
+   tile.dataset.robux='custom:'+q;
+   tile.dataset.customPrice=String(confirmed.price);
+   tile.innerHTML='<span class="robux-plus">＋</span><strong>'+q+' Robux</strong><small>'+money(confirmed.price)+'</small>';
+   tile.disabled=false;
+   tile.click(); // Uses existing selected-package checkout and username verification.
  });
  modal.addEventListener('click',event=>{
    const tile=event.target.closest('.robux-package[data-robux]');
-   if(!tile||tile.disabled)return;
-   const offer=offers.find(x=>x.id===tile.dataset.robux);
-   if(offer){input.value=String(offer.amount);render()}
+   if(!tile||tile.disabled||tile.classList.contains('robux-custom-package'))return;
+   const offer=offers.find(p=>p.id===tile.dataset.robux);
+   if(offer){input.value=String(offer.amount);update();}
  });
- modal.addEventListener('robux-inventory-updated',render);
- render();
+ modal.addEventListener('robux-inventory-updated',update);
+ update();
 }
 function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||''));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">♧ أكواد وبطاقات</span></div><div class="robux-reference-features"><span>♧<small>دعم متواصل</small></span><span>♢<small>دفع آمن</small></span><span>ϟ<small>كود فوري</small></span></div><h2 class="robux-reference-section">اختر الباقة</h2><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxAvailable>=Number(p.amount||0);return '<button class="robux-package" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><span class="robux-plus">＋</span><span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?'متوفر · '+robuxAvailable+' Robux متبقية':'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.remove('hidden');mountRobuxQuantityCalculator(modal,robux);const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
 // The page and its image are already visible. Refresh stock without delaying navigation.
@@ -387,7 +418,7 @@ requestAnimationFrame(()=>{
 });
 }
 function closeRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const m=$('#robuxModal');if(m){m.classList.add('hidden');m.classList.remove('robux-checkout-mode')}}
-async function selectPackage(id){const p=products.find(x=>String(x.id)===String(id));if(!p){toast('الباقة غير موجودة. حدّث الصفحة وحاول مرة ثانية.');return false;}/* Show checkout form for selected catalog item; server validates live stock at purchase. */const box=document.querySelector('#robuxModal #purchaseBox');box.innerHTML='<form id="purchaseForm" class="topup-form"><h3>'+escapeHtml(p.name)+' — '+Number(p.price).toFixed(2)+' د.ل</h3><label for="robloxUsername">اسم المستخدم في Roblox</label><div class="roblox-verify-row"><input id="robloxUsername" type="text" minlength="3" maxlength="40" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="مثال: Player123" required><button id="verifyRobloxBtn" class="btn btn-soft" type="button">تحقق</button></div><div id="robloxVerifyResult" class="roblox-verify-result" aria-live="polite"></div><button id="submitRobloxPurchase" class="btn btn-primary full-width" type="submit" disabled>تأكد من الحساب أولاً</button><p class="form-note">تحقق من صورة الحساب واسم المستخدم قبل الشراء. لا نطلب كلمة مرور Roblox أو رمز الدخول.</p><p class="form-note">المبلغ ينخصم من المحفظة فور إنشاء الطلب، والتنفيذ يكون بعد مراجعة الإدارة.</p></form>';let verifiedUsername='';let verifiedUserId='';const input=box.querySelector('#robloxUsername'),verifyBtn=box.querySelector('#verifyRobloxBtn'),result=box.querySelector('#robloxVerifyResult'),submit=box.querySelector('#submitRobloxPurchase');input.addEventListener('input',()=>{verifiedUsername='';verifiedUserId='';submit.disabled=true;submit.textContent='تأكد من الحساب أولاً';result.innerHTML='';});verifyBtn.addEventListener('click',async()=>{const username=input.value.trim();if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){result.textContent='اكتب اسم مستخدم Roblox صحيح (3 إلى 20 حرفاً أو رقماً أو _).';result.className='roblox-verify-result error';return}verifyBtn.disabled=true;verifyBtn.textContent='جاري التحقق…';result.className='roblox-verify-result';result.textContent='جاري البحث عن الحساب في Roblox…';try{const {data:lookup,error:lookupError}=await supabaseClient.functions.invoke('roblox-user-lookup',{body:{username}});if(lookupError)throw new Error('تعذر الاتصال بخدمة التحقق. حدّث الصفحة وحاول مرة ثانية.');if(lookup?.error)throw new Error(lookup.error==='roblox_lookup_unavailable'?'خدمة Roblox لا تستجيب حالياً. جرّب بعد شوية.':'تعذر التحقق من الحساب حالياً.');if(!lookup?.found){result.textContent='ما لقيناش حساب بهذا الاسم. راجع اسم المستخدم وحاول من جديد.';result.className='roblox-verify-result error';return}const account={id:lookup.id,name:lookup.name,displayName:lookup.displayName};const avatar=lookup.avatar||'';verifiedUsername=account.name;verifiedUserId=String(account.id);result.innerHTML='<div class="roblox-profile-card">'+(avatar?'<img src="'+escapeHtml(avatar)+'" alt="صورة حساب Roblox" class="roblox-avatar">':'<div class="roblox-avatar-placeholder">R</div>')+'<div class="roblox-profile-info"><strong>'+escapeHtml(account.displayName||account.name)+'</strong><span>@'+escapeHtml(account.name)+'</span><small>تم العثور على الحساب ✓</small></div></div><p class="form-note">تأكد أن هذه صورة واسم حسابك قبل المتابعة.</p>';result.className='roblox-verify-result success';submit.disabled=false;submit.textContent='تأكيد الشراء من المحفظة';}catch(err){result.textContent=err.message||'تعذر التحقق حالياً. حاول مرة ثانية.';result.className='roblox-verify-result error'}finally{verifyBtn.disabled=false;verifyBtn.textContent='تحقق'}});box.querySelector('#purchaseForm').addEventListener('submit',async e=>{e.preventDefault();if(!verifiedUsername||!verifiedUserId||input.value.trim().toLowerCase()!==verifiedUsername.toLowerCase()){toast('تحقق من حساب Roblox أولاً');result.textContent='تحقق من حساب Roblox أولاً.';result.className='roblox-verify-result error';return}submit.disabled=true;submit.textContent='جاري إنشاء الطلب…';result.textContent='تم الضغط على تأكيد الشراء. جاري فحص تسجيل الدخول…';result.className='roblox-verify-result';try{const user=await currentUser();if(!user)throw new Error('انتهت جلسة الدخول. سجّل دخولك من جديد.');if(typeof window.ensurePurchasePhone!=='function'){result.textContent='تعذر تحميل التحقق من رقم الهاتف. حدّث الصفحة وحاول مرة ثانية.';result.className='roblox-verify-result error';return}if(!await window.ensurePurchasePhone()){result.textContent='لازم تسجّل رقمك وتوثّقه برسالة SMS من «حسابي» قبل تأكيد الشراء.';result.className='roblox-verify-result error';return}result.textContent='تم تأكيد توثيق الهاتف. جاري إرسال طلب الشراء…';const request=supabaseClient.rpc('create_purchase_order',{p_product_id:p.id,p_roblox_username:verifiedUsername});const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('انتهت مهلة الاتصال بقاعدة البيانات. حدّث الصفحة وحاول مرة ثانية.')),15000));const {data:purchaseOrder,error}=await Promise.race([request,timeout]);if(error)throw error;if(purchaseOrder?.id)void supabaseClient.functions.invoke('l1017n-purchase-notify',{body:{order_id:purchaseOrder.id}}).then(({error:notifyError})=>{if(notifyError)console.warn('[purchase] Telegram notification pending')}).catch(()=>console.warn('[purchase] Telegram notification unavailable'));result.textContent='تم إنشاء الطلب بنجاح.';closeRobuxPackages();await loadProducts();await renderWallet();await renderOrders();toast('تم إنشاء طلب '+p.name+' وخصم المبلغ من المحفظة.')}catch(err){console.error('create_purchase_order failed:',err);const message=String(err?.message||err?.details||err?.hint||'خطأ غير معروف');result.textContent=/insufficient_balance/i.test(message)?'رصيدك ما يكفيش للباقة، يرجى تعبئة المحفظة.':/robux_out_of_stock/i.test(message)?'غير متوفر: نفدت كمية الروبوكس لهذه الباقة.':/phone_verification_required_before_purchase/i.test(message)?'لازم توثّق رقم هاتفك برسالة SMS من «حسابي» أولاً.':/phone_required_before_purchase/i.test(message)?'لازم تضيف رقم هاتفك لحسابك قبل الشراء.':/not_authenticated|JWT/i.test(message)?'انتهت جلسة الدخول. سجّل دخولك من جديد.':'فشل إنشاء الطلب: '+message;result.className='roblox-verify-result error';toast(result.textContent)}finally{submit.disabled=false;submit.textContent='تأكيد الشراء من المحفظة'}})}
+async function selectPackage(id){const custom=/^custom:([0-9]{1,6})$/.exec(String(id));const customTile=custom&&document.querySelector('#robuxModal .robux-custom-package.selected');const customPrice=Number(customTile?.dataset.customPrice);const p=custom&&customTile?.dataset.robux===String(id)&&Number.isFinite(customPrice)&&customPrice>0?{id:String(id),name:custom[1]+' Robux',amount:Number(custom[1]),price:customPrice,isCustomQuantity:true}:products.find(x=>String(x.id)===String(id));if(!p){toast('تعذر تحديد كمية الروبوكس. حدث الصفحة وحاول مرة ثانية.');return false;}/* Show checkout form for selected catalog item; server validates live stock at purchase. */const box=document.querySelector('#robuxModal #purchaseBox');box.innerHTML='<form id="purchaseForm" class="topup-form"><h3>'+escapeHtml(p.name)+' — '+Number(p.price).toFixed(2)+' د.ل</h3><label for="robloxUsername">اسم المستخدم في Roblox</label><div class="roblox-verify-row"><input id="robloxUsername" type="text" minlength="3" maxlength="40" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="مثال: Player123" required><button id="verifyRobloxBtn" class="btn btn-soft" type="button">تحقق</button></div><div id="robloxVerifyResult" class="roblox-verify-result" aria-live="polite"></div><button id="submitRobloxPurchase" class="btn btn-primary full-width" type="submit" disabled>تأكد من الحساب أولاً</button><p class="form-note">تحقق من صورة الحساب واسم المستخدم قبل الشراء. لا نطلب كلمة مرور Roblox أو رمز الدخول.</p><p class="form-note">المبلغ ينخصم من المحفظة فور إنشاء الطلب، والتنفيذ يكون بعد مراجعة الإدارة.</p></form>';let verifiedUsername='';let verifiedUserId='';const input=box.querySelector('#robloxUsername'),verifyBtn=box.querySelector('#verifyRobloxBtn'),result=box.querySelector('#robloxVerifyResult'),submit=box.querySelector('#submitRobloxPurchase');input.addEventListener('input',()=>{verifiedUsername='';verifiedUserId='';submit.disabled=true;submit.textContent='تأكد من الحساب أولاً';result.innerHTML='';});verifyBtn.addEventListener('click',async()=>{const username=input.value.trim();if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){result.textContent='اكتب اسم مستخدم Roblox صحيح (3 إلى 20 حرفاً أو رقماً أو _).';result.className='roblox-verify-result error';return}verifyBtn.disabled=true;verifyBtn.textContent='جاري التحقق…';result.className='roblox-verify-result';result.textContent='جاري البحث عن الحساب في Roblox…';try{const {data:lookup,error:lookupError}=await supabaseClient.functions.invoke('roblox-user-lookup',{body:{username}});if(lookupError)throw new Error('تعذر الاتصال بخدمة التحقق. حدّث الصفحة وحاول مرة ثانية.');if(lookup?.error)throw new Error(lookup.error==='roblox_lookup_unavailable'?'خدمة Roblox لا تستجيب حالياً. جرّب بعد شوية.':'تعذر التحقق من الحساب حالياً.');if(!lookup?.found){result.textContent='ما لقيناش حساب بهذا الاسم. راجع اسم المستخدم وحاول من جديد.';result.className='roblox-verify-result error';return}const account={id:lookup.id,name:lookup.name,displayName:lookup.displayName};const avatar=lookup.avatar||'';verifiedUsername=account.name;verifiedUserId=String(account.id);result.innerHTML='<div class="roblox-profile-card">'+(avatar?'<img src="'+escapeHtml(avatar)+'" alt="صورة حساب Roblox" class="roblox-avatar">':'<div class="roblox-avatar-placeholder">R</div>')+'<div class="roblox-profile-info"><strong>'+escapeHtml(account.displayName||account.name)+'</strong><span>@'+escapeHtml(account.name)+'</span><small>تم العثور على الحساب ✓</small></div></div><p class="form-note">تأكد أن هذه صورة واسم حسابك قبل المتابعة.</p>';result.className='roblox-verify-result success';submit.disabled=false;submit.textContent='تأكيد الشراء من المحفظة';}catch(err){result.textContent=err.message||'تعذر التحقق حالياً. حاول مرة ثانية.';result.className='roblox-verify-result error'}finally{verifyBtn.disabled=false;verifyBtn.textContent='تحقق'}});box.querySelector('#purchaseForm').addEventListener('submit',async e=>{e.preventDefault();if(!verifiedUsername||!verifiedUserId||input.value.trim().toLowerCase()!==verifiedUsername.toLowerCase()){toast('تحقق من حساب Roblox أولاً');result.textContent='تحقق من حساب Roblox أولاً.';result.className='roblox-verify-result error';return}submit.disabled=true;submit.textContent='جاري إنشاء الطلب…';result.textContent='تم الضغط على تأكيد الشراء. جاري فحص تسجيل الدخول…';result.className='roblox-verify-result';try{const user=await currentUser();if(!user)throw new Error('انتهت جلسة الدخول. سجّل دخولك من جديد.');if(typeof window.ensurePurchasePhone!=='function'){result.textContent='تعذر تحميل التحقق من رقم الهاتف. حدّث الصفحة وحاول مرة ثانية.';result.className='roblox-verify-result error';return}if(!await window.ensurePurchasePhone()){result.textContent='لازم تسجّل رقمك وتوثّقه برسالة SMS من «حسابي» قبل تأكيد الشراء.';result.className='roblox-verify-result error';return}result.textContent='تم تأكيد توثيق الهاتف. جاري إرسال طلب الشراء…';const request=p.isCustomQuantity?supabaseClient.rpc('create_custom_robux_order',{p_amount:p.amount,p_roblox_username:verifiedUsername,p_expected_total:p.price}):supabaseClient.rpc('create_purchase_order',{p_product_id:p.id,p_roblox_username:verifiedUsername});const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('انتهت مهلة الاتصال بقاعدة البيانات. حدّث الصفحة وحاول مرة ثانية.')),15000));const {data:purchaseOrder,error}=await Promise.race([request,timeout]);if(error)throw error;if(purchaseOrder?.id)void supabaseClient.functions.invoke('l1017n-purchase-notify',{body:{order_id:purchaseOrder.id}}).then(({error:notifyError})=>{if(notifyError)console.warn('[purchase] Telegram notification pending')}).catch(()=>console.warn('[purchase] Telegram notification unavailable'));result.textContent='تم إنشاء الطلب بنجاح.';closeRobuxPackages();await loadProducts();await renderWallet();await renderOrders();toast('تم إنشاء طلب '+p.name+' وخصم المبلغ من المحفظة.')}catch(err){console.error('create_purchase_order failed:',err);const message=String(err?.message||err?.details||err?.hint||'خطأ غير معروف');result.textContent=/robux_price_changed/i.test(message)?'سعر الروبوكس تغير. ارجع واكتب الكمية من جديد للتأكد من السعر.':/invalid_robux_quantity/i.test(message)?'الكمية غير صحيحة. ارجع وحدد عدد روبوكس صحيح.':/insufficient_balance/i.test(message)?'رصيدك ما يكفيش للكمية المختارة، يرجى تعبئة المحفظة.':/robux_out_of_stock/i.test(message)?'غير متوفر: نفدت كمية الروبوكس لهذه الباقة.':/phone_verification_required_before_purchase/i.test(message)?'لازم توثّق رقم هاتفك برسالة SMS من «حسابي» أولاً.':/phone_required_before_purchase/i.test(message)?'لازم تضيف رقم هاتفك لحسابك قبل الشراء.':/not_authenticated|JWT/i.test(message)?'انتهت جلسة الدخول. سجّل دخولك من جديد.':'فشل إنشاء الطلب: '+message;result.className='roblox-verify-result error';toast(result.textContent)}finally{submit.disabled=false;submit.textContent='تأكيد الشراء من المحفظة'}})}
 
 function openPasswordRecovery(){
   let modal=$('#passwordRecoveryModal');

@@ -1,126 +1,389 @@
-/* GameBoxly: Robux amount-to-price calculator, safely separate from checkout. */
+/* GAMEBOXLY · Robux Studio
+   Design-only layer: prices and inventory remain server-verified. */
 #robuxModal .robux-quantity-calculator{
-  direction:rtl;box-sizing:border-box;
-  width:100%;max-width:720px;margin:12px auto 24px;padding:20px 18px 18px;
-  border:1px solid #556692;border-radius:23px;
-  background:radial-gradient(ellipse at 90% 0%,#34326780,transparent 68%),linear-gradient(150deg,#141c34,#0c1426);
-  box-shadow:0 12px 38px #0005,inset 0 1px 0 #ffffff12;
-  color:#f7f8ff;
+  --rqc-purple:#a994ff;
+  --rqc-lavender:#d6cbff;
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  direction:rtl;
+  box-sizing:border-box;
+  width:100%;
+  max-width:720px;
+  margin:12px auto 25px;
+  padding:21px;
+  border:1px solid #7166ac88;
+  border-radius:27px;
+  background:
+    radial-gradient(ellipse at 100% -20%,#6651ac5c 0%,transparent 55%),
+    radial-gradient(ellipse at -20% 90%,#26477863 0%,transparent 65%),
+    linear-gradient(145deg,#1a1c37 0%,#11172d 54%,#0e1427 100%);
+  box-shadow:0 22px 55px #0007,inset 0 1px 0 #ffffff16;
+  color:#f8f8ff;
 }
-#robuxModal .rqc-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
-#robuxModal .rqc-heading small{display:block;font:700 10px system-ui,sans-serif;letter-spacing:1.2px;color:#baaaff;direction:ltr;text-align:right;margin-bottom:5px}
-#robuxModal .rqc-heading h2{margin:0;font:850 clamp(19px,4.6vw,25px)/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif;color:#fff}
+#robuxModal .robux-quantity-calculator::before{
+  content:"";
+  position:absolute;
+  width:200px;
+  height:200px;
+  left:-105px;
+  top:-115px;
+  border:1px solid #b6a0ff2a;
+  border-radius:50%;
+  box-shadow:0 0 0 30px #9d81f709,0 0 0 64px #a787ed07;
+  pointer-events:none;
+}
+#robuxModal .robux-quantity-calculator::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,#b9a6fa9c 42%,#d3c2fd 72%,transparent);
+  pointer-events:none;
+}
+#robuxModal .robux-quantity-calculator>*{
+  position:relative;
+  z-index:1;
+}
+#robuxModal .rqc-heading{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin:0 0 20px;
+}
+#robuxModal .rqc-header-copy{min-width:0;flex:1}
+#robuxModal .rqc-header-copy>small{
+  display:flex;align-items:center;gap:7px;
+  margin:0 0 8px;
+  font:800 10px/1.3 system-ui,sans-serif;
+  letter-spacing:1.1px;
+  color:#bea9ff;
+  direction:ltr;justify-content:flex-end;
+}
+#robuxModal .rqc-header-dot{
+  display:inline-block;
+  width:7px;height:7px;border-radius:50%;
+  background:#7de6cb;
+  box-shadow:0 0 0 4px #7de6cb20,0 0 14px #76ecd0;
+}
+#robuxModal .rqc-heading h2{
+  margin:0!important;
+  color:#fff!important;
+  font:850 clamp(22px,5.2vw,29px)/1.45 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  letter-spacing:-.4px;
+}
+#robuxModal .rqc-header-copy>p{
+  margin:6px 0 0!important;
+  color:#aeb6d6;
+  font:500 13px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
 #robuxModal .rqc-icon{
-  display:grid;place-items:center;flex:0 0 46px;height:46px;border-radius:15px;
-  background:#8471ef22;color:#c5b5ff;font-size:30px;box-shadow:inset 0 0 0 1px #ad94ff44
+  display:grid;
+  place-items:center;
+  flex:0 0 106px;
+  width:106px;height:106px;
+  border-radius:26px;
+  border:1px solid #b29cf65c;
+  background:radial-gradient(ellipse at 30% 25%,#6a4cb58b,#231d4a 68%,#191c36);
+  box-shadow:inset 0 1px 0 #e5d8ff29,0 10px 35px #5b3fbd3f;
+  transform:rotate(-5deg);
 }
-#robuxModal .rqc-label{display:block;font-size:13px;font-weight:750;margin:0 0 9px;color:#c7d0e9}
-#robuxModal .rqc-input-box{
-  display:flex;align-items:center;gap:10px;border:1px solid #64769d;
-  border-radius:15px;background:#0c1223;min-height:56px;padding:0 15px;
-  transition:border-color .2s,box-shadow .2s
+#robuxModal .rqc-coin-art{
+  width:99px;height:99px;max-width:100%;
+  filter:drop-shadow(0 5px 10px #6b51c675);
 }
-#robuxModal .rqc-input-box:focus-within{border-color:#bba7ff;box-shadow:0 0 0 3px #9a84ff2b}
-#robuxModal #robuxCustomQuantity{
-  min-width:0;flex:1;width:100%;border:0!important;outline:0!important;
-  background:transparent!important;box-shadow:none!important;
-  color:#fff!important;padding:11px 0!important;margin:0!important;
-  font:850 23px/1.4 system-ui,sans-serif!important;text-align:right!important;
-  direction:ltr!important
+#robuxModal .rqc-label{
+  display:block;
+  margin:0 0 10px;
+  color:#e0e5fb;
+  font:750 13px/1.8 "IBM Plex Sans Arabic",system-ui,sans-serif;
 }
-#robuxModal #robuxCustomQuantity::placeholder{color:#74819d;font:500 14px 'IBM Plex Sans Arabic',sans-serif}
-#robuxModal .rqc-input-box>span{font:800 12px system-ui,sans-serif;color:#a6b4d5;direction:ltr}
-#robuxModal .rqc-total{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:15px 0 10px;margin-top:5px;border-bottom:1px solid #ffffff16
-}
-#robuxModal .rqc-total>span{font-size:14px;color:#bcc9e2;font-weight:650}
-#robuxModal .rqc-total>strong{
-  font:850 clamp(21px,5vw,30px)/1.4 system-ui,'IBM Plex Sans Arabic',sans-serif;
-  letter-spacing:-.5px;color:#78e5bd;white-space:nowrap
-}
-#robuxModal .rqc-feedback{min-height:36px;margin:11px 0 13px;font-size:12px;color:#a6b4cd;line-height:1.8}
-#robuxModal .rqc-select{
-  display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;
-  padding:12px!important;border:1px solid #aa9bf6!important;border-radius:14px!important;
-  background:linear-gradient(135deg,#7968d9,#4f50b6)!important;
-  color:white!important;font:800 13px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
-  cursor:pointer;transition:transform .15s,filter .15s
-}
-#robuxModal .rqc-select:not(:disabled):active{transform:scale(.97)}
-#robuxModal .rqc-select:disabled{opacity:.5!important;cursor:not-allowed}
-#robuxModal .rqc-select:focus-visible{outline:2px solid #fff;outline-offset:3px}
-@media(max-width:420px){
- #robuxModal .robux-quantity-calculator{border-radius:19px;padding:17px 13px 14px;margin-bottom:20px}
- #robuxModal #robuxCustomQuantity{font-size:21px!important}
- #robuxModal .rqc-total>strong{font-size:23px}
-}
-@media(prefers-reduced-motion:reduce){
- #robuxModal .rqc-select,#robuxModal .rqc-input-box{transition:none}
-}
-
-/* Customer chooses a real listed Robux quantity with quick chips or +/- buttons. */
 #robuxModal .rqc-picker{
-  display:flex;align-items:stretch;gap:8px;direction:rtl;min-height:58px;
+  display:flex;
+  align-items:stretch;
+  gap:9px;
+  width:100%;
+  min-height:64px;
+  direction:rtl;
 }
-#robuxModal .rqc-picker .rqc-input-box{min-width:0;flex:1;margin:0}
 #robuxModal .rqc-step{
-  flex:0 0 54px;display:grid;place-items:center;min-width:0;
-  border:1px solid #7580ba!important;border-radius:15px!important;
-  background:linear-gradient(135deg,#313c6e,#232b50)!important;
-  color:#fff!important;font:700 30px/1 system-ui,sans-serif!important;
-  cursor:pointer;touch-action:manipulation;user-select:none;
+  box-sizing:border-box;
+  flex:0 0 62px;
+  min-width:0;
+  display:grid;place-items:center;
+  border:1px solid #8d83d6a1!important;
+  border-radius:18px!important;
+  background:linear-gradient(150deg,#44447c,#2c3261)!important;
+  color:white!important;
+  box-shadow:inset 0 1px 0 #ffffff28,0 8px 17px #0003;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:transform .15s ease,filter .15s ease;
 }
-#robuxModal .rqc-step:disabled{opacity:.32!important;cursor:not-allowed}
-#robuxModal .rqc-step:not(:disabled):active{transform:scale(.96)}
-#robuxModal .rqc-step:focus-visible,#robuxModal .rqc-amount-chip:focus-visible{
-  outline:2px solid #d0baff;outline-offset:3px
+#robuxModal .rqc-step svg{
+  width:27px;height:27px;
+  fill:none;stroke:currentColor;
+  stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
 }
-#robuxModal .rqc-quick-label{color:#aebddd;font-size:12px;font-weight:650;margin:17px 0 9px}
+#robuxModal .rqc-step:not(:disabled):active{transform:scale(.94)}
+#robuxModal .rqc-step:disabled{opacity:.34!important;cursor:not-allowed}
+#robuxModal .rqc-input-box{
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:1;min-width:0;
+  margin:0;
+  padding:0 13px;
+  min-height:64px;
+  border:1px solid #6c729ee0;
+  border-radius:18px;
+  background:linear-gradient(180deg,#080f20,#0d1730);
+  box-shadow:inset 0 2px 8px #0004;
+  transition:border-color .18s,box-shadow .18s;
+}
+#robuxModal .rqc-input-box:focus-within{
+  border-color:#d0bfff;
+  box-shadow:0 0 0 3px #af98fd21,inset 0 2px 8px #0004;
+}
+#robuxModal .rqc-input-gem{flex:none;font-size:14px;color:#bea5ff;text-shadow:0 0 14px #9571ff}
+#robuxModal #robuxCustomQuantity{
+  display:block;
+  flex:1;min-width:0;width:100%;
+  margin:0!important;padding:10px 0!important;
+  color:#fff!important;
+  border:0!important;outline:0!important;background:transparent!important;
+  font:850 27px/1.5 system-ui,sans-serif!important;
+  font-variant-numeric:tabular-nums;
+  text-align:center!important;
+  direction:ltr!important;
+  box-shadow:none!important;
+}
+#robuxModal #robuxCustomQuantity::placeholder{
+  color:#7d8baa;
+  font:500 12px "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#robuxModal .rqc-input-box>span:last-child{
+  flex:none;
+  font:800 12px system-ui,sans-serif;
+  color:#a6b4d6;
+  direction:ltr;
+}
+#robuxModal .rqc-quick-label{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:7px;flex-wrap:wrap;
+  margin:20px 0 11px;
+  color:#d2d7f0;
+  font:750 13px "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#robuxModal .rqc-quick-label small{
+  font:500 11px "IBM Plex Sans Arabic",system-ui,sans-serif;
+  color:#8f9ab9;
+}
 #robuxModal .rqc-quick-amounts{
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
 }
 #robuxModal .rqc-amount-chip{
-  box-sizing:border-box;width:100%;min-width:0;min-height:42px;
-  padding:8px 3px!important;border:1px solid #465779!important;border-radius:11px!important;
-  background:#17233c!important;color:#e0eaff!important;
-  font:750 clamp(11px,2.8vw,14px)/1.3 system-ui,sans-serif!important;
-  text-align:center;cursor:pointer;
+  position:relative;
+  box-sizing:border-box;
+  display:grid;place-items:center;
+  min-width:0;width:100%;min-height:52px;
+  padding:10px 4px!important;
+  border:1px solid #555e8a!important;
+  border-radius:14px!important;
+  background:linear-gradient(155deg,#243355,#18223d)!important;
+  color:#edf1ff!important;
+  font:800 clamp(13px,3.4vw,17px)/1.2 system-ui,sans-serif!important;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .15s,border-color .15s,background .15s;
 }
+#robuxModal .rqc-amount-chip:not(:disabled):active{transform:scale(.96)}
 #robuxModal .rqc-amount-chip.is-selected{
-  color:#fff!important;border-color:#b0a1ff!important;
-  background:linear-gradient(135deg,#695dd0,#5145a8)!important;
-  box-shadow:0 0 0 1px #af9cf640;
+  border-color:#d6c9ff!important;
+  background:linear-gradient(135deg,#8771e5,#6356cb)!important;
+  box-shadow:0 0 0 2px #a18ef529,0 6px 18px #7662c43f;
+  color:#fff!important;
+}
+#robuxModal .rqc-amount-chip.is-selected::after{
+  content:"";
+  position:absolute;
+  top:7px;left:7px;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#a7ffde;box-shadow:0 0 9px #a7ffde;
 }
 #robuxModal .rqc-amount-chip:disabled{
-  opacity:.34!important;cursor:not-allowed;text-decoration:line-through;
+  opacity:.36!important;
+  text-decoration:line-through;
+  cursor:not-allowed;
 }
-#robuxModal .rqc-picker #robuxCustomQuantity{
-  text-align:center!important;font-variant-numeric:tabular-nums
+#robuxModal .rqc-total{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:24px 0 0!important;
+  padding:18px 16px;
+  border:1px solid #3f947e62;
+  border-radius:18px;
+  background:linear-gradient(115deg,#102a32,#102b3a 56%,#1c2340);
+  box-shadow:inset 0 1px 0 #8bf7cb0d;
 }
-#robuxModal .rqc-total{margin-top:15px}
-@media(max-width:440px){
-  #robuxModal .rqc-picker{gap:6px;min-height:52px}
-  #robuxModal .rqc-step{flex-basis:46px;border-radius:13px!important}
-  #robuxModal .rqc-picker .rqc-input-box{padding:0 7px;min-height:52px}
-  #robuxModal .rqc-picker #robuxCustomQuantity{font-size:20px!important}
-  #robuxModal .rqc-input-box>span{font-size:10px}
-  #robuxModal .rqc-quick-amounts{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
-  #robuxModal .rqc-amount-chip{min-height:38px;font-size:11px!important;border-radius:9px!important}
+#robuxModal .rqc-total-description{
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;
+  min-width:0;
 }
-@media(max-width:320px){
-  #robuxModal .rqc-quick-amounts{grid-template-columns:repeat(4,minmax(0,1fr))}
+#robuxModal .rqc-price-eyebrow{
+  color:#a4bbca;
+  font:600 11px/1.5 "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#robuxModal .rqc-total-count{
+  color:#f0f6ff;
+  font:750 15px/1.5 "IBM Plex Sans Arabic",system-ui,sans-serif;
+  white-space:nowrap;
+}
+#robuxModal .rqc-total-count b{
+  color:#fff;font:800 17px system-ui,sans-serif;
+  direction:ltr;unicode-bidi:isolate;
+}
+#robuxModal .rqc-price-wrap{min-width:0;display:flex;align-items:center;justify-content:flex-start}
+#robuxModal #robuxQuantityPrice{
+  font:850 clamp(20px,4.5vw,29px)/1.3 system-ui,"IBM Plex Sans Arabic",sans-serif;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.65px;
+  color:#72e7bc;
+  white-space:nowrap;
+  text-shadow:0 0 28px #52e2ae29;
+}
+#robuxModal .rqc-feedback{
+  display:flex;align-items:center;gap:8px;
+  min-height:34px;
+  margin:12px 0 14px!important;
+  padding:0 2px;
+  font:500 12px/1.85 "IBM Plex Sans Arabic",system-ui,sans-serif;
+  color:#a5b3d1;
+}
+#robuxModal .rqc-feedback::before{
+  content:"i";
+  flex:0 0 17px;
+  width:17px;height:17px;
+  display:grid;place-items:center;
+  border:1px solid #7286b382;
+  border-radius:50%;
+  font:800 11px system-ui,sans-serif;
+  color:#aabcf5;
+}
+#robuxModal .rqc-select{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  gap:11px;
+  width:100%;min-height:57px;
+  padding:12px 16px!important;
+  border:1px solid #ab9dff!important;
+  border-radius:16px!important;
+  background:linear-gradient(110deg,#8d76e7,#6154bf)!important;
+  box-shadow:0 10px 25px #6351c25a,inset 0 1px 0 #ffffff43;
+  color:white!important;
+  font:800 15px/1.55 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  cursor:pointer;transition:transform .15s,filter .15s,box-shadow .15s;
+}
+#robuxModal .rqc-select:not(:disabled):active{transform:scale(.985)}
+#robuxModal .rqc-select:not(:disabled):hover{filter:brightness(1.07)}
+#robuxModal .rqc-select:disabled{opacity:.52!important;cursor:not-allowed}
+#robuxModal .rqc-cta-icon{
+  display:grid;place-items:center;
+  width:27px;height:27px;
+  border-radius:9px;
+  background:#ffffff2a;
+}
+#robuxModal .rqc-cta-icon svg{
+  width:17px;height:17px;
+  fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  transform:rotate(180deg);
+}
+#robuxModal .rqc-select:focus-visible,
+#robuxModal .rqc-step:focus-visible,
+#robuxModal .rqc-amount-chip:focus-visible{
+  outline:3px solid #dcd0ff;outline-offset:3px;
 }
 
-/* Arbitrary quantity: fast +/- increments by one, manual input is fully supported. */
-#robuxModal .robux-quantity-calculator .rqc-label{line-height:1.7}
-#robuxModal .robux-quantity-calculator .rqc-total>span b{
-  color:#fff;font:800 15px/1.5 system-ui,sans-serif;direction:ltr;unicode-bidi:isolate;
+/* Feature strip: replace raw Unicode glyphs with matching line-art pictograms. */
+#robuxModal .robux-reference-features{
+  gap:0;
+  border-color:#46547c!important;
+  background:linear-gradient(135deg,#101a31,#121931)!important;
+  box-shadow:0 9px 28px #0003!important;
 }
-#robuxModal .robux-quantity-calculator .rqc-feedback{min-height:42px}
-#robuxModal .rqc-quick-amounts{grid-template-columns:repeat(3,minmax(0,1fr))}
-#robuxModal .rqc-step{touch-action:manipulation}
-@media(max-width:420px){
- #robuxModal .rqc-quick-amounts{grid-template-columns:repeat(3,minmax(0,1fr))}
- #robuxModal .rqc-amount-chip{min-height:42px;font-size:13px!important}
+#robuxModal .robux-reference-features>span.rqc-feature{
+  min-width:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:10px;
+  color:#b9a7ff!important;
+  border-left:1px solid #4a537488;
+}
+#robuxModal .robux-reference-features>span.rqc-feature:last-child{border-left:0}
+#robuxModal .rqc-feature svg{
+  display:block;width:29px;height:29px;
+  stroke:currentColor;stroke-width:1.65;stroke-linecap:round;
+  stroke-linejoin:round;fill:none;filter:drop-shadow(0 0 9px #ac91ff38);
+}
+#robuxModal .rqc-feature small{
+  color:#cbd3ea!important;
+  font:650 12px/1.55 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  text-align:center;
+}
+#robuxModal .robux-reference-tag{
+  background:linear-gradient(100deg,#252147,#222b50)!important;
+  border:1px solid #7565b378;
+  color:#cabbff!important;
+  font-weight:750!important;
+}
+@media(max-width:550px){
+  #robuxModal .robux-quantity-calculator{
+    padding:18px 14px;
+    border-radius:23px;
+    margin:11px auto 20px;
+  }
+  #robuxModal .rqc-heading{gap:9px;margin-bottom:16px}
+  #robuxModal .rqc-icon{flex-basis:85px;width:85px;height:85px;border-radius:20px}
+  #robuxModal .rqc-coin-art{width:83px;height:83px}
+  #robuxModal .rqc-heading h2{font-size:clamp(19px,5.3vw,24px)!important}
+  #robuxModal .rqc-header-copy>p{font-size:12px}
+  #robuxModal .rqc-picker{min-height:57px;gap:7px}
+  #robuxModal .rqc-step{flex-basis:51px;border-radius:15px!important}
+  #robuxModal .rqc-input-box{min-height:57px;padding:0 9px;border-radius:15px}
+  #robuxModal #robuxCustomQuantity{font-size:22px!important}
+  #robuxModal .rqc-input-box>span:last-child{font-size:11px}
+  #robuxModal .rqc-amount-chip{min-height:46px;border-radius:12px!important;font-size:14px!important}
+  #robuxModal .rqc-total{padding:15px 12px;border-radius:15px}
+  #robuxModal .rqc-total-count{font-size:13px}
+  #robuxModal .rqc-price-eyebrow{font-size:10px}
+  #robuxModal #robuxQuantityPrice{font-size:22px}
+  #robuxModal .rqc-select{min-height:54px;font-size:14px!important}
+}
+@media(max-width:375px){
+  #robuxModal .rqc-icon{flex-basis:72px;width:72px;height:72px;border-radius:18px}
+  #robuxModal .rqc-coin-art{width:70px;height:70px}
+  #robuxModal .rqc-heading h2{font-size:19px!important}
+  #robuxModal .rqc-header-copy>small{font-size:9px;letter-spacing:.4px}
+  #robuxModal .rqc-step{flex-basis:45px}
+  #robuxModal .rqc-input-gem{display:none}
+  #robuxModal #robuxCustomQuantity{font-size:20px!important}
+  #robuxModal .rqc-quick-amounts{gap:7px}
+  #robuxModal .rqc-total{gap:7px}
+  #robuxModal .rqc-total-count{font-size:12px}
+  #robuxModal #robuxQuantityPrice{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+  #robuxModal .rqc-step,
+  #robuxModal .rqc-amount-chip,
+  #robuxModal .rqc-select,
+  #robuxModal .rqc-input-box{transition:none!important}
 }

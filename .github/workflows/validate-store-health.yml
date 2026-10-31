@@ -1,0 +1,59 @@
+name: Validate active storefront integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.js'
+      - '*.css'
+      - '*.html'
+      - 'game-covers/**'
+      - '.github/workflows/validate-store-health.yml'
+  workflow_dispatch:
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate all storefront JavaScript syntax
+        run: |
+          for file in *.js; do node --check "$file"; done
+      - name: Validate local assets, account flows and protected wallet UI
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const read=p=>fs.readFileSync(p,'utf8');
+          const html=read('index.html'),legacy=read('legacy-app.js');
+          const primary=read('wallet-primary-toggle.js'),topup=read('auto-topup.js');
+          const assets=[...html.matchAll(/(?:src|href)=["']([^"']+)["']/g)]
+            .map(x=>x[1].split(/[?#]/)[0])
+            .filter(v=>v && !/^(?:https?:|data:|mailto:|tel:|#|\/)/i.test(v));
+          for(const asset of assets)assert(fs.existsSync(asset),'Missing local asset: '+asset);
+          const ids=[...html.matchAll(/\bid=["']([^"']+)["']/g)].map(m=>m[1]);
+          assert.equal(ids.length,new Set(ids).size,'Duplicate HTML IDs');
+          for(const id of ['googleSignInBtn','authModeLogin','authModeSignup','authEmail',
+            'authPhone','authPassword','authSubmit','authStatus','forgotPassword',
+            'walletView','walletShowcaseBalance','madarWalletBalance','walletActionPrimary',
+            'walletActionTopup','walletActionSend','customerWalletChip']){
+            assert(ids.includes(id),'Required storefront control missing: '+id);
+          }
+          assert(html.includes('auth-minimal-green.css?v='),'Login theme must load');
+          assert(html.includes('auth-site-logo'),'Store login logo must exist');
+          assert(html.includes('phone-verification-page.js?v='),'Phone OTP wizard must load');
+          assert(html.includes('wallet-primary-toggle.js?v='),'Primary wallet selection must load');
+          assert(primary.includes('selected={libyana:activate&&name==="libyana",madar:activate&&name==="madar"}'));
+          assert(primary.includes('refreshTopWallet(user)'),'Selected carrier must update header');
+          assert(legacy.includes('.select(\'balance,madar_balance\')'),'Header balance must follow carrier');
+          assert(topup.includes('get_my_ussd_topup_status'),'Wallet top-ups require backend verification');
+          assert(!topup.includes("rpc('sms_auto_credit_receipt'"),'Client cannot credit itself');
+          assert(read('wallet-luxe.js').includes('supabaseClient.rpc("send_wallet_balance"'));
+          assert(read('404.html').includes('href="/L1017n/"'),'Broken links need a safe home destination');
+          for(const file of ['app.js','legacy-app.js','index.html','auto-topup.js']){
+            const raw=read(file);
+            assert(!/service_role|sk_live_|ghp_[A-Za-z0-9]{30}/i.test(raw),
+              'Privileged credential marker in public browser asset: '+file);
+          }
+          console.log('Storefront syntax, local assets, login, phone, wallets, and safe payments passed');
+          JS

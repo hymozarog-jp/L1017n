@@ -141,13 +141,11 @@
 <section class="section hidden auth-guest" id="accountView" aria-label="حسابي">
   <div class="auth-decoration" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="auth-back" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>العودة للمتجر</button>
-  <div class="auth-hero">
-    <div class="auth-emblem" aria-hidden="true"><i></i><i></i><span>L</span></div>
-    <div class="auth-brand" dir="ltr">L1017n</div>
-    <h1 id="authHeading">أهلًا بعودتك</h1>
-    <p id="authIntro">سجّل دخولك وتابع طلباتك</p>
-  </div>
   <div class="panel account-panel">
+    <div class="auth-hero">
+      <h1 id="authHeading">تسجيل الدخول</h1>
+      <p id="authIntro" class="auth-subheading">أهلاً بيك في المتجر</p>
+    </div>
     <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك عبر Google بسهولة، أو استخدم البريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.</p>
     <form id="authForm">
       <div class="auth-mode-switch" role="group" aria-label="نوع الحساب">
@@ -159,8 +157,7 @@
           <span class="auth-google-letter" aria-hidden="true">G</span>
           <span class="auth-google-label">المتابعة باستخدام Google</span>
         </button>
-        <p class="auth-google-caption">أنشئ حسابًا أو ادخل مباشرة بحساب Google، وبعدها اربط رقم هاتفك مرة واحدة.</p>
-        <p class="auth-profile-public-notice" role="note">خصوصية التسجيل: الحسابات الجديدة تظهر تلقائيًا في التصنيف. عند التسجيل بـGoogle يظهر اسمك وصورتك للزوار، وتقدر تخفي الصورة والاسم أو حسابك كاملًا من «حسابي ← خصوصية التصنيف» في أي وقت.</p>
+        
         <div class="auth-google-divider" aria-hidden="true"><span>أو باستخدام البريد الإلكتروني</span></div>
       </div>
       <div class="auth-field"><label for="authEmail">البريد الإلكتروني</label><div class="auth-input-wrap">
@@ -172,20 +169,21 @@
           <input id="authPublicName" name="public_name" type="text" maxlength="40" minlength="2" autocomplete="nickname" placeholder="اكتب الاسم اللي تبي يظهر في حسابك">
         </div></div>
         <label class="gb-share-check" for="authPublicIdentity"><input type="checkbox" id="authPublicIdentity" checked>
-          <span>إظهار اسمي وصورتي الشخصية في التصنيف. أقدر ألغي المشاركة من «خصوصية التصنيف» بأي وقت.</span>
+          <span>إظهار اسمي وصورتي في التصنيف</span>
         </label>
       </div>
-      <div class="auth-field"><label for="authPhone">رقم الهاتف (إلزامي — رقم واحد لكل حساب)</label><div class="auth-input-wrap">
+      <div class="auth-field"><label for="authPhone">رقم الهاتف</label><div class="auth-input-wrap">
+        <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.7 19.7 0 0 1 11.2 19a19.4 19.4 0 0 1-6-6A19.7 19.7 0 0 1 2.1 4.3 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 2.9a2 2 0 0 1-.6 1.8L7.2 10a16 16 0 0 0 6.8 6.8l1.7-1.8a2 2 0 0 1 1.8-.6l2.9.5a2 2 0 0 1 1.6 2Z"/></svg>
         <input id="authPhone" name="phone" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="tel-national" minlength="9" maxlength="18" required>
-      </div><small class="form-note">اكتب رقمك اللي تحوّل منه الرصيد. ما ينفعش تسجيله في حسابين. إدخال الرقم مش إثبات لملكيته.</small></div>
+      </div><small class="form-note">رقم واحد لكل حساب، والتوثيق برسالة SMS.</small></div>
       <div class="auth-field"><label for="authPassword">كلمة المرور</label><div class="auth-input-wrap">
         <input id="authPassword" name="password" type="password" dir="ltr" placeholder="••••••••" minlength="6" autocomplete="current-password" aria-describedby="authStatus" required>
         <button type="button" id="authPasswordToggle" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="auth-eye-slash" d="m4 4 16 16"/></svg></button>
       </div></div>
       <button id="forgotPassword" class="text-button" type="button">نسيت كلمة المرور؟</button>
       <p id="authStatus" class="form-note" role="status" aria-live="polite"></p>
-      <p class="auth-profile-public-notice auth-email-notice" role="note">حسابات البريد وGoogle تقدر تعرض الاسم والصورة في التصنيف. صورة البريد تضيفها من «حسابي ← المعلومات الشخصية»، والمشاركة في الاسم والصورة قابلة للإلغاء.</p>
       <button id="authSubmit" class="btn btn-primary full-width" type="submit">تسجيل الدخول</button>
+      <p class="auth-minimal-privacy" role="note">قد يظهر اسمك وصورتك في التصنيف. تقدر تخفيهما من إعدادات حسابك.</p>
       <div class="auth-alternate"><p id="authAlternateText">ليس لديك حساب؟</p><button type="button" id="authAlternate">إنشاء حساب</button></div>
     </form>
     <div id="accountModern" class="hidden">
@@ -656,4 +654,5 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="wallet-primary-toggle.css?v=header-logo-sync-3">
 <!-- Final Robux layout override: keep pricing and checkout scripts unchanged -->
 <link rel="stylesheet" href="robux-organized.css?v=20261031-1">
+<link rel="stylesheet" href="auth-minimal-green.css?v=neon-clean-login2">
 </body></html>

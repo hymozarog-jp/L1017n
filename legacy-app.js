@@ -331,6 +331,15 @@ function mountRobuxQuantityCalculator(modal,robux){
    modal.querySelector('.robux-checkout-bar')?.classList.remove('visible');
    render();
  });
+ modal.addEventListener('click',event=>{
+   // Keep the calculator in sync if a shopper taps a standard product card directly.
+   const tile=event.target.closest('.robux-package[data-robux]');
+   if(!tile||tile.disabled)return;
+   const offer=offers.find(item=>item.id===tile.dataset.robux);
+   if(!offer)return;
+   input.value=String(offer.amount);
+   render();
+ });
  modal.addEventListener('robux-inventory-updated',render);
  render();
 }

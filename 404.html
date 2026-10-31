@@ -15,7 +15,7 @@
         var path = decodeURIComponent(target.pathname);
         var cleanPath = path.replace(/[\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '');
         // Keep the recovery page working across a GitHub Pages repository rename.
-        var match = cleanPath.match(/^\/(L1017n|gamebox-ly)(?=\/|$)/i);
+        var match = cleanPath.match(/^\/(L1017n|gameboxly|gamebox-ly)(?=\/|$)/i);
         var base = match ? '/' + match[1] : '/L1017n';
         var knownPages = [
           base + '/', base + '/index.html', base + '/admin.html',
@@ -44,7 +44,7 @@
     <script>
       (function () {
         var path = window.location.pathname.replace(/[\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '');
-        var match = path.match(/^\/(L1017n|gamebox-ly)(?=\/|$)/i);
+        var match = path.match(/^\/(L1017n|gameboxly|gamebox-ly)(?=\/|$)/i);
         document.getElementById('storeHome').href = '/' + (match ? match[1] : 'L1017n') + '/';
       })();
     </script>

@@ -364,3 +364,69 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 @media(max-width:360px){
   #llLanding .ll-pubg-parent-cover img{height:113px}
 }
+
+/* GameBoxly: three first-class Roblox storefront sections. */
+#llLanding .ll-catalog:has(.ll-game-section){
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:22px 14px;align-items:start;max-width:930px;margin-inline:auto;
+}
+#llLanding .ll-game-section{min-width:0;overflow:visible}
+#llLanding .ll-game-section-link{
+  display:flex!important;flex-direction:column;gap:11px;
+  width:100%;min-width:0;padding:0!important;border:0!important;
+  background:transparent!important;text-align:center;color:#f8f8ff!important;
+  cursor:pointer;font:inherit;
+}
+#llLanding .ll-game-section-art{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:3/4;min-height:0;overflow:hidden;
+  border:1px solid #34415d;border-radius:23px;
+  background:linear-gradient(145deg,#282447,#10182a);
+  box-shadow:0 14px 30px #0004;box-sizing:border-box;
+  transition:transform .18s ease,border-color .2s ease,box-shadow .2s ease;
+}
+#llLanding .ll-game-section-art img{
+  display:block;max-width:100%;height:100%;width:100%;
+  padding:10px;box-sizing:border-box;object-fit:contain;
+  filter:drop-shadow(0 12px 15px #0006);
+}
+#llLanding .ll-game-mm2 .ll-game-section-art{
+  background:radial-gradient(circle at 50% 35%,#504878,#202340 65%,#101423);
+  border-color:#755c9e70;
+}
+#llLanding .ll-game-steal-a-brainrot .ll-game-section-art{
+  background:#0c1b25;border-color:#3e7a8875;
+}
+#llLanding .ll-game-steal-a-brainrot .ll-game-section-art img{object-fit:cover;padding:0;filter:none}
+#llLanding .ll-game-roblox .ll-game-section-art{background:#100f1e}
+#llLanding .ll-game-section-tag{
+  position:absolute;top:10px;right:10px;left:10px;
+  padding:5px 7px;border-radius:9px;color:#f5f4ff;
+  background:#0d11239e;border:1px solid #ffffff2b;
+  font:700 9px system-ui,sans-serif;letter-spacing:.3px;
+  direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#llLanding .ll-game-section-details{display:grid;justify-items:center;gap:5px;min-width:0}
+#llLanding .ll-game-section-details strong{font-size:clamp(15px,2.5vw,21px);font-weight:850;line-height:1.5;overflow-wrap:anywhere}
+#llLanding .ll-game-section-details small{font-size:11px;color:#a5afcc;line-height:1.55}
+#llLanding .ll-game-section-link:hover .ll-game-section-art{
+  transform:translateY(-4px);border-color:#a99bff;
+  box-shadow:0 19px 43px #0007;
+}
+#llLanding .ll-game-section-link:active .ll-game-section-art{transform:scale(.97)}
+#llLanding .ll-game-section-link:focus-visible{outline:3px solid #c4acff;outline-offset:4px;border-radius:15px}
+@media(max-width:680px){
+  #llLanding .ll-catalog:has(.ll-game-section){grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}
+  #llLanding .ll-game-section-art{border-radius:19px}
+  #llLanding .ll-game-section-tag{font-size:8px;top:8px;right:7px;left:7px}
+  #llLanding .ll-game-section-details strong{font-size:16px}
+  #llLanding .ll-game-section-details small{font-size:10px}
+}
+@media(max-width:360px){
+  #llLanding .ll-catalog:has(.ll-game-section){gap:17px 9px}
+  #llLanding .ll-game-section-art{border-radius:16px}
+  #llLanding .ll-game-section-details strong{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  #llLanding .ll-game-section-art{transition:none!important}
+}

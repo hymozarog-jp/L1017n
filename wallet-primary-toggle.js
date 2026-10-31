@@ -37,6 +37,11 @@
  }
  function storageKey(){return identity?"l1017n-primary-wallets-v1:"+identity:null}
  function getSelected(){return selected.madar?"madar":selected.libyana?"libyana":null}
+ function getSelectedFor(userId){
+  if(!userId)return null;
+  const preference=identity===userId?selected:safeRead("l1017n-primary-wallets-v1:"+userId);
+  return preference.madar?"madar":preference.libyana?"libyana":null;
+ }
  function refreshTopWallet(user){
   // The main header must match the selected logo and its actual carrier balance.
   if(typeof renderCustomerHeaderWallet==="function"){
@@ -154,5 +159,5 @@
  if(document.readyState==="loading"){
   document.addEventListener("DOMContentLoaded",bind,{once:true});
  }else bind();
- window.L1017nPrimaryWallets=Object.freeze({refresh:load,getSelected});
+ window.L1017nPrimaryWallets=Object.freeze({refresh:load,getSelected,getSelectedFor});
 })();

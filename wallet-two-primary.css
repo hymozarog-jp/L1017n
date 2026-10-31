@@ -1,0 +1,173 @@
+/* L1017N — separate primary wallet cards, no shared 'main' balance.
+   Each card displays its existing server-backed column independently.
+   Libyana controls only: Madar charging and transfers remain unavailable. */
+#walletView .wallet-subtitle{
+  color:#b0bbd0!important;
+  font-size:13px!important;
+  margin-bottom:14px!important;
+  line-height:1.85!important;
+}
+#walletView .wallet-separate-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin:0 0 15px!important;
+}
+#walletView .wallet-separate-head h3{
+  margin:0!important;
+  color:#f6f7ff;
+  font:850 clamp(18px,4.6vw,24px)/1.5 "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#walletView .wallet-separate-head p{
+  margin:2px 0 0!important;
+  color:#9daec9;
+  font-size:12px;
+}
+#walletView .wallet-separate-count{
+  padding:8px 12px;
+  white-space:nowrap;
+  border-radius:999px;
+  background:#1a2742;
+  color:#b6c8ea;
+  border:1px solid #415374;
+  font-size:11px;
+  font-weight:800;
+}
+#walletView .wallet-carousel{
+  display:grid!important;
+  width:100%!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+  overflow:visible!important;
+  scroll-snap-type:none!important;
+  scroll-behavior:auto!important;
+  padding:3px 0 14px!important;
+}
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+  box-sizing:border-box!important;
+  display:block!important;
+  flex:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:252px!important;
+  min-height:252px!important;
+  max-height:none!important;
+  transform:scale(1)!important;
+  scroll-snap-align:none!important;
+  margin:0!important;
+  border-radius:26px!important;
+}
+#walletView .wallet-carousel>.wallet-hero.is-wallet-visible,
+#walletView .wallet-carousel>.madar-wallet-card.is-wallet-visible{
+  transform:scale(1)!important;
+}
+#walletView .wallet-provider-heading{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:1px!important;
+  min-width:0;
+  text-align:right!important;
+}
+#walletView .wallet-provider-heading>.wallet-primary-badge{
+  color:#fff!important;
+  font-size:22px!important;
+  font-weight:900!important;
+  border:0!important;
+  padding:0!important;
+  background:none!important;
+}
+#walletView .wallet-provider-heading>.wallet-independent-tag{
+  display:inline-block!important;
+  color:#ffe3f4!important;
+  font:700 11px/1.45 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  white-space:nowrap;
+}
+#walletView .madar-wallet-card .wallet-provider-heading>.wallet-independent-tag{
+  color:#c8ffe0!important;
+}
+#walletView .wallet-hero-balance strong#walletShowcaseBalance,
+#walletView .madar-wallet-card #madarWalletBalance{
+  font-size:clamp(34px,14cqi,68px)!important;
+}
+#walletView .wallet-carousel-dots{display:none!important}
+#walletView .wallet-madar-logo-credit{
+  margin:0 0 14px auto!important;
+  font-size:9px!important;
+  opacity:.7;
+}
+#walletView .wallet-separate-info{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  background:#151c31;
+  border:1px solid #344366;
+  border-radius:15px;
+  padding:12px 14px;
+  margin:0 0 21px!important;
+  color:#c1cee8;
+  font:500 12px/1.8 "IBM Plex Sans Arabic",system-ui,sans-serif;
+}
+#walletView .wallet-separate-info svg{
+  flex:0 0 19px;
+  width:19px;
+  height:19px;
+  stroke:#a6baf2;
+  stroke-width:1.8;
+  fill:none;
+  margin-top:2px;
+}
+#walletView .wallet-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  justify-items:center!important;
+}
+#walletView .wallet-actions .wallet-action{
+  width:100%;
+  min-width:0;
+}
+#walletView .wallet-actions .wallet-action b{
+  font-size:clamp(11px,2.7vw,13px)!important;
+  white-space:normal!important;
+  text-align:center!important;
+  line-height:1.45!important;
+}
+#walletView .wallet-madar-status-note{
+  font-size:11px;
+  color:#d2ffe3;
+}
+@media(max-width:699px){
+  #walletView .wallet-carousel{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:15px!important;
+  }
+  #walletView .wallet-carousel>.wallet-hero,
+  #walletView .wallet-carousel>.madar-wallet-card{
+    width:100%!important;
+    height:248px!important;
+    min-height:248px!important;
+    padding:20px!important;
+    border-radius:24px!important;
+  }
+  #walletView .wallet-hero-balance strong#walletShowcaseBalance,
+  #walletView .madar-wallet-card #madarWalletBalance{
+    font-size:clamp(36px,16cqi,74px)!important;
+  }
+}
+@media(max-width:390px){
+  #walletView .wallet-carousel>.wallet-hero,
+  #walletView .wallet-carousel>.madar-wallet-card{
+    height:232px!important;
+    min-height:232px!important;
+    padding:18px!important;
+  }
+  #walletView .wallet-separate-count{padding:6px 9px}
+  #walletView .wallet-separate-head h3{font-size:19px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #walletView .wallet-carousel>.wallet-hero,
+  #walletView .wallet-carousel>.madar-wallet-card{transition:none!important}
+}

@@ -52,27 +52,49 @@
  position:relative;z-index:5;
  display:inline-flex!important;
  justify-content:center;align-items:center;
+ gap:5px!important;
  width:auto!important;
- min-height:29px;
+ min-height:30px;
  margin:0!important;
- padding:4px 12px!important;
+ padding:5px 12px!important;
  border-radius:999px!important;
- border:1px solid #ffe5fb99!important;
- background:#fff3!important;
- color:#fff!important;
+ border:1.5px dashed #ffe3f9ab!important;
+ background:#39132e80!important;
+ color:#ffe5f7!important;
+ opacity:.91!important;
  font:800 11px/1.4 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
  white-space:nowrap;
  text-align:center;
  cursor:pointer;
- transition:background .2s ease,transform .2s ease,border-color .2s ease;
+ box-shadow:none!important;
+ transition:background .2s ease,transform .2s ease,border-color .2s ease,opacity .2s ease;
+}
+#walletView .wallet-primary-toggle[aria-pressed="false"]::before{
+ content:"+";
+ display:inline-grid;place-items:center;
+ width:15px;height:15px;
+ font:900 13px/1 system-ui,sans-serif;
+ border-radius:50%;
+ border:1px solid currentColor;
+}
+#walletView .madar-wallet-card .wallet-primary-toggle[aria-pressed="false"]{
+ background:#063d2980!important;
+ border-color:#c7ffe0a8!important;
+ color:#e1ffe9!important;
 }
 #walletView .wallet-primary-toggle:active{transform:scale(.94)}
 #walletView .wallet-primary-toggle[aria-pressed="true"]{
- background:#ffeff9!important;color:#952472!important;border-color:#fff!important;
- box-shadow:0 3px 11px #0002;
+ opacity:1!important;
+ background:#ffeff9!important;
+ color:#952472!important;
+ border:1.5px solid #fff!important;
+ box-shadow:0 3px 11px #0003!important;
 }
 #walletView .madar-wallet-card .wallet-primary-toggle[aria-pressed="true"]{
- color:#04673a!important;background:#e1ffe8!important;
+ color:#04673a!important;
+ background:#e1ffe8!important;
+ border:1.5px solid #fff!important;
+ box-shadow:0 3px 11px #0003!important;
 }
 #walletView .wallet-primary-toggle:focus-visible{
  outline:3px solid white!important;outline-offset:3px!important;
@@ -86,12 +108,20 @@
  grid-template-columns:repeat(4,minmax(0,1fr))!important;
 }
 #walletView #walletActionPrimary .wallet-action-icon{
- background:#113438!important;
- color:#36d5a0!important;
+ background:#212e43!important;
+ color:#b2c0d3!important;
+ border:1px dashed #596780!important;
+}
+#walletView #walletActionPrimary[aria-pressed="false"] b{
+ color:#b9c4d8!important;
 }
 #walletView #walletActionPrimary[aria-pressed="true"] .wallet-action-icon{
  background:#0b694d!important;color:#c1ffe4!important;
+ border:1px solid #84f1b3!important;
  box-shadow:0 0 0 2px #84f1b384!important;
+}
+#walletView #walletActionPrimary[aria-pressed="true"] b{
+ color:#c1ffe4!important;
 }
 #walletView .madar-wallet-card .madar-candy-status{
  font-size:clamp(11px,2.8vw,13px)!important;
@@ -114,7 +144,7 @@
   border-radius:25px!important;
  }
  #walletView .wallet-hero-top .wallet-provider-heading>.wallet-primary-badge{font-size:21px!important}
- #walletView .wallet-primary-toggle{min-height:28px;font-size:11px!important}
+ #walletView .wallet-primary-toggle{min-height:29px;font-size:11px!important}
  #walletView .wallet-actions .wallet-action b{font-size:12px!important}
 }
 @media(max-width:390px){
@@ -135,7 +165,7 @@
  top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
  width:auto!important;
  height:auto!important;
- padding:4px 12px!important;
+ padding:5px 12px!important;
  margin:0!important;
  transform:none;
 }

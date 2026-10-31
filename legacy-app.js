@@ -410,7 +410,7 @@ $('#googleSignInBtn')?.addEventListener('click',async()=>{
    const {error}=await supabaseClient.auth.signInWithOAuth({
      provider:'google',
      options:{
-       redirectTo:'https://hymozarog-jp.github.io/L1017n/',
+       redirectTo:new URL('./', window.location.href).href,
        queryParams:{prompt:'select_account'}
      }
    });
@@ -426,7 +426,7 @@ let authMode='login';
 $('#authModeLogin')?.addEventListener('click',()=>{authMode='login';$('#authModeLogin').classList.add('active');$('#authModeSignup').classList.remove('active');$('#authSubmit').textContent='تسجيل الدخول';$('#authPassword').autocomplete='current-password';});
 $('#authModeSignup')?.addEventListener('click',()=>{authMode='signup';$('#authModeSignup').classList.add('active');$('#authModeLogin').classList.remove('active');$('#authSubmit').textContent='إنشاء حساب';$('#authPassword').autocomplete='new-password';});
 $('#authAlternate')?.addEventListener('click',()=>$('#authMode'+(authMode==='signup'?'Login':'Signup'))?.click());
-$('#forgotPassword')?.addEventListener('click',async()=>{const email=$('#authEmail').value.trim();if(!email){toast('اكتب بريدك الإلكتروني أولاً');$('#authEmail').focus();return}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:'https://hymozarog-jp.github.io/L1017n/'});if(error)toast('تعذر إرسال رابط تغيير كلمة المرور: '+error.message);else toast('لو البريد مسجل، بنرسلوله رابط تغيير كلمة المرور.');});
+$('#forgotPassword')?.addEventListener('click',async()=>{const email=$('#authEmail').value.trim();if(!email){toast('اكتب بريدك الإلكتروني أولاً');$('#authEmail').focus();return}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:new URL('./', window.location.href).href});if(error)toast('تعذر إرسال رابط تغيير كلمة المرور: '+error.message);else toast('لو البريد مسجل، بنرسلوله رابط تغيير كلمة المرور.');});
 $('#authForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const status=$('#authStatus'),say=msg=>{if(status)status.textContent=msg;toast(msg)};

@@ -209,6 +209,10 @@ function focusCard(){
  if(!track)return;
  const cards=[...track.children].filter(el=>el.matches(".wallet-hero,.madar-wallet-card"));
  if(!cards.length)return;
+ if(window.getComputedStyle(track).display==="grid"){
+  cards.forEach(card=>card.classList.add("is-wallet-visible"));
+  return;
+ }
  const frame=track.getBoundingClientRect();
  const center=frame.left+frame.width/2;
  let best=-1,score=Infinity;

@@ -108,7 +108,7 @@
     var brand=root.querySelector('.rgp-brand');
     if(brand)brand.textContent=label;
     var back=root.querySelector('[data-rgp-back]');
-    if(back){back.textContent='رجوع';back.setAttribute('aria-label','رجوع إلى أقسام روبلوكس');}
+    if(back){var backLabel=back.querySelector('.rgp-back-label');if(backLabel)backLabel.textContent='رجوع';back.setAttribute('aria-label','رجوع إلى أقسام روبلوكس');}
     var title=root.querySelector('.rgp-title');
     if(title)title.hidden=true;
     root.scrollTop=0;
@@ -118,7 +118,7 @@
     addStyles();closePage();
     var p=document.createElement('div');p.id=pageId;
     p.innerHTML=`<div class="rgp-shell">
-      <div class="rgp-top"><div class="rgp-brand">روبلوكس</div><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع للمتجر">رجوع</button></div>
+      <div class="rgp-top"><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع إلى المتجر"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg><span class="rgp-back-label">رجوع</span></button><div class="rgp-brand">روبلوكس</div><span class="rgp-header-spacer" aria-hidden="true"></span></div>
       <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>Roblox</h1><span class="rgp-category-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg>باقات ومستلزمات</span><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
       <div class="rgp-reference-features"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختر الباقة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span></div><h2 class="rgp-title">اختر الفئة</h2>
       <div class="rgp-grid">

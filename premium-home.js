@@ -28,7 +28,7 @@ function mount(){
   '<div class="ph-slide-content"><span class="ph-slide-eyebrow">GAMEBOX LY / MM2</span><h2>أسلحة MM2 <span>في متجرك</span></h2>',
   '<p>تصفح أسلحة MM2 المتوفرة، والتسليم داخل اللعبة بعد إتمام الطلب.</p>',
   '<button type="button" class="ph-slide-button" data-ph-action="mm2">تصفح قسم MM2 <span aria-hidden="true">‹</span></button></div>',
-  '<div class="ph-slide-art ph-slide-art-mm2" aria-hidden="true"><span class="ph-slide-mm2-label">MM2</span><span class="ph-slide-mm2-weapon">MINTY</span></div></article>',
+  '<div class="ph-slide-art ph-slide-art-mm2" aria-hidden="true"><img src="game-covers/mm2-game-icon.jpg?v=user-mm2-icon1" alt="" loading="lazy" decoding="async"></div></article>',
   '<article class="ph-slide ph-slide-wallet" data-ph-slide="3" aria-label="شحن المحفظة، الشريحة 4 من 5">',
   '<div class="ph-slide-content"><span class="ph-slide-eyebrow">GAMEBOX LY / WALLET</span><h2>اشحن <span>محفظتك</span></h2>',
   '<p>اختار المبلغ، واعرض كود تحويل ليبيانا بعد توثيق رقمك.</p>',

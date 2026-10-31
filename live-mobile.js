@@ -50,7 +50,7 @@
   // Three independent Roblox-only storefront sections; purchase stock is unchanged.
   const SHOP_SECTIONS = [
     {key:"roblox",title:"روبوكس",subtitle:"شحن روبوكس",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
-    {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/mm2-elderwood-blade.png",tag:"MURDER MYSTERY 2"},
+    {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/mm2-game-icon.jpg?v=user-mm2-icon1",tag:"MURDER MYSTERY 2"},
     {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/steal-a-brainrot-original.png",tag:"STEAL A BRAINROT"}
   ];
   function matchesSection(section) {

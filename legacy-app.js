@@ -472,22 +472,45 @@ if(RECOVERY_LINK){
 }
 
 
+let customerHeaderWalletSeq=0;
 async function renderCustomerHeaderWallet(user){
  const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
  if(!chip||!amount)return;
- // Reuse the Libyana artwork already bundled inside the wallet page.
- // No network logo URL and no independent static picture of the balance.
+ const sequence=++customerHeaderWalletSeq;
+ const carrier=window.L1017nPrimaryWallets?.getSelected?.()==='madar'?'madar':'libyana';
+ const isMadar=carrier==='madar';
+ // Display only the selected carrier's logo and its own authenticated balance.
+ // This is a presentation preference; changing it never moves money.
  const logo=chip.querySelector('#gbLibyanaHeaderLogo');
- const walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
- if(logo&&walletLogo&&!logo.getAttribute('src')){
-   logo.addEventListener('error',()=>{logo.removeAttribute('src')},{once:true});
-   logo.src=walletLogo.getAttribute('src')||'';
+ const fallback=chip.querySelector('.gb-libyana-fallback');
+ const label=chip.querySelector('.customer-wallet-label');
+ const topup=chip.querySelector('#customerTopupShortcut');
+ const walletLogo=document.querySelector(isMadar?'#walletView .madar-brand-mark img':'#walletView .libyana-brand-mark img');
+ const source=walletLogo?.getAttribute('src')||'';
+ chip.dataset.walletCarrier=carrier;
+ chip.setAttribute('aria-label','محفظة '+(isMadar?'المدار':'ليبيانا')+' ورصيدها');
+ if(label)label.textContent=isMadar?'رصيد المدار':'رصيد ليبيانا';
+ if(fallback)fallback.textContent=isMadar?'مد':'Li';
+ if(logo){
+   if(!logo.dataset.brandFallbackBound){
+     logo.dataset.brandFallbackBound='1';
+     logo.addEventListener('error',()=>{logo.removeAttribute('src')});
+   }
+   if(source && logo.getAttribute('src')!==source)logo.setAttribute('src',source);
+   if(!source)logo.removeAttribute('src');
+   logo.alt='شعار '+(isMadar?'المدار':'ليبيانا');
+ }
+ if(topup){
+   topup.setAttribute('aria-label',isMadar?'شحن المدار غير متاح حاليًا':'شحن محفظة ليبيانا');
+   topup.title=isMadar?'شحن المدار قريبًا':'شحن محفظة ليبيانا';
  }
  if(!user){chip.classList.add('hidden');return}
  chip.classList.remove('hidden');
  amount.textContent='…';
- const {data,error}=await supabaseClient.from('wallet_accounts').select('balance').eq('user_id',user.id).maybeSingle();
- amount.textContent=error?'— د.ل':Number(data?.balance||0).toFixed(2)+' د.ل';
+ const {data,error}=await supabaseClient.from('wallet_accounts')
+   .select('balance,madar_balance').eq('user_id',user.id).maybeSingle();
+ if(sequence!==customerHeaderWalletSeq)return;
+ amount.textContent=error?'— د.ل':Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(2)+' د.ل';
 }
 // Trust only Google avatar hosts or the signed-in user's own uploaded Supabase image.
 function approvedProfilePhoto(user){
@@ -735,7 +758,7 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
  }
  // TOKEN_REFRESHED does not change the visible account or wallet data.
 });
-$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>switchView('wallet'));$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
+$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}switchView('wallet')});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');
    if(OAUTH_ERROR){

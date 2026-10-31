@@ -1,0 +1,27 @@
+/* Internal wallet-to-wallet transfers, retains the existing wallet theme. */
+#walletSendSheet .wallet-transfer-confirm[hidden]{display:none!important}
+#walletSendSheet .wallet-transfer-confirm{
+ padding:15px 16px;border:1px solid #a897eb91;border-radius:15px;
+ background:linear-gradient(140deg,#332957,#212b4a);
+ color:#f8f6ff;
+}
+#walletSendSheet .wallet-transfer-confirm strong{display:block;font-size:14px;margin-bottom:9px}
+#walletSendSheet .wallet-transfer-confirm p{font-size:14px;line-height:1.9;margin:0 0 7px;overflow-wrap:anywhere}
+#walletSendSheet .wallet-transfer-confirm small{display:block;font-size:11px;line-height:1.8;color:#ffdaae}
+#walletSendSheet .wallet-sheet-result.is-success{
+ color:#a7f5d1;background:#173e39aa;border:1px solid #428b77;
+ padding:12px;border-radius:12px;overflow-wrap:anywhere;
+}
+#walletSendSheet .wallet-sheet-submit:disabled{opacity:.5;cursor:progress}
+#walletSendSheet .wallet-transfer-history{margin-top:19px;border-top:1px solid #45516d;padding-top:13px}
+#walletSendSheet .wallet-transfer-history h3{margin:0 0 9px;color:#d9d4ff;font-size:15px}
+#walletSendHistory{font-size:12px;color:#9eafd0;min-height:20px}
+#walletSendSheet .wallet-transfer-history-row{
+ display:flex;align-items:center;justify-content:space-between;gap:9px;
+ padding:11px 2px;border-bottom:1px solid #ffffff18;
+}
+#walletSendSheet .wallet-transfer-history-row:last-child{border-bottom:0}
+#walletSendSheet .wallet-transfer-history-row strong{font-size:13px;white-space:nowrap}
+#walletSendSheet .wallet-transfer-out{color:#f7bbba}
+#walletSendSheet .wallet-transfer-in{color:#8fe7c5}
+#walletSendSheet .wallet-sheet-foot{max-width:410px;margin:13px auto 0!important}

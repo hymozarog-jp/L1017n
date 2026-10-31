@@ -98,7 +98,17 @@
     document.head.appendChild(s);
   }
 
-  window.openRobloxGameMenu=showRobloxPage;
+  // Separate top-level Roblox storefront categories, each with its own direct page.
+  window.openRobloxGameMenu=function(){
+    if(typeof window.openRobuxPackages==='function')window.openRobuxPackages();
+    else showRobloxPage();
+  };
+  window.openMm2StoreCategory=function(){
+    showRobloxPage('mm2');
+  };
+  window.openBrainrotStoreCategory=function(){
+    showRobloxPage('brainrot');
+  };
   function closePage(){var p=document.getElementById(pageId);if(p)p.remove()}
   function setInnerHeader(root,label,category){
     if(!root)return;
@@ -108,15 +118,15 @@
     var brand=root.querySelector('.rgp-brand');
     if(brand)brand.textContent=label;
     var back=root.querySelector('[data-rgp-back]');
-    if(back){var backLabel=back.querySelector('.rgp-back-label');if(backLabel)backLabel.textContent='رجوع';back.setAttribute('aria-label','رجوع إلى أقسام روبلوكس');}
+    if(back){var backLabel=back.querySelector('.rgp-back-label');if(backLabel)backLabel.textContent='رجوع';back.setAttribute('aria-label',root.dataset.directCategory?'رجوع إلى المتجر':'رجوع إلى أقسام روبلوكس');}
     var title=root.querySelector('.rgp-title');
     if(title)title.hidden=true;
     root.scrollTop=0;
   }
   window.setRobloxInnerHeader=setInnerHeader;
-  function showRobloxPage(){
+  function showRobloxPage(directCategory){
     addStyles();closePage();
-    var p=document.createElement('div');p.id=pageId;
+    var p=document.createElement('div');p.id=pageId;p.dataset.directCategory=directCategory||'';
     p.innerHTML=`<div class="rgp-shell">
       <div class="rgp-top"><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع إلى المتجر"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg><span class="rgp-back-label">رجوع</span></button><div class="rgp-brand">روبلوكس</div><span class="rgp-header-spacer" aria-hidden="true"></span></div>
       <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>Roblox</h1><span class="rgp-category-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg>باقات ومستلزمات</span><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
@@ -131,7 +141,7 @@
     if(typeof window.refreshRobloxStealCover==='function')window.refreshRobloxStealCover(p);
     p.addEventListener('click',function(e){
       if(e.target.closest('[data-rgp-back]')){
-        if(p.classList.contains('rgp-inner-page'))showRobloxPage();
+        if(p.classList.contains('rgp-inner-page')&&!p.dataset.directCategory)showRobloxPage();
         else closePage();
         return;
       }
@@ -148,6 +158,12 @@
       }
       showMm2Page();
     });
+    // Open category content immediately; no intermediate Roblox category menu.
+    if(directCategory==='mm2')void showMm2Page();
+    else if(directCategory==='brainrot'){
+      if(typeof window.openStealBrainrotCategory==='function')window.openStealBrainrotCategory();
+      else {closePage();alert('تعذر تحميل ماب السرقة، حدّث الصفحة.');}
+    }
   }
 
   async function showMm2Page(){
@@ -274,6 +290,6 @@
   document.addEventListener('click',function(e){
     var roblox=e.target.closest('[data-product="roblox"]');
     if(!roblox)return;
-    e.preventDefault();e.stopImmediatePropagation();showRobloxPage();
+    e.preventDefault();e.stopImmediatePropagation();window.openRobloxGameMenu();
   },true);
 })();

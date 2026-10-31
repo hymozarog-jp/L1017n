@@ -1,0 +1,327 @@
+/* GAMEBOXLY — Robux organized storefront, 2026-10-31.
+   Presentation only: existing server price checks, quantity quotes and checkout remain intact. */
+#robuxModal.robux-full-page:not(.hidden){
+  background:#070b18!important;
+  color:#f8f9ff;
+  overflow-x:hidden!important;
+  scrollbar-gutter:stable;
+}
+#robuxModal.robux-full-page .package-box.robux-store-box{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0 max(16px,calc((100vw - 684px)/2)) calc(62px + env(safe-area-inset-bottom,0px))!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#11162a 0%,#080c19 42%,#090e1b 100%)!important;
+  box-shadow:none!important;
+}
+#robuxModal .package-close{
+  position:fixed!important;
+  top:calc(14px + env(safe-area-inset-top,0px))!important;
+  right:max(16px,calc((100vw - 684px)/2))!important;
+  left:auto!important;
+  width:43px!important;height:43px!important;
+  border:1px solid #756ba6a0!important;
+  border-radius:15px!important;
+  color:#fff!important;
+  background:#1c2440e8!important;
+  box-shadow:0 6px 22px #0006!important;
+  font-size:25px!important;
+  transform:none!important;
+  z-index:100!important;
+}
+#robuxModal .robux-reference-hero{
+  direction:rtl;
+  display:grid!important;
+  grid-template-columns:78px minmax(0,1fr);
+  grid-template-rows:auto auto;
+  justify-content:initial!important;
+  align-content:center!important;
+  align-items:center!important;
+  column-gap:16px;
+  row-gap:3px;
+  min-height:0!important;
+  margin:0 -16px 15px!important;
+  padding:calc(78px + env(safe-area-inset-top,0px)) 21px 22px!important;
+  text-align:right!important;
+  background:radial-gradient(ellipse at 0% 0%,#5b438677,transparent 61%),linear-gradient(140deg,#1e2442,#101729 72%)!important;
+  border-bottom:1px solid #635c8a66;
+}
+#robuxModal .robux-reference-logo{
+  grid-column:1!important;grid-row:1/3!important;
+  width:76px!important;height:76px!important;
+  margin:0!important;
+  border:3px solid #a69ae96b!important;
+  border-radius:21px!important;
+  box-shadow:0 9px 22px #0006!important;
+}
+#robuxModal .robux-reference-hero h1{
+  grid-column:2!important;grid-row:1!important;
+  align-self:end!important;
+  margin:0!important;
+  font:800 clamp(23px,5.8vw,31px)/1.4 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  text-align:right!important;
+  direction:ltr;
+  justify-self:start;
+  color:#fff!important;
+}
+#robuxModal .robux-reference-tag{
+  grid-column:2!important;grid-row:2!important;
+  justify-self:start!important;align-self:start!important;
+  padding:5px 12px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  white-space:nowrap;
+  background:#37305e!important;
+  color:#e2d8ff!important;
+}
+#robuxModal .robux-reference-features{
+  width:100%;max-width:684px;
+  box-sizing:border-box;
+  margin:0 auto 12px!important;
+  padding:12px 5px!important;
+  border:1px solid #3d4069!important;
+  border-radius:18px!important;
+  background:#151a30!important;
+  box-shadow:none!important;
+}
+#robuxModal .robux-reference-features>span.rqc-feature{
+  padding:1px 4px;
+  gap:4px!important;
+  border-left:1px solid #343b60!important;
+}
+#robuxModal .robux-reference-features>span.rqc-feature:last-child{border-left:0!important}
+#robuxModal .rqc-feature svg{width:22px!important;height:22px!important;filter:none!important}
+#robuxModal .rqc-feature small{font-size:11px!important;line-height:1.4!important}
+#robuxModal .robux-quantity-calculator{
+  max-width:684px!important;
+  margin:0 auto 17px!important;
+  padding:19px!important;
+  border-radius:22px!important;
+  border:1px solid #8775ca90!important;
+  background:linear-gradient(153deg,#222444 0%,#151a34 55%,#101a2d 100%)!important;
+  box-shadow:0 12px 35px #0005!important;
+}
+#robuxModal .rqc-heading{margin-bottom:17px!important;gap:10px!important}
+#robuxModal .rqc-header-copy>small{
+  direction:ltr;
+  justify-content:flex-end;
+  color:#bcabff!important;
+  font-size:10px!important;
+}
+#robuxModal .rqc-heading h2{
+  font-size:clamp(20px,5.2vw,25px)!important;
+  line-height:1.42!important;
+  letter-spacing:0!important;
+}
+#robuxModal .rqc-heading h2::before{
+  content:"01";
+  display:inline-grid;place-items:center;
+  vertical-align:middle;
+  width:31px;height:31px;
+  margin-left:9px;
+  border:1px solid #ad96fb7a;
+  border-radius:11px;
+  background:#55469080;
+  color:#e9e0ff;
+  font:800 12px system-ui,sans-serif;
+}
+#robuxModal .rqc-header-copy>p{font-size:12px!important;color:#bec6df!important}
+#robuxModal .rqc-icon{
+  flex:0 0 76px!important;
+  width:76px!important;height:76px!important;
+  transform:none!important;
+  border-radius:21px!important;
+  background:#322957!important;
+}
+#robuxModal .rqc-coin-art{width:75px!important;height:75px!important}
+#robuxModal .rqc-label{margin:0 0 9px!important;font-size:12px!important;color:#d7dcf0!important}
+#robuxModal .rqc-picker{gap:8px!important;min-height:58px!important}
+#robuxModal .rqc-step{
+  flex:0 0 51px!important;
+  border-radius:15px!important;
+  border-color:#716ac2!important;
+  background:#302f60!important;
+}
+#robuxModal .rqc-input-box{min-height:58px!important;border-radius:15px!important;border-color:#515e88!important}
+#robuxModal .rqc-quick-label{margin:16px 0 9px!important}
+#robuxModal .rqc-quick-amounts{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+#robuxModal .rqc-amount-chip{
+  min-height:46px!important;
+  border-radius:13px!important;
+  background:#242d4d!important;
+  border:1px solid #4c5685!important;
+}
+#robuxModal .rqc-amount-chip.is-selected{
+  color:#fff!important;
+  background:linear-gradient(130deg,#7c61d3,#5548b0)!important;
+  border-color:#c1afff!important;
+}
+#robuxModal .rqc-total{
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px 12px!important;
+  margin-top:17px!important;
+  padding:15px!important;
+  background:#102d30!important;
+  border-color:#2e7c7b80!important;
+  border-radius:15px!important;
+}
+#robuxModal .rqc-total-description{flex:1;min-width:120px!important}
+#robuxModal .rqc-price-wrap{flex:none}
+#robuxModal #robuxQuantityPrice{font-size:clamp(20px,5vw,26px)!important}
+#robuxModal .rqc-feedback{margin:8px 0 12px!important;min-height:28px!important}
+#robuxModal .rqc-select{
+  min-height:55px!important;
+  border-radius:14px!important;
+  background:linear-gradient(110deg,#8564e7,#6153c4)!important;
+  box-shadow:0 7px 23px #6251bd50!important;
+}
+#robuxModal .robux-reference-section{
+  display:flex;align-items:center;gap:9px;
+  width:100%;max-width:684px;
+  margin:22px auto 5px!important;
+  font:800 clamp(19px,5vw,23px)/1.5 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  color:#f5f4ff!important;
+}
+#robuxModal .robux-reference-section::before{
+  content:"02";
+  display:grid;place-items:center;
+  flex:0 0 31px;
+  height:31px;
+  border-radius:11px;
+  border:1px solid #53668e;
+  background:#253455;
+  color:#c9d9ff;
+  font:800 12px system-ui,sans-serif;
+}
+#robuxModal .robux-packages-help{
+  width:100%;max-width:684px;
+  margin:0 auto 13px!important;
+  color:#9eacc6!important;
+  font-size:12px!important;
+  line-height:1.8!important;
+}
+#robuxModal .package-grid{
+  width:100%!important;
+  max-width:684px!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:11px!important;
+  margin:0 auto 18px!important;
+  clear:none!important;
+}
+#robuxModal .robux-package{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+  align-items:stretch!important;
+  min-height:164px!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  padding:0!important;
+  border:1px solid #3e4b76!important;
+  border-radius:19px!important;
+  background:linear-gradient(160deg,#243358,#121c35 70%)!important;
+  box-shadow:0 6px 20px #0004!important;
+  overflow:hidden!important;
+  text-align:right!important;
+  transition:transform .18s,border-color .18s,box-shadow .18s!important;
+}
+#robuxModal .robux-package::before{
+  content:"";
+  position:absolute;
+  inset:0 0 47%;
+  background:radial-gradient(ellipse at 72% 10%,#8e76d444,transparent 76%);
+  pointer-events:none;
+}
+#robuxModal .robux-art{
+  position:absolute!important;
+  right:13px!important;left:auto!important;top:13px!important;
+  width:54px!important;height:54px!important;
+  aspect-ratio:1!important;
+  border:2px solid #777eb077!important;
+  border-radius:15px!important;
+  box-shadow:0 5px 16px #0006!important;
+  z-index:2!important;
+}
+#robuxModal .robux-plus{
+  left:12px!important;right:auto!important;top:15px!important;
+  width:32px!important;height:32px!important;
+  font-size:24px!important;
+  background:#243052!important;
+  color:#dfd5ff!important;
+}
+#robuxModal .robux-package>span:not(.robux-art):not(.robux-plus){
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:end!important;
+  flex:1!important;
+  min-height:0!important;
+  width:100%!important;
+  padding:82px 12px 13px!important;
+  background:linear-gradient(180deg,transparent 0%,#0f182ed8 63%,#0d1629 100%)!important;
+}
+#robuxModal .robux-package strong{
+  text-align:right!important;
+  align-self:stretch!important;
+  font:800 clamp(13px,3.6vw,17px)/1.4 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  color:#fff!important;
+  overflow-wrap:anywhere;
+}
+#robuxModal .robux-package small:not(.stock-label){
+  align-self:flex-start!important;
+  margin-top:8px!important;
+  padding:5px 9px!important;
+  border-radius:10px!important;
+  background:#2a2b59!important;
+  color:#d8cdff!important;
+  font-size:clamp(13px,3.5vw,16px)!important;
+  line-height:1.5!important;
+}
+#robuxModal .robux-package .stock-label{
+  align-self:flex-start!important;
+  font-size:10px!important;
+  color:#a5b2cc!important;
+  margin-top:5px!important;
+  line-height:1.4!important;
+  text-align:right!important;
+}
+#robuxModal .robux-package.selected{
+  border:2px solid #ab9aff!important;
+  box-shadow:0 0 0 3px #8d77d82c,0 8px 24px #0008!important;
+}
+#robuxModal .robux-package.selected .robux-plus{background:#8c73db!important;color:#fff!important}
+#robuxModal .robux-package:disabled{opacity:.48!important;cursor:not-allowed!important}
+#robuxModal .robux-package:focus-visible,
+#robuxModal .package-close:focus-visible{outline:3px solid #d1c2ff!important;outline-offset:3px!important}
+#robuxModal .robux-checkout-bar{background:#171d35!important;border-top:1px solid #655c9777!important}
+#robuxModal .robux-checkout-next{background:#7760d6!important}
+@media(max-width:410px){
+  #robuxModal .robux-reference-hero{grid-template-columns:66px minmax(0,1fr);column-gap:12px;padding-top:calc(74px + env(safe-area-inset-top,0px))!important}
+  #robuxModal .robux-reference-logo{width:65px!important;height:65px!important;border-radius:17px!important}
+  #robuxModal .rqc-icon{flex-basis:64px!important;width:64px!important;height:64px!important;border-radius:18px!important}
+  #robuxModal .rqc-coin-art{width:64px!important;height:64px!important}
+  #robuxModal .robux-quantity-calculator{padding:15px 12px!important}
+  #robuxModal .rqc-picker{gap:6px!important}
+  #robuxModal .rqc-step{flex-basis:44px!important}
+  #robuxModal .rqc-input-box{padding:0 7px!important}
+  #robuxModal #robuxCustomQuantity{font-size:20px!important}
+  #robuxModal .robux-package{min-height:158px!important}
+  #robuxModal .robux-package>span:not(.robux-art):not(.robux-plus){padding:79px 10px 11px!important}
+  #robuxModal .robux-art{width:47px!important;height:47px!important;right:10px!important;top:12px!important}
+  #robuxModal .package-grid{gap:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #robuxModal .robux-package,
+  #robuxModal .rqc-select,
+  #robuxModal .rqc-amount-chip{transition:none!important}
+}

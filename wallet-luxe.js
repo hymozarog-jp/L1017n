@@ -244,8 +244,23 @@ function bindCandyCard(){
  card.addEventListener('click',event=>candyFeedback(card,event,false));
  card.addEventListener('keydown',event=>{if(event.target===card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();candyFeedback(card,null,false)}});
 }
+function bindMadarCard(){
+ const card=document.querySelector('#walletView .madar-wallet-card');
+ if(!card||card.dataset.candyReady)return;
+ card.dataset.candyReady='1';
+ card.tabIndex=0;
+ card.setAttribute('role','group');
+ card.setAttribute('aria-label','محفظة المدار الجديد');
+ card.addEventListener('click',event=>candyFeedback(card,event,false));
+ card.addEventListener('keydown',event=>{
+  if(event.target===card&&(event.key==='Enter'||event.key===' ')){
+   event.preventDefault();candyFeedback(card,null,false);
+  }
+ });
+}
 function activate(){
  bindCandyCard();
+ bindMadarCard();
  if(!activated){
   const track=document.querySelector("#walletView .wallet-carousel");
   if(track)track.addEventListener("scroll",()=>{
@@ -265,7 +280,7 @@ function resetBalance(el){
  if(previous)cancelAnimationFrame(previous);
  requests.delete(el);
  lastBalances.delete(el);
- const gain=el.closest(".wallet-hero")?.querySelector(".wallet-candy-gain");if(gain)gain.textContent="";
+ const gain=el.closest(".wallet-hero,.madar-wallet-card")?.querySelector(".wallet-candy-gain");if(gain)gain.textContent="";
  el.textContent="0.000";
  el.classList.remove("wallet-luxe-tick");
 }
@@ -279,7 +294,7 @@ function animateBalance(el,amount){
  lastBalances.set(el,end);
  const old=requests.get(el);
  if(old)cancelAnimationFrame(old);
- const card=el.closest('.wallet-hero');
+ const card=el.closest('.wallet-hero,.madar-wallet-card');
  if(previous!==undefined&&end>previous+0.0005){
   candyFeedback(card,null,true);
   const gain=card?.querySelector('.wallet-candy-gain');

@@ -128,3 +128,14 @@
 @media(prefers-reduced-motion:reduce){
  #walletView .wallet-primary-toggle{transition:none!important}
 }
+
+/* Older inline Madar rules absolutely-positioned every button; exempt the new primary chip. */
+#walletView .madar-wallet-card .wallet-primary-toggle{
+ position:relative!important;
+ top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+ width:auto!important;
+ height:auto!important;
+ padding:4px 12px!important;
+ margin:0!important;
+ transform:none;
+}

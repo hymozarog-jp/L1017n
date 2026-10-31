@@ -13,19 +13,10 @@
       '<span class="l1017-rank-toolbar-brand"><b>GAMEBOX LY</b><small>LEADERBOARD</small></span>'+
       '<button type="button" class="l1017-rank-refresh" id="l1017RankRefresh" aria-label="تحديث التصنيف">'+
       '<svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5 9a8 8 0 0 1 13-3l2 6M4 12l2 6a8 8 0 0 0 13-3"/></svg></button>';
-    var hero=document.createElement('section');
-    hero.className='l1017-rank-hero';hero.setAttribute('aria-label','تصنيف شحن المحفظة');
-    hero.innerHTML=
-      '<span class="l1017-rank-hero-kicker">ترتيب المتسوقين المباشر</span>'+
-      '<div class="l1017-rank-hero-title">قاعة <em>المتصدرين</em></div>'+
-      '<p class="l1017-rank-hero-sub">كل ما تشحن رصيد محفظتك، يرتفع مجموع شحنك في التصنيف. شحن الرصيد الناجح فقط هو اللي يتحسب.</p>'+
-      '<div class="l1017-rank-hero-tags"><span>✦ الشحن المعتمد فقط</span><span>✦ يظهر ترتيبك مباشرة</span></div>'+
-      '<span class="l1017-hero-crown" aria-hidden="true"><svg viewBox="0 0 56 56">'+
-      '<path d="m7 18 11 12 10-19 11 19 10-12-5 26H12L7 18ZM12 48h32"/></svg></span>';
     var personalTitle=document.createElement('div');
     personalTitle.className='l1017-rank-mini-heading';
     personalTitle.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3.6-8 8-8s8 3 8 8"/></svg> بطاقة ترتيبك';
-    page.prepend(hero);page.prepend(toolbar);
+    page.prepend(toolbar);
     var own=document.getElementById('lbMyRank');
     if(own)page.insertBefore(personalTitle,own);
     var privacy=document.createElement('button');

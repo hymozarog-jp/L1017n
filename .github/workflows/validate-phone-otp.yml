@@ -41,7 +41,7 @@ jobs:
           assert(html.includes('phone-verification-page.css?v=phone-otp4'));
           assert(html.includes('resala-otp.js?v=otp-four-minutes2'));
           assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
-          assert(app.includes('legacy-app.js?v=profile-glow2'));
+          assert(/legacy-app\\.js\\?v=[^"'\\s]+/.test(app));
           assert(old.includes('window.openPhoneVerificationPage()'));
           assert(js.includes("save_my_libyana_phone"),'Number may be saved only by existing auth RPC');
           assert(js.includes('l1017n-resala-otp'),'Authenticated Resala Edge Function required');

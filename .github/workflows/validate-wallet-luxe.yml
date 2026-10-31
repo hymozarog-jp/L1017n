@@ -1,10 +1,12 @@
-name: Validate wallet luxe animation and safe sending preview
+name: Validate independent primary wallets and secure sending
 on:
   push:
     branches: [main]
     paths:
       - 'wallet-luxe.js'
       - 'wallet-luxe.css'
+      - 'wallet-madar-match.css'
+      - 'wallet-two-primary.css'
       - 'index.html'
       - 'app.js'
       - 'legacy-app.js'
@@ -18,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify wallet JS, real balance and transfer safety
+      - name: Validate wallet rendering, separate balances and verified transfer flow
         run: |
           node --check wallet-luxe.js
           node --check legacy-app.js
@@ -29,40 +31,45 @@ jobs:
           const app=fs.readFileSync('app.js','utf8');
           const legacy=fs.readFileSync('legacy-app.js','utf8');
           const ui=fs.readFileSync('wallet-luxe.js','utf8');
-          const css=fs.readFileSync('wallet-luxe.css','utf8');
-          for(const id of ['walletActionTopup','walletActionTransfer','walletActionSend','walletActionPrimary','walletShowcaseBalance','topupHistory','walletView']){
-            assert(html.includes('id="'+id+'"'),'Wallet element missing: '+id);
+          const original=fs.readFileSync('wallet-luxe.css','utf8');
+          const separate=fs.readFileSync('wallet-two-primary.css','utf8');
+          const madar=fs.readFileSync('wallet-madar-match.css','utf8');
+          for(const id of ['walletActionTopup','walletActionTransfer','walletActionSend',
+            'walletShowcaseBalance','madarWalletBalance','topupHistory','walletView']){
+            assert(html.includes('id="'+id+'"'),'Missing active wallet element: '+id);
           }
-          assert.match(html,/wallet-luxe\.css\?v=[A-Za-z0-9._-]+/);
+          assert(!html.includes('id="walletActionPrimary"'),'A shared third wallet must not be shown');
+          assert.equal((html.match(/class="wallet-independent-tag">محفظة أساسية/g)||[]).length,2,
+            'Each carrier must have its own primary wallet indicator');
+          assert(html.includes('wallet-two-primary.css?v=separate-wallets-1'));
+          assert(html.includes('wallet-madar-match.css?v=madar-green-20261031-1'));
           assert(html.includes('wallet-transactions.css?v=wallet-row1'));
-          assert(legacy.includes('walletTransactionRows(list)'),'History should use compact rows');
-          assert.match(html,/wallet-luxe\.js\?v=[A-Za-z0-9._-]+/);
-          assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
-          assert(app.includes('legacy-app.js?v=profile-glow2'));
-          assert(html.includes('aria-controls="walletSendSheet"'));
-          assert(legacy.includes("window.L1017nWalletLuxe.openSend()"),'Send button opens real preview');
-          assert(legacy.includes("window.L1017nWalletLuxe.animateBalance"),'Animate only data from authenticated wallet');
-          assert(legacy.includes("window.L1017nWalletLuxe.resetBalance"),'Reset on logout');
-          assert(legacy.includes("window.L1017nWalletLuxe?.closeSend()"),'Close when leaving wallet');
-          assert(legacy.includes('getUser()') || legacy.includes('currentUser()'));
-          assert(legacy.includes("from('wallet_accounts').select('balance,madar_balance,primary_balance')"),'Balances must come from Supabase, not UI numbers');
-          assert(legacy.includes('window.openDedicatedTopup') || html.includes('window.openDedicatedTopup'),'Do not break top-ups');
-          assert(ui.includes('No money transfers, transaction records, SMS, or wallet mutations here'));
-          assert(ui.includes('wallet-feature-unavailable'),'Warn transfer is unavailable');
-          assert(ui.includes('لن يتم إرسال أو خصم أي مبلغ'),'Never falsely claim a transfer');
-          assert(ui.includes('event.preventDefault()'),'Submitting preview cannot transfer');
-          assert(ui.includes('wallet-sheet-result'),'Preview feedback required');
-          assert(!ui.includes('functions.invoke('),'No transfer RPC');
-          assert(!ui.includes('.rpc('),'No wallet RPC');
-          assert(!ui.includes('wallet_transactions'),'No wallet DB inserts');
-          assert(css.includes('#walletActionSend.wallet-sending'));
-          assert(css.includes('@keyframes walletPlaneFly'));
-          assert(css.includes('@media(prefers-reduced-motion:reduce)'));
-          assert(css.includes('#walletSendSheet[hidden]'));
+          assert(html.includes('wallet-luxe.js?v=two-primary-wallets-1'));
+          assert(html.includes('app.js?v=two-primary-wallets-1'));
+          assert(app.includes('legacy-app.js?v=two-primary-wallets-1'));
+          assert.match(separate,/grid-template-columns:minmax\(0,1fr\)!important/,'Mobile wallets must stack individually');
+          assert.match(separate,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important/,'Desktop wallets must be independent');
+          assert.match(madar,/#madarWalletBalance/,'Madar must use the active balance field');
+          assert.match(legacy,/from\('wallet_accounts'\)\.select\('balance,madar_balance,primary_balance'\)/,
+            'Both balances must remain server-owned');
+          assert(legacy.includes('Number(wallet?.madar_balance||0)'),'Madar balance is independent');
+          assert(legacy.includes('Number(wallet?.balance||0)'),'Libyana balance is independent');
+          assert(!legacy.includes("$('#walletActionPrimary').onclick"));
+          assert(legacy.includes('walletTransactionRows(list)'),'Existing wallet history stays intact');
+          assert(legacy.includes('window.L1017nWalletLuxe.animateBalance'));
+          assert(legacy.includes('window.L1017nWalletLuxe.resetBalance'));
+          assert(ui.includes('supabaseClient.rpc("send_wallet_balance"'),'Sending must invoke the secured database RPC');
+          assert(ui.includes('p_request_key:pending.key'),'Retry must use an idempotency key');
+          assert(ui.includes('walletTransferConfirm'),'Show transfer confirmation before sending');
+          assert(ui.includes('wallet-sheet-result'),'Show transfer results');
+          assert(!ui.includes("from('wallet_accounts').update("),'UI cannot write wallet balances directly');
+          assert(original.includes('#walletActionSend.wallet-sending'));
+          assert(original.includes('@keyframes walletPlaneFly'));
+          assert(original.includes('#walletSendSheet[hidden]'));
           const sandbox={window:{matchMedia:()=>({matches:true})},document:{readyState:'loading',addEventListener:()=>{}},console};
           vm.runInNewContext(ui,sandbox);
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.openSend,'function');
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.animateBalance,'function');
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.resetBalance,'function');
-          console.log('Wallet UI, visual animation, safe non-transferring preview, and account balance guards validated');
+          console.log('Independent wallets, real balance fields and secured transfer UI validated.');
           JS

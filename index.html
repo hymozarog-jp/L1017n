@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="robux-checkout-bar.css?v=1">
 <link rel="stylesheet" href="robux-checkout-screen.css?v=1">
 <link rel="stylesheet" href="robux-purchase-overlay.css?v=1">
-<link rel="stylesheet" href="robux-quantity-calculator.css?v=quantity-picker4">
+<link rel="stylesheet" href="robux-quantity-calculator.css?v=any-robux-amount5">
 <link rel="stylesheet" href="game-transitions.css?v=square4">
 <link rel="stylesheet" href="leaderboard-gold.css?v=money-meter1-violet2">
 <script src="personal-premium.js?v=profile-glow2"></script>
@@ -271,7 +271,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=quantity-picker4&purchase-notify=1&credit-drop=2';
+      var s=document.createElement('script');s.src='app.js?v=any-robux-amount5&purchase-notify=1&credit-drop=2';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);

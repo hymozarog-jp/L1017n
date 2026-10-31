@@ -1,0 +1,72 @@
+/* GAMEBOXLY — signed-in account financial summary.
+   Visual styling only; balances come from authenticated account data. */
+#accountModern .account-balance-summary{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  margin:0 0 24px;width:100%;box-sizing:border-box;direction:rtl;
+}
+#accountModern .account-balance-tile{
+  display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;
+  gap:13px;min-width:0;min-height:130px;padding:18px 16px;
+  box-sizing:border-box;background:linear-gradient(145deg,#201f29,#15151f);
+  border:1px solid #34323e;border-radius:24px;
+  box-shadow:inset 0 1px 0 #ffffff0a,0 12px 26px #0004;
+  color:#f8f7fb;
+}
+#accountModern .account-balance-icon{
+  width:56px;height:56px;display:grid;place-items:center;
+  flex:none;border-radius:18px;box-sizing:border-box;
+}
+#accountModern .account-balance-icon svg{
+  display:block;width:30px;height:30px;max-width:70%;
+  stroke:currentColor;
+}
+#accountModern .account-balance-current .account-balance-icon{
+  color:#f2bf47;background:#e5b63813;
+  box-shadow:0 0 29px #efc44312,inset 0 0 0 1px #e8b52e12;
+}
+#accountModern .account-balance-spent .account-balance-icon{
+  color:#f47670;background:#df4d4d12;
+  box-shadow:0 0 28px #f0545420,inset 0 0 0 1px #ed646413;
+}
+#accountModern .account-balance-details{
+  min-width:0;display:flex;flex-direction:column;gap:11px;
+  align-items:flex-start;text-align:right;
+}
+#accountModern .account-balance-details>span{
+  display:block;color:#9f9ca9;line-height:1.45;font-size:clamp(13px,2.1vw,18px);
+  font-weight:600;
+}
+#accountModern .account-balance-details>strong{
+  display:flex;align-items:baseline;gap:5px;max-width:100%;
+  color:#f7f7fa;font-size:clamp(18px,3vw,29px);font-weight:800;line-height:1.2;
+  font-variant-numeric:tabular-nums;letter-spacing:-.5px;white-space:nowrap;
+}
+#accountModern .account-balance-details b{font-weight:850;direction:ltr;unicode-bidi:isolate}
+#accountModern .account-balance-details small{
+  font:700 clamp(10px,1.9vw,14px) 'IBM Plex Sans Arabic',sans-serif;color:#c7c3cf;
+}
+@media(max-width:600px){
+ #accountModern .account-balance-summary{gap:9px;margin-bottom:23px}
+ #accountModern .account-balance-tile{
+   grid-template-columns:42px minmax(0,1fr);gap:8px;
+   min-height:112px;padding:13px 10px;border-radius:19px;
+ }
+ #accountModern .account-balance-icon{width:42px;height:42px;border-radius:14px}
+ #accountModern .account-balance-icon svg{width:25px;height:25px}
+ #accountModern .account-balance-details{gap:7px}
+ #accountModern .account-balance-details>span{font-size:clamp(11px,2.85vw,15px)}
+ #accountModern .account-balance-details>strong{font-size:clamp(17px,4.4vw,23px);gap:4px}
+ #accountModern .account-balance-details small{font-size:10px}
+}
+@media(max-width:350px){
+ #accountModern .account-balance-tile{gap:6px;padding:11px 7px;grid-template-columns:35px minmax(0,1fr)}
+ #accountModern .account-balance-icon{width:35px;height:38px}
+ #accountModern .account-balance-icon svg{width:21px;height:21px}
+ #accountModern .account-balance-details>strong{font-size:16px}
+ #accountModern .account-balance-details>span{font-size:10px}
+}
+@media(prefers-reduced-motion:no-preference){
+ #accountModern .account-balance-tile{animation:gameboxSummaryIn .32s ease-out both}
+ #accountModern .account-balance-spent{animation-delay:.07s}
+ @keyframes gameboxSummaryIn{from{opacity:.3;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+}

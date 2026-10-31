@@ -15,19 +15,15 @@
   };
   const SVG = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
   const GAME_META = {
-    roblox: { name: "Roblox", tag: "روبوكس", color: "purple", art: "R" },
-    pubg: { name: "PUBG Mobile", tag: "ببجي موبايل", color: "amber", art: "UC" },
-    mm2: { name: "MM2", tag: "مستلزمات MM2", color: "blue", art: "M" },
-    "steal-a-brainrot": { name: "ماب السرقة", tag: "Steal a Brainrot", color: "teal", art: "01" },
-    fortnite: { name: "Fortnite", tag: "فورت نايت", color: "indigo", art: "FN" },
-    freefire: { name: "Free Fire", tag: "فري فاير", color: "orange", art: "FF" }
+    roblox: {name:"Robux",tag:"روبوكس",color:"purple",art:"R"},
+    mm2: {name:"MM2",tag:"Murder Mystery 2",color:"blue",art:"M"},
+    "steal-a-brainrot": {name:"ماب السرقة",tag:"Steal a Brainrot",color:"teal",art:"01"}
   };
-  const FILTERS = [["all", "الكل"], ["roblox", "Roblox"], ["pubg", "PUBG"], ["fortnite", "Fortnite"], ["freefire", "Free Fire"]];
+  const FILTERS = [["all","الكل"],["roblox","روبوكس"],["mm2","MM2"],["steal-a-brainrot","ماب السرقة"]];
   const HEROES = [
-    { headline: "عالم روبلوكس", more: "صار أقرب لك", desc: "باقات Robux ومستلزمات المابات في مكان واحد.", label: "ROBLOX · L1017N", action: "roblox", button: "استكشف روبلوكس", theme: "violet", art: "R" },
-    { headline: "شدات ببجي", more: "بكل سهولة", desc: "شوف بطاقات PUBG المتوفرة وأسعارها الحقيقية.", label: "PUBG MOBILE · UC", action: "pubg", button: "تصفح ببجي", theme: "gold", art: "UC" },
-    { headline: "ماب السرقة", more: "شخصياتك هنا", desc: "قرما ولاسيكرت ولاسبوكي في قسم واحد.", label: "STEAL A BRAINROT", action: "steal-a-brainrot", button: "تصفح الماب", theme: "aqua", art: "01" },
-    { headline: "الاشتراكات", more: "قريبًا في L1017N", desc: "صفحة جديدة لخدمات الترفيه والموسيقى، اكتشفها الآن.", label: "DIGITAL SUBSCRIPTIONS · L1017N", action: "subscriptions", button: "استكشف الاشتراكات", theme: "violet", art: "✦" }
+    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"شوف باقات الروبوكس",theme:"violet",art:"R"},
+    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"ادخل قسم MM2",theme:"gold",art:"M"},
+    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"ادخل ماب السرقة",theme:"aqua",art:"01"}
   ];
   const q = selector => document.querySelector(selector);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -51,74 +47,31 @@
     return key || "other";
   }
   function itemMeta(product) { return GAME_META[gameKey(product)] || { name: product.game || "الألعاب", tag: "منتجات رقمية", color: "purple", art: "L" }; }
-  // Roblox is a single parent game in the storefront. Robux, MM2 and
-  // Steal a Brainrot remain nested in the existing Roblox category screen.
-  function isRobloxFamily(key) {
-    return key === "roblox" || key === "mm2" || key === "steal-a-brainrot";
-  }
-  function hasRobloxCategory() {
-    const items = catalog().filter(p => p && p.active !== false && isRobloxFamily(gameKey(p)));
-    if (!items.length || (chosen !== "all" && chosen !== "roblox")) return false;
+  // Three independent Roblox-only storefront sections; purchase stock is unchanged.
+  const SHOP_SECTIONS = [
+    {key:"roblox",title:"روبوكس",subtitle:"شحن روبوكس",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
+    {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/mm2-elderwood-blade.png",tag:"MURDER MYSTERY 2"},
+    {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/steal-a-brainrot-original.png",tag:"STEAL A BRAINROT"}
+  ];
+  function matchesSection(section) {
+    if (chosen !== "all" && chosen !== section.key) return false;
     if (!query) return true;
-    const searchable = [
-      "Roblox", "روبلوكس", "Robux", "روبوكس", "MM2", "Murder Mystery 2",
-      "ماب السرقة", "Steal a Brainrot", "قرما", "لاسيكرت", "لاسبوكي",
-      ...items.map(p => [p.name, p.product_key, p.game].join(" "))
-    ].join(" ");
-    return normalize(searchable).includes(query);
+    const aliases = {
+      roblox:"روبوكس روبلوكس roblox robux شحن",
+      mm2:"mm2 murder mystery 2 سكاكين أسلحة اسلحه",
+      "steal-a-brainrot":"ماب السرقة سرقه brainrot steal a brainrot قرما لاسيكرت لاسبوكي"
+    };
+    const items = catalog().filter(p=>gameKey(p)===section.key);
+    return normalize([section.title,section.subtitle,section.tag,aliases[section.key],
+      ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
-  function displayList() {
-    // Game-level catalog only: PUBG UC stays inside PUBG, just like Robux/MM2
-    // stay inside Roblox. Never expose manual PUBG UC as a quick-buy product.
-    const available = catalog().filter(item => item && item.active !== false && Number(item.price) > 0 &&
-      !isRobloxFamily(gameKey(item)) && gameKey(item) !== "pubg");
-    return available.filter(item => {
-      const category = gameKey(item);
-      if (chosen !== "all" && category !== chosen) return false;
-      if (!query) return true;
-      const meta = itemMeta(item);
-      return normalize([item.name, item.game, item.product_key, meta.name, meta.tag].join(" ")).includes(query);
-    });
-  }
-  function robloxParentCard() {
-    return '<article class="ll-roblox-parent ll-reveal" aria-label="قسم Roblox: روبوكس، MM2، ماب السرقة">'
-      + '<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح قسم Roblox">'
-      + '<span class="ll-roblox-parent-kicker">L1017N / ROBLOX</span>'
-      + '<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="شعار Roblox الأصلي" loading="eager" decoding="async">'
-      + '</button>'
-      + '<div class="ll-roblox-parent-info">'
-      + '<span class="ll-roblox-parent-label">عالم الألعاب</span><h3>Roblox</h3>'
-      + '<p>اختَر القسم اللي تبيه داخل روبلوكس</p>'
-      + '<div class="ll-roblox-subcategories" role="group" aria-label="أقسام Roblox الداخلية">'
-      + '<button type="button" data-ll-game="roblox" class="ll-roblox-subcategory"><span>Robux</span><small>باقات الروبوكس</small></button>'
-      + '<button type="button" data-ll-game="mm2" class="ll-roblox-subcategory"><span>MM2</span><small>مستلزمات الماب</small></button>'
-      + '<button type="button" data-ll-game="steal-a-brainrot" class="ll-roblox-subcategory"><span>ماب السرقة</span><small>قرما · لاسيكرت · لاسبوكي</small></button>'
-      + '</div></div></article>';
-  }
-  // Show exactly one PUBG game category on the landing screen, even when
-  // there are several UC packages. Keep them nested in PUBG's own catalog.
-  function hasPubgCategory() {
-    const items = catalog().filter(p => p && p.active !== false && gameKey(p) === "pubg");
-    if (!items.length || (chosen !== "all" && chosen !== "pubg")) return false;
-    if (!query) return true;
-    const searchable = [
-      "PUBG", "PUBG Mobile", "ببجي", "شدات", "شدة", "شحن", "UC",
-      ...items.map(p => [p.name, p.product_key, p.game, p.amount].join(" "))
-    ].join(" ");
-    return normalize(searchable).includes(query);
-  }
-  function pubgParentCard() {
-    return '<article class="ll-roblox-parent ll-pubg-parent ll-reveal" aria-label="ببجي موبايل: باقات شدات PUBG">'
-      + '<button type="button" class="ll-roblox-parent-cover ll-pubg-parent-cover" data-ll-game="pubg" aria-label="فتح باقات ببجي موبايل">'
-      + '<span class="ll-roblox-parent-kicker">L1017N / PUBG MOBILE</span>'
-      + '<img src="game-covers/pubg-battlefront.webp" alt="PUBG Mobile" loading="lazy" decoding="async">'
-      + '</button>'
-      + '<div class="ll-roblox-parent-info ll-pubg-parent-info">'
-      + '<span class="ll-roblox-parent-label">شدات ببجي</span><h3>PUBG Mobile</h3>'
-      + '<p>كل باقات UC داخل قسم ببجي</p>'
-      + '<div class="ll-roblox-subcategories">'
-      + '<button type="button" data-ll-game="pubg" class="ll-roblox-subcategory ll-pubg-entry"><span>عرض باقات الشدات</span><small>60 UC والمزيد</small></button>'
-      + '</div></div></article>';
+  function sectionCard(section) {
+    return '<article class="ll-game-section ll-reveal ll-game-'+esc(section.key)+'">'
+      +'<button type="button" class="ll-game-section-link" data-ll-game="'+esc(section.key)+'" aria-label="فتح '+esc(section.title)+'">'
+      +'<span class="ll-game-section-art"><img src="'+esc(section.image)+'" alt="" loading="eager" decoding="async">'
+      +'<span class="ll-game-section-tag">'+esc(section.tag)+'</span></span>'
+      +'<span class="ll-game-section-details"><strong>'+esc(section.title)+'</strong>'
+      +'<small>'+esc(section.subtitle)+'</small></span></button></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");
@@ -135,29 +88,24 @@
   }
   function openGame(key) {
     try {
-      if (key === "subscriptions") { routeView("subscriptions"); return; }
-      if (key === "roblox" || key === "mm2" || key === "steal-a-brainrot") {
-        if (typeof window.openRobloxGameMenu !== "function") { notify("القسم مازال يتحمّل. جرّب تحديث الصفحة."); return; }
-        window.openRobloxGameMenu();
-        if (key !== "roblox") {
-          const choice = key === "mm2" ? "mm2" : "brainrot";
-          requestAnimationFrame(() => q('#robloxGamePage [data-rgp-choice="' + choice + '"]')?.click());
-        }
+      if(key==="roblox"){
+        if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
+        else if(typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
+        else notify("قسم الروبوكس غير جاهز حاليًا.");
         return;
       }
-      if (key === "pubg") {
-        if (typeof window.renderPremiumPubg === "function") window.renderPremiumPubg();
-        else if (typeof openPubgCategories === "function") openPubgCategories();
-        else notify("قائمة ببجي غير جاهزة حاليًا.");
+      if(key==="mm2"){
+        if(typeof window.openMm2StoreCategory==="function")window.openMm2StoreCategory();
+        else notify("قسم MM2 غير جاهز حاليًا.");
         return;
       }
-      if (typeof showGameProductPreview === "function") {
-        showGameProductPreview(key);
+      if(key==="steal-a-brainrot"){
+        if(typeof window.openBrainrotStoreCategory==="function")window.openBrainrotStoreCategory();
+        else notify("قسم ماب السرقة غير جاهز حاليًا.");
         return;
       }
-      notify("القسم مازال يتحمّل. حاول مجددًا.");
-    } catch (e) {
-      console.error("[live-ui] Game navigation", e);
+    }catch(error){
+      console.error("[live-ui] Game navigation",error);
       notify("تعذر فتح القسم. جرّب تحديث الصفحة.");
     }
   }
@@ -221,27 +169,14 @@
     elements.forEach(el => observer.observe(el));
   }
   function renderCatalog() {
-    const root = q("#llCatalog");
-    if (!root) return;
-    const productsToShow = displayList();
-    const all = catalog().filter(p => p && p.active !== false);
-    const showRoblox = hasRobloxCategory();
-    const showPubg = hasPubgCategory();
-    const visibleCount = productsToShow.length + (showRoblox ? 1 : 0) + (showPubg ? 1 : 0);
-    q("#llItemCount").textContent = all.length ? visibleCount + " قسم وباقة" : "جاري تحميل المنتجات";
-    if (!all.length) {
-      root.innerHTML = '<div class="ll-empty">جاري تحميل باقات المتجر الحقيقية…</div>';
-      return;
-    }
-    if (!visibleCount) {
-      root.innerHTML = '<div class="ll-empty">ما فيش منتجات تطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
-      return;
-    }
-    // Parent game cards only: PUBG UC and Roblox inventory remain in their
-    // own dedicated pages, never beside the games as individual quick-buy tiles.
-    root.innerHTML = (showRoblox ? robloxParentCard() : "")
-      + (showPubg ? pubgParentCard() : "")
-      + productsToShow.map(card).join("");
+    const root=q("#llCatalog");
+    if(!root)return;
+    const visible=SHOP_SECTIONS.filter(matchesSection);
+    const count=q("#llItemCount");
+    if(count)count.textContent=visible.length+" أقسام";
+    root.innerHTML=visible.length
+      ? visible.map(sectionCard).join("")
+      : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {
@@ -284,22 +219,22 @@
     container.id = "llLanding";
     container.innerHTML = '<div class="ll-intro ll-reveal">'
       + '<div class="ll-intro-text"><span class="ll-overline">أهلًا بيك في متجرك</span>'
-      + '<h1>اللعبة تبدأ <span>من هنا.</span></h1><p>باقات الألعاب الرقمية، بتجربة سهلة وسريعة.</p></div>'
+      + '<h1>اللعبة تبدأ <span>من هنا.</span></h1><p>متجرك المتخصص في الروبوكس وMM2 وماب السرقة.</p></div>'
       + '<div class="ll-intro-star" aria-hidden="true">✦</div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'
-      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن روبوكس، شدات، ماب السرقة…"></div>'
+      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن روبوكس، MM2، ماب السرقة…"></div>'
       + '<div class="ll-title-row ll-title-offers"><div><small>اسحب للتصفح ←</small><h2>اكتشف العروض</h2></div></div>'
       + '<section class="ll-carousel ll-reveal" aria-label="العروض المميزة" aria-roledescription="carousel">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
-      + '<div class="ll-title-row ll-products-title"><div><small>EXPLORE THE STORE</small><h2>الألعاب والباقات</h2></div><span id="llItemCount">جاري التحميل</span></div>'
+      + '<div class="ll-title-row ll-products-title"><div><small>EXPLORE THE STORE</small><h2>أقسام روبلوكس</h2></div><span id="llItemCount">جاري التحميل</span></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
       + FILTERS.map(([key, label]) => '<button type="button" data-ll-category="' + esc(key) + '" aria-pressed="' + (key==='all') + '" class="' + (key==='all'?'selected':'') + '">' + esc(label) + '</button>').join("") + '</div>'
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div>'
-      + '<p class="ll-safety-note">الأسعار من مخزون المتجر الفعلي. يتم تأكيد الرصيد والتوفر عند إتمام الطلب.</p>'
+      + '<p class="ll-safety-note">الأسعار والتوفر يُعرضان داخل كل قسم، ويتأكد الطلب عند الدفع.</p>'
       + '<section class="ll-help ll-reveal"><div><h2>تحتاج مساعدة؟</h2><p>تابع الطلبات من حسابك، أو افتح القائمة للوصول إلى المحفظة والدعم.</p></div>'
       + '<button type="button" data-ll-show-orders>طلباتي ←</button></section>';
 

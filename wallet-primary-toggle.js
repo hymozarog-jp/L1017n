@@ -8,6 +8,7 @@
  let selected={libyana:false,madar:false};
  let updateCounter=0;
  let toggleCounter=0;
+ let loadRetryCount=0;
  const cardByName=name=>document.querySelector(name==="libyana"?"#walletView .wallet-carousel>.wallet-hero":"#walletView .wallet-carousel>.madar-wallet-card");
  const track=()=>document.querySelector("#walletView .wallet-carousel");
  function getActive(){
@@ -35,6 +36,13 @@
   }catch(_){return {libyana:false,madar:false}}
  }
  function storageKey(){return identity?"l1017n-primary-wallets-v1:"+identity:null}
+ function getSelected(){return selected.madar?"madar":selected.libyana?"libyana":null}
+ function refreshTopWallet(user){
+  // The main header must match the selected logo and its actual carrier balance.
+  if(typeof renderCustomerHeaderWallet==="function"){
+   void renderCustomerHeaderWallet(user);
+  }
+ }
  function flash(message){
   try{if(typeof toast==="function")toast(message)}catch(_){}
  }
@@ -64,7 +72,12 @@
  async function load(){
   const sequence=++updateCounter;
   try{
-   if(typeof currentUser!=="function")return;
+   if(typeof currentUser!=="function"){
+    // The store's legacy script is dynamically loaded after the page opens.
+    if(loadRetryCount++<12)window.setTimeout(()=>void load(),350);
+    return;
+   }
+   loadRetryCount=0;
    const user=await currentUser();
    if(sequence!==updateCounter)return;
    identity=user?.id||null;
@@ -75,6 +88,7 @@
     catch(error){console.warn("[wallet/primary/storage]",error)}
    }
    update();
+   refreshTopWallet(user);
   }catch(error){console.warn("[wallet/primary/load]",error)}
  }
  async function toggle(name){
@@ -101,6 +115,7 @@
    try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
    catch(error){console.warn("[wallet/primary/storage]",error)}
    update();
+   refreshTopWallet(user);
    flash(selected[name]?"تم تعيين محفظة "+names[name]+" كأساسية في العرض":"تم إلغاء الأساسية عن محفظة "+names[name]);
   }catch(error){
    flash("تعذر تحديث اختيار المحفظة. جرّب تحديث الصفحة.");
@@ -139,5 +154,5 @@
  if(document.readyState==="loading"){
   document.addEventListener("DOMContentLoaded",bind,{once:true});
  }else bind();
- window.L1017nPrimaryWallets=Object.freeze({refresh:load});
+ window.L1017nPrimaryWallets=Object.freeze({refresh:load,getSelected});
 })();

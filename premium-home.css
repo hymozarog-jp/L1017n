@@ -456,3 +456,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:390px;pointer-event
  #storeView .ph-slide-button{font-size:9px;padding:7px 9px}
 }
 @media(prefers-reduced-motion:reduce){#storeView .ph-slider-track{scroll-behavior:auto}#storeView .ph-slide-button{transition:none}}
+
+/* Independent Steal a Brainrot promotional slide. */
+#storeView .ph-slide-brainrot{
+  background:radial-gradient(ellipse at 70% 45%,#298b9570,transparent 60%),linear-gradient(118deg,#102a38,#101c31 50%,#164757);
+}
+#storeView .ph-slide-brainrot h2 span{color:#a4eff0}
+#storeView .ph-slide-art-brainrot img{max-height:245px;width:min(82%,240px);border-radius:28px;transform:rotate(-5deg);object-fit:cover}

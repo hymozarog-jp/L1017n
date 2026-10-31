@@ -106,3 +106,14 @@ body .topbar #customerTopupShortcut:focus-visible{outline:2px solid #fff!importa
 @media(prefers-reduced-motion:reduce){
   #customerWalletChip.gb-libyana-wallet-chip,#customerTopupShortcut{transition:none!important}
 }
+
+/* Avoid any broken image marker; preserve the compact Li fallback. */
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge img{
+  background:#fff;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge:has(img[src]) .gb-libyana-fallback{
+  display:none;
+}
+#customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  overflow:hidden;text-overflow:ellipsis;max-width:100%;
+}

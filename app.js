@@ -1,6 +1,6 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=quantity-pricing3&purchase-notify=1&whatsapp-help=1&pubg-uc60=1&pubg-picture=1&subscriptions-nav=1';
+  s.src='legacy-app.js?v=quantity-picker4&purchase-notify=1&whatsapp-help=1&pubg-uc60=1&pubg-picture=1&subscriptions-nav=1';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');

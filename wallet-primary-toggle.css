@@ -169,3 +169,38 @@
  margin:0!important;
  transform:none;
 }
+
+/* Top header wallet follows the selected primary carrier logo and color.
+   The balance is supplied separately from wallet_accounts for that carrier. */
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+ transition:background .28s ease,border-color .28s ease,box-shadow .28s ease!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"]{
+ border:1px solid #73e4a490!important;
+ background:radial-gradient(circle at 6% 0%,#27b76f38,transparent 49%),linear-gradient(118deg,#0d392c,#07553e 73%,#063b2f)!important;
+ box-shadow:inset 0 1px #dbffe342,0 5px 0 -3px #65db9552,0 12px 26px #0416105a!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .gb-libyana-badge{
+ background:linear-gradient(140deg,#f6fff4,#e3ffe2)!important;
+ border:1px solid #a3f8af!important;
+ box-shadow:inset 0 1px #fff,0 0 17px #62e69f45!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .gb-libyana-badge img{
+ object-fit:cover!important;
+ border-radius:8px!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .gb-libyana-fallback{
+ color:#197447!important;
+ font-size:12px!important;
+ font-family:"IBM Plex Sans Arabic",system-ui,sans-serif!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .customer-wallet-label{
+ color:#c3f5d4!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] #customerTopupShortcut{
+ border:1px solid #89cea9!important;
+ background:#1b694a!important;
+ color:#dfffea!important;
+ box-shadow:inset 0 1px #ffffff35,0 0 0 3px #40a47628!important;
+ filter:saturate(.62)!important;
+}

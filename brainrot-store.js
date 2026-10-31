@@ -10,9 +10,9 @@
   const OFFICIAL_FALLBACK = "game-covers/steal-a-brainrot-original.png";
   const ART_FALLBACK = "game-covers/roblox.svg";
   const ITEMS = [
-    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01" },
-    { key:"steal-los-secret", name:"لاسيكرت", latin:"LOS SECRET", number:"02" },
-    { key:"steal-los-spooky", name:"لاسبوكي", latin:"LOS SPOOKY", number:"03" }
+    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },
+    { key:"steal-los-secret", name:"لاسيكرت", latin:"LA SECRET", number:"02", image:"game-covers/la-secret.png" },
+    { key:"steal-los-spooky", name:"سبوكي اند بمكي", latin:"SPOOKY AND PUMPKY", number:"03", image:"game-covers/spooky-and-pumpky.png" }
   ];
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;
@@ -62,7 +62,7 @@
     const available=!!(product&&product.active&&Number(product.price)>0);
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
-      +'<div class="sab-card-art" aria-hidden="true"><span class="sab-symbol">'+item.number+'</span><span class="sab-glow"></span></div>'
+      +'<div class="sab-card-art"><img class="sab-character-image" src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async"><span class="sab-glow" aria-hidden="true"></span></div>'
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
@@ -116,7 +116,7 @@
     box.innerHTML='<div class="sab-dialog">'
       +'<button type="button" class="sab-dialog-close" data-sab-cancel aria-label="إغلاق">×</button>'
       +'<span class="sab-dialog-kicker">STEAL A BRAINROT • L1017N</span>'
-      +'<h2>'+escapeHtml(product.name)+'</h2>'
+      +'<h2>'+escapeHtml(ITEMS.find(item=>item.key===product.product_key)?.name||product.name)+'</h2>'
       +'<strong class="sab-dialog-price">'+Number(product.price).toFixed(2)+' د.ل</strong>'
       +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'
       +'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'

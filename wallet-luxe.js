@@ -15,6 +15,59 @@ function close(){
  document.body.classList.remove("wallet-send-sheet-open");
  lastFocus?.focus?.({preventScroll:true});
 }
+function cleanPhone(value){
+ const d=String(value||"").replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+  .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/[^0-9]/g,"");
+ if(/^002189[0-9]{8}$/.test(d))return d.slice(5);
+ if(/^2189[0-9]{8}$/.test(d))return d.slice(3);
+ if(/^09[0-9]{8}$/.test(d))return d.slice(1);
+ return /^9[0-9]{8}$/.test(d)?d:"";
+}
+function transferError(error){
+ const code=String(error?.message||"");
+ const messages={
+  login_required:"سجّل الدخول أولاً.",
+  invalid_store_phone:"رقم الهاتف غير صحيح.",
+  recipient_not_verified_or_missing:"ما لقيناش محفظة موثّقة بهذا الرقم. لازم المستلم يكون مسجل وموثّق هاتفه.",
+  sender_phone_not_verified:"وثّق رقم هاتفك من الحساب قبل إرسال الرصيد.",
+  cannot_send_to_self:"ما تقدرش ترسل الرصيد لمحفظتك نفسها.",
+  wallet_not_found:"تعذر العثور على المحفظة.",
+  insufficient_balance:"رصيدك غير كافٍ لهذه العملية.",
+  invalid_transfer_amount:"المبلغ لازم يكون بين 0.001 و500 دينار، وبحد أقصى 3 أرقام عشرية.",
+  daily_transfer_limit:"وصلت للحد اليومي: 1000 دينار خلال 24 ساعة.",
+  request_key_conflict:"حصل تعارض في طلب التحويل. افتح النموذج من جديد."
+ };
+ for(const [key,message] of Object.entries(messages))if(code.includes(key))return message;
+ return "تعذر التأكد من نتيجة الإرسال. لا تنشئ طلبًا جديدًا؛ حاول مجددًا بنفس البيانات للتحقق من العملية.";
+}
+async function loadTransferHistory(){
+ const list=sheet?.querySelector("#walletSendHistory");
+ if(!list)return;
+ list.textContent="جاري عرض آخر التحويلات…";
+ try{
+  const user=await currentUser();
+  if(!user){list.textContent="سجّل دخولك لعرض تحويلاتك.";return}
+  const {data,error}=await supabaseClient.from("wallet_transfers")
+   .select("id,sender_id,recipient_id,amount,created_at")
+   .or("sender_id.eq."+user.id+",recipient_id.eq."+user.id)
+   .order("created_at",{ascending:false}).limit(6);
+  if(error)throw error;
+  list.replaceChildren();
+  if(!data?.length){list.textContent="ما عندكش تحويلات حتى الآن.";return}
+  data.forEach(item=>{
+   const row=document.createElement("div");row.className="wallet-transfer-history-row";
+   const outgoing=item.sender_id===user.id;
+   const label=document.createElement("span");label.textContent=outgoing?"إرسال رصيد":"استلام رصيد";
+   const amount=document.createElement("strong");amount.dir="ltr";
+   amount.textContent=(outgoing?"−":"+")+Number(item.amount).toFixed(3)+" د.ل";
+   amount.className=outgoing?"wallet-transfer-out":"wallet-transfer-in";
+   row.append(label,amount);list.append(row);
+  });
+ }catch(error){
+  list.textContent="تعذر تحميل التحويلات. تقدر تحاول مرة ثانية.";
+  console.warn("[wallet/transfer/history]",error);
+ }
+}
 function ensureSheet(){
  if(sheet)return sheet;
  sheet=document.createElement("section");
@@ -25,22 +78,40 @@ function ensureSheet(){
   +'<div class="wallet-sheet-handle" aria-hidden="true"></div>'
   +'<button type="button" class="wallet-sheet-close" aria-label="إغلاق نافذة الإرسال">×</button>'
   +'<div class="wallet-sheet-emblem" aria-hidden="true">'+plane+'</div>'
-  +'<h2 id="walletSendTitle">إرسال رصيد</h2>'
-  +'<p class="wallet-sheet-lead">واجهة إرسال بتصميم جديد وتجربة أبسط لعمليات المحفظة.</p>'
-  +'<div class="wallet-feature-unavailable">'+caution+'<span><strong>خدمة الإرسال قريبًا</strong> — ما زالت غير مفعّلة. هذه الواجهة للمعاينة فقط ولن يتم إرسال أو خصم أي مبلغ.</span></div>'
+  +'<h2 id="walletSendTitle">إرسال رصيد لمحفظة ثانية</h2>'
+  +'<p class="wallet-sheet-lead">تحويل فوري بين محافظ المستخدمين داخل GAMEBOXLY، مش تحويل لرصيد شريحة ليبيانا.</p>'
   +'<form id="walletSendPreviewForm" novalidate>'
-    +'<div><label for="walletSendRecipient">رقم هاتف المستلم</label><input id="walletSendRecipient" name="recipient" type="tel" inputmode="tel" autocomplete="off" maxlength="18" placeholder="09xxxxxxxx" dir="ltr" required></div>'
-    +'<div><label for="walletSendAmount">المبلغ المطلوب (د.ل)</label><div class="wallet-sheet-money"><input id="walletSendAmount" name="amount" type="number" inputmode="decimal" min="0.001" step="0.001" max="10000" placeholder="0.000" dir="ltr" required><span>د.ل</span></div></div>'
-    +'<button type="submit" class="wallet-sheet-submit">معاينة الإرسال</button>'
+    +'<div><label for="walletSendRecipient">رقم هاتف المستلم الموثّق في المتجر</label><input id="walletSendRecipient" name="recipient" type="tel" inputmode="tel" autocomplete="off" maxlength="18" placeholder="09xxxxxxxx" dir="ltr" required></div>'
+    +'<div><label for="walletSendAmount">المبلغ بالدينار الليبي</label><div class="wallet-sheet-money"><input id="walletSendAmount" name="amount" type="text" inputmode="decimal" maxlength="14" placeholder="0.000" dir="ltr" required><span>د.ل</span></div></div>'
+    +'<div class="wallet-transfer-confirm" id="walletTransferConfirm" hidden>'
+      +'<strong>راجع التحويل قبل التأكيد</strong>'
+      +'<p id="walletTransferConfirmationText"></p>'
+      +'<small>التحويل نهائي ويصل لمحفظة المستلم فور نجاحه. تأكد من الرقم جيدًا.</small>'
+    +'</div>'
+    +'<button type="submit" class="wallet-sheet-submit">مراجعة التحويل</button>'
     +'<p class="wallet-sheet-result" id="walletSendPreviewResult" role="status" aria-live="polite"></p>'
   +'</form>'
-  +'<p class="wallet-sheet-foot">ستتوفر عملية الإرسال الفعلية عند تفعيل نظام تحويل آمن. لا يوجد تحويل تلقائي حاليًا.</p>'
+  +'<p class="wallet-sheet-foot">بدون رسوم · الحد لكل تحويل 500 د.ل · الحد خلال 24 ساعة 1000 د.ل · يشترط توثيق رقم الطرفين.</p>'
+  +'<div class="wallet-transfer-history"><h3>آخر التحويلات</h3><div id="walletSendHistory" aria-live="polite"></div></div>'
  +'</div>';
  document.body.appendChild(sheet);
+ const form=sheet.querySelector("form"),recipient=sheet.querySelector("#walletSendRecipient");
+ const inputAmount=sheet.querySelector("#walletSendAmount");
+ const button=sheet.querySelector(".wallet-sheet-submit");
+ const result=sheet.querySelector("#walletSendPreviewResult");
+ const confirmBox=sheet.querySelector("#walletTransferConfirm");
+ const confirmText=sheet.querySelector("#walletTransferConfirmationText");
+ let pending=null,busy=false;
+ function clearConfirmation(){
+  if(busy)return;
+  pending=null;confirmBox.hidden=true;button.textContent="مراجعة التحويل";
+  result.textContent="";result.classList.remove("is-success");
+ }
+ [recipient,inputAmount].forEach(input=>input.addEventListener("input",clearConfirmation));
  sheet.querySelector(".wallet-sheet-close").addEventListener("click",close);
  sheet.addEventListener("click",event=>{if(event.target===sheet)close()});
  sheet.addEventListener("keydown",event=>{
-  if(event.key==="Escape"){event.preventDefault();close();return}
+  if(event.key==="Escape"&&!busy){event.preventDefault();close();return}
   if(event.key==="Tab"){
    const items=[...sheet.querySelectorAll("button:not(:disabled),input:not(:disabled)")];
    if(!items.length)return;
@@ -49,15 +120,56 @@ function ensureSheet(){
    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   }
  });
- sheet.querySelector("form").addEventListener("submit",event=>{
+ form.addEventListener("submit",async event=>{
   event.preventDefault();
-  const target=sheet.querySelector("#walletSendPreviewResult");
-  const digits=String(sheet.querySelector("#walletSendRecipient").value||"").replace(/\D/g,"");
-  const amount=Number(sheet.querySelector("#walletSendAmount").value);
-  const validPhone=/^(?:0?9[1-4]\d{7}|2189[1-4]\d{7})$/.test(digits);
-  if(!validPhone){target.textContent="اكتب رقم هاتف ليبي صحيح: 09xxxxxxxx.";sheet.querySelector("#walletSendRecipient").focus();return}
-  if(!Number.isFinite(amount)||amount<=0||amount>10000){target.textContent="اكتب مبلغًا صحيحًا أكبر من صفر.";sheet.querySelector("#walletSendAmount").focus();return}
-  target.textContent="المعاينة جاهزة، لكن إرسال الرصيد غير متاح حاليًا. لن يتم خصم أي مبلغ من المحفظة.";
+  if(busy)return;
+  const phone=cleanPhone(recipient.value);
+  const raw=String(inputAmount.value||"").trim().replace(",",".")
+    .replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+    .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
+  const amount=Number(raw);
+  if(!phone){result.textContent="اكتب رقم هاتف ليبي صحيح: 09xxxxxxxx.";recipient.focus();return}
+  if(!/^[0-9]+(?:\.[0-9]{1,3})?$/.test(raw)||!Number.isFinite(amount)||amount<0.001||amount>500){
+   result.textContent="اكتب مبلغًا بين 0.001 و500 د.ل، وبحد أقصى 3 خانات عشرية.";
+   inputAmount.focus();return;
+  }
+  if(!pending||pending.phone!==phone||pending.amount!==amount){
+   pending={phone,amount,key:window.crypto?.randomUUID?.()};
+   if(!pending.key){result.textContent="حدّث المتصفح ثم حاول مرة ثانية لتأمين عملية الإرسال.";pending=null;return}
+   confirmText.textContent="إرسال "+amount.toFixed(3)+" د.ل إلى رقم 0"+phone+" داخل المتجر.";
+   confirmBox.hidden=false;button.textContent="تأكيد إرسال الرصيد";
+   result.textContent="اضغط تأكيد فقط إذا كنت متأكدًا من المستلم والمبلغ.";
+   return;
+  }
+  busy=true;
+  button.disabled=true;recipient.disabled=true;inputAmount.disabled=true;
+  button.textContent="جاري تحويل الرصيد…";
+  result.textContent="جاري التحقق من الحساب والرصيد وتنفيذ العملية…";
+  result.classList.remove("is-success");
+  try{
+   const user=await currentUser();
+   if(!user)throw new Error("login_required");
+   const {data,error}=await supabaseClient.rpc("send_wallet_balance",{
+    p_recipient_phone:"0"+pending.phone,p_amount:pending.amount,p_request_key:pending.key
+   });
+   if(error)throw error;
+   const completed=Number(data?.amount??pending.amount);
+   form.reset();pending=null;confirmBox.hidden=true;
+   result.textContent=(data?.already_sent?"هذه العملية مسجلة من قبل. ":"تم إرسال الرصيد بنجاح! ")
+     +completed.toFixed(3)+" د.ل. رقم العملية: "+String(data?.transfer_id||"");
+   result.classList.add("is-success");button.textContent="إرسال تحويل جديد";
+   await Promise.allSettled([
+    typeof renderWallet==="function"?renderWallet():Promise.resolve(),
+    typeof renderCustomerHeaderWallet==="function"?renderCustomerHeaderWallet(user):Promise.resolve(),
+    loadTransferHistory()
+   ]);
+  }catch(error){
+   result.textContent=transferError(error);
+   button.textContent="إعادة محاولة تأكيد نفس التحويل";
+   console.warn("[wallet/transfer/send]",error);
+  }finally{
+   busy=false;button.disabled=false;recipient.disabled=false;inputAmount.disabled=false;
+  }
  });
  return sheet;
 }

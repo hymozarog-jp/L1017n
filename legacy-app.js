@@ -16,21 +16,17 @@ async function loadProducts(){const [productResult,inventoryResult]=await Promis
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
- {name:'روبلوكس',category:'ألعاب',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>/roblox|robux|روبوكس/i.test([p.game,p.name].join(' '))).length},
- {name:'فري فاير',category:'ألعاب',image:'https://images.launchbox-app.com/1a210ab9-e0f5-46f0-967b-ec5703e7e28c.jpg',key:'freefire',count:products.filter(p=>/free ?fire|فري فاير/i.test([p.game,p.name].join(' '))).length},
- {name:'ببجي موبايل',category:'ألعاب',image:'game-covers/pubg-battlefront.webp',key:'pubg',count:products.filter(p=>/pubg|ببجي/i.test([p.game,p.name].join(' '))).length},
- {name:'فورت نايت',category:'ألعاب',image:'https://images.launchbox-app.com/5aca9e55-9c6d-421e-b6f9-8910b82c11fc.jpg',key:'fortnite',count:products.filter(p=>/fortnite|فورت/i.test([p.game,p.name].join(' '))).length}
+  {name:'روبوكس',category:'روبلوكس',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||'')).length},
+  {name:'MM2',category:'روبلوكس',image:'game-covers/mm2-elderwood-blade.png',key:'mm2',count:products.filter(p=>/mm2|murder.mystery/i.test([p.game,p.product_key,p.name].join(' '))).length},
+  {name:'ماب السرقة',category:'روبلوكس',image:'game-covers/steal-a-brainrot-original.png',key:'steal-a-brainrot',count:products.filter(p=>/brainrot|steal.a.brainrot/i.test([p.game,p.product_key,p.name].join(' '))).length}
  ];
- // MM2 is a Roblox subcategory, never an independent game on the home page.
- const isMm2Game=game=>/^(?:mm2|roblox[\s_-]*mm2|murder[\s_-]*mystery[\s_-]*2)$/i.test(String(game||'').trim());
- const existingGames=new Set(games.map(x=>x.key));
- for(const game of new Set(products.map(p=>String(p.game||'').trim().toLowerCase()))){
-  if(!game||existingGames.has(game)||isMm2Game(game)||/^(?:steal-a-brainrot|brainrot|stealabrainrot)$/i.test(game))continue;
-  const items=products.filter(p=>String(p.game||'').trim().toLowerCase()===game);
-  games.push({name:game.replace(/[-_]/g,' '),category:'ألعاب الهواتف',image:'',key:game,count:items.length});
- }
  g.innerHTML='<div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+escapeHtml(x.category)+'"><button type="button" class="game-tile-btn" data-game-open="'+escapeHtml(x.key)+'" aria-label="'+escapeHtml(x.name)+'"><div class="game-tile-art game-art-'+escapeHtml(x.key)+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fortnite:'FORTNITE'}[x.key]||escapeHtml(x.name.toUpperCase()))+'</span>'+(x.image?'<img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+escapeHtml(x.name)+'</strong><small>'+(x.count?x.count+' باقة':'قريبًا')+'</small></div></button></article>').join('')+'</div>';
- g.querySelectorAll('[data-game-open]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.gameOpen;if(key==='roblox'){if(typeof window.openRobloxGameMenu==='function')window.openRobloxGameMenu();else if(typeof window.openRobuxPackages==='function')window.openRobuxPackages();return}if(key==='pubg'){openPubgCategories();return}showGameProductPreview(key)}));
+ g.querySelectorAll('[data-game-open]').forEach(btn=>btn.addEventListener('click',()=>{
+  const key=btn.dataset.gameOpen;
+  if(key==='roblox'){if(typeof window.openRobuxPackages==='function')window.openRobuxPackages();else if(typeof window.openRobloxGameMenu==='function')window.openRobloxGameMenu();return;}
+  if(key==='mm2'){if(typeof window.openMm2StoreCategory==='function')window.openMm2StoreCategory();else toast('قسم MM2 غير جاهز حاليًا.');return;}
+  if(key==='steal-a-brainrot'){if(typeof window.openBrainrotStoreCategory==='function')window.openBrainrotStoreCategory();else toast('قسم ماب السرقة غير جاهز حاليًا.');return;}
+ }));
 }
 /* Non-Roblox digital items use the atomic wallet-to-code delivery checkout. */
 function showGameProductPreview(key){

@@ -1,4 +1,4 @@
-name: Validate dual primary buttons and wallet carousel
+name: Validate mutually exclusive primary wallet buttons
 on:
   push:
     branches: [main]
@@ -43,16 +43,22 @@ jobs:
             'Both wallets need independent primary buttons');
           assert(html.includes('data-wallet-primary="libyana"'));
           assert(html.includes('data-wallet-primary="madar"'));
-          assert(html.includes('wallet-primary-toggle.css?v=carousel-dual-primary-1'));
-          assert(html.includes('wallet-primary-toggle.js?v=carousel-dual-primary-1'));
+          assert(html.includes('wallet-primary-toggle.css?v=exclusive-primary-2'));
+          assert(html.includes('wallet-primary-toggle.js?v=exclusive-primary-2'));
           assert(!html.includes('wallet-two-primary.css?v=separate-wallets-1'),
             'Restore original swiping carousel instead of stacked cards');
           assert(!html.includes('wallet-separate-head'));
           assert.match(css,/scroll-snap-type:x mandatory!important/);
           assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
           assert.match(css,/#walletView \.madar-wallet-card \.wallet-primary-toggle/);
-          assert(primary.includes('selected[name]=!selected[name]'),
-            'The two badges must toggle separately');
+          assert.match(css,/\.wallet-primary-toggle\[aria-pressed="false"\]::before/,'Inactive state must show plus icon');
+          assert.match(css,/\.wallet-primary-toggle\[aria-pressed="true"\]/,'Active state must be visually highlighted');
+          assert(primary.includes('selected={libyana:activate&&name==="libyana",madar:activate&&name==="madar"}'),
+            'Selecting a primary wallet must automatically deactivate the other');
+          assert(primary.includes('const madar=value?.madar===true&&!libyana'),
+            'Old dual-primary saved preferences should be normalized');
+          assert(primary.includes('button.textContent=active?"✓ الأساسية":"اجعلها أساسية"'),
+            'Active and inactive states must have distinguishable labels');
           assert(primary.includes('identity?"l1017n-primary-wallets-v1:"'),
             'Primary status should be stored per signed-in user');
           assert(primary.includes('window.localStorage.setItem(storageKey(),JSON.stringify(selected))'));
@@ -71,5 +77,70 @@ jobs:
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.openSend,'function');
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.animateBalance,'function');
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.resetBalance,'function');
+          (async()=>{
+          // Behavioral regression: a legacy account saved with both primaries
+          // is normalized, and selecting a new primary disables the former one.
+          const store=new Map([['l1017n-primary-wallets-v1:test-user',JSON.stringify({libyana:true,madar:true})]]);
+          const fakeButton=()=>({
+            attrs:{},setAttribute(n,v){this.attrs[n]=v;},
+            querySelector(){return {textContent:''}},
+            textContent:'',title:''
+          });
+          const buttonL=fakeButton(),buttonM=fakeButton(),action=fakeButton();
+          const cardL={dataset:{},getBoundingClientRect:()=>({left:0,right:200})};
+          const cardM={dataset:{},getBoundingClientRect:()=>({left:220,right:420})};
+          const carousel={addEventListener:()=>{},getBoundingClientRect:()=>({left:0,width:200})};
+          const handlers={};
+          const documentMock={
+            readyState:'complete',
+            querySelector(selector){
+              return {
+                '#walletView .wallet-carousel>.wallet-hero':cardL,
+                '#walletView .wallet-carousel>.madar-wallet-card':cardM,
+                '#walletView .wallet-carousel':carousel,
+                '[data-wallet-primary="libyana"]':buttonL,
+                '[data-wallet-primary="madar"]':buttonM
+              }[selector]||null;
+            },
+            getElementById(id){return id==='walletActionPrimary'?action:null;},
+            addEventListener(type,fn){handlers[type]=fn;},
+            hidden:false
+          };
+          const context={
+            window:{
+              localStorage:{getItem:key=>store.get(key)||null,setItem:(key,val)=>store.set(key,val)},
+              addEventListener:()=>{},setTimeout:()=>{}
+            },
+            document:documentMock,
+            currentUser:async()=>({id:'test-user'}),
+            toast:()=>{},
+            console
+          };
+          vm.runInNewContext(primary,context);
+          const settle=()=>new Promise(resolve=>setImmediate(resolve));
+          await settle();
+          function state(){return JSON.parse(store.get('l1017n-primary-wallets-v1:test-user'))}
+          assert.deepEqual(state(),{libyana:true,madar:false});
+          assert.equal(buttonM.attrs['aria-pressed'],'false');
+          assert.equal(buttonL.attrs['aria-pressed'],'true');
+          async function clickCarrier(name){
+            const btn={dataset:{walletPrimary:name}};
+            const event={
+              target:{closest:selector=>selector==='[data-wallet-primary]'?btn:null},
+              preventDefault:()=>{},stopPropagation:()=>{}
+            };
+            handlers.click(event);await settle();
+          }
+          await clickCarrier('madar');
+          assert.deepEqual(state(),{libyana:false,madar:true});
+          assert.equal(buttonL.attrs['aria-pressed'],'false');
+          assert.equal(buttonM.attrs['aria-pressed'],'true');
+          await clickCarrier('libyana');
+          assert.deepEqual(state(),{libyana:true,madar:false});
+          await clickCarrier('libyana');
+          assert.deepEqual(state(),{libyana:false,madar:false});
+          console.log('Exclusive primary buttons and previous saved preferences verified.');
+          })().catch(error=>{console.error(error);process.exitCode=1});
+
           console.log('Dual primary UI, restored swipe carousel and untouched wallet balances verified.');
           JS

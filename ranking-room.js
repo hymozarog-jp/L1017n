@@ -9,8 +9,8 @@
     toolbar.className='l1017-rank-toolbar';
     toolbar.innerHTML=
       '<button type="button" class="l1017-rank-back" id="l1017RankBack" aria-label="الرجوع إلى الصفحة السابقة">'+
-      '<svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg> رجوع</button>'+
-      '<span class="l1017-rank-toolbar-brand"><b>L1017n</b><small>LEADERBOARD</small></span>'+
+      '<svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg> رجوع</button>'+
+      '<span class="l1017-rank-toolbar-brand"><b>GAMEBOX LY</b><small>LEADERBOARD</small></span>'+
       '<button type="button" class="l1017-rank-refresh" id="l1017RankRefresh" aria-label="تحديث التصنيف">'+
       '<svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5 9a8 8 0 0 1 13-3l2 6M4 12l2 6a8 8 0 0 0 13-3"/></svg></button>';
     var hero=document.createElement('section');

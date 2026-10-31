@@ -1,0 +1,185 @@
+/* GAMEBOXLY - Almadar wallet matches the Libyana candy card layout.
+   Only the visuals change; balance continues to come from wallet_accounts.madar_balance.
+   Almadar top-up is NOT activated by this stylesheet. */
+#walletView .wallet-carousel>.madar-wallet-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  container-type:inline-size;
+  box-sizing:border-box!important;
+  flex:0 0 92%!important;
+  width:92%!important;
+  min-width:0!important;
+  height:252px!important;
+  min-height:252px!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:22px!important;
+  border-radius:26px!important;
+  color:#fff!important;
+  border:1px solid #abf5ae80!important;
+  background:
+    radial-gradient(ellipse at 100% 0%,#087849 0%,transparent 59%),
+    linear-gradient(130deg,#20d269 0%,#0ba956 50%,#087e45 100%)!important;
+  box-shadow:0 18px 35px #030c095e,0 1px 0 #e0ffe54a inset!important;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s ease,filter .4s ease!important;
+}
+#walletView .wallet-carousel>.madar-wallet-card.is-wallet-visible{
+  transform:scale(1)!important;
+  box-shadow:0 23px 43px #03140d72,0 1px 0 #ffffff63 inset!important;
+}
+#walletView .wallet-carousel>.madar-wallet-card::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;z-index:0!important;
+  width:330px!important;height:240px!important;
+  top:20px!important;left:44%!important;right:auto!important;bottom:auto!important;
+  border-radius:38%!important;transform:rotate(-38deg)!important;
+  background:linear-gradient(135deg,#00674460,#b1ffcd1a)!important;
+  pointer-events:none!important;
+}
+#walletView .wallet-carousel>.madar-wallet-card::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;z-index:0!important;
+  inset:auto auto -75px -85px!important;
+  width:220px!important;height:220px!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#b1ffcb6b,#77ffb608)!important;
+  opacity:1!important;transform:none!important;animation:none!important;
+  pointer-events:none!important;
+}
+#walletView .madar-wallet-card .wallet-hero-top{
+  position:relative!important;z-index:2!important;
+  display:flex!important;
+  align-items:center!important;
+  flex-direction:row-reverse!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+#walletView .madar-wallet-card .wallet-hero-top>div{
+  display:block!important;
+  min-width:0;
+}
+#walletView .madar-wallet-card .wallet-hero-top .wallet-hero-icon.madar-brand-mark{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:64px!important;height:64px!important;
+  padding:3px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  border-radius:12px!important;
+  background:#f3fff2!important;
+  box-shadow:0 6px 17px #0346213e!important;
+}
+#walletView .madar-brand-mark img{
+  position:absolute!important;
+  display:block;
+  inset:0;
+  width:100%!important;height:100%!important;
+  border-radius:11px!important;
+  object-fit:cover!important;
+  object-position:87% center!important;
+}
+#walletView .madar-logo-fallback{
+  display:grid;place-items:center;
+  width:100%;height:100%;
+  border-radius:10px;
+  background:#f6fff2;
+  color:#477d22;
+  font:900 14px/1.3 "IBM Plex Sans Arabic",system-ui,sans-serif;
+  text-align:center;
+}
+#walletView .madar-wallet-card .wallet-primary-badge{
+  background:none!important;
+  border:0!important;
+  padding:0!important;
+  font:900 22px/1.45 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  color:#fff!important;
+  white-space:nowrap!important;
+}
+#walletView .madar-wallet-card .wallet-hero-balance{
+  position:relative!important;z-index:2!important;
+  top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+  inset:auto!important;
+  display:block!important;
+  width:100%!important;
+  margin:15px 0 0!important;
+  text-align:right!important;
+}
+#walletView .madar-wallet-card .wallet-hero-balance>span{
+  display:block!important;
+  color:#eefff2!important;
+  font:650 13px/1.5 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+}
+#walletView .madar-wallet-card .wallet-hero-balance>div{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:0!important;
+  direction:ltr!important;
+}
+#walletView .madar-wallet-card .wallet-hero-balance strong#madarWalletBalance{
+  display:inline-block!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  direction:ltr!important;
+  font-family:'Fredoka','Arial Rounded MT Bold',ui-rounded,system-ui,sans-serif!important;
+  font-weight:700!important;
+  font-size:clamp(34px,17cqi,86px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.035em!important;
+  color:#d9ffe6!important;
+  text-shadow:0 3px 0 #066e3840!important;
+  font-variant-numeric:tabular-nums;
+}
+#walletView .madar-wallet-card .wallet-hero-balance b{
+  font:800 17px/1.3 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  color:#d9ffe6!important;
+}
+#walletView .madar-wallet-card .madar-candy-status{
+  position:absolute!important;
+  bottom:18px!important;left:22px!important;z-index:3!important;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;
+  padding:8px 17px;
+  border:1px solid #ffffff60;
+  border-radius:999px;
+  background:#dfffe7!important;
+  color:#075534!important;
+  box-shadow:0 3px 0 #02753b26!important;
+  font:800 13px/1.3 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+  white-space:nowrap;
+}
+#walletView .madar-wallet-card .wallet-candy-gain{
+  position:absolute;top:72px;left:22px;z-index:4;
+  padding:5px 10px;border-radius:999px;
+  background:#064b3770;color:#fff;
+  font-size:13px;font-weight:800;direction:ltr;pointer-events:none;
+}
+#walletView .madar-wallet-card .wallet-candy-gain:empty{display:none}
+#walletView .madar-wallet-card:focus-visible{outline:3px solid #f0fff2!important;outline-offset:-4px!important}
+#walletView .wallet-madar-logo-credit{
+  display:block;
+  width:max-content;
+  max-width:100%;
+  margin:-12px auto 13px;
+  text-decoration:none;
+  text-align:center;
+  color:#778a94;
+  font-size:9px;
+  line-height:1.4;
+}
+#walletView .wallet-madar-logo-credit:hover{text-decoration:underline}
+@media(max-width:390px){
+  #walletView .wallet-carousel>.madar-wallet-card{
+    padding:18px!important;
+    height:244px!important;min-height:244px!important;
+  }
+  #walletView .madar-wallet-card .madar-candy-status{left:18px;bottom:15px;padding:7px 13px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  #walletView .wallet-carousel>.madar-wallet-card,
+  #walletView .madar-wallet-card *{animation:none!important;transition:none!important}
+}

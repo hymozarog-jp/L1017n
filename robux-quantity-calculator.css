@@ -1,0 +1,60 @@
+/* GameBoxly: Robux amount-to-price calculator, safely separate from checkout. */
+#robuxModal .robux-quantity-calculator{
+  direction:rtl;box-sizing:border-box;
+  width:100%;max-width:720px;margin:12px auto 24px;padding:20px 18px 18px;
+  border:1px solid #556692;border-radius:23px;
+  background:radial-gradient(ellipse at 90% 0%,#34326780,transparent 68%),linear-gradient(150deg,#141c34,#0c1426);
+  box-shadow:0 12px 38px #0005,inset 0 1px 0 #ffffff12;
+  color:#f7f8ff;
+}
+#robuxModal .rqc-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+#robuxModal .rqc-heading small{display:block;font:700 10px system-ui,sans-serif;letter-spacing:1.2px;color:#baaaff;direction:ltr;text-align:right;margin-bottom:5px}
+#robuxModal .rqc-heading h2{margin:0;font:850 clamp(19px,4.6vw,25px)/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif;color:#fff}
+#robuxModal .rqc-icon{
+  display:grid;place-items:center;flex:0 0 46px;height:46px;border-radius:15px;
+  background:#8471ef22;color:#c5b5ff;font-size:30px;box-shadow:inset 0 0 0 1px #ad94ff44
+}
+#robuxModal .rqc-label{display:block;font-size:13px;font-weight:750;margin:0 0 9px;color:#c7d0e9}
+#robuxModal .rqc-input-box{
+  display:flex;align-items:center;gap:10px;border:1px solid #64769d;
+  border-radius:15px;background:#0c1223;min-height:56px;padding:0 15px;
+  transition:border-color .2s,box-shadow .2s
+}
+#robuxModal .rqc-input-box:focus-within{border-color:#bba7ff;box-shadow:0 0 0 3px #9a84ff2b}
+#robuxModal #robuxCustomQuantity{
+  min-width:0;flex:1;width:100%;border:0!important;outline:0!important;
+  background:transparent!important;box-shadow:none!important;
+  color:#fff!important;padding:11px 0!important;margin:0!important;
+  font:850 23px/1.4 system-ui,sans-serif!important;text-align:right!important;
+  direction:ltr!important
+}
+#robuxModal #robuxCustomQuantity::placeholder{color:#74819d;font:500 14px 'IBM Plex Sans Arabic',sans-serif}
+#robuxModal .rqc-input-box>span{font:800 12px system-ui,sans-serif;color:#a6b4d5;direction:ltr}
+#robuxModal .rqc-total{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:15px 0 10px;margin-top:5px;border-bottom:1px solid #ffffff16
+}
+#robuxModal .rqc-total>span{font-size:14px;color:#bcc9e2;font-weight:650}
+#robuxModal .rqc-total>strong{
+  font:850 clamp(21px,5vw,30px)/1.4 system-ui,'IBM Plex Sans Arabic',sans-serif;
+  letter-spacing:-.5px;color:#78e5bd;white-space:nowrap
+}
+#robuxModal .rqc-feedback{min-height:36px;margin:11px 0 13px;font-size:12px;color:#a6b4cd;line-height:1.8}
+#robuxModal .rqc-select{
+  display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;
+  padding:12px!important;border:1px solid #aa9bf6!important;border-radius:14px!important;
+  background:linear-gradient(135deg,#7968d9,#4f50b6)!important;
+  color:white!important;font:800 13px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  cursor:pointer;transition:transform .15s,filter .15s
+}
+#robuxModal .rqc-select:not(:disabled):active{transform:scale(.97)}
+#robuxModal .rqc-select:disabled{opacity:.5!important;cursor:not-allowed}
+#robuxModal .rqc-select:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:420px){
+ #robuxModal .robux-quantity-calculator{border-radius:19px;padding:17px 13px 14px;margin-bottom:20px}
+ #robuxModal #robuxCustomQuantity{font-size:21px!important}
+ #robuxModal .rqc-total>strong{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+ #robuxModal .rqc-select,#robuxModal .rqc-input-box{transition:none}
+}

@@ -185,6 +185,7 @@ function openSend(){
  window.setTimeout(()=>{
   const el=ensureSheet();
   el.hidden=false;document.body.classList.add("wallet-send-sheet-open");
+  void loadTransferHistory();
   const note=el.querySelector("#walletSendPreviewResult");
   if(note)note.textContent="";
   el.querySelector(".wallet-sheet-close")?.focus({preventScroll:true});

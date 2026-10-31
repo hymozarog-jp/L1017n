@@ -18,8 +18,8 @@
     setClass(document.body, 'auth-screen', guest && !account.classList.contains('hidden'));
     login.setAttribute('aria-pressed', String(!signingUp));
     signup.setAttribute('aria-pressed', String(signingUp));
-    document.getElementById('authHeading').textContent = signingUp ? 'ابدأ رحلتك معنا' : 'أهلًا بعودتك';
-    document.getElementById('authIntro').textContent = signingUp ? 'أنشئ حسابك وتابع طلباتك بسهولة' : 'سجّل دخولك وتابع طلباتك';
+    document.getElementById('authHeading').textContent = signingUp ? 'إنشاء حساب' : 'تسجيل الدخول';
+    document.getElementById('authIntro').textContent = signingUp ? 'أنشئ حسابك' : 'أهلاً بيك في المتجر';
     document.getElementById('authAlternateText').textContent = signingUp ? 'لديك حساب بالفعل؟' : 'ليس لديك حساب؟';
     document.getElementById('authAlternate').textContent = signingUp ? 'تسجيل الدخول' : 'إنشاء حساب';
   }

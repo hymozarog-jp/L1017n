@@ -249,18 +249,26 @@ function mountRobuxQuantityCalculator(modal,robux){
  const section=document.createElement('section');
  section.className='robux-quantity-calculator';
  section.setAttribute('aria-label','اختيار كمية الروبوكس');
- section.innerHTML='<div class="rqc-heading"><div><small>GAMEBOXLY · ROBUX</small><h2>اختار أي كمية روبوكس</h2></div><span class="rqc-icon" aria-hidden="true">◆</span></div>'
+ const rqcArt='<svg class="rqc-coin-art" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+   +'<circle cx="56" cy="56" r="40" stroke="#C3ADFF" stroke-opacity=".27" stroke-width="2"/>'
+   +'<circle cx="56" cy="56" r="33" fill="#3B2B78" stroke="#BDA4FF" stroke-width="2"/>'
+   +'<rect x="37" y="37" width="38" height="38" rx="5" transform="rotate(25 56 56)" fill="#E0D1FF"/>'
+   +'<rect x="49" y="49" width="14" height="14" rx="2" transform="rotate(25 56 56)" fill="#35215F"/>'
+   +'<path d="M83 18l2.5 6.5L92 27l-6.5 2.5L83 36l-2.5-6.5L74 27l6.5-2.5L83 18Z" fill="#F9DFA2"/>'
+   +'<path d="M25 70l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5Z" fill="#A3F0DD"/>'
+   +'</svg>';
+ section.innerHTML='<div class="rqc-heading"><div class="rqc-header-copy"><small><span class="rqc-header-dot" aria-hidden="true"></span> GAMEBOXLY · ROBUX</small><h2>اختار كمية الروبوكس</h2><p>على كيفك، أي عدد تبيه</p></div><div class="rqc-icon" aria-hidden="true">'+rqcArt+'</div></div>'
    +'<label class="rqc-label" for="robuxCustomQuantity">اكتب العدد اللي تبيه، حتى لو مش موجود في الباقات</label>'
-   +'<div class="rqc-picker"><button class="rqc-step rqc-plus" type="button" aria-label="زيادة روبوكس واحد">+</button>'
-   +'<div class="rqc-input-box"><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" value="'+firstAmount+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب العدد"><span>Robux</span></div>'
-   +'<button class="rqc-step rqc-minus" type="button" aria-label="تقليل روبوكس واحد">−</button></div>'
-   +'<div class="rqc-quick-label">اختيارات سريعة (مو إجبارية)</div>'
+   +'<div class="rqc-picker"><button class="rqc-step rqc-plus" type="button" aria-label="زيادة روبوكس واحد"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>'
+   +'<div class="rqc-input-box"><span class="rqc-input-gem" aria-hidden="true">◆</span><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" value="'+firstAmount+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب العدد"><span>Robux</span></div>'
+   +'<button class="rqc-step rqc-minus" type="button" aria-label="تقليل روبوكس واحد"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button></div>'
+   +'<div class="rqc-quick-label"><span>اختيارات سريعة</span><small>أو اكتب أي عدد بنفسك</small></div>'
    +'<div class="rqc-quick-amounts" role="group" aria-label="اختيارات روبوكس سريعة">'
    +[100,200,300,500,750,1000].map(q=>'<button class="rqc-amount-chip" type="button" data-rqc-amount="'+q+'">'+q+'</button>').join('')
    +'</div>'
-   +'<div class="rqc-total"><span>سعر '+ '<b id="robuxQuantitySelected">'+firstAmount+'</b>'+' روبوكس</span><strong id="robuxQuantityPrice" dir="ltr">—</strong></div>'
+   +'<div class="rqc-total"><div class="rqc-total-description"><span class="rqc-price-eyebrow">المجموع بالدينار الليبي</span><span class="rqc-total-count">سعر <b id="robuxQuantitySelected">'+firstAmount+'</b> روبوكس</span></div><div class="rqc-price-wrap"><strong id="robuxQuantityPrice" dir="ltr">—</strong></div></div>'
    +'<p id="robuxQuantityFeedback" class="rqc-feedback" aria-live="polite"></p>'
-   +'<button type="button" class="rqc-select" disabled>جاري حساب السعر…</button>';
+   +'<button type="button" class="rqc-select" disabled><span class="rqc-cta-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span><span class="rqc-cta-text">جاري حساب السعر…</span></button>';
  anchor.before(section);
  const input=section.querySelector('#robuxCustomQuantity');
  const priceEl=section.querySelector('#robuxQuantityPrice');
@@ -319,7 +327,7 @@ function mountRobuxQuantityCalculator(modal,robux){
    });
    priceEl.textContent='—';
    button.disabled=true;
-   button.textContent='متابعة للشراء';
+   button.querySelector('.rqc-cta-text').textContent='متابعة للشراء';
    button.dataset.customQuantity='';
    if(!typed){feedback.textContent='اكتب أي كمية روبوكس تبيها.';return;}
    if(!valid||!Number.isSafeInteger(quantity)||quantity<=0){
@@ -345,7 +353,7 @@ function mountRobuxQuantityCalculator(modal,robux){
        feedback.textContent='السعر نهائي لهذه الكمية حاليًا، ويُراجع عند تأكيد الشراء.';
        button.disabled=false;
        button.dataset.customQuantity=String(quantity);
-       button.textContent='متابعة لشراء '+quantity+' روبوكس';
+       button.querySelector('.rqc-cta-text').textContent='متابعة لشراء '+quantity+' روبوكس';
      }catch(err){
        if(seq!==quoteSeq)return;
        priceEl.textContent='—';
@@ -392,7 +400,10 @@ function mountRobuxQuantityCalculator(modal,robux){
  modal.addEventListener('robux-inventory-updated',update);
  update();
 }
-function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||''));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">♧ أكواد وبطاقات</span></div><div class="robux-reference-features"><span>♧<small>دعم متواصل</small></span><span>♢<small>دفع آمن</small></span><span>ϟ<small>كود فوري</small></span></div><h2 class="robux-reference-section">اختر الباقة</h2><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxAvailable>=Number(p.amount||0);return '<button class="robux-package" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><span class="robux-plus">＋</span><span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?'متوفر · '+robuxAvailable+' Robux متبقية':'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.remove('hidden');mountRobuxQuantityCalculator(modal,robux);const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
+function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||''));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">◆ شحن روبوكس</span></div><div class="robux-reference-features">'
++'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6.5v5.3c0 4.6 3.2 7.6 7.5 9.2 4.3-1.6 7.5-4.6 7.5-9.2V6.5L12 3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><small>طلب موثّق</small></span>'
++'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg><small>محفظة آمنة</small></span>'
++'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="12" width="4" height="7" rx="2"/><rect x="17.5" y="12" width="4" height="7" rx="2"/><path d="M19 19c0 1.4-2 2-5 2h-2"/></svg><small>دعم للطلبات</small></span></div><h2 class="robux-reference-section">اختر الباقة</h2><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxAvailable>=Number(p.amount||0);return '<button class="robux-package" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><span class="robux-plus">＋</span><span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?'متوفر · '+robuxAvailable+' Robux متبقية':'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.remove('hidden');mountRobuxQuantityCalculator(modal,robux);const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
 // The page and its image are already visible. Refresh stock without delaying navigation.
 requestAnimationFrame(()=>{
   supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()

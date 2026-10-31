@@ -1,0 +1,2 @@
+/* Compact visual-only login theme, no authentication code. */
+#accountView.auth-guest .account-panel{border-radius:28px!important}

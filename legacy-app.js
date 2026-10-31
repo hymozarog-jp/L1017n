@@ -362,7 +362,60 @@ function paintGoldAccountIdentity(user,name){
   avatar.replaceChildren(img);img.src=photo;
  }
 }
-async function renderAccountCore(){const user=await currentUser();renderGoogleHeaderAvatar(user);const modernCard=document.getElementById('accountModern');if(modernCard){modernCard.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const name=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';document.getElementById('accountModernName').textContent=name;document.getElementById('accountModernEmail').textContent=user.email||'';paintGoldAccountIdentity(user,name);document.getElementById('accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}document.body.classList.toggle('auth-screen',!user&&!$('#accountView')?.classList.contains('hidden'));renderCustomerHeaderWallet(user);let profile=$('#signedInProfile');if(!profile){profile=document.createElement('div');profile.id='signedInProfile';profile.style.cssText='display:flex;align-items:center;gap:14px;text-align:right;padding:14px;margin:12px 0;border:1px solid var(--border-color,#ddd);border-radius:16px';const title=$('#accountTitle');title.parentNode.insertBefore(profile,title.nextSibling)}const accountBtn=$('#accountBtn');if(user){const meta=user.user_metadata||{};const displayName=meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'مستخدم';const {data:nickData}=await supabaseClient.from('leaderboard_profiles').select('nickname').eq('user_id',user.id).maybeSingle();const nickname=nickData?.nickname||'';if(accountBtn)accountBtn.textContent=nickname||'حسابي ↗';const avatar=meta.avatar_url||meta.picture||'';profile.classList.remove('hidden');profile.innerHTML=(avatar?'<img src="'+escapeHtml(avatar)+'" alt="الصورة الشخصية" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display=&quot;none&quot;">':'<div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2,#eee);font-size:24px;flex-shrink:0">'+escapeHtml((nickname||displayName).slice(0,1).toUpperCase())+'</div>')+'<div style="min-width:0"><strong style="display:block;font-size:1.05rem">'+escapeHtml(nickname||displayName)+'</strong><span style="display:block;overflow-wrap:anywhere;opacity:.8">'+escapeHtml(user.email||'')+'</span><small style="opacity:.7">تم تسجيل الدخول بنجاح</small></div>';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='هذا ملفك الشخصي المرتبط بحسابك.';$('#authForm').classList.add('hidden');$('#googleSignInBtn')?.classList.add('hidden');$('#logoutBtn').classList.remove('hidden')}else{if(accountBtn)accountBtn.textContent='حسابي ↗';profile.classList.add('hidden');profile.innerHTML='';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='سجّل دخولك بحساب Google أو بالبريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.';$('#authForm').classList.remove('hidden');$('#googleSignInBtn')?.classList.remove('hidden');$('#logoutBtn').classList.add('hidden')}// Phone is a unique account identifier, not proof of SIM ownership.
+// Signed-in account balance + non-refunded purchase spending; never expose other users' data.
+let accountBalanceSummarySeq=0;
+async function refreshAccountBalanceSummary(user){
+ const id=++accountBalanceSummarySeq;
+ const balanceEl=document.getElementById('accountCurrentBalance');
+ const spentEl=document.getElementById('accountSpentBalance');
+ if(!balanceEl||!spentEl)return;
+ balanceEl.textContent='—';spentEl.textContent='—';
+ if(!user)return;
+ const isFresh=()=>id===accountBalanceSummarySeq;
+ const displayAmount=(element,value)=>{
+   if(!isFresh())return;
+   const amount=Number(value);
+   element.textContent=Number.isFinite(amount)?Math.max(0,amount).toFixed(3):'—';
+ };
+ const walletTask=(async()=>{
+   try{
+     const {data,error}=await supabaseClient.from('wallet_accounts')
+       .select('balance').eq('user_id',user.id).maybeSingle();
+     if(error)throw error;
+     displayAmount(balanceEl,data?.balance??0);
+   }catch(error){
+     if(isFresh())balanceEl.textContent='—';
+     console.warn('[account/summary] Unable to load wallet balance',error);
+   }
+ })();
+ const spendTask=(async()=>{
+   try{
+     const perPage=500;
+     let total=0;
+     for(let start=0;start<100000;start+=perPage){
+       if(!isFresh())return;
+       // Chargeable purchases only, excluding refunded/rejected orders and top-ups.
+       const {data,error}=await supabaseClient.from('purchase_orders')
+         .select('total_amount')
+         .eq('user_id',user.id)
+         .in('status',['paid_pending_fulfillment','completed'])
+         .order('created_at',{ascending:true})
+         .range(start,start+perPage-1);
+       if(error)throw error;
+       const rows=data||[];
+       rows.forEach(row=>{total+=Math.max(0,Number(row.total_amount)||0)});
+       if(rows.length<perPage){displayAmount(spentEl,total);return}
+     }
+     // Do not show an incomplete lifetime total if an unusually large account exceeds the read limit.
+     if(isFresh())spentEl.textContent='—';
+   }catch(error){
+     if(isFresh())spentEl.textContent='—';
+     console.warn('[account/summary] Unable to load paid purchases',error);
+   }
+ })();
+ await Promise.all([walletTask,spendTask]);
+}
+async function renderAccountCore(){const user=await currentUser();void refreshAccountBalanceSummary(user);renderGoogleHeaderAvatar(user);const modernCard=document.getElementById('accountModern');if(modernCard){modernCard.classList.toggle('hidden',!user);if(user){const m=user.user_metadata||{};const name=m.full_name||m.name||user.email?.split('@')[0]||'مستخدم';document.getElementById('accountModernName').textContent=name;document.getElementById('accountModernEmail').textContent=user.email||'';paintGoldAccountIdentity(user,name);document.getElementById('accountMemberSince').textContent=user.created_at?new Date(user.created_at).toLocaleDateString('ar-LY',{month:'2-digit',year:'numeric'}):'—';}}document.body.classList.toggle('auth-screen',!user&&!$('#accountView')?.classList.contains('hidden'));renderCustomerHeaderWallet(user);let profile=$('#signedInProfile');if(!profile){profile=document.createElement('div');profile.id='signedInProfile';profile.style.cssText='display:flex;align-items:center;gap:14px;text-align:right;padding:14px;margin:12px 0;border:1px solid var(--border-color,#ddd);border-radius:16px';const title=$('#accountTitle');title.parentNode.insertBefore(profile,title.nextSibling)}const accountBtn=$('#accountBtn');if(user){const meta=user.user_metadata||{};const displayName=meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'مستخدم';const {data:nickData}=await supabaseClient.from('leaderboard_profiles').select('nickname').eq('user_id',user.id).maybeSingle();const nickname=nickData?.nickname||'';if(accountBtn)accountBtn.textContent=nickname||'حسابي ↗';const avatar=meta.avatar_url||meta.picture||'';profile.classList.remove('hidden');profile.innerHTML=(avatar?'<img src="'+escapeHtml(avatar)+'" alt="الصورة الشخصية" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display=&quot;none&quot;">':'<div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2,#eee);font-size:24px;flex-shrink:0">'+escapeHtml((nickname||displayName).slice(0,1).toUpperCase())+'</div>')+'<div style="min-width:0"><strong style="display:block;font-size:1.05rem">'+escapeHtml(nickname||displayName)+'</strong><span style="display:block;overflow-wrap:anywhere;opacity:.8">'+escapeHtml(user.email||'')+'</span><small style="opacity:.7">تم تسجيل الدخول بنجاح</small></div>';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='هذا ملفك الشخصي المرتبط بحسابك.';$('#authForm').classList.add('hidden');$('#googleSignInBtn')?.classList.add('hidden');$('#logoutBtn').classList.remove('hidden')}else{if(accountBtn)accountBtn.textContent='حسابي ↗';profile.classList.add('hidden');profile.innerHTML='';$('#accountTitle').textContent='أهلاً بيك في L1017n';$('#accountText').textContent='سجّل دخولك بحساب Google أو بالبريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.';$('#authForm').classList.remove('hidden');$('#googleSignInBtn')?.classList.remove('hidden');$('#logoutBtn').classList.add('hidden')}// Phone is a unique account identifier, not proof of SIM ownership.
 let phoneGate=$('#accountPhoneGate');
 if(!phoneGate){phoneGate=document.createElement('div');phoneGate.id='accountPhoneGate';phoneGate.className='panel';phoneGate.style.cssText='padding:16px;margin:14px 0';profile.parentNode.insertBefore(phoneGate,profile.nextSibling)}
 if(user){

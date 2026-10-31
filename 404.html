@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#08120e">
-  <title>فتح المتجر | L1017n</title>
+  <title>فتح المتجر | GAMEBOX LY</title>
   <script>
     (function () {
       // Social posts can append invisible formatting characters to copied URLs.
@@ -14,11 +14,14 @@
         var target = new URL(window.location.href);
         var path = decodeURIComponent(target.pathname);
         var cleanPath = path.replace(/[\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '');
+        // Keep the recovery page working across a GitHub Pages repository rename.
+        var match = cleanPath.match(/^\/(L1017n|gamebox-ly)(?=\/|$)/i);
+        var base = match ? '/' + match[1] : '/L1017n';
         var knownPages = [
-          '/L1017n/', '/L1017n/index.html', '/L1017n/admin.html',
-          '/L1017n/admin-v2.html', '/L1017n/privacy-policy.html'
+          base + '/', base + '/index.html', base + '/admin.html',
+          base + '/admin-v2.html', base + '/privacy-policy.html'
         ];
-        if (cleanPath === '/L1017n') cleanPath += '/';
+        if (cleanPath === base) cleanPath += '/';
         if (path !== cleanPath && knownPages.indexOf(cleanPath) !== -1) {
           target.pathname = cleanPath;
           window.location.replace(target.href);
@@ -34,10 +37,17 @@
 </head>
 <body>
   <main>
-    <strong dir="ltr">L1017n</strong>
+    <strong dir="ltr">GAMEBOX LY</strong>
     <h1>لنفتح المتجر</h1>
     <p>قد يكون الرابط المنسوخ غير مكتمل أو يحتوي على أحرف إضافية. إذا لم تفتح الصفحة تلقائيًا، اضغط الزر للوصول إلى المتجر.</p>
-    <a href="/L1017n/">افتح المتجر</a>
+    <a id="storeHome" href="/L1017n/">افتح المتجر</a>
+    <script>
+      (function () {
+        var path = window.location.pathname.replace(/[\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '');
+        var match = path.match(/^\/(L1017n|gamebox-ly)(?=\/|$)/i);
+        document.getElementById('storeHome').href = '/' + (match ? match[1] : 'L1017n') + '/';
+      })();
+    </script>
   </main>
 </body>
 </html>

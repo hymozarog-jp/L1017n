@@ -3,7 +3,7 @@
   var supabaseUrl='https://cmtxsjlehjworqypbxjz.supabase.co';
   var supabaseKey='sb_publishable_NrahtO5qp8p4OgjODMbxdQ_XqbUWSAk';
   var robloxImage='game-covers/roblox-mark.svg?v=logo-square1';
-  var mm2Image='game-covers/mm2-game-icon.jpg?v=user-mm2-icon1';
+  var mm2Image='game-covers/mm2-game-icon.jpg?v=mm2-fixed2';
   var brainrotImage='game-covers/steal-a-brainrot-original.png';
   var mm2MintyImage='https://luger.gg/cdn/shop/files/11_491b96a8-e468-4b75-805c-450d32b73de7.png?v=1777750613';
   // Product-specific cutout PNG artwork: no black screenshot background.

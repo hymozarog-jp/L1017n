@@ -17,7 +17,7 @@ function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
   {name:'روبوكس',category:'روبلوكس',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>String(p.game||'').toLowerCase()==='roblox'||/robux|روبوكس/i.test(p.name||'')).length},
-  {name:'MM2',category:'روبلوكس',image:'game-covers/mm2-game-icon.jpg?v=user-mm2-icon1',key:'mm2',count:products.filter(p=>/mm2|murder.mystery/i.test([p.game,p.product_key,p.name].join(' '))).length},
+  {name:'MM2',category:'روبلوكس',image:'game-covers/mm2-game-icon.jpg?v=mm2-fixed2',key:'mm2',count:products.filter(p=>/mm2|murder.mystery/i.test([p.game,p.product_key,p.name].join(' '))).length},
   {name:'ماب السرقة',category:'روبلوكس',image:'game-covers/steal-a-brainrot-original.png',key:'steal-a-brainrot',count:products.filter(p=>/brainrot|steal.a.brainrot/i.test([p.game,p.product_key,p.name].join(' '))).length}
  ];
  g.innerHTML='<div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+escapeHtml(x.category)+'"><button type="button" class="game-tile-btn" data-game-open="'+escapeHtml(x.key)+'" aria-label="'+escapeHtml(x.name)+'"><div class="game-tile-art game-art-'+escapeHtml(x.key)+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fortnite:'FORTNITE'}[x.key]||escapeHtml(x.name.toUpperCase()))+'</span>'+(x.image?'<img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+escapeHtml(x.name)+'</strong><small>'+(x.count?x.count+' باقة':'قريبًا')+'</small></div></button></article>').join('')+'</div>';

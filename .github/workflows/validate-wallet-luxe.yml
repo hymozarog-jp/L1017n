@@ -1,4 +1,4 @@
-name: Validate mutually exclusive primary wallet buttons
+name: Validate synced primary wallet header logo and balance
 on:
   push:
     branches: [main]
@@ -35,6 +35,7 @@ jobs:
           const luxe=fs.readFileSync('wallet-luxe.js','utf8');
           const primary=fs.readFileSync('wallet-primary-toggle.js','utf8');
           const css=fs.readFileSync('wallet-primary-toggle.css','utf8');
+          const headerCSS=fs.readFileSync('libyana-header-chip.css','utf8');
           for(const id of ['walletActionTopup','walletActionTransfer','walletActionSend',
             'walletActionPrimary','walletShowcaseBalance','madarWalletBalance','topupHistory','walletView']){
             assert(html.includes('id="'+id+'"'),'Wallet element missing: '+id);
@@ -43,8 +44,8 @@ jobs:
             'Both wallets need independent primary buttons');
           assert(html.includes('data-wallet-primary="libyana"'));
           assert(html.includes('data-wallet-primary="madar"'));
-          assert(html.includes('wallet-primary-toggle.css?v=exclusive-primary-2'));
-          assert(html.includes('wallet-primary-toggle.js?v=exclusive-primary-2'));
+          assert(html.includes('wallet-primary-toggle.css?v=header-logo-sync-3'));
+          assert(html.includes('wallet-primary-toggle.js?v=header-logo-sync-3'));
           assert(!html.includes('wallet-two-primary.css?v=separate-wallets-1'),
             'Restore original swiping carousel instead of stacked cards');
           assert(!html.includes('wallet-separate-head'));
@@ -62,6 +63,20 @@ jobs:
           assert(primary.includes('identity?"l1017n-primary-wallets-v1:"'),
             'Primary status should be stored per signed-in user');
           assert(primary.includes('window.localStorage.setItem(storageKey(),JSON.stringify(selected))'));
+          assert(primary.includes('getSelectedFor(userId)'),'Header image must respect the signed-in account');
+          assert(primary.includes('refreshTopWallet(user)'),'Changing primary must refresh the header immediately');
+          assert(legacy.includes("window.L1017nPrimaryWallets?.getSelectedFor?.(user?.id)"),
+            'Header must use the primary choice for its current user');
+          assert(legacy.includes("isMadar?'#walletView .madar-brand-mark img':'#walletView .libyana-brand-mark img'"),
+            'Reuse actual carrier logo from existing wallet cards');
+          assert(legacy.includes(".select('balance,madar_balance')"),
+            'Top header must load both balances from authenticated account');
+          assert(legacy.includes("isMadar?data?.madar_balance||0:data?.balance||0"),
+            'The logo and amount must always describe the same wallet');
+          assert(legacy.includes("dataset.walletCarrier==='madar'"),
+            'Do not allow the Madar top-up shortcut to open Libyana charging');
+          assert.match(css,/#customerWalletChip\.gb-libyana-wallet-chip\[data-wallet-carrier="madar"\]/);
+          assert.match(headerCSS,/#customerWalletChip\.gb-libyana-wallet-chip/);
           assert(!primary.includes('.rpc('),'Primary preference must not spend or transfer money');
           assert(!primary.includes('.from('),'Primary preference must not update wallet DB tables');
           assert.match(legacy,/from\('wallet_accounts'\)\.select\('balance,madar_balance,primary_balance'\)/,
@@ -106,7 +121,9 @@ jobs:
             addEventListener(type,fn){handlers[type]=fn;},
             hidden:false
           };
+          const headerUpdates=[];
           const context={
+            renderCustomerHeaderWallet:user=>{headerUpdates.push(user?.id||null)},
             window:{
               localStorage:{getItem:key=>store.get(key)||null,setItem:(key,val)=>store.set(key,val)},
               addEventListener:()=>{},setTimeout:()=>{}
@@ -133,12 +150,16 @@ jobs:
           }
           await clickCarrier('madar');
           assert.deepEqual(state(),{libyana:false,madar:true});
+          assert.equal(context.window.L1017nPrimaryWallets.getSelectedFor('test-user'),'madar');
+          assert.equal(headerUpdates.at(-1),'test-user');
           assert.equal(buttonL.attrs['aria-pressed'],'false');
           assert.equal(buttonM.attrs['aria-pressed'],'true');
           await clickCarrier('libyana');
           assert.deepEqual(state(),{libyana:true,madar:false});
+          assert.equal(context.window.L1017nPrimaryWallets.getSelectedFor('test-user'),'libyana');
           await clickCarrier('libyana');
           assert.deepEqual(state(),{libyana:false,madar:false});
+          assert.equal(context.window.L1017nPrimaryWallets.getSelectedFor('test-user'),null);
           console.log('Exclusive primary buttons and previous saved preferences verified.');
           })().catch(error=>{console.error(error);process.exitCode=1});
 

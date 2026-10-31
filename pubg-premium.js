@@ -33,7 +33,7 @@
     catalogError="";
     const refresh=()=> {
       if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
-      setCategory(root,currentCategory,false);
+      if (root.classList.contains("pubg-inner-page")) setCategory(root,currentCategory,false);
     };
     try {
       if(typeof supabaseClient==="undefined")throw new Error("خدمة المنتجات غير جاهزة");
@@ -243,22 +243,51 @@
       });
     });
   }
-  function setCategory(root, key, shouldScroll = true) {
-    currentCategory = key;
-    root.querySelectorAll("[data-pubg-category]").forEach((button) => {
-      const active = button.dataset.pubgCategory === key;
-      button.classList.toggle("selected", active);
-      button.setAttribute("aria-pressed", String(active));
+  // Same two-screen experience as Roblox: categories first, packages on a separate inner screen.
+  function showPubgCategories(root) {
+    root.classList.remove("pubg-inner-page", "pubg-codes-page", "pubg-charge-page");
+    root.querySelectorAll("[data-pubg-category]").forEach(button => {
+      button.classList.remove("selected");
+      button.setAttribute("aria-pressed","false");
     });
-    const panel = root.querySelector("#pubgCategoryResults");
-    if (!panel) return;
-    paintOffers(panel, key);
+    const heading=root.querySelector("[data-pubg-title]");
+    if(heading)heading.textContent="ببجي موبايل";
+    const back=root.querySelector("[data-pubg-close]");
+    if(back){
+      back.setAttribute("aria-label","العودة إلى المتجر");
+      const label=back.querySelector("[data-pubg-back-label]");
+      if(label)label.textContent="رجوع";
+    }
+    root.querySelector("#pubgCategoryResults")?.setAttribute("aria-hidden","true");
+    root.scrollTop=0;
+  }
+  function setCategory(root, key, shouldScroll = true) {
+    if(!CATEGORIES.some(item => item.key === key)) return;
+    currentCategory = key;
+    root.classList.add("pubg-inner-page");
+    root.classList.toggle("pubg-codes-page",key==="codes");
+    root.classList.toggle("pubg-charge-page",key==="charge");
+    root.querySelectorAll("[data-pubg-category]").forEach(button => {
+      const active=button.dataset.pubgCategory === key;
+      button.classList.toggle("selected",active);
+      button.setAttribute("aria-pressed",String(active));
+    });
+    const heading=root.querySelector("[data-pubg-title]");
+    if(heading)heading.textContent=key==="codes"?"أكواد الشحن":"نشحنها لك";
+    const back=root.querySelector("[data-pubg-close]");
+    if(back){
+      back.setAttribute("aria-label","رجوع إلى أقسام ببجي");
+      const label=back.querySelector("[data-pubg-back-label]");
+      if(label)label.textContent="رجوع";
+    }
+    const panel=root.querySelector("#pubgCategoryResults");
+    if(!panel) return;
+    panel.removeAttribute("aria-hidden");
+    paintOffers(panel,key);
     panel.classList.remove("pubg-results-enter");
     void panel.offsetWidth;
     panel.classList.add("pubg-results-enter");
-    if (shouldScroll) {
-      panel.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
-    }
+    if(shouldScroll)root.scrollTop=0;
   }
   function closePremiumPubg() {
     const root = document.getElementById(PAGE_ID);
@@ -283,40 +312,51 @@
     root.setAttribute("aria-label", "متجر ببجي موبايل");
     root.removeAttribute("aria-hidden");
     root.innerHTML = '<div class="pubg-shell">'
-      + '<header class="pubg-topbar"><div class="pubg-brand"><span class="pubg-brand-emblem">L</span><span>L1017N <small>GAME STORE</small></span></div>'
-      + '<button class="pubg-close" type="button" data-pubg-close aria-label="العودة إلى المتجر"><span aria-hidden="true">←</span> رجوع للمتجر</button></header>'
+      + '<header class="pubg-topbar"><div class="pubg-brand" data-pubg-title>ببجي موبايل</div>'
+      + '<button class="pubg-close" type="button" data-pubg-close aria-label="العودة إلى المتجر"><span aria-hidden="true">←</span> <span data-pubg-back-label>رجوع</span></button></header>'
       + '<section class="pubg-hero" aria-labelledby="pubgHeroTitle">'
-      + '<div class="pubg-hero-copy"><span class="pubg-kicker"><i></i> BATTLE-READY DIGITAL STORE</span>'
+      + '<div class="pubg-hero-copy"><span class="pubg-kicker"><i></i> L1017N / PUBG MOBILE</span>'
       + '<h1 id="pubgHeroTitle">PUBG <span>MOBILE</span></h1>'
-      + '<p class="pubg-hero-title-ar">كل ما تحتاجه للمعركة، بمكان واحد.</p>'
-      + '<p class="pubg-hero-description">اشترِ كود شحن أو اختر باقة ونشحنها لك على UID.</p>'
-      + '<div class="pubg-hero-actions"><span class="pubg-hero-note"><span class="pubg-note-dot"></span> أكواد وشحن مباشر • دفع من المحفظة</span></div>'
+      + '<p class="pubg-hero-title-ar">عالم الشدات في مكان واحد.</p>'
+      + '<p class="pubg-hero-description">اختار أكواد الشحن، أو الشحن على معرف اللاعب UID.</p>'
       + '</div><div class="pubg-hero-visual"><div class="pubg-hero-halo"></div>'
-      + '<img src="game-covers/pubg-battlefront.webp" alt="PUBG Mobile" loading="eager" decoding="async">'
-      + '<span class="pubg-visual-sticker">LEVEL UP <b>UC STORE</b></span></div>'
-      + '<div class="pubg-hero-caption">L1017N <b>×</b> PUBG MOBILE <span>•</span> UC</div>'
+      + '<img src="game-covers/pubg-battlefront.webp" alt="صورة ببجي موبايل" loading="eager" decoding="async"></div>'
       + '</section>'
+      + '<div class="pubg-reference-features" aria-label="خطوات الطلب">'
+      + '<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختار الباقة</small></span>'
+      + '<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span>'
+      + '<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span>'
+      + '</div>'
       + '<section class="pubg-category-section" aria-label="طرق شحن ببجي">'
-      + '<div class="pubg-section-label"><div><span class="pubg-eyebrow">CHOOSE HOW TO TOP UP</span><h2>كيف تبي تشحن؟</h2><p>اختر نوع الطلب، وبعدها تظهر باقاته.</p></div></div>'
+      + '<div class="pubg-section-label"><div><h2>اختر الفئة</h2></div></div>'
       + '<div class="pubg-choice-grid" role="group" aria-label="خيارات شحن ببجي">'
-      + CATEGORIES.map((item, index) =>
-        '<button type="button" class="pubg-choice" data-pubg-category="' + item.key + '" aria-pressed="false">'
-        + '<span class="pubg-choice-step">' + item.latin + '<span aria-hidden="true">0' + (index + 1) + '</span></span>'
-        + '<span class="pubg-choice-art pubg-choice-art-' + item.key + '" aria-hidden="true">' + (item.key === "codes" ? '<img class="pubg-choice-uc" src="game-covers/pubg-uc.svg" alt="" loading="lazy">' : '<i>' + item.visual + '</i>') + '</span>'
-        + '<span class="pubg-choice-info"><strong>' + item.title + '</strong><small>' + item.subtitle + '</small></span>'
+      + CATEGORIES.map(item =>
+        '<button type="button" class="pubg-choice pubg-choice-' + item.key + '" data-pubg-category="' + item.key + '" aria-pressed="false">'
+        + '<span class="pubg-choice-art pubg-choice-art-' + item.key + '" aria-hidden="true">'
+        + (item.key === "codes"
+          ? '<img class="pubg-choice-uc" src="game-covers/pubg-uc.svg" alt="" loading="lazy" decoding="async">'
+          : '<img class="pubg-choice-battle" src="game-covers/pubg-battlefront.webp" alt="" loading="lazy" decoding="async">')
+        + '</span>'
+        + '<span class="pubg-choice-info"><strong>' + item.title + '</strong>'
+        + '<small>' + (item.key==="codes"?"أكواد شدات PUBG المتوفرة في المخزون":"نجهز الشحن لك باستخدام معرف UID") + '</small>'
+        + '<span class="pubg-choice-action">' + (item.key==="codes"?"عرض أكواد الشحن":"عرض باقات الشحن") + '<span aria-hidden="true">←</span></span></span>'
         + '</button>').join("")
       + '</div></section>'
-      + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite"></div>'
-      + '<footer class="pubg-footer"><span>L1017N STORE</span><span>أكواد شحن أو شحن شدات على UID.</span></footer>'
+      + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite" aria-hidden="true"></div>'
+      + '<footer class="pubg-footer"><span>L1017N STORE</span><span>اختر طريقة الشحن المناسبة لحسابك.</span></footer>'
       + '</div>';
 
     document.body.classList.add("pubg-premium-open");
     root.scrollTop = 0;
-    root.querySelector("[data-pubg-close]").addEventListener("click", closePremiumPubg);
+    root.querySelector("[data-pubg-close]").addEventListener("click", () => {
+      if(root.classList.contains("pubg-inner-page")) showPubgCategories(root);
+      else closePremiumPubg();
+    });
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
       button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));
     });
     setCategory(root,"codes",false);
+    showPubgCategories(root);
     void fetchPubgProducts(root);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }

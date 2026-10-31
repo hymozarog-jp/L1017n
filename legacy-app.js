@@ -477,7 +477,7 @@ async function renderCustomerHeaderWallet(user){
  const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
  if(!chip||!amount)return;
  const sequence=++customerHeaderWalletSeq;
- const carrier=window.L1017nPrimaryWallets?.getSelected?.()==='madar'?'madar':'libyana';
+ const carrier=window.L1017nPrimaryWallets?.getSelectedFor?.(user?.id)==='madar'?'madar':'libyana';
  const isMadar=carrier==='madar';
  // Display only the selected carrier's logo and its own authenticated balance.
  // This is a presentation preference; changing it never moves money.

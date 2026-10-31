@@ -238,107 +238,125 @@ async function renderOrders(){
    Uses active catalog prices; an arbitrary input is an estimate, never a checkout SKU.
    Exact checkout still calls the existing server-validated product RPC. */
 function mountRobuxQuantityCalculator(modal,robux){
+ // Only listed products are purchasable; the price must always come from the live catalog.
  const offers=robux.map(p=>({id:String(p.id),amount:Number(p.amount),price:Number(p.price)}))
    .filter(p=>Number.isSafeInteger(p.amount)&&p.amount>0&&Number.isFinite(p.price)&&p.price>0)
-   .sort((a,b)=>a.amount-b.amount);
+   .sort((a,b)=>a.amount-b.amount||a.price-b.price);
+ const uniqueOffers=offers.filter((offer,index)=>offers.findIndex(x=>x.amount===offer.amount)===index);
  const anchor=modal.querySelector('.robux-reference-section');
- if(!anchor||!offers.length)return;
- const min=offers[0].amount,max=offers[offers.length-1].amount;
+ if(!anchor||!uniqueOffers.length)return;
+ const firstAmount=uniqueOffers[0].amount;
  const section=document.createElement('section');
  section.className='robux-quantity-calculator';
- section.setAttribute('aria-label','حاسبة كمية الروبوكس');
- section.innerHTML='<div class="rqc-heading"><div><small>GAMEBOXLY · ROBUX</small><h2>احسب سعر الروبوكس</h2></div><span class="rqc-icon" aria-hidden="true">◆</span></div>'
-   +'<label class="rqc-label" for="robuxCustomQuantity">كم روبوكس تبي؟</label>'
-   +'<div class="rqc-input-box"><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="7" autocomplete="off" value="'+String(min)+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب عدد الروبوكس"><span>Robux</span></div>'
-   +'<div class="rqc-total"><span id="robuxQuantityPriceLabel">السعر</span><strong id="robuxQuantityPrice" dir="ltr">—</strong></div>'
-   +'<p id="robuxQuantityFeedback" class="rqc-feedback" aria-live="polite"></p>'
-   +'<button type="button" class="rqc-select" disabled>اختيار الباقة</button>';
+ section.setAttribute('aria-label','اختيار كمية الروبوكس');
+ section.innerHTML='<div class="rqc-heading"><div><small>GAMEBOXLY · ROBUX</small><h2>اختار كمية الروبوكس</h2></div><span class="rqc-icon" aria-hidden="true">◆</span></div>'
+  +'<label class="rqc-label" for="robuxCustomQuantity">الكمية اللي تبيها</label>'
+  +'<div class="rqc-picker">'
+  +'<button class="rqc-step rqc-plus" type="button" aria-label="زيادة الروبوكس">+</button>'
+  +'<div class="rqc-input-box"><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="7" autocomplete="off" value="'+String(firstAmount)+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب الكمية"><span>Robux</span></div>'
+  +'<button class="rqc-step rqc-minus" type="button" aria-label="تقليل الروبوكس">−</button>'
+  +'</div>'
+  +'<div class="rqc-quick-label">أو اختار العدد مباشرة</div>'
+  +'<div class="rqc-quick-amounts" role="group" aria-label="كميات الروبوكس المتاحة">'
+  +uniqueOffers.map(x=>'<button class="rqc-amount-chip" type="button" data-rqc-amount="'+x.amount+'">'+x.amount+'</button>').join('')
+  +'</div>'
+  +'<div class="rqc-total"><span>السعر الإجمالي</span><strong id="robuxQuantityPrice" dir="ltr">—</strong></div>'
+  +'<p id="robuxQuantityFeedback" class="rqc-feedback" role="status" aria-live="polite"></p>'
+  +'<button type="button" class="rqc-select" disabled>متابعة للشراء</button>';
  anchor.before(section);
  const input=section.querySelector('#robuxCustomQuantity');
  const price=section.querySelector('#robuxQuantityPrice');
- const label=section.querySelector('#robuxQuantityPriceLabel');
  const feedback=section.querySelector('#robuxQuantityFeedback');
  const button=section.querySelector('.rqc-select');
+ const plus=section.querySelector('.rqc-plus');
+ const minus=section.querySelector('.rqc-minus');
+ const chips=[...section.querySelectorAll('[data-rqc-amount]')];
  const money=n=>Number(n).toFixed(2)+' د.ل';
  const normalizedDigits=value=>String(value).replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
    .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).trim();
- function render(){
-   const typed=normalizedDigits(input.value);
-   const valid=/^[0-9]{1,7}$/.test(typed);
-   const quantity=valid?Number(typed):NaN;
-   const inRange=Number.isSafeInteger(quantity)&&quantity>=min&&quantity<=max;
-   const exact=inRange?offers.find(x=>x.amount===quantity):null;
-   const stocked=offers.filter(x=>{
-     const tile=[...modal.querySelectorAll('.robux-package[data-robux]')]
-       .find(el=>el.dataset.robux===x.id);
-     return tile&&!tile.disabled;
-   });
-   const closest=inRange?stocked.slice().sort((a,b)=>
-     Math.abs(a.amount-quantity)-Math.abs(b.amount-quantity)
-     || (a.amount>=quantity?-1:1)-(b.amount>=quantity?-1:1)
-     || a.amount-b.amount)[0]:null;
-   price.textContent='—';
-   label.textContent='السعر';
-   button.disabled=true;
-   button.textContent='اختيار الباقة';
-   button.dataset.productId='';
-   if(!inRange){
-     feedback.textContent=!typed?'اكتب كمية الروبوكس أولاً.':
-       !valid?'اكتب أرقامًا صحيحة فقط.':'الكمية المتاحة للحساب من '+min+' إلى '+max+' روبوكس.';
-     return;
-   }
-   if(exact){
-     price.textContent=money(exact.price);
-     label.textContent='سعر الباقة';
-     feedback.textContent=stocked.some(x=>x.id===exact.id)
-       ? 'سعر معتمد من المتجر. اختر الباقة للمتابعة إلى الطلب.'
-       : 'هذه الباقة غير متوفرة حاليًا. تقدر تختار باقة ثانية متوفرة.';
-   }else{
-     const lower=offers.filter(x=>x.amount<quantity).slice(-1)[0];
-     const upper=offers.find(x=>x.amount>quantity);
-     if(lower&&upper){
-       const estimate=lower.price+(upper.price-lower.price)*(quantity-lower.amount)/(upper.amount-lower.amount);
-       price.textContent='≈ '+money(Math.round(estimate*100)/100);
-       label.textContent='السعر التقريبي';
-       feedback.textContent='الكمية اللي كتبتها مش باقة للبيع؛ الرقم تقديري فقط. الشراء يتم من الباقات المعروضة.';
-     }
-   }
-   const preferred=exact&&stocked.find(x=>x.id===exact.id)||closest;
-   if(preferred){
-     button.disabled=false;
-     button.dataset.productId=preferred.id;
-     button.textContent=exact&&preferred.id===exact.id
-       ?'اختيار '+preferred.amount+' روبوكس'
-       :'اختيار أقرب باقة: '+preferred.amount+' روبوكس · '+money(preferred.price);
-   }
- }
- button.addEventListener('click',()=>{
-   const tile=[...modal.querySelectorAll('.robux-package[data-robux]')]
-     .find(el=>el.dataset.robux===button.dataset.productId);
-   if(!tile||tile.disabled){render();return}
-   const selected=offers.find(x=>x.id===tile.dataset.robux);
-   if(selected)input.value=String(selected.amount);
-   render();
-   tile.click(); // Existing selection and server checkout remain unchanged.
+ const tileFor=x=>[...modal.querySelectorAll('.robux-package[data-robux]')]
+   .find(el=>el.dataset.robux===x.id);
+ const available=()=>uniqueOffers.filter(x=>{
+   const tile=tileFor(x);
+   return tile&&!tile.disabled;
  });
- input.addEventListener('input',()=>{
-   // The user changed their intended amount: remove any previous package selection.
+ function clearSelected(){
    modal.querySelectorAll('.robux-package.selected').forEach(tile=>{
      tile.classList.remove('selected');
      const mark=tile.querySelector('.robux-plus');
      if(mark)mark.textContent='＋';
    });
    modal.querySelector('.robux-checkout-bar')?.classList.remove('visible');
+ }
+ function setQuantity(q){
+   input.value=String(q);
+   clearSelected();
    render();
+ }
+ function render(){
+   const typed=normalizedDigits(input.value);
+   const isNumber=/^[0-9]{1,7}$/.test(typed);
+   const q=isNumber?Number(typed):NaN;
+   const exact=Number.isSafeInteger(q)?uniqueOffers.find(x=>x.amount===q):null;
+   const stocked=available();
+   const active=exact&&stocked.find(x=>x.amount===q);
+   const next=stocked.find(x=>x.amount>q);
+   const previous=stocked.slice().reverse().find(x=>x.amount<q);
+   plus.disabled=!stocked.length||(Number.isFinite(q)?!next:false);
+   minus.disabled=!stocked.length||(Number.isFinite(q)?!previous:false);
+   chips.forEach(chip=>{
+     const amount=Number(chip.dataset.rqcAmount);
+     const offer=uniqueOffers.find(x=>x.amount===amount);
+     const inStock=offer&&stocked.some(x=>x.id===offer.id);
+     chip.disabled=!inStock;
+     chip.classList.toggle('is-selected',q===amount);
+     chip.setAttribute('aria-pressed',String(q===amount));
+     chip.title=inStock?money(offer.price):'غير متوفر حاليًا';
+   });
+   price.textContent=exact?money(exact.price):'—';
+   button.disabled=!active;
+   button.dataset.productId=active?active.id:'';
+   button.textContent=active?'متابعة لشراء '+q+' روبوكس':'اختار كمية متوفرة للشراء';
+   if(!typed){
+     feedback.textContent='اكتب عدد الروبوكس أو اختاره من الأرقام فوق.';
+   }else if(!isNumber||!Number.isSafeInteger(q)||q<=0){
+     feedback.textContent='اكتب عدد روبوكس صحيح بالأرقام.';
+   }else if(!exact){
+     const lower=uniqueOffers.slice().reverse().find(x=>x.amount<q);
+     const higher=uniqueOffers.find(x=>x.amount>q);
+     const options=[lower,higher].filter(Boolean).map(x=>x.amount).join(' أو ');
+     feedback.textContent='العدد '+q+' مش ضمن باقات المتجر. اختار '+(options||'إحدى الكميات المتاحة')+' روبوكس.';
+   }else if(!active){
+     feedback.textContent='باقة '+q+' روبوكس غير متوفرة حاليًا؛ اختار عدد ثاني من الكميات المتاحة.';
+   }else{
+     feedback.textContent='السعر مأخوذ من باقات متجرك. راجع العدد ثم تابع للشراء.';
+   }
+ }
+ section.querySelectorAll('[data-rqc-amount]').forEach(chip=>chip.addEventListener('click',()=>setQuantity(Number(chip.dataset.rqcAmount))));
+ plus.addEventListener('click',()=>{
+   const q=Number(normalizedDigits(input.value));
+   const list=available();
+   const next=list.find(x=>x.amount>q);
+   if(next)setQuantity(next.amount);
+ });
+ minus.addEventListener('click',()=>{
+   const q=Number(normalizedDigits(input.value));
+   const list=available();
+   const prev=list.slice().reverse().find(x=>x.amount<q);
+   if(prev)setQuantity(prev.amount);
+ });
+ input.addEventListener('input',()=>{clearSelected();render()});
+ button.addEventListener('click',()=>{
+   const match=offers.find(x=>x.id===button.dataset.productId);
+   const tile=match&&tileFor(match);
+   if(!tile||tile.disabled){render();return}
+   tile.click(); // Reuse the existing checkout flow, including phone and server checks.
  });
  modal.addEventListener('click',event=>{
-   // Keep the calculator in sync if a shopper taps a standard product card directly.
    const tile=event.target.closest('.robux-package[data-robux]');
    if(!tile||tile.disabled)return;
-   const offer=offers.find(item=>item.id===tile.dataset.robux);
-   if(!offer)return;
-   input.value=String(offer.amount);
-   render();
+   const offer=offers.find(x=>x.id===tile.dataset.robux);
+   if(offer){input.value=String(offer.amount);render()}
  });
  modal.addEventListener('robux-inventory-updated',render);
  render();

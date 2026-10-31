@@ -111,3 +111,16 @@
 @media(max-width:320px){
   #robuxModal .rqc-quick-amounts{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+
+/* Arbitrary quantity: fast +/- increments by one, manual input is fully supported. */
+#robuxModal .robux-quantity-calculator .rqc-label{line-height:1.7}
+#robuxModal .robux-quantity-calculator .rqc-total>span b{
+  color:#fff;font:800 15px/1.5 system-ui,sans-serif;direction:ltr;unicode-bidi:isolate;
+}
+#robuxModal .robux-quantity-calculator .rqc-feedback{min-height:42px}
+#robuxModal .rqc-quick-amounts{grid-template-columns:repeat(3,minmax(0,1fr))}
+#robuxModal .rqc-step{touch-action:manipulation}
+@media(max-width:420px){
+ #robuxModal .rqc-quick-amounts{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #robuxModal .rqc-amount-chip{min-height:42px;font-size:13px!important}
+}

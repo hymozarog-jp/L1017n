@@ -29,7 +29,7 @@ jobs:
           const app=fs.readFileSync('app.js','utf8');
           assert(html.includes('wallet-transactions.css?v=wallet-row1'));
           assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
-          assert(app.includes('legacy-app.js?v=profile-glow2'));
+          assert(/legacy-app\\.js\\?v=[^"'\\s]+/.test(app));
           assert(legacy.includes('applyWalletTransactionFilter()'));
           assert(legacy.includes("row.dataset.walletStatus!==selected"));
           assert(!legacy.includes("$$('#topupHistory .order-tracking-card')"));

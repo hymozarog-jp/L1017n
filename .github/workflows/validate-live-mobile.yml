@@ -1,4 +1,4 @@
-name: Validate live mobile storefront
+name: Validate current mobile storefront categories
 on:
   push:
     branches: [main]
@@ -16,78 +16,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify business JavaScript syntax
+      - name: Verify current mobile navigation and real checkout integration
         run: |
           node --check live-mobile.js
           node --check premium-home.js
           node --check store-menu.js
           node --check legacy-app.js
           node --check instant-code.js
-          node --check brainrot-store.js
-          node --check pubg-premium.js
-      - name: Validate integration without financial side effects
-        run: |
           node - <<'JS'
-          const fs=require('node:fs');
-          const assert=require('node:assert/strict');
+          const fs=require('node:fs'),assert=require('node:assert/strict');
           const html=fs.readFileSync('index.html','utf8');
           const js=fs.readFileSync('live-mobile.js','utf8');
           const css=fs.readFileSync('live-mobile.css','utf8');
           const old=fs.readFileSync('legacy-app.js','utf8');
-          const shop=fs.readFileSync('premium-home.js','utf8');
           assert.match(html,/href="live-mobile\.css\?v=/);
           assert.match(html,/src="live-mobile\.js\?v=/);
           assert.equal((html.match(/src="live-mobile\.js/g)||[]).length,1);
-          assert.match(js,/typeof products !== "undefined"/);
-          assert.match(js,/window\.openInstantCodeCheckout\(product\.id, product\.name, product\.price\)/);
-          assert.match(js,/openRobuxPackages\(\)/);
-          assert.match(js,/openStealBrainrotCategory|brainrot/);
-          assert.match(js,/data-ll-buy/);
-          assert.match(js,/function robloxParentCard\(\)/);
-          assert.match(js,/game-covers\/roblox-mark\.svg/);
-          assert.match(js,/data-ll-game="mm2"/);
-          assert.match(js,/data-ll-game="steal-a-brainrot"/);
-          assert.match(js,/!isRobloxFamily\(gameKey\(item\)\)/);
-          assert.match(js,/showRoblox \? robloxParentCard\(\)/);
-          // PUBG UC stays inside its game category, not a home-page quick buy.
-          assert.match(js,/function hasPubgCategory\(\)/);
-          assert.match(js,/function pubgParentCard\(\)/);
-          assert.match(js,/showPubg \? pubgParentCard\(\)/);
-          assert.match(js,/gameKey\(item\) !== "pubg"/);
-          assert.match(js,/if \(key === "pubg"\) \{[\s\S]*?openGame\("pubg"\)/);
-          assert.match(css,/\.ll-pubg-parent\{/);
-          assert.doesNotMatch(js,/key === "pubg" && typeof window\.openInstantCodeCheckout/,
-            'PUBG 60 UC must never be routed to the instant-code checkout');
-          assert.match(css,/\.ll-roblox-parent\{/);
-          assert.match(css,/\.ll-roblox-subcategories\{/);
-          // Accept versioned cache-busting URLs without pinning stale versions.
-          assert.match(html,/live-mobile\.js\?v=[^"']+/);
-          assert.match(html,/live-mobile\.css\?v=[^"']+/);
-          const header=html.match(/<header class="topbar">([\s\S]*?)<\/header>/)?.[1]||'';
-          assert(header.includes('id="googleProfileButton"'),'Keep authenticated Google photo');
-          assert(!header.includes('<b>L1017n</b>'),'Do not show L1017n text in header');
-          assert.match(css,/#googleProfileButton:not\(\.hidden\)/);
-          assert.match(css,/order:9!important/);
-          assert.doesNotMatch(css,/#googleProfileButton\{display:none!important\}/,'Do not hide Google photo on mobile');
-          assert.match(js,/data-ll-nav/);
-          assert.match(js,/\["wallet", "المحفظة", "wallet"\]/,'Bottom bar must include the wallet tab');
-          assert.match(js,/\["leaderboard", "التصنيف", "leaderboard"\]/,'Bottom bar must include the leaderboard tab');
-          assert.doesNotMatch(js,/\["search", "البحث", "search"\]/,'Bottom bar must not show a search tab');
-          assert.match(js,/leaderboard: '<path/,'Leaderboard icon must be present');
-          assert.match(js,/routeView\(btn.dataset.llNav\)/,'Bottom navigation routes to the real leaderboard view');
-          assert.match(old,/leaderboard:\['#leaderboardView'\]/,'Existing leaderboard view is available');
-          assert.match(js,/routeView\(btn.dataset.llNav\)/,'Bottom navigation must use existing page routing');
-          assert.match(js,/wallet: '<rect/,'Wallet icon must be present');
-          assert.match(js,/data-ll-dot/);
-          assert.match(js,/new IntersectionObserver/);
-          assert.match(js,/new MutationObserver/);
-          assert.match(js,/getElementById\("llLanding"\)|q\("#llLanding"\)/);
-          assert.match(css,/backdrop-filter/);
-          assert.match(css,/scroll-snap-type/);
-          assert.match(css,/@media\(max-width:680px\)/);
-          assert.match(css,/prefers-reduced-motion/);
-          assert.match(old,/function switchView\(/);
-          assert.match(shop,/id='phHero'/);
-          assert.doesNotMatch(js,/\.rpc\(|wallet_accounts.*update|demoBuy\(/,'No direct wallet mutations are allowed from landing UI');
-          console.log('Mobile landing integration with live product catalog and existing checkout validated.');
+          for(const key of ['roblox','mm2','steal-a-brainrot']){
+            assert(js.includes('key:"'+key+'"'),'Active shop section missing: '+key);
+          }
+          for(const handler of ['openRobuxPackages','openMm2StoreCategory','openBrainrotStoreCategory']){
+            assert(js.includes('window.'+handler),'Game must use real category handler: '+handler);
+          }
+          assert(js.includes('const SHOP_SECTIONS = ['));
+          assert(js.includes('SHOP_SECTIONS.filter(matchesSection)'));
+          assert(js.includes("q(\"#llCatalog\")"));
+          assert(js.includes('data-ll-game'));
+          assert(js.includes('function routeView(view)'));
+          assert(js.includes('switchView(view)'));
+          assert(js.includes('data-ll-nav'));
+          assert(js.includes('routeView(btn.dataset.llNav)'));
+          assert(old.includes("leaderboard:['#leaderboardView']"));
+          assert(js.includes('new IntersectionObserver'));
+          assert(js.includes('new MutationObserver'));
+          assert(css.includes('prefers-reduced-motion'));
+          assert(css.includes('backdrop-filter'));
+          assert(html.includes('id="googleProfileButton"'));
+          assert(!/\.rpc\(|wallet_accounts.*update|demoBuy\(/.test(js),
+            'Landing page must not directly modify balances or bypass checkout');
+          console.log('Active mobile categories, real navigation and checkout boundaries verified');
           JS

@@ -1,0 +1,108 @@
+/* GAMEBOXLY — header balance with reused Libyana artwork.
+   The balance still comes from the authenticated wallet_accounts query. */
+body .topbar .account-wallet-group{display:flex!important;align-items:center!important;min-width:0}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+  direction:rtl!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:8px!important;box-sizing:border-box!important;
+  max-width:min(100%,290px)!important;min-height:56px!important;
+  padding:6px 8px!important;margin:0!important;
+  border:1px solid #8975e37c!important;border-radius:21px!important;
+  background:radial-gradient(circle at 7% 0%,#7955ff36,transparent 44%),linear-gradient(115deg,#111937,#202350 70%,#191c43)!important;
+  color:#fff!important;
+  box-shadow:inset 0 1px #e4d8ff35,0 5px 0 -3px #9d82ff52,0 12px 26px #04051854!important;
+  isolation:isolate;
+  transition:transform .2s ease,box-shadow .2s ease!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip.hidden{display:none!important}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+  display:grid;place-items:center;position:relative;flex:0 0 40px;
+  width:40px;height:40px;box-sizing:border-box;overflow:hidden;
+  padding:5px;border-radius:14px;
+  background:linear-gradient(135deg,#fff,#f2eafa);
+  border:1px solid #f3e5ff94;
+  box-shadow:inset 0 1px #fff,0 0 17px #bc75e42b;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge img{
+  display:block;width:100%;height:100%;object-fit:contain;
+  position:relative;z-index:2;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge img:not([src]),
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge img[src=""]{display:none}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-fallback{
+  display:grid;place-items:center;position:absolute;inset:0;
+  font:900 14px/1.2 system-ui,sans-serif;color:#9a2794;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-wallet-balance-content{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  flex:1 1 auto;min-width:0;gap:1px;
+  text-align:right;
+}
+#customerWalletChip.gb-libyana-wallet-chip .customer-wallet-label{
+  display:block!important;color:#c8bced!important;
+  font:600 10px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  white-space:nowrap;
+}
+#customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  display:block;color:#fff!important;font:850 clamp(12px,1.3vw,17px)/1.35 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+  text-shadow:0 1px 12px #ffffff25;
+}
+body .topbar .account-wallet-group #customerTopupShortcut{
+  display:grid!important;place-items:center!important;flex:0 0 40px!important;
+  width:40px!important;height:40px!important;min-height:40px!important;min-width:40px!important;
+  border-radius:50%!important;
+  padding:0!important;
+  border:1px solid #e8d4ff99!important;
+  background:radial-gradient(circle at 25% 20%,#c091ff,#9050fd 48%,#5b37d3)!important;
+  box-shadow:inset 0 2px 1px #ffffff59,0 0 0 3px #a55fff20,0 3px 16px #9659f77a!important;
+  color:#fff!important;cursor:pointer!important;
+  transition:transform .18s ease,filter .18s ease!important;
+}
+#customerTopupShortcut svg{
+  display:block;width:22px;height:22px;
+  fill:none;stroke:currentColor;stroke-width:2.6;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+body .topbar #customerTopupShortcut:active{transform:scale(.92)!important}
+body .topbar #customerTopupShortcut:hover{filter:brightness(1.08)}
+body .topbar #customerTopupShortcut:focus-visible{outline:2px solid #fff!important;outline-offset:3px!important}
+@media(max-width:760px){
+  body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+    min-height:50px!important;padding:5px 6px!important;border-radius:18px!important;gap:7px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+    flex-basis:32px;width:32px;height:32px;border-radius:11px;padding:4px;
+  }
+  body .topbar .account-wallet-group #customerTopupShortcut{
+    width:35px!important;height:35px!important;min-width:35px!important;min-height:35px!important;
+    flex-basis:35px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{font-size:13px!important}
+  #customerWalletChip.gb-libyana-wallet-chip .customer-wallet-label{font-size:9px!important}
+}
+@media(max-width:390px){
+  body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+    min-height:45px!important;padding:4px!important;gap:5px!important;max-width:190px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+    flex-basis:29px;width:29px;height:29px;padding:3px;border-radius:9px;
+  }
+  body .topbar .account-wallet-group #customerTopupShortcut{
+    width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;flex-basis:30px!important;
+  }
+  body .topbar .account-wallet-group #customerTopupShortcut svg{width:18px;height:18px}
+  #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{font-size:12px!important}
+  #customerWalletChip.gb-libyana-wallet-chip .customer-wallet-label{font-size:8px!important}
+}
+@media(max-width:350px){
+  body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{max-width:161px!important;gap:4px!important}
+  #customerWalletChip.gb-libyana-wallet-chip .customer-wallet-label{display:none!important}
+  #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{font-size:11px!important}
+  #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{width:26px;height:26px;flex-basis:26px}
+  body .topbar .account-wallet-group #customerTopupShortcut{
+    width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;flex-basis:28px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #customerWalletChip.gb-libyana-wallet-chip,#customerTopupShortcut{transition:none!important}
+}

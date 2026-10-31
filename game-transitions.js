@@ -10,7 +10,7 @@
   function destinationFor(button) {
     if (button.matches('[data-rgp-choice="robux"]')) return '#robuxModal:not(.hidden) .robux-reference-logo';
     if (button.matches('[data-product="roblox"]')) return '#robloxGamePage .rgp-hero img';
-    if (button.matches('[data-game-open="roblox"]')) return '#robloxGamePage .rgp-hero img';
+    if (button.matches('[data-game-open="roblox"]')) return '#robuxModal:not(.hidden) .robux-reference-logo';
     if (button.matches('[data-game-open="pubg"]')) return '#pubgCategoryPage.visible .pubg-hero img';
     if (button.matches('[data-game-open="fortnite"],[data-game-open="freefire"]')) return '#storePurchaseBox .digital-game-preview .digital-game-cover';
     return null;

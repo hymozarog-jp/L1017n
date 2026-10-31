@@ -1,0 +1,130 @@
+/* Restored two-card swipe carousel + per-wallet primary selection.
+   This is a visual per-account preference only; no balance/payment writes. */
+#walletView .wallet-carousel{
+ display:flex!important;
+ gap:13px!important;
+ overflow-x:auto!important;
+ scroll-snap-type:x mandatory!important;
+ scroll-behavior:smooth!important;
+ -webkit-overflow-scrolling:touch!important;
+ scrollbar-width:none!important;
+ padding:3px 2px 14px!important;
+}
+#walletView .wallet-carousel::-webkit-scrollbar{display:none}
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+ display:block!important;
+ flex:0 0 92%!important;
+ width:92%!important;
+ max-width:92%!important;
+ min-width:0!important;
+ height:252px!important;
+ min-height:252px!important;
+ max-height:none!important;
+ margin:0!important;
+ padding:22px!important;
+ scroll-snap-align:center!important;
+ border-radius:26px!important;
+}
+#walletView .wallet-carousel>.wallet-hero{container-type:inline-size}
+#walletView .wallet-carousel-dots{display:flex!important;justify-content:center!important;gap:8px!important}
+#walletView .wallet-hero-top .wallet-provider-heading{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ justify-content:center!important;
+ min-width:0!important;
+ gap:5px!important;
+ position:relative!important;
+ z-index:4!important;
+}
+#walletView .wallet-hero-top .wallet-provider-heading>.wallet-primary-badge{
+ display:block!important;
+ background:none!important;
+ border:0!important;
+ padding:0!important;
+ font:900 22px/1.4 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+ color:#fff!important;
+ white-space:nowrap!important;
+}
+#walletView .wallet-primary-toggle{
+ appearance:none;
+ position:relative;z-index:5;
+ display:inline-flex!important;
+ justify-content:center;align-items:center;
+ width:auto!important;
+ min-height:29px;
+ margin:0!important;
+ padding:4px 12px!important;
+ border-radius:999px!important;
+ border:1px solid #ffe5fb99!important;
+ background:#fff3!important;
+ color:#fff!important;
+ font:800 11px/1.4 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+ white-space:nowrap;
+ text-align:center;
+ cursor:pointer;
+ transition:background .2s ease,transform .2s ease,border-color .2s ease;
+}
+#walletView .wallet-primary-toggle:active{transform:scale(.94)}
+#walletView .wallet-primary-toggle[aria-pressed="true"]{
+ background:#ffeff9!important;color:#952472!important;border-color:#fff!important;
+ box-shadow:0 3px 11px #0002;
+}
+#walletView .madar-wallet-card .wallet-primary-toggle[aria-pressed="true"]{
+ color:#04673a!important;background:#e1ffe8!important;
+}
+#walletView .wallet-primary-toggle:focus-visible{
+ outline:3px solid white!important;outline-offset:3px!important;
+}
+#walletView .wallet-carousel>.wallet-hero[data-primary-selected="true"],
+#walletView .wallet-carousel>.madar-wallet-card[data-primary-selected="true"]{
+ box-shadow:0 0 0 2px #ffffff70,0 18px 35px #0204155e!important;
+}
+#walletView .wallet-actions{
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+#walletView #walletActionPrimary .wallet-action-icon{
+ background:#113438!important;
+ color:#36d5a0!important;
+}
+#walletView #walletActionPrimary[aria-pressed="true"] .wallet-action-icon{
+ background:#0b694d!important;color:#c1ffe4!important;
+ box-shadow:0 0 0 2px #84f1b384!important;
+}
+#walletView .madar-wallet-card .madar-candy-status{
+ font-size:clamp(11px,2.8vw,13px)!important;
+}
+@media(max-width:600px){
+ #walletView .wallet-carousel{
+  display:flex!important;
+  gap:10px!important;
+  overflow-x:auto!important;
+  padding:3px 2px 12px!important;
+ }
+ #walletView .wallet-carousel>.wallet-hero,
+ #walletView .wallet-carousel>.madar-wallet-card{
+  flex:0 0 92%!important;
+  width:92%!important;
+  max-width:92%!important;
+  height:252px!important;
+  min-height:252px!important;
+  padding:20px!important;
+  border-radius:25px!important;
+ }
+ #walletView .wallet-hero-top .wallet-provider-heading>.wallet-primary-badge{font-size:21px!important}
+ #walletView .wallet-primary-toggle{min-height:28px;font-size:11px!important}
+ #walletView .wallet-actions .wallet-action b{font-size:12px!important}
+}
+@media(max-width:390px){
+ #walletView .wallet-carousel>.wallet-hero,
+ #walletView .wallet-carousel>.madar-wallet-card{
+  height:244px!important;min-height:244px!important;padding:18px!important;
+ }
+ #walletView .wallet-hero-top .wallet-provider-heading>.wallet-primary-badge{font-size:19px!important}
+ #walletView .wallet-primary-toggle{font-size:10px!important;padding:4px 9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #walletView .wallet-primary-toggle{transition:none!important}
+}

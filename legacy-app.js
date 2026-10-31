@@ -472,7 +472,23 @@ if(RECOVERY_LINK){
 }
 
 
-async function renderCustomerHeaderWallet(user){const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');if(!chip||!amount)return;if(!user){chip.classList.add('hidden');return}chip.classList.remove('hidden');amount.textContent='…';const {data,error}=await supabaseClient.from('wallet_accounts').select('balance').eq('user_id',user.id).maybeSingle();amount.textContent=(error?'0.00':Number(data?.balance||0).toFixed(2))+' د.ل';}
+async function renderCustomerHeaderWallet(user){
+ const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
+ if(!chip||!amount)return;
+ // Reuse the Libyana artwork already bundled inside the wallet page.
+ // No network logo URL and no independent static picture of the balance.
+ const logo=chip.querySelector('#gbLibyanaHeaderLogo');
+ const walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
+ if(logo&&walletLogo&&!logo.getAttribute('src')){
+   logo.addEventListener('error',()=>{logo.removeAttribute('src')},{once:true});
+   logo.src=walletLogo.getAttribute('src')||'';
+ }
+ if(!user){chip.classList.add('hidden');return}
+ chip.classList.remove('hidden');
+ amount.textContent='…';
+ const {data,error}=await supabaseClient.from('wallet_accounts').select('balance').eq('user_id',user.id).maybeSingle();
+ amount.textContent=error?'— د.ل':Number(data?.balance||0).toFixed(2)+' د.ل';
+}
 function renderGoogleHeaderAvatar(user){
  const btn=$('#googleProfileButton'),img=$('#googleProfileImage'),fallback=$('#googleProfileFallback');
  const welcome=$('#googleWelcome'),welcomeName=$('#googleWelcomeName');

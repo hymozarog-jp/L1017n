@@ -1,2 +1,8 @@
-/* Compact visual-only login theme, no authentication code. */
-#accountView.auth-guest .account-panel{border-radius:28px!important}
+/* Minimal green-violet guest login appearance */
+body.auth-screen{background:#041b15!important}
+#accountView.auth-guest{padding:70px 15px 35px!important;background:radial-gradient(ellipse at 95% 2%,#45266c,transparent 45%),linear-gradient(135deg,#071b1a,#052b1d)!important}
+#accountView.auth-guest .account-panel{max-width:510px!important;margin:0 auto!important;padding:25px!important;border:1px solid #78d1a968!important;border-radius:29px!important;background:radial-gradient(ellipse at 90% 0%,#512f6b6d,transparent 45%),linear-gradient(150deg,#062b20,#073022)!important;box-shadow:0 22px 50px #0008!important}
+#accountView.auth-guest .account-panel>.auth-hero{display:block!important;text-align:center!important;margin:0 auto 13px!important}
+#accountView.auth-guest .account-panel>.auth-hero h1{font-size:31px!important;color:#fff!important;margin:0!important}
+#accountView.auth-guest .account-panel>.auth-hero p{display:none!important}
+#accountView.auth-guest .auth-decoration{display:none!important}

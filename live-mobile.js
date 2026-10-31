@@ -310,7 +310,6 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
-      ["subscriptions", "اشتراكات", "subscriptions"],
       ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],

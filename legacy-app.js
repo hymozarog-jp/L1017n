@@ -489,58 +489,58 @@ async function renderCustomerHeaderWallet(user){
  const {data,error}=await supabaseClient.from('wallet_accounts').select('balance').eq('user_id',user.id).maybeSingle();
  amount.textContent=error?'— د.ل':Number(data?.balance||0).toFixed(2)+' د.ل';
 }
+// Trust only Google avatar hosts or the signed-in user's own uploaded Supabase image.
+function approvedProfilePhoto(user){
+ if(!user)return '';
+ const meta=user.user_metadata||{},raw=String(meta.avatar_url||meta.picture||'');
+ try{
+  const url=new URL(raw),host=url.hostname.toLowerCase();
+  if(url.protocol!=='https:')return '';
+  if(host==='googleusercontent.com'||host.endsWith('.googleusercontent.com')||
+     host==='ggpht.com'||host.endsWith('.ggpht.com'))return url.href;
+  const base=SUPABASE_URL+'/storage/v1/object/public/gamebox-avatars/'+encodeURIComponent(user.id)+'/';
+  if(url.href.startsWith(base)&&url.pathname.startsWith(new URL(base).pathname))return url.href;
+ }catch(e){}
+ return '';
+}
 function renderGoogleHeaderAvatar(user){
  const btn=$('#googleProfileButton'),img=$('#googleProfileImage'),fallback=$('#googleProfileFallback');
  const welcome=$('#googleWelcome'),welcomeName=$('#googleWelcomeName');
  if(!btn||!img||!fallback)return;
- const googleUser=!!user&&(user.app_metadata?.provider==='google'||user.app_metadata?.providers?.includes('google')||user.identities?.some(i=>i.provider==='google'));
- if(!googleUser){if(welcome)welcome.classList.add('hidden');if(welcomeName)welcomeName.textContent='';btn.classList.add('hidden');btn.classList.add('no-image');img.removeAttribute('src');return}
+ if(!user){
+   if(welcome)welcome.classList.add('hidden');
+   if(welcomeName)welcomeName.textContent='';
+   btn.classList.add('hidden','no-image');img.removeAttribute('src');return;
+ }
  const meta=user.user_metadata||{};
  const name=String(meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'م').trim();
  fallback.textContent=name.slice(0,1).toUpperCase()||'م';
  if(welcomeName)welcomeName.textContent=name;
  if(welcome)welcome.classList.remove('hidden');
- let photo='';
- try{
-  const url=new URL(String(meta.avatar_url||meta.picture||''));
-  const host=url.hostname.toLowerCase();
-  if(url.protocol==='https:'&&(host==='googleusercontent.com'||host.endsWith('.googleusercontent.com')||host==='ggpht.com'||host.endsWith('.ggpht.com')))photo=url.href;
- }catch(e){}
+ const photo=approvedProfilePhoto(user);
  img.onload=()=>btn.classList.remove('no-image');
  img.onerror=()=>btn.classList.add('no-image');
  if(photo){
   if(img.getAttribute('src')!==photo){btn.classList.add('no-image');img.src=photo}
   if(img.complete&&img.naturalWidth>0)btn.classList.remove('no-image');
  }else{img.removeAttribute('src');btn.classList.add('no-image')}
- btn.setAttribute('aria-label','فتح حساب '+name);
- btn.title='حساب '+name;
+ btn.setAttribute('aria-label','فتح حساب '+name);btn.title='حساب '+name;
  btn.classList.remove('hidden');
 }
-/* Google identity card: always use the signed-in account's own data. */
 function paintGoldAccountIdentity(user,name){
  const avatar=document.getElementById('accountModernAvatar');
  if(!avatar||!user)return;
  const googleBadge=document.getElementById('accountGoogleBadge');
- const isGoogle=user.app_metadata?.provider==='google' || user.identities?.some(i=>i.provider==='google');
+ const isGoogle=user.app_metadata?.provider==='google'||user.identities?.some(i=>i.provider==='google');
  if(googleBadge)googleBadge.hidden=!isGoogle;
  const shortId=document.getElementById('accountModernId');
  if(shortId)shortId.textContent=String(user.id||'').replace(/-/g,'').slice(0,10).toUpperCase()||'—';
- const meta=user.user_metadata||{};
- const raw=String(meta.avatar_url||meta.picture||'');
- let photo='';
- try{
-  const url=new URL(raw);
-  const host=url.hostname.toLowerCase();
-  if(url.protocol==='https:' && (host==='googleusercontent.com'||host.endsWith('.googleusercontent.com')||host==='ggpht.com'||host.endsWith('.ggpht.com')))photo=url.href;
- }catch(_){}
- avatar.replaceChildren();
  const initial=String(name||'م').slice(0,1).toUpperCase();
+ const photo=approvedProfilePhoto(user);
  avatar.textContent=initial;
  if(photo){
-  const img=document.createElement('img');
-  img.alt='صورة حساب Google';
-  img.referrerPolicy='no-referrer';
-  img.loading='lazy';
+  const img=document.createElement('img');img.alt='صورة الحساب الشخصية';
+  img.referrerPolicy='no-referrer';img.loading='lazy';
   img.onerror=()=>{if(avatar.contains(img))avatar.textContent=initial};
   avatar.replaceChildren(img);img.src=photo;
  }
@@ -659,8 +659,14 @@ $('#googleSignInBtn')?.addEventListener('click',async()=>{
 });
 function normalizeStorePhoneInput(value){let digits=String(value||'').replace(/[^0-9]/g,'');if(/^002189[0-9]{8}$/.test(digits))digits=digits.slice(5);else if(/^2189[0-9]{8}$/.test(digits))digits=digits.slice(3);else if(/^09[0-9]{8}$/.test(digits))digits=digits.slice(1);return /^9[0-9]{8}$/.test(digits)?digits:null}
 let authMode='login';
-$('#authModeLogin')?.addEventListener('click',()=>{authMode='login';$('#authModeLogin').classList.add('active');$('#authModeSignup').classList.remove('active');$('#authSubmit').textContent='تسجيل الدخول';$('#authPassword').autocomplete='current-password';});
-$('#authModeSignup')?.addEventListener('click',()=>{authMode='signup';$('#authModeSignup').classList.add('active');$('#authModeLogin').classList.remove('active');$('#authSubmit').textContent='إنشاء حساب';$('#authPassword').autocomplete='new-password';});
+function setEmailSignupFields(){
+ const signup=authMode==='signup';
+ const group=$('#authPublicProfileSignup');
+ if(group){group.classList.toggle('hidden',!signup);const name=$('#authPublicName');if(name)name.required=signup;}
+}
+$('#authModeLogin')?.addEventListener('click',()=>{authMode='login';$('#authModeLogin').classList.add('active');$('#authModeSignup').classList.remove('active');$('#authSubmit').textContent='تسجيل الدخول';$('#authPassword').autocomplete='current-password';setEmailSignupFields();});
+$('#authModeSignup')?.addEventListener('click',()=>{authMode='signup';$('#authModeSignup').classList.add('active');$('#authModeLogin').classList.remove('active');$('#authSubmit').textContent='إنشاء حساب';$('#authPassword').autocomplete='new-password';setEmailSignupFields();});
+setEmailSignupFields();
 $('#authAlternate')?.addEventListener('click',()=>$('#authMode'+(authMode==='signup'?'Login':'Signup'))?.click());
 $('#forgotPassword')?.addEventListener('click',async()=>{const email=$('#authEmail').value.trim();if(!email){toast('اكتب بريدك الإلكتروني أولاً');$('#authEmail').focus();return}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:new URL('./', window.location.href).href});if(error)toast('تعذر إرسال رابط تغيير كلمة المرور: '+error.message);else toast('لو البريد مسجل، بنرسلوله رابط تغيير كلمة المرور.');});
 $('#authForm').addEventListener('submit',async e=>{
@@ -675,7 +681,12 @@ $('#authForm').addEventListener('submit',async e=>{
  say('جاري الاتصال بخدمة تسجيل الدخول…');
  try{
    if(authMode==='signup'){
-     const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{store_phone:phone}}});
+     const profileName=String($('#authPublicName')?.value||'').trim().replace(/\s+/g,' ');
+     if(profileName.length<2||profileName.length>40)throw Error('اكتب اسمًا للمتجر من حرفين إلى 40 حرفًا.');
+     const sharePublic=$('#authPublicIdentity')?.checked===true;
+     const {data,error}=await supabaseClient.auth.signUp({
+       email,password,options:{data:{store_phone:phone,full_name:profileName,share_public_profile:sharePublic}}
+     });
      if(error)throw error;
      if(data.session){
        const {data:w,error:checkError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',data.user.id).maybeSingle();
@@ -934,6 +945,7 @@ async function openPersonalDetails(options={}){
    '</section>'+
   '</div>';
  try{window.L1017nPersonalPremium?.decorate(page,user,name)}catch(err){console.warn('[account/premium] Using standard profile layout',err)}
+ try{window.GameboxEmailProfile?.attach(page,user)}catch(err){console.warn('[account/photo] Photo controls unavailable',err)}
  page.classList.add('visible');
  const slot=page.querySelector('#personalPhoneSlot');
  const gate=document.getElementById('accountPhoneGate');
@@ -983,6 +995,8 @@ async function openPersonalDetails(options={}){
    else page.querySelector('.personal-page-avatar').textContent=value.slice(0,1).toUpperCase();
    document.getElementById('accountModernName').textContent=value;
    paintGoldAccountIdentity(user,value);
+   try{const updated=(await supabaseClient.auth.getUser()).data?.user;if(updated)renderGoogleHeaderAvatar(updated)}catch(_){}
+   if(typeof window.loadLeaderboard==='function')void window.loadLeaderboard();
  };
  if(gate&&typeof window.renderResalaOtp==='function'){
    // Refresh status without waiting for SMS network response.

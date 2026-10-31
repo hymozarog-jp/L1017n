@@ -171,3 +171,25 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
  #l1017RankPrivacyPage.is-visible .rank-privacy-lead{animation:l1017RankEnter .3s ease-out both}
  @keyframes l1017RankEnter{from{opacity:.45;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 }
+/* Keep the main bottom navigation accessible while the ranking room is open.
+   Ranking stays scrollable above the bar; privacy overlay still covers both. */
+@media(max-width:680px){
+  body.l1017-rank-open.l1017-live-ui #llBottomNav{
+    display:flex!important;
+    position:fixed!important;
+    bottom:0!important;
+    z-index:2147482050!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+  body.l1017-rank-open:not(.l1017-live-ui) .mobile-nav{
+    z-index:2147482050!important;
+  }
+  body.l1017-rank-open #leaderboardView.l1017-rank-ready:not(.hidden){
+    bottom:calc(69px + env(safe-area-inset-bottom))!important;
+    height:calc(100dvh - 69px - env(safe-area-inset-bottom))!important;
+    min-height:0!important;
+    padding-bottom:25px!important;
+    scroll-padding-bottom:25px;
+  }
+}

@@ -321,7 +321,16 @@ function mountRobuxQuantityCalculator(modal,robux){
    render();
    tile.click(); // Existing selection and server checkout remain unchanged.
  });
- input.addEventListener('input',render);
+ input.addEventListener('input',()=>{
+   // The user changed their intended amount: remove any previous package selection.
+   modal.querySelectorAll('.robux-package.selected').forEach(tile=>{
+     tile.classList.remove('selected');
+     const mark=tile.querySelector('.robux-plus');
+     if(mark)mark.textContent='＋';
+   });
+   modal.querySelector('.robux-checkout-bar')?.classList.remove('visible');
+   render();
+ });
  modal.addEventListener('robux-inventory-updated',render);
  render();
 }

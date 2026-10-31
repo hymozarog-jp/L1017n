@@ -7,6 +7,7 @@
  let identity=null;
  let selected={libyana:false,madar:false};
  let updateCounter=0;
+ let toggleCounter=0;
  const cardByName=name=>document.querySelector(name==="libyana"?"#walletView .wallet-carousel>.wallet-hero":"#walletView .wallet-carousel>.madar-wallet-card");
  const track=()=>document.querySelector("#walletView .wallet-carousel");
  function getActive(){
@@ -26,7 +27,11 @@
  function safeRead(key){
   try {
    const value=JSON.parse(window.localStorage.getItem(key)||"{}");
-   return {libyana:value?.libyana===true,madar:value?.madar===true};
+   // Migrate the older setting where both cards could be primary at once.
+   // Choose Libyana deterministically if both were previously activated.
+   const libyana=value?.libyana===true;
+   const madar=value?.madar===true&&!libyana;
+   return {libyana,madar};
   }catch(_){return {libyana:false,madar:false}}
  }
  function storageKey(){return identity?"l1017n-primary-wallets-v1:"+identity:null}
@@ -39,8 +44,9 @@
    if(button){
     const active=selected[name]===true;
     button.setAttribute("aria-pressed",String(active));
-    button.textContent=active?"الأساسية ✓":"الأساسية";
-    button.title=(active?"إلغاء اختيار":"تعيين")+" محفظة "+names[name]+" كأساسية في العرض";
+    button.textContent=active?"✓ الأساسية":"اجعلها أساسية";
+    button.setAttribute("aria-label",(active?"إلغاء الأساسية عن ":"تعيين ")+"محفظة "+names[name]+(active?"":" كأساسية"));
+    button.title=active?"محفظة "+names[name]+" هي الأساسية حاليًا — اضغط لإلغاء الاختيار":"اجعل محفظة "+names[name]+" أساسية بدل المحفظة الأخرى";
    }
    const card=cardByName(name);
    if(card)card.dataset.primarySelected=String(selected[name]===true);
@@ -51,6 +57,8 @@
    action.setAttribute("aria-pressed",String(active));
    action.setAttribute("aria-label",(active?"إلغاء الأساسية عن ":"تعيين الأساسية في ")+names[wallet]);
    action.title=(active?"إلغاء":"تفعيل")+" الأساسية لمحفظة "+names[wallet];
+   const caption=action.querySelector("b");
+   if(caption)caption.textContent=active?"✓ الأساسية":"اجعلها أساسية";
   }
  }
  async function load(){
@@ -61,14 +69,21 @@
    if(sequence!==updateCounter)return;
    identity=user?.id||null;
    selected=identity?safeRead(storageKey()):{libyana:false,madar:false};
+   // Repair preferences saved by the prior version that allowed both selected.
+   if(identity){
+    try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
+    catch(error){console.warn("[wallet/primary/storage]",error)}
+   }
    update();
   }catch(error){console.warn("[wallet/primary/load]",error)}
  }
  async function toggle(name){
   if(!choices.includes(name))return;
+  const sequence=++toggleCounter;
   try{
    if(typeof currentUser!=="function")throw new Error("not_ready");
    const user=await currentUser();
+   if(sequence!==toggleCounter)return;
    if(!user){
     flash("سجّل دخولك باش تختار المحفظة الأساسية.");
     if(typeof switchView==="function")switchView("account");
@@ -78,7 +93,11 @@
     identity=user.id;
     selected=safeRead(storageKey());
    }
-   selected[name]=!selected[name];
+   // Exactly one active wallet, or none if the active one is tapped again.
+   // Switching wallets never affects their money or payment functions.
+   const activate=!selected[name];
+   selected={libyana:activate&&name==="libyana",madar:activate&&name==="madar"};
+   ++updateCounter; // Reject a previously started load that could restore stale state.
    try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
    catch(error){console.warn("[wallet/primary/storage]",error)}
    update();

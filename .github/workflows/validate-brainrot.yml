@@ -61,7 +61,7 @@ jobs:
           assert(!browser.includes('data-sab-back'),'Remove duplicate Brainrot back control');
           assert(!menu.includes('روبلوكس ← باقة MM2'),'No breadcrumb arrows in MM2 page title');
           assert(!browser.includes('روبلوكس ← ماب السرقة'),'No breadcrumb arrows in Brainrot page title');
-          assert(menu.includes('if(p.classList.contains(\'rgp-inner-page\'))showRobloxPage()'),'Back from inner page returns to Roblox categories');
+          assert(menu.includes("p.classList.contains('rgp-inner-page')&&!p.dataset.directCategory"),'Back from inner page returns to Roblox categories');
           assert(/store-menu\.js\?v=[^"']+/.test(html),'Fresh Roblox menu asset version');
           assert(/brainrot-store\.css\?v=[^"']+/.test(html),'Fresh layout stylesheet');
           assert(fs.existsSync('game-covers/steal-a-brainrot-original.png'), 'Original Roblox icon is missing');

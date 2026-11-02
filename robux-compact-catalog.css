@@ -273,3 +273,38 @@
     transition:none!important
   }
 }
+/* Real promotional SKU: 300 Robux + 40 free, charged as one atomic 340-Robux order. */
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package.robux-promo{
+  border-color:#e0b66edb!important;
+  background:linear-gradient(120deg,#272039 0%,#42335f 51%,#241b30 100%)!important;
+  box-shadow:0 6px 22px #0006,0 0 0 1px #ffc46e22,inset 0 1px #ffe8ab30!important
+}
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package.robux-promo::before{
+  background:radial-gradient(ellipse 60% 80% at 24% 50%,#f9bd5c73,transparent 82%)!important
+}
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package.robux-promo .robux-plus{
+  display:none!important
+}
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package .robux-promo-ribbon{
+  position:absolute!important;z-index:7!important;
+  left:8px!important;top:9px!important;right:auto!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:25px!important;width:auto!important;max-width:45%!important;
+  padding:4px 8px!important;box-sizing:border-box!important;
+  border:1px solid #ffe2a6e8!important;border-radius:9px!important;
+  background:linear-gradient(135deg,#fff1b9,#efb453)!important;
+  color:#372314!important;font:900 11px/1.3 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  direction:rtl!important;white-space:nowrap!important;
+  box-shadow:0 3px 12px #fabb5c3d!important
+}
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package.robux-promo small:not(.stock-label){
+  background:#775227!important;border-color:#ffcc825b!important;color:#ffe9bd!important
+}
+#robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package.robux-promo.selected{
+  border-color:#ffe0a3!important;box-shadow:0 0 0 3px #ffd18735,0 9px 25px #0009!important
+}
+@media(max-width:390px){
+  #robuxModal.robux-full-page.robux-single-offer .package-grid>.robux-package .robux-promo-ribbon{
+    font-size:10px!important;padding:3px 6px!important
+  }
+}

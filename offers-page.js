@@ -6,6 +6,7 @@
   const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const price=value=>Number(value).toFixed(2)+' د.ل';
   const promoPrefix='robux-promo-';
+  const deliveryText=()=>window.L1017nDeliveryPolicy?.label('roblox')||'وقت التسليم: لم تُحدَّد مدة ثابتة حاليًا. التنفيذ يدوي بعد مراجعة الطلب، وليس فوريًا.';
   let requestId=0;
   let cached={};
   function client(){
@@ -30,7 +31,9 @@
       +(available?'':' disabled aria-disabled="true"')+'>'
       +(available?'اطلب العرض <span aria-hidden="true">←</span>':'غير متوفر حاليًا')+'</button></div>'
       +'<p class="l1017-offer-availability '+(available?'available':'unavailable')+'">'
-      +(available?'متوفر · التسليم بعد مراجعة الطلب':'الكمية غير متوفرة حاليًا')+'</p></div></article>';
+      +(available?'متوفر · التنفيذ بعد مراجعة الطلب':'الكمية غير متوفرة حاليًا')+'</p>'
+      +(available?'<div class="l1017-delivery-time" role="note"><svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-clock"></use></svg><span>'+escape(deliveryText())+'</span></div>':'')
+      +'</div></article>';
   }
   async function render(){
     const root=byId('offersView'),target=byId('offersList');

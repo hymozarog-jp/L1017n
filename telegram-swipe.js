@@ -78,7 +78,8 @@
   // Animate ordinary 'رجوع' taps too, without modifying their original behavior.
   document.addEventListener('click',function(event){
     var button=event.target instanceof Element && event.target.closest(backSelector);
-    if (!button || button===bypass || busy) return;
+    if (!button || button===bypass) return;
+    if (busy) { event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();return; }
     var page=button.closest('#robloxGamePage,#robuxModal,#pubgCategoryPage');
     if (!page || !visible(page) || !closesPage(page) || reduced()) return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();

@@ -21,9 +21,9 @@
   };
   const FILTERS = [["all","الكل"],["roblox","روبوكس"],["mm2","MM2"],["steal-a-brainrot","ماب السرقة"]];
   const HEROES = [
-    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"شوف باقات الروبوكس",theme:"violet",art:"R"},
-    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"ادخل قسم MM2",theme:"gold",art:"M"},
-    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"ادخل ماب السرقة",theme:"aqua",art:"01"}
+    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
+    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/mm2-game-icon.jpg?v=mm2-fixed2"},
+    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/steal-a-brainrot-original.png"}
   ];
   const q = selector => document.querySelector(selector);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -210,7 +210,7 @@
       + '<h2>' + esc(slide.headline) + '<br><span>' + esc(slide.more) + '</span></h2>'
       + '<p>' + esc(slide.desc) + '</p>'
       + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta">' + esc(slide.button) + ' <span aria-hidden="true">←</span></button></div>'
-      + '<span class="ll-slide-letter" aria-hidden="true">' + esc(slide.art) + '</span></article>').join("");
+      + '<img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="lazy" decoding="async"></article>').join("");
   }
   function build() {
     const store = q("#storeView");
@@ -218,19 +218,19 @@
     const container = document.createElement("div");
     container.id = "llLanding";
     container.innerHTML = '<div class="ll-intro ll-reveal">'
-      + '<div class="ll-intro-text"><span class="ll-overline">أهلًا بيك في متجرك</span>'
-      + '<h1>اللعبة تبدأ <span>من هنا.</span></h1><p>متجرك المتخصص في الروبوكس وMM2 وماب السرقة.</p></div>'
+      + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
+      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبوكس، MM2، ماب السرقة، وشحن المحفظة في مكان واحد.</p></div>'
       + '<div class="ll-intro-star" aria-hidden="true">✦</div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'
-      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن روبوكس، MM2، ماب السرقة…"></div>'
-      + '<div class="ll-title-row ll-title-offers"><div><small>اسحب للتصفح ←</small><h2>اكتشف العروض</h2></div></div>'
-      + '<section class="ll-carousel ll-reveal" aria-label="العروض المميزة" aria-roledescription="carousel">'
+      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن قسم أو منتج…"></div>'
+      + '<div class="ll-title-row ll-title-offers"><div><small>كل الخيارات ظاهرة بدون سحب</small><h2>العروض السريعة</h2></div></div>'
+      + '<section class="ll-carousel ll-reveal" aria-label="العروض السريعة">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
-      + '<div class="ll-title-row ll-products-title"><div><small>EXPLORE THE STORE</small><h2>أقسام روبلوكس</h2></div><span id="llItemCount">جاري التحميل</span></div>'
+      + '<div class="ll-title-row ll-products-title"><div><small>اختار القسم وشوف الأسعار</small><h2>الأقسام المتوفرة</h2></div><span id="llItemCount">جاري التحميل</span></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
       + FILTERS.map(([key, label]) => '<button type="button" data-ll-category="' + esc(key) + '" aria-pressed="' + (key==='all') + '" class="' + (key==='all'?'selected':'') + '">' + esc(label) + '</button>').join("") + '</div>'
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div>'

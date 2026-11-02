@@ -5,7 +5,7 @@
   box.id='libyanaPhoneSettings';
   box.className='panel';
   box.style.cssText='margin:18px 0;padding:18px;text-align:right;border-radius:16px';
-  box.innerHTML='<h3 style="margin:0 0 10px">📱 رقم ليبيانا</h3><p class="muted" style="margin:0 0 12px">أدخل رقم ليبيانا الخاص بك لحفظه في حسابك. الرقم غير موثّق حاليًا.</p><form id="libyanaPhoneForm"><label for="libyanaPhoneInput">رقم ليبيانا</label><input id="libyanaPhoneInput" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="091xxxxxxx أو 092xxxxxxx" required style="width:100%;margin:8px 0 12px"><button class="btn btn-primary" type="submit">حفظ الرقم</button><p id="libyanaPhoneStatus" role="status" aria-live="polite"></p></form>';
+  box.innerHTML='<h3 style="margin:0 0 10px"><svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-smartphone"></use></svg> رقم ليبيانا</h3><p class="muted" style="margin:0 0 12px">أدخل رقم ليبيانا الخاص بك لحفظه في حسابك. الرقم غير موثّق حاليًا.</p><form id="libyanaPhoneForm"><label for="libyanaPhoneInput">رقم ليبيانا</label><input id="libyanaPhoneInput" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="091xxxxxxx أو 092xxxxxxx" required style="width:100%;margin:8px 0 12px"><button class="btn btn-primary" type="submit">حفظ الرقم</button><p id="libyanaPhoneStatus" role="status" aria-live="polite"></p></form>';
   const logout=document.getElementById('logoutBtn');
   panel.insertBefore(box,logout||null);
   const input=box.querySelector('#libyanaPhoneInput'),status=box.querySelector('#libyanaPhoneStatus');
@@ -28,7 +28,7 @@
       const result=await supabaseClient.rpc('save_my_libyana_phone',{p_phone:input.value});
       if(result.error)throw result.error;
       input.value='0'+result.data;
-      status.textContent='تم حفظ رقم ليبيانا في حسابك ✓ (بدون تحقق)';
+      status.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> تم حفظ رقم ليبيانا في حسابك (بدون تحقق)';
     }catch(e){status.textContent=/duplicate key|unique/i.test(e.message||'')?'هذا الرقم مسجّل في حساب آخر':'تعذر حفظ الرقم. تأكد من أنه رقم ليبيانا صحيح وأنك مسجّل الدخول.'}
     finally{button.disabled=false}
   });

@@ -148,7 +148,11 @@
     }
   }
   if(document.body)boot();else document.addEventListener('DOMContentLoaded',boot,{once:true});
-  var startup=begin('جاري تجهيز المتجر…',null,true);
-  if(document.readyState==='complete')end(startup);
-  else window.addEventListener('load',function(){end(startup);},{once:true});
+  // The first-entry splash already shows the store name; don't stack a second
+  // startup loading bubble above the storefront. Keep all action loaders intact.
+  var startup=document.getElementById('l1017EntrySplash')?null:begin('جاري تجهيز المتجر…',null,true);
+  if(startup){
+    if(document.readyState==='complete')end(startup);
+    else window.addEventListener('load',function(){end(startup);},{once:true});
+  }
 })();

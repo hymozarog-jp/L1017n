@@ -221,7 +221,7 @@
     container.innerHTML = '<div class="ll-intro ll-reveal">'
       + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
       + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبوكس، MM2، ماب السرقة، وشحن المحفظة في مكان واحد.</p></div>'
-      + '<div class="ll-intro-star" aria-hidden="true">✦</div></div>'
+      + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن قسم أو منتج…"></div>'

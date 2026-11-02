@@ -28,14 +28,14 @@
   stats.className='royal-stats';
   stats.setAttribute('aria-label','إحصائيات التصنيف');
   const values=[
-   {icon:'♛',title:'المراكز المشغولة',id:'ranked'},
-   {icon:'✦',title:'مجموع شحن الثلاثة',id:'total'},
-   {icon:'♟',title:'مشارك في التصنيف',id:'members'}
+   {icon:'trophy',title:'المراكز المشغولة',id:'ranked'},
+   {icon:'coins',title:'مجموع شحن الثلاثة',id:'total'},
+   {icon:'user',title:'مشارك في التصنيف',id:'members'}
   ];
   for(const item of values){
    const card=document.createElement('div');
    card.className='royal-stat';
-   const mark=document.createElement('span');mark.className='royal-stat-icon';mark.textContent=item.icon;mark.setAttribute('aria-hidden','true');
+   const mark=document.createElement('span');mark.className='royal-stat-icon';mark.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-'+item.icon+'"></use></svg>';mark.setAttribute('aria-hidden','true');
    const number=document.createElement('strong');number.dataset.royalStat=item.id;number.textContent='—';
    const description=document.createElement('small');description.textContent=item.title;
    card.append(mark,number,description);stats.appendChild(card);

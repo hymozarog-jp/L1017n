@@ -12,20 +12,16 @@ html[data-tg-direction="back"] { --tg-enter-x: 30px; --tg-exit-x: -18px; }
   from { opacity: 1; transform: translate3d(0,0,0) scale(1); }
   to { opacity: .65; transform: translate3d(var(--tg-exit-x, 18px),0,0) scale(.993); }
 }
-@supports (view-transition-name: tg-app-surface) {
-  #app { view-transition-name: tg-app-surface; }
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-  ::view-transition-old(tg-app-surface) {
-    animation: tg-screen-out 200ms cubic-bezier(.4,0,.7,1) both;
-    transform-origin: 50% 0;
-  }
-  ::view-transition-new(tg-app-surface) {
-    animation: tg-screen-in 330ms var(--tg-motion-ease) both;
-    transform-origin: 50% 0;
-  }
-  /* Prevent legacy entrance animations from being captured mid-frame. */
-  html.tg-transitioning #app > section:not(.hidden) {
-    animation: none !important;
+/* Use ordinary CSS: reliable across Safari, webviews and older browsers.
+   Core view switching remains synchronous, without a View Transition snapshot. */
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  #storeView:not(.hidden),
+  #walletView:not(.hidden),
+  #ordersView:not(.hidden),
+  #accountView:not(.hidden),
+  #leaderboardView:not(.hidden),
+  #subscriptionsView:not(.hidden) {
+    animation: tg-screen-in 275ms var(--tg-motion-ease) both !important;
   }
 }
 @keyframes tg-overlay-rise {
@@ -60,9 +56,9 @@ html[data-tg-direction="back"] { --tg-enter-x: 30px; --tg-exit-x: -18px; }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(tg-app-surface), ::view-transition-new(tg-app-surface) {
-    animation: none !important;
-  }
-  #topupDedicatedPage, #robuxPurchaseScreen { animation: none !important; }
+  #topupDedicatedPage, #robuxPurchaseScreen,
+  #storeView:not(.hidden), #walletView:not(.hidden), #ordersView:not(.hidden),
+  #accountView:not(.hidden), #leaderboardView:not(.hidden),
+  #subscriptionsView:not(.hidden) { animation: none !important; }
   .tg-tap-wave { display: none !important; }
 }

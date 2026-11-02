@@ -40,14 +40,14 @@
     const panel=document.createElement('section');
     panel.id='gbQuickActions';
     panel.setAttribute('aria-label','اختصارات الشراء والشحن');
-    panel.innerHTML='<div class="gbqa-heading"><b>تبّي تطلب بسرعة؟</b><small>اختار الخطوة المناسبة ليك</small></div>'+
+    panel.innerHTML='<div class="gbqa-heading"><b>ابدأ من هنا</b><small>شحن أو شراء أو متابعة</small></div>'+
       '<div class="gbqa-buttons">'+
       '<button type="button" class="gbqa-action gbqa-primary" data-gbqa="wallet">'+icon+'شحن الرصيد</button>'+
-      '<button type="button" class="gbqa-action" data-gbqa="catalog">تصفح الباقات</button>'+
-      '<button type="button" class="gbqa-action" data-gbqa="orders">متابعة طلباتي</button></div>'+
+      '<button type="button" class="gbqa-action" data-gbqa="catalog">الأقسام</button>'+
+      '<button type="button" class="gbqa-action" data-gbqa="orders">طلباتي</button></div>'+
       '<p class="gbqa-footer">'+shield+'الدفع من المحفظة بعد توثيق رقمك. الرصيد يُضاف فقط بعد تأكيد التحويل.</p>';
-    const target=home.querySelector('.ph-search-wrap,.section-head');
-    if(target)home.insertBefore(panel,target);else home.prepend(panel);
+    const target=home.querySelector('#llLanding .ll-search-wrap,.ph-search-wrap,.section-head');
+    if(target)target.parentNode.insertBefore(panel,target);else home.prepend(panel);
     panel.addEventListener('click',event=>{
       const btn=event.target.closest('[data-gbqa]');if(!btn)return;
       if(btn.dataset.gbqa==='wallet')goWallet();

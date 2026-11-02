@@ -1,0 +1,14 @@
+/* Visible ETA before the customer commits to payment. */
+.l1017-delivery-time{
+  display:flex;align-items:flex-start;gap:9px;
+  margin:10px 0 12px;padding:12px 13px;
+  border:1px solid rgba(185,166,238,.45);
+  border-radius:12px;
+  background:linear-gradient(115deg,rgba(106,76,167,.18),rgba(38,54,94,.27));
+  color:#e4ddf9;font:700 12px/1.85 'IBM Plex Sans Arabic',system-ui,sans-serif;
+  direction:rtl
+}
+.l1017-delivery-time .l1017-icon{width:17px;height:17px;margin-top:3px;color:#bcb2ed;flex:none}
+#offersView .l1017-delivery-time{margin:4px 0 10px}
+#rgpMm2Checkout .l1017-delivery-time,#sabCheckout .l1017-delivery-time{font-size:12px;line-height:1.85}
+@media(max-width:540px){.l1017-delivery-time{padding:10px 11px;font-size:11px}}

@@ -1,6 +1,15 @@
 /* Tactile feedback only. Navigation state remains managed by legacy-app.js. */
 (function () {
   'use strict';
+  // Direction comes from the user's navigation choice, not page-load timing.
+  document.addEventListener('click', function (event) {
+    if (!(event.target instanceof Element)) return;
+    var link=event.target.closest('[data-view]');
+    if (!link) return;
+    var view=link.getAttribute('data-view');
+    document.documentElement.dataset.tgDirection=
+      (view==='home'||view==='store') ? 'back' : 'forward';
+  }, true);
   if (!window.PointerEvent) return;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   var targets = 'button[data-view],.game-tile-btn,.rgp-card,.wallet-action,.gbqa-action,#robuxModal .robux-package,.btn';

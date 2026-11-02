@@ -414,6 +414,13 @@
     box.textContent=text;
   }
   window.addEventListener('error',function(e){
+    var message=String(e.message||'');
+    // Browser layout notification, not a failed checkout or an application
+    // exception. Never cover the MM2 quantity/checkout interface with it.
+    if(/^ResizeObserver loop (?:limit exceeded|completed with undelivered notifications)\.?$/i.test(message)){
+      if(typeof e.preventDefault==='function')e.preventDefault();
+      return;
+    }
     showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));
   });
   window.addEventListener('unhandledrejection',function(e){
@@ -825,5 +832,5 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="roblox-category-pages.css?v=roblox-3-methods-20261102-1">
 <link rel="stylesheet" href="robux-compact-catalog.css?v=robux-bonus-20261102-1">
 <script src="roblox-methods.js?v=roblox-3-methods-20261102-1" defer></script>
-<script src="responsive-4k-images.js?v=official-icons-20261102-v2" defer></script>
+<script src="responsive-4k-images.js?v=fix-resizeobserver-mm2-20261102-1" defer></script>
 </body></html>

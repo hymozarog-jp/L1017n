@@ -71,6 +71,11 @@
     const tag=document.createElement("span");tag.className="manual-handover-tag";tag.textContent="L1017n • التسليم داخل اللعبة";
     const heading=document.createElement("h2");heading.id="manualHandoverTitle";heading.textContent="تم تسجيل طلبك!";
     const sub=document.createElement("p");sub.className="manual-handover-intro";sub.textContent="لاستلام الغرض، لازم تتواصل مع متجر L1017n عبر واتساب أو تيليجرام وتبعث رقم طلبك. الخصم تم عند تأكيد الشراء، والتسليم يحتاج تنسيق داخل Roblox.";
+    const timeInfo=document.createElement("div");
+    timeInfo.className="l1017-delivery-time";
+    timeInfo.setAttribute("role","note");
+    timeInfo.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-clock"></use></svg><span></span>';
+    timeInfo.querySelector("span").textContent=window.L1017nDeliveryPolicy?.label(o.group==="MM2"?"mm2":"steal-a-brainrot")||"وقت التسليم: لم تُحدَّد مدة ثابتة حاليًا. التنفيذ يدوي بعد مراجعة الطلب، وليس فوريًا.";
     const info=document.createElement("div");info.className="manual-handover-info";
     for(const [label,value] of [
       ["الماب",o.group],["الغرض",o.name],["رقم الطلب","#"+o.id.slice(0,8).toUpperCase()],
@@ -116,7 +121,7 @@
       close();if(typeof window.switchView==="function")window.switchView("orders");
     });
     buttons.append(wa,tg);
-    box.append(closeBtn,icon,tag,heading,sub,info,caption,buttons,hint,details,later);
+    box.append(closeBtn,icon,tag,heading,sub,timeInfo,info,caption,buttons,hint,details,later);
     overlay.appendChild(box);
     overlay.addEventListener("click",e=>{if(e.target===overlay)close()});
     activeEscapeHandler=e=>{if(e.key==="Escape")close()};

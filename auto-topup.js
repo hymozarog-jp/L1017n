@@ -46,6 +46,17 @@
     if(value!=null)x.textContent=String(value);
     return x;
   }
+  function setIconText(target,name,label){
+    if(!target)return;
+    const ns='http://www.w3.org/2000/svg';
+    const icon=document.createElementNS(ns,'svg');
+    icon.setAttribute('class','l1017-icon');
+    icon.setAttribute('aria-hidden','true');
+    const use=document.createElementNS(ns,'use');
+    use.setAttribute('href','#l1017-icon-'+name);
+    icon.appendChild(use);
+    target.replaceChildren(icon,document.createTextNode(' '+String(label)));
+  }
   function show(cls,title,details){
     const root=host(); if(!root)return null;
     const msg=el('div','auto-topup-status '+cls);
@@ -123,7 +134,7 @@
     }
     if(data?.status==='approved'){
       root.dataset.state='approved';
-      title.textContent='تم الشحن ✓';
+      setIconText(title,'check-circle','تم الشحن');
       desc.textContent='تم تأكيد التحويل وإضافة مبلغ الشحن إلى محفظتك بنجاح.';
       foot.textContent='صار الرصيد متاحًا في محفظتك. اضغط «شاهد رصيدك» لمشاهدة حركة الشحن.';
       const goWallet=root.querySelector('.tpv-dismiss');
@@ -291,7 +302,7 @@
       if(currentRequest!==String(id) && !root)return;
       updateVerifier(id,data);
       if(data.status==='approved'){
-        if(status)status.textContent='✅ تم الشحن! أُضيف الرصيد إلى محفظتك.';
+        setIconText(status,'check-circle','تم الشحن! أُضيف الرصيد إلى محفظتك.');
         // Only a verified credited transaction (not an SMS or pending request)
         // can launch the falling balance animation.
         void window.L1017nCreditDrop?.approved?.(String(id));
@@ -300,16 +311,17 @@
         return;
       }
       if(data.status==='rejected'){
-        if(status)status.textContent='⛔ تم رفض طلب الشحن. تواصل مع إدارة المتجر مع رقم الطلب.';
+        setIconText(status,'ban','تم رفض طلب الشحن. تواصل مع إدارة المتجر مع رقم الطلب.');
         stopWatcher();forgetVerifier();return;
       }
       if(data.sms_status==='matched'){
-        if(status)status.textContent='📩 وصل إشعار تحويل مطابق. الطلب الآن قيد المراجعة، لا تكرر التحويل.';
+        setIconText(status,'mail','وصل إشعار تحويل مطابق. الطلب الآن قيد المراجعة، لا تكرر التحويل.');
       }else if(status){
         const ageMs=Date.now()-Date.parse(row.created_at||'');
-        status.textContent=Number.isFinite(ageMs)&&ageMs>=5*60*1000
-          ?'⚠️ لم تصل رسالة تحويل مطابقة بعد 5 دقائق. إذا خُصم الرصيد، تواصل مع المتجر برقم الطلب ولا تكرر التحويل.'
-          :'⏳ بانتظار رسالة ليبيانا ومطابقة التحويل. لا تكرر التحويل.';
+        const delayed=Number.isFinite(ageMs)&&ageMs>=5*60*1000;
+        setIconText(status,delayed?'alert':'clock',delayed
+          ?'لم تصل رسالة تحويل مطابقة بعد 5 دقائق. إذا خُصم الرصيد، تواصل مع المتجر برقم الطلب ولا تكرر التحويل.'
+          :'بانتظار رسالة ليبيانا ومطابقة التحويل. لا تكرر التحويل.');
       }
     }catch(e){
       updateVerifier(id,null,true);
@@ -402,7 +414,7 @@
       if(intent.state==='matched'){
         show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ، وطلبك بانتظار قرار الإدارة. لا تحوّل المبلغ مرة ثانية.');
         const current=host();
-        const status=el('div','auto-topup-status','⏳ بانتظار تأكيد رصيد المحفظة.');
+        const status=el('div','auto-topup-status');setIconText(status,'clock','بانتظار تأكيد رصيد المحفظة.');
         status.id='ussdTransferStatus';
         current?.append(status);
         showVerifier(intent.request_id,amount);
@@ -414,7 +426,7 @@
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
       panel.append(el('strong','ussd-code',codeFor(amount)));
-      const dial=el('a','btn btn-primary full-width','📞 فتح الاتصال وتحويل '+amount+' د.ل');
+      const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','فتح الاتصال وتحويل '+amount+' د.ل');
       dial.href='tel:'+codeFor(amount).replace('#','%23');
       dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا');
       dial.addEventListener('click',()=>{armDialHandoff(intent.request_id,amount);watch(intent.request_id)});
@@ -425,7 +437,7 @@
         try{
           await navigator.clipboard.writeText(codeFor(amount));
           armDialHandoff(intent.request_id,amount);
-          copy.textContent='تم نسخ الكود ✓';
+          setIconText(copy,'check','تم نسخ الكود');
         }
         catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
@@ -508,7 +520,7 @@
         state.textContent='وثّق رقمك في حسابي';state.className='tp-phone-state is-error';return;
       }
       number.textContent=phone;
-      state.textContent='✓ رقم موثّق';state.className='tp-phone-state is-verified';
+      setIconText(state,'check-circle','رقم موثّق');state.className='tp-phone-state is-verified';
     }catch(error){number.textContent='تعذر جلب الرقم';state.textContent='أعد المحاولة';state.className='tp-phone-state is-error'}
   }
   window.renderTopupPhoneStatus=renderTopupPhoneStatus;

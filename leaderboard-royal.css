@@ -401,3 +401,5 @@
  #leaderboardView .royal-stat,
  #leaderboardView .lb-other-row{animation:none!important;transition:none!important}
 }
+/* Guests do not see an empty personal-rank heading. */
+#leaderboardView:has(#lbMyRank.hidden) .l1017-rank-mini-heading{display:none!important}

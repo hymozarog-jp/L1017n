@@ -21,9 +21,9 @@
   };
   const FILTERS = [["all","الكل"],["roblox","روبوكس"],["mm2","MM2"],["steal-a-brainrot","ماب السرقة"]];
   const HEROES = [
-    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
-    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/mm2-game-icon.jpg?v=mm2-fixed2"},
-    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/steal-a-brainrot-original.png"}
+    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"L1017n · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
+    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"L1017n · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/mm2-game-icon.jpg?v=mm2-fixed2"},
+    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"L1017n · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/steal-a-brainrot-original.png"}
   ];
   const q = selector => document.querySelector(selector);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);

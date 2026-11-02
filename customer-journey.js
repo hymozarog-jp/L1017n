@@ -146,7 +146,9 @@
       '<div class="gbj-total" aria-live="polite">جاري فحص رصيد محفظتك…</div>'+
       '<div class="gbj-actions"><button type="button" data-gbj="topup">شحن المحفظة</button></div>';
     const submit=form.querySelector('[type="submit"]');
-    if(submit)form.insertBefore(panel,submit);else form.appendChild(panel);
+    const anchor=submit&&(submit.closest('.mm2-actions,.sab-actions,.pubg-actions')||submit);
+    if(anchor&&anchor.parentElement===form)form.insertBefore(panel,anchor);
+    else form.appendChild(panel);
     const price=priceOf(form);
     showRealBalance(form,panel,price);
     panel.querySelector('[data-gbj="topup"]').addEventListener('click',()=>{

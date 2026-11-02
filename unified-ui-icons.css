@@ -1,0 +1,49 @@
+/* Shared L1017n line icons: one stroke width and scale everywhere. */
+.l1017-icon{
+  display:inline-block;
+  width:1.2em;height:1.2em;
+  fill:none;stroke:currentColor;
+  stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;
+  vertical-align:-.18em;flex:none;
+}
+.l1017-icon[aria-hidden="true"]{pointer-events:none}
+footer .footer-status{
+  display:inline-flex;align-items:center;gap:8px;
+  max-width:100%;line-height:1.75
+}
+footer .footer-status .footer-track-link{
+  display:inline-flex;align-items:center;gap:8px;
+  color:inherit;text-decoration:none;
+  padding:5px 9px;border:1px solid #ffffff1b;
+  background:#ffffff06;border-radius:10px;
+  transition:background .2s ease,border-color .2s ease
+}
+footer .footer-status .footer-track-link:hover,
+footer .footer-status .footer-track-link:focus-visible{
+  background:#ffffff0e;border-color:#ab94e86e
+}
+footer .footer-status .l1017-icon{color:#b5dfba;width:16px;height:16px}
+.lb-prize .l1017-icon,.lb-section-label .l1017-icon{color:#ecc883}
+.lb-prize .l1017-icon,.lb-section-label .l1017-icon,
+.lb-money-label .l1017-icon,.lb-money-details .l1017-icon{margin-inline-end:5px}
+.lb-podium-avatar .l1017-icon,.lb-other-avatar .l1017-icon{width:1.4em;height:1.4em}
+.lb-podium-amount .l1017-icon,.lb-other-amount .l1017-icon{width:1em;height:1em;margin-inline-end:4px}
+.google-welcome-label .l1017-icon,
+.tp-provider-logo .l1017-icon{width:.95em;height:.95em}
+#openAdminDashboard .l1017-icon,
+.topup-modal-info .l1017-icon,
+.topup-modal-check .l1017-icon,
+.topup-modal-close .l1017-icon,
+.orders-game-icon .l1017-icon,
+.orders-modern-card [data-order-code] .l1017-icon,
+.auto-topup-status .l1017-icon,
+.tpv-title .l1017-icon,
+.tp-phone-state .l1017-icon,
+#ussdTransferStatus .l1017-icon{margin-inline-end:5px}
+.topup-modal-close .l1017-icon{width:19px;height:19px}
+#llLanding .ll-intro-star .l1017-icon{width:.9em;height:.9em}
+.subs-service-logo .l1017-icon{width:.8em;height:.8em}
+.auto-topup-transfer a .l1017-icon{width:1.2em;height:1.2em}
+@media(prefers-reduced-motion:reduce){
+  footer .footer-status .footer-track-link{transition:none}
+}

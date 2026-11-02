@@ -19,11 +19,10 @@
     'topup-neon-wallet':[960,3840]
   };
   const official={'mm2':[960,3840],'brainrot':[960,3840]};
-  const registered=new WeakSet();
-  const watcher=typeof ResizeObserver==='function'
-    ? new ResizeObserver(entries=>{
-        entries.forEach(entry=>apply(entry.target));
-      }) : null;
+  // Do not use ResizeObserver here: altering image candidates while measuring
+  // the same image can trigger Safari's ResizeObserver loop error.
+  // Added/replaced images are handled by MutationObserver, while orientation
+  // and viewport size changes are handled by the window resize event.
   function getInfo(img){
     const src=img.getAttribute('src');
     if(!src)return null;
@@ -62,10 +61,18 @@
   function scan(){
     scheduled=false;
     document.querySelectorAll('img').forEach(img=>{
-      if(!getInfo(img))return;
-      if(!registered.has(img)){
-        registered.add(img);
-        if(watcher)watcher.observe(img);
+      // No resize observers on images; update sources at most once per
+      // variant, and recompute the sizes hint only on scheduled scans.
+      const info=getInfo(img);
+      if(!info){
+        // If a reused <img> changed away from a known local asset,
+        // remove only our own previous candidates.
+        if(img.dataset.gbImageVariant){
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+          delete img.dataset.gbImageVariant;
+        }
+        return;
       }
       apply(img);
     });
@@ -77,8 +84,10 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});
   else schedule();
+  // Only react to inserted images or changed source URLs; watching style
+  // and class modifications causes redundant work during MM2 transitions.
   new MutationObserver(schedule).observe(document.documentElement,{
-    childList:true,subtree:true,attributes:true,attributeFilter:['src','class','style']
+    childList:true,subtree:true,attributes:true,attributeFilter:['src']
   });
   window.addEventListener('resize',schedule,{passive:true});
 })();

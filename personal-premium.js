@@ -76,7 +76,7 @@ function decorate(page,user,name){
    const symbol=document.createElement('span');symbol.className='premium-row-icon premium-icon-'+k;symbol.innerHTML=svg(k);
    box.append(symbol,label);
    const side=document.createElement('span');side.className='premium-row-side';
-   side.innerHTML=action?svg('edit'):'✓';
+   side.innerHTML=action?svg('edit'):'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg>';
    box.append(side);
    fields.append(box);
    if(action){

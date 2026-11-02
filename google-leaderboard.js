@@ -24,6 +24,23 @@ function node(tag,className,text){
 }
 
 
+function iconNode(name){
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('class','l1017-icon');
+  svg.setAttribute('aria-hidden','true');
+  svg.setAttribute('focusable','false');
+  const use=document.createElementNS(ns,'use');
+  use.setAttribute('href','#l1017-icon-'+name);
+  svg.appendChild(use);
+  return svg;
+}
+function iconLabel(tag,className,name,label){
+  const el=node(tag,className);
+  el.append(iconNode(name),document.createTextNode(String(label||'')));
+  return el;
+}
+
 function formatDinar(amount) {
   return Number(amount||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
@@ -53,7 +70,7 @@ function makeMoneyMeter(amount, topValue, compact){
   button.setAttribute('aria-label','افتح تفاصيل شحن رصيد المتسوق بالدينار الليبي: '+formatDinar(value)+' د.ل، ونسبتها من شحن المتصدر '+Math.round(percent)+' بالمئة');
   const headline=node('span','lb-money-topline');
   headline.append(
-    node('span','lb-money-label','💰 مقارنة بالمتصدر'),
+    iconLabel('span','lb-money-label','coins',' مقارنة بالمتصدر'),
     node('strong','lb-money-percent',Math.round(percent)+'٪')
   );
   button.appendChild(headline);
@@ -64,8 +81,8 @@ function makeMoneyMeter(amount, topValue, compact){
   button.appendChild(track);
   const details=node('div','lb-money-details');
   details.hidden=true;
-  details.appendChild(node('span','', '💵 إجمالي شحن المتسوق: '+formatDinar(value)+' د.ل'));
-  details.appendChild(node('span','', '🏆 إجمالي شحن المتصدر: '+formatDinar(highest)+' د.ل'));
+  details.appendChild(iconLabel('span','','coins',' إجمالي شحن المتسوق: '+formatDinar(value)+' د.ل'));
+  details.appendChild(iconLabel('span','','trophy',' إجمالي شحن المتصدر: '+formatDinar(highest)+' د.ل'));
   details.appendChild(node('strong','', highest>0?'الفارق: '+formatDinar(gap)+' د.ل':'كل المشاركين عندهم 0.00 د.ل حاليًا'));
   button.addEventListener('click',function(){
     const wasOpen=button.getAttribute('aria-expanded')==='true';
@@ -80,12 +97,12 @@ function makePodiumCard(item,rank,topValue){
   const style=rank===1?'lb-first':rank===2?'lb-second':'lb-third';
   const card=node('div','lb-podium-card '+style+(item?'':' lb-empty'));
   const avatar=node('div','lb-podium-avatar');
-  avatar.appendChild(node('span','',item?'👤':'♙'));
+  avatar.appendChild(iconLabel('span','','user',''));
   if(item)attachImage(avatar,item.avatar_url,'صورة المتسوق');
   avatar.appendChild(node('span','lb-podium-medal',String(rank)));
   card.appendChild(avatar);
   card.appendChild(node('strong','lb-podium-name',item?publicName(item,rank):'المركز متاح'));
-  card.appendChild(node('div','lb-podium-amount',item?'💰 '+formatDinar(item.points)+' د.ل':'—'));
+  card.appendChild(item?iconLabel('div','lb-podium-amount','coins',' '+formatDinar(item.points)+' د.ل'):node('div','lb-podium-amount','—'));
   card.appendChild(node('small','',item?'إجمالي الشحن':'بانتظار متسوق'));
   if(item)card.appendChild(makeMoneyMeter(item.points,topValue,false));
   return card;
@@ -93,13 +110,13 @@ function makePodiumCard(item,rank,topValue){
 function makeOtherRow(item,rank,topValue){
   const row=node('div','lb-other-row');
   row.appendChild(node('span','lb-other-position',String(rank)));
-  const avatar=node('span','lb-other-avatar','👤');
+  const avatar=iconLabel('span','lb-other-avatar','user','');
   attachImage(avatar,item.avatar_url,'صورة المتسوق');
   row.appendChild(avatar);
   const info=node('div','lb-other-info');
   const infoTop=node('div','lb-other-info-top');
   infoTop.appendChild(node('span','lb-other-name',publicName(item,rank)));
-  infoTop.appendChild(node('strong','lb-other-amount','💰 '+formatDinar(item.points)+' د.ل'));
+  infoTop.appendChild(iconLabel('strong','lb-other-amount','coins',' '+formatDinar(item.points)+' د.ل'));
   info.appendChild(infoTop);
   info.appendChild(makeMoneyMeter(item.points,topValue,true));
   row.appendChild(info);
@@ -141,14 +158,14 @@ async function renderOwnRank(){
   const track=node('div','lb-progress-track');
   const fill=document.createElement('span');
   let progress=0,message='';
-  if(rank===1){progress=100;message='أنت المتصدر حاليًا 🏆'}
+  if(rank===1){progress=100;message='أنت المتصدر حاليًا'}
   else if(rank>1){progress=Math.min(99,Math.round(100*spent/Math.max(spent+gap,0.01)));message='باقي لك '+formatDinar(gap+0.01)+' د.ل لتتقدم إلى المركز #'+(rank-1);}
   else if(!participating){message='فعّل المشاركة في التصنيف من الخيارات الموجودة تحت بطاقتك.'}
   else{message='شحن رصيد المحفظة يزيد ترتيبك بين المتسوقين.'}
   fill.style.width=progress+'%';
   track.appendChild(fill);
   root.appendChild(track);
-  root.appendChild(node('p','lb-progress-caption',message));
+  const caption=node('p','lb-progress-caption',message);if(rank===1)caption.prepend(iconNode('trophy'));root.appendChild(caption);
   addRankPrivacyToggle(root,user,participating);
   root.classList.remove('hidden');
 }
@@ -168,7 +185,7 @@ window.loadLeaderboard=async function(){
     [2,1,3].forEach(rank=>podium.appendChild(makePodiumCard(data.find(item=>Number(item.rank)===rank),rank,topValue)));
     shell.appendChild(podium);
     const header=node('div','lb-section-label');
-    const label=node('h2','','☷ باقي المتصدرين');
+    const label=iconLabel('h2','','list',' باقي المتصدرين');
     const count=node('small','',''+data.length+' مشارك في التصنيف');
     header.append(label,count);
     shell.appendChild(header);

@@ -267,7 +267,7 @@ function mountRobuxQuantityCalculator(modal,robux){
    +'<path d="M83 18l2.5 6.5L92 27l-6.5 2.5L83 36l-2.5-6.5L74 27l6.5-2.5L83 18Z" fill="#F9DFA2"/>'
    +'<path d="M25 70l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5Z" fill="#A3F0DD"/>'
    +'</svg>';
- section.innerHTML='<div class="rqc-heading"><div class="rqc-header-copy"><small><span class="rqc-header-dot" aria-hidden="true"></span> GAMEBOXLY · ROBUX</small><h2>اختار كمية الروبوكس</h2><p>على كيفك، أي عدد تبيه</p></div><div class="rqc-icon" aria-hidden="true">'+rqcArt+'</div></div>'
+ section.innerHTML='<div class="rqc-heading"><div class="rqc-header-copy"><small><span class="rqc-header-dot" aria-hidden="true"></span> L1017n · ROBUX</small><h2>اختار كمية الروبوكس</h2><p>على كيفك، أي عدد تبيه</p></div><div class="rqc-icon" aria-hidden="true">'+rqcArt+'</div></div>'
    +'<label class="rqc-label" for="robuxCustomQuantity">اكتب العدد اللي تبيه، حتى لو مش موجود في الباقات</label>'
    +'<div class="rqc-picker"><button class="rqc-step rqc-plus" type="button" aria-label="زيادة روبوكس واحد"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>'
    +'<div class="rqc-input-box"><span class="rqc-input-gem" aria-hidden="true">◆</span><input id="robuxCustomQuantity" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" value="'+firstAmount+'" aria-describedby="robuxQuantityFeedback" placeholder="اكتب العدد"><span>Robux</span></div>'

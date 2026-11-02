@@ -40,14 +40,14 @@
       overlay.setAttribute('aria-labelledby','purchasePhoneTitle');
       const card=document.createElement('div');
       card.className='pp-card';
-      card.innerHTML='<div class="pp-icon" aria-hidden="true">📱</div>'+
+      card.innerHTML='<div class="pp-icon" aria-hidden="true"><svg class="l1017-icon"><use href="#l1017-icon-smartphone"></use></svg></div>'+
         '<h2 id="purchasePhoneTitle">أضف رقم هاتفك لإكمال الشراء</h2>'+
         '<p>قبل تأكيد الطلب، لازم تربط رقم هاتف ليبي بحسابك مرة واحدة فقط.</p>'+
         '<form id="purchasePhoneForm"><label for="purchasePhoneInput">رقم هاتفك</label>'+
         '<input id="purchasePhoneInput" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="09xxxxxxxx" required>'+
         '<div class="pp-actions"><button class="pp-save" type="submit">حفظ ومتابعة الشراء</button><button class="pp-cancel" type="button">إلغاء</button></div>'+
         '<p class="pp-status" role="status" aria-live="polite"></p></form>'+
-        '<p class="pp-privacy">🔒 رقمك يظل خاص بحسابك ولا يظهر في التصنيف أو للمتسوقين.</p>';
+        '<p class="pp-privacy"><svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-lock"></use></svg> رقمك يظل خاص بحسابك ولا يظهر في التصنيف أو للمتسوقين.</p>';
       overlay.appendChild(card);
       document.body.appendChild(overlay);
       const form=card.querySelector('form'),field=card.querySelector('input'),submit=card.querySelector('.pp-save'),cancel=card.querySelector('.pp-cancel'),status=card.querySelector('.pp-status');

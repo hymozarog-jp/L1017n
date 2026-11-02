@@ -1,0 +1,39 @@
+name: Update official Roblox game art
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_official_game_icons.py'
+      - '.github/workflows/update-roblox-game-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: official-roblox-image-build
+  cancel-in-progress: false
+
+jobs:
+  official-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Pillow
+        run: python -m pip install 'Pillow>=10,<13'
+      - name: Fetch official thumbnails and generate image variants
+        run: python scripts/build_official_game_icons.py
+      - name: Save artwork in site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add game-covers/official/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Update official Roblox experience art in 4K and mobile sizes"
+          git push

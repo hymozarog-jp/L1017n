@@ -1,0 +1,37 @@
+/* Full-screen page push/pop and RTL edge-swipe navigation.
+   Works independently of checkout/payment state. */
+@keyframes l1017-tg-push {
+  from { transform:translate3d(-100%,0,0); opacity:.98 }
+  to { transform:translate3d(0,0,0); opacity:1 }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  #robloxGamePage:not(.tg-swipe-active):not(.tg-swipe-leaving),
+  #robuxModal.robux-full-page:not(.hidden):not(.tg-swipe-active):not(.tg-swipe-leaving),
+  #pubgCategoryPage.pubg-premium.visible:not(.tg-swipe-active):not(.tg-swipe-leaving) {
+    animation: l1017-tg-push 340ms cubic-bezier(.22,1,.36,1) both !important;
+  }
+}
+#robloxGamePage,
+#robuxModal.robux-full-page:not(.hidden),
+#pubgCategoryPage.pubg-premium.visible {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+#robloxGamePage.tg-swipe-active,
+#robuxModal.tg-swipe-active,
+#pubgCategoryPage.tg-swipe-active,
+#robloxGamePage.tg-swipe-leaving,
+#robuxModal.tg-swipe-leaving,
+#pubgCategoryPage.tg-swipe-leaving {
+  animation: none !important;
+  will-change: transform;
+  box-shadow: 22px 0 52px rgba(0,0,0,.45);
+  touch-action: pan-y;
+}
+@media(prefers-reduced-motion:reduce) {
+  #robloxGamePage,
+  #robuxModal.robux-full-page:not(.hidden),
+  #pubgCategoryPage.pubg-premium.visible {
+    animation: none !important;
+  }
+}

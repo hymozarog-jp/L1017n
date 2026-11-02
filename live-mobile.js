@@ -22,8 +22,8 @@
   const FILTERS = [["all","الكل"],["roblox","روبوكس"],["mm2","MM2"],["steal-a-brainrot","ماب السرقة"]];
   const HEROES = [
     {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
-    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/mm2-game-icon.jpg?v=mm2-fixed2"},
-    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/steal-a-brainrot-original.png"}
+    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102"},
+    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102"}
   ];
   const q = selector => document.querySelector(selector);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -50,8 +50,8 @@
   // Three independent Roblox-only storefront sections; purchase stock is unchanged.
   const SHOP_SECTIONS = [
     {key:"roblox",title:"روبوكس",subtitle:"شحن روبوكس",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
-    {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/mm2-game-icon.jpg?v=mm2-fixed2",tag:"MURDER MYSTERY 2"},
-    {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/steal-a-brainrot-original.png",tag:"STEAL A BRAINROT"}
+    {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102",tag:"MURDER MYSTERY 2"},
+    {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102",tag:"STEAL A BRAINROT"}
   ];
   function matchesSection(section) {
     if (chosen !== "all" && chosen !== section.key) return false;

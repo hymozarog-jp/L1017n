@@ -1,6 +1,6 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=offers-bottom-nav-20261102-1';
+  s.src='legacy-app.js?v=robux-price-15-per100-20261102-1';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');

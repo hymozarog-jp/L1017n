@@ -37,7 +37,7 @@
       back.textContent='رجوع للباقات ←';
       var kicker=document.createElement('span');
       kicker.className='robux-menu-kicker';
-      kicker.textContent='GAMEBOXLY • ROBUX';
+      kicker.textContent='L1017n • ROBUX';
       top.append(back,kicker);
       var heading=document.createElement('div');
       heading.className='robux-menu-heading';

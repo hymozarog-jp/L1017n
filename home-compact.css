@@ -1,0 +1,169 @@
+/* Compact, readable L1017N homepage.
+   Scoped to the live landing; does not touch checkout, wallet credits, or product stock. */
+body.l1017-live-ui #storeView{
+  max-width:1040px!important;
+  padding:0 13px calc(88px + env(safe-area-inset-bottom))!important;
+}
+body.l1017-live-ui #llLanding{padding-bottom:0!important}
+#llLanding .ll-intro{padding:13px 0 8px!important;gap:10px}
+#llLanding .ll-overline{font-size:10px!important;color:#c8b9ff}
+#llLanding .ll-intro h1{
+  font-size:clamp(20px,3.3vw,27px)!important;
+  line-height:1.35!important;margin:1px 0 1px!important;letter-spacing:-.3px!important
+}
+#llLanding .ll-intro p{font-size:11px!important;line-height:1.6!important;margin:0!important}
+#llLanding .ll-intro-star{
+  flex:0 0 35px!important;width:35px!important;height:35px!important;
+  border-radius:12px!important;font-size:18px!important;box-shadow:none!important
+}
+/* The shortcuts are now part of the visible homepage rather than the hidden legacy section. */
+body.l1017-live-ui #llLanding #gbQuickActions{
+  max-width:none!important;width:100%;margin:7px 0 10px!important;padding:10px!important;
+  background:linear-gradient(115deg,#191b3b,#181d35)!important;
+  border:1px solid #6b61a75e!important;border-radius:15px!important;box-shadow:none!important
+}
+#llLanding #gbQuickActions .gbqa-heading{margin-bottom:7px!important;gap:5px}
+#llLanding #gbQuickActions .gbqa-heading b{font-size:12px!important}
+#llLanding #gbQuickActions .gbqa-heading small{font-size:10px!important;color:#c5c9e8}
+#llLanding #gbQuickActions .gbqa-buttons{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+#llLanding #gbQuickActions .gbqa-action{
+  flex-direction:row!important;gap:5px!important;min-height:39px!important;
+  border-radius:10px!important;font-size:11px!important;padding:6px 5px!important;
+  background:#272747!important;border:1px solid #605e8a!important;color:#f5f0ff!important;
+  box-shadow:none!important
+}
+#llLanding #gbQuickActions .gbqa-action.gbqa-primary{
+  color:#241738!important;background:#c3aeff!important;border-color:#c3aeff!important
+}
+#llLanding #gbQuickActions .gbqa-action svg{width:15px!important;height:15px!important}
+#llLanding #gbQuickActions .gbqa-footer{
+  margin:7px 1px 0!important;font-size:9.5px!important;color:#bbc5da!important;
+  line-height:1.55!important;gap:5px!important
+}
+#llLanding #gbQuickActions .gbqa-footer svg{width:13px!important;height:13px!important;stroke:#adf3d1!important;flex:none}
+#llLanding .ll-search-wrap{
+  height:42px!important;border-radius:12px!important;margin:0!important;
+  border-color:#39435e!important;box-shadow:none!important
+}
+#llLanding .ll-search-wrap svg{height:17px!important;width:17px!important;margin-inline:12px!important}
+#llLanding .ll-search-wrap input{font-size:12px!important;border-radius:12px!important}
+#llLanding .ll-title-row{margin:12px 0 7px!important;gap:8px!important}
+#llLanding .ll-title-row h2{font-size:15px!important;line-height:1.4!important;margin:0!important}
+#llLanding .ll-title-row small{font-size:10px!important;color:#aeb8d0!important}
+#llLanding #llItemCount{font-size:10px!important}
+#llLanding .ll-products-title{margin-top:13px!important}
+/* Display all three offers simultaneously; no swiping or hidden promotions. */
+#llLanding .ll-carousel{overflow:visible!important}
+#llLanding .ll-carousel-track{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;overflow:visible!important;scroll-snap-type:none!important;
+  margin:0!important;padding:0!important;width:100%!important
+}
+#llLanding .ll-slide{
+  display:block!important;min-width:0!important;width:100%!important;
+  flex:auto!important;height:auto!important;min-height:119px!important;
+  border:1px solid #ffffff2b!important;border-radius:13px!important;
+  box-shadow:none!important;scroll-snap-align:none!important
+}
+#llLanding .ll-slide::before{opacity:.5}
+#llLanding .ll-slide-copy{
+  width:100%!important;min-width:0!important;min-height:119px!important;
+  padding:55px 6px 7px!important;align-items:center!important;
+  justify-content:flex-end!important;text-align:center!important;gap:5px!important
+}
+#llLanding .ll-slide-eyebrow,#llLanding .ll-slide p,#llLanding .ll-slide-letter{display:none!important}
+#llLanding .ll-compact-art{
+  display:block;position:absolute;z-index:2;top:6px;left:50%;
+  width:47px;height:45px;object-fit:contain;transform:translateX(-50%);
+  pointer-events:none;filter:drop-shadow(0 3px 5px #0005);border-radius:8px
+}
+#llLanding .ll-slide h2{
+  margin:0!important;font-size:11.5px!important;line-height:1.3!important;
+  letter-spacing:0!important;width:100%;text-align:center;white-space:normal!important
+}
+#llLanding .ll-slide h2 br,#llLanding .ll-slide h2 span{display:none!important}
+#llLanding .ll-slide-cta{
+  min-height:28px!important;width:100%;max-width:100%;gap:3px!important;
+  border-radius:8px!important;padding:3px 4px!important;
+  font-size:9.5px!important;line-height:1.3!important;white-space:normal;
+  box-shadow:none!important;overflow-wrap:anywhere
+}
+#llLanding .ll-slide-cta span{display:none!important}
+#llLanding .ll-carousel-controls{display:none!important}
+#llLanding .ll-categories{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:6px!important;overflow:visible!important;
+  padding:0!important;margin:0 0 10px!important
+}
+#llLanding .ll-categories button{
+  min-width:0!important;min-height:34px!important;padding:5px 3px!important;
+  border-radius:10px!important;font-size:10px!important;white-space:normal!important;
+  line-height:1.35!important
+}
+/* Three compact category cards in one row, including narrow iPhone screens. */
+body.l1017-live-ui #llLanding .ll-catalog:has(.ll-game-section){
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;align-items:start!important;max-width:780px!important;margin:0 auto!important
+}
+#llLanding .ll-game-section-link{
+  gap:5px!important;min-width:0!important;align-items:stretch!important
+}
+#llLanding .ll-game-section-art{
+  width:100%!important;height:auto!important;min-height:0!important;
+  aspect-ratio:1/1!important;border-radius:13px!important;
+  box-shadow:none!important;overflow:hidden!important
+}
+#llLanding .ll-game-section-art img{
+  width:100%!important;height:100%!important;
+  object-fit:contain!important;padding:5px!important;box-sizing:border-box!important
+}
+#llLanding .ll-game-steal-a-brainrot .ll-game-section-art img{
+  object-fit:cover!important;padding:0!important
+}
+#llLanding .ll-game-section-tag{
+  font:650 7px/1.2 system-ui,sans-serif!important;top:5px!important;right:4px!important;left:4px!important;
+  padding:3px 2px!important;border-radius:5px!important
+}
+#llLanding .ll-game-section-details{gap:1px!important}
+#llLanding .ll-game-section-details strong{
+  font-size:clamp(11px,2.8vw,15px)!important;
+  line-height:1.4!important;font-weight:800!important
+}
+#llLanding .ll-game-section-details small{font-size:9px!important;line-height:1.3!important;display:none!important}
+#llLanding .ll-safety-note{
+  font-size:10px!important;line-height:1.6!important;margin:9px 0 0!important;text-align:center!important
+}
+#llLanding .ll-help{
+  margin:12px 0 0!important;padding:11px 13px!important;
+  border-radius:13px!important;gap:8px!important;
+  flex-direction:row!important;align-items:center!important
+}
+#llLanding .ll-help h2{font-size:13px!important;margin:0 0 2px!important}
+#llLanding .ll-help p{font-size:10px!important;line-height:1.6!important;margin:0!important}
+#llLanding .ll-help button{
+  padding:7px 10px!important;font-size:10px!important;min-height:36px!important;
+  border-radius:9px!important;white-space:nowrap!important
+}
+@media(min-width:700px){
+  #llLanding .ll-intro{padding:21px 0 11px!important}
+  #llLanding .ll-slide,#llLanding .ll-slide-copy{min-height:142px!important}
+  #llLanding .ll-slide-copy{padding-top:63px!important}
+  #llLanding .ll-compact-art{width:60px;height:55px}
+  #llLanding .ll-slide h2{font-size:15px!important}
+  #llLanding .ll-slide-cta{font-size:12px!important;min-height:32px!important}
+  #llLanding .ll-game-section-art{aspect-ratio:1.4/1!important}
+  #llLanding .ll-game-section-details small{display:block!important}
+}
+@media(max-width:360px){
+  body.l1017-live-ui #storeView{padding-inline:9px!important}
+  #llLanding #gbQuickActions{padding:8px!important}
+  #llLanding #gbQuickActions .gbqa-action{font-size:10px!important;gap:3px!important}
+  #llLanding .ll-compact-art{width:40px;height:42px}
+  #llLanding .ll-slide h2{font-size:10.5px!important}
+  #llLanding .ll-slide-cta{font-size:9px!important}
+  #llLanding .ll-game-section-tag{font-size:6px!important}
+  #llLanding .ll-help p{font-size:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #llLanding .ll-slide-cta,#llLanding .ll-game-section-art{transition:none!important;animation:none!important}
+}

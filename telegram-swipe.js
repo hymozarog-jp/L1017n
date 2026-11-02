@@ -94,7 +94,7 @@
     if (!page) return;
     var touch=event.touches[0];
     // Arabic RTL: swipe left from the RIGHT edge to go back, not the browser's left edge.
-    if (window.innerWidth-touch.clientX>38 || touch.clientY<8) return;
+    if (window.innerWidth-touch.clientX>76 || touch.clientY<8) return;
     var top=document.elementFromPoint(touch.clientX,touch.clientY);
     if (!top || !page.contains(top)) return;
     var button=backButton(page);
@@ -112,7 +112,7 @@
     var deltaX=state.x-touch.clientX,deltaY=touch.clientY-state.y;
     if (!state.dragging) {
       if (Math.abs(deltaY)>14 && Math.abs(deltaY)>Math.abs(deltaX)) {clearGesture();return;}
-      if (deltaX<12 || Math.abs(deltaY)>deltaX*.75) {
+      if (deltaX<10 || Math.abs(deltaY)>deltaX*.85) {
         if (Math.abs(deltaX)>20 || Math.abs(deltaY)>20) clearGesture();
         return;
       }
@@ -133,7 +133,7 @@
     if (!state.dragging) return;
     var distance=state.distance;
     var speed=distance/Math.max(1,Date.now()-state.started);
-    if (distance>Math.max(85,window.innerWidth*.25) || (distance>65 && speed>.55)) {
+    if (distance>Math.max(75,window.innerWidth*.21) || (distance>55 && speed>.48)) {
       // In an inner category the real back button changes the category instead of closing.
       if (!closesPage(state.page)) {
         clean(state.page);
@@ -150,4 +150,17 @@
     clearGesture();
     if (state && state.dragging) snapBack(state.page,state.distance);
   },{passive:true});
+  /* Optional verification message: only displayed with ?motion_test=1. */
+  try {
+    if (new URLSearchParams(window.location.search).get('motion_test') === '1') {
+      var notice=document.createElement('div');
+      notice.id='tgMotionTestNotice';
+      notice.setAttribute('role','status');
+      notice.textContent='✓ حركة تيليجرام مفعّلة — افتح روبوكس واسحب من الحافة اليمنى';
+      notice.style.cssText='position:fixed;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;z-index:2147483647;max-width:420px;margin:0 auto;padding:14px 17px;text-align:center;direction:rtl;color:#f4fff5;font:700 13px/1.8 system-ui,sans-serif;background:#173727;border:1px solid #86eeaf;border-radius:15px;box-shadow:0 12px 35px #0008;pointer-events:none';
+      document.body.appendChild(notice);
+      window.setTimeout(function(){notice.remove()},6500);
+    }
+  }catch(e){}
+
 })();

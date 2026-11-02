@@ -13,7 +13,7 @@
     old.replaceWith(page);
     root.classList.add('rgp-inner-page');
     root.classList.remove('rgp-category-hub');
-    $('.rgp-hub-subtitle')?.remove();
+    $(root,'.rgp-hub-subtitle')?.remove();
     if(typeof window.setRobloxInnerHeader==='function')window.setRobloxInnerHeader(root,label,kind);
     root.scrollTop=0;
     return page;

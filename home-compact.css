@@ -167,3 +167,20 @@ body.l1017-live-ui #llLanding .ll-catalog:has(.ll-game-section){
 @media(prefers-reduced-motion:reduce){
   #llLanding .ll-slide-cta,#llLanding .ll-game-section-art{transition:none!important;animation:none!important}
 }
+/* 2026-11-02: Customer request — remove the four pictured homepage blocks.
+   Keep the actual category grid, game menus, wallet and order navigation. */
+body.l1017-live-ui #llLanding > .ll-intro,
+body.l1017-live-ui #llLanding > #gbQuickActions,
+body.l1017-live-ui #llLanding > .ll-search-wrap,
+body.l1017-live-ui #llLanding > .ll-title-offers,
+body.l1017-live-ui #llLanding > .ll-carousel,
+body.l1017-live-ui .topbar #llHeaderSearch{
+  display:none!important;
+}
+body.l1017-live-ui #llLanding > .ll-products-title{
+  margin-top:12px!important;
+  margin-bottom:8px!important;
+}
+@media(max-width:680px){
+  body.l1017-live-ui #llLanding > .ll-products-title{margin-top:10px!important}
+}

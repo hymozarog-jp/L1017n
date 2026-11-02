@@ -95,7 +95,7 @@
     function copyDetails(){
       try{
         if(navigator.clipboard&&navigator.clipboard.writeText){
-          navigator.clipboard.writeText(draft).then(()=>{copy.textContent="تم نسخ التفاصيل ✓"}).catch(()=>{copy.textContent="حدّد التفاصيل وانسخها"});
+          navigator.clipboard.writeText(draft).then(()=>{copy.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> تم نسخ التفاصيل'}).catch(()=>{copy.textContent="حدّد التفاصيل وانسخها"});
         }else copy.textContent="حدّد التفاصيل وانسخها";
       }catch(_){copy.textContent="حدّد التفاصيل وانسخها";}
     }

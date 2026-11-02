@@ -89,8 +89,8 @@
   function openGame(key) {
     try {
       if(key==="roblox"){
-        if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
-        else if(typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
+        if(typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
+        else if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
         else notify("قسم الروبوكس غير جاهز حاليًا.");
         return;
       }

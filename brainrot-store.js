@@ -21,6 +21,10 @@
   function escapeHtml(value){
     return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   }
+function deliveryBlock(game){
+    var label=window.L1017nDeliveryPolicy?.label(game)||'وقت التسليم: لم تُحدَّد مدة ثابتة حاليًا. التنفيذ يدوي بعد مراجعة الطلب، وليس فوريًا.';
+    return '<div class="l1017-delivery-time" role="note"><svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-clock"></use></svg><span>'+escapeHtml(label)+'</span></div>';
+  }
   function getClient(){
     if(typeof supabaseClient!=="undefined") return supabaseClient;
     return null;
@@ -75,7 +79,7 @@
     const target=section.querySelector("#sabCatalog");
     if(!target)return;
     target.innerHTML='<div class="sab-products-grid">'+ITEMS.map(item=>productCard(item,map.get(item.key))).join("")+'</div>'
-      +'<p class="sab-info">التسليم داخل ماب السرقة بعد مراجعة الطلب. الباقات غير المسعّرة لا يمكن شراؤها حاليًا.</p>';
+      +'<p class="sab-info">التسليم داخل ماب السرقة يحتاج تواصلًا بعد الدفع. الباقات غير المسعّرة لا يمكن شراؤها حاليًا.</p>'+deliveryBlock('steal-a-brainrot');
     target.querySelectorAll("[data-steal-buy]").forEach(b=>{
       b.addEventListener("click",()=>{
         const product=map.get(b.dataset.stealBuy);
@@ -119,7 +123,7 @@
       +'<h2>'+escapeHtml(ITEMS.find(item=>item.key===product.product_key)?.name||product.name)+'</h2>'
       +'<strong class="sab-dialog-price">'+Number(product.price).toFixed(2)+' د.ل</strong>'
       +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'
-      +'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'
+      +deliveryBlock('steal-a-brainrot')+'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'
       +'<input id="sabRobloxUsername" autocomplete="off" minlength="3" maxlength="20" required pattern="[A-Za-z0-9_]{3,20}" placeholder="Roblox username" dir="ltr">'
       +'<div class="sab-dialog-actions"><button type="button" data-sab-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'
       +'<p class="sab-dialog-status" role="status" aria-live="polite"></p></form></div>';

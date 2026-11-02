@@ -1,0 +1,38 @@
+/* L1017n customer journey clarity: front-end only. */
+#gbQuickActions{margin:14px auto 16px;max-width:1060px;padding:16px;border-radius:20px;border:1px solid rgba(156,236,179,.22);background:linear-gradient(115deg,rgba(34,84,70,.33),rgba(17,26,41,.9));color:#f3fff7;box-shadow:0 13px 36px #02090724;direction:rtl}
+#gbQuickActions .gbqa-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:12px}
+#gbQuickActions .gbqa-heading b{font-size:16px;font-weight:800}
+#gbQuickActions .gbqa-heading small{font-size:12px;color:#bcd8c5}
+#gbQuickActions .gbqa-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+#gbQuickActions button,.gb-journey button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+#gbQuickActions .gbqa-action{background:#192f32;border:1px solid #44685b;color:#f0fff6;border-radius:13px;min-width:0;min-height:52px;padding:10px 9px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:750;text-align:center;transition:background .16s,transform .16s}
+#gbQuickActions .gbqa-action:active,.gb-journey button:active{transform:scale(.98)}
+#gbQuickActions .gbqa-action.gbqa-primary{background:#a3ee96;color:#0b241b;border-color:#a3ee96}
+#gbQuickActions .gbqa-action svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#gbQuickActions .gbqa-footer{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:11px 1px 0;font-size:11.5px;color:#b8d3c3;line-height:1.6}
+#gbQuickActions .gbqa-footer svg{width:15px;height:15px;fill:none;stroke:#a2ddaa;stroke-width:2}
+#gbWalletGuide{border:1px solid #3a795d;background:linear-gradient(145deg,#123326,#132426);border-radius:17px;padding:15px;margin-bottom:18px;color:#effff3;direction:rtl}
+#gbWalletGuide strong{font-size:15px;display:block;margin-bottom:7px}
+#gbWalletGuide .gbwg-steps{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px}
+#gbWalletGuide .gbwg-steps span{border-radius:10px;border:1px solid #4b735f;background:#1b3e30;padding:7px 10px;font-size:12px}
+#gbWalletGuide .gbwg-next{font-size:12.5px;line-height:1.8;margin:8px 0;color:#d2ead6;min-height:23px}
+#gbWalletGuide .gbwg-tools{display:flex;gap:8px;flex-wrap:wrap}
+#gbWalletGuide button{background:#223e32;border:1px solid #6a967b;color:#f0fff4;padding:9px 12px;border-radius:11px;min-height:42px;font-size:12px;font-weight:800}
+#gbWalletGuide button.gbwg-next-action{background:#a3ee96;border-color:#a3ee96;color:#092019}
+.gb-journey{margin:14px 0;padding:14px;border-radius:15px;border:1px solid #4d6f81;background:linear-gradient(130deg,#172d39,#182231);color:#f6faff;direction:rtl;text-align:right;box-sizing:border-box}
+.gb-journey .gbj-title{font-size:14px;font-weight:800;margin:0 0 5px}
+.gb-journey .gbj-desc{font-size:12px;line-height:1.85;color:#c4d4df;margin:0 0 9px}
+.gb-journey .gbj-total{font-size:13px;color:#d5f9dd;line-height:1.8;overflow-wrap:anywhere}
+.gb-journey .gbj-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.gb-journey .gbj-actions button{border:1px solid #9ad6ad;background:#a3ee96;color:#082218;padding:10px 15px;border-radius:11px;min-height:44px;font-weight:800;font-size:13px}
+.gb-journey .gbj-actions button.gbj-secondary{background:transparent;color:#d8f5e3;border-color:#537e70}
+#gbQuickActions button:focus-visible,#gbWalletGuide button:focus-visible,.gb-journey button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:520px){
+ #gbQuickActions{margin:10px 10px 13px;padding:13px 11px;border-radius:17px}
+ #gbQuickActions .gbqa-buttons{gap:7px}
+ #gbQuickActions .gbqa-action{flex-direction:column;gap:4px;min-height:66px;padding:8px 3px;font-size:11.5px}
+ #gbQuickActions .gbqa-heading b{font-size:14px}
+ #gbQuickActions .gbqa-footer{font-size:11px}
+ #gbWalletGuide .gbwg-steps span{font-size:11px;padding:6px 8px}
+}
+@media(prefers-reduced-motion:reduce){#gbQuickActions .gbqa-action{transition:none}}

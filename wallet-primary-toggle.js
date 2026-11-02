@@ -57,7 +57,7 @@
    if(button){
     const active=selected[name]===true;
     button.setAttribute("aria-pressed",String(active));
-    button.textContent=active?"✓ الأساسية":"اجعلها أساسية";
+    button.innerHTML=active?'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> الأساسية':'اجعلها أساسية';
     button.setAttribute("aria-label",(active?"إلغاء الأساسية عن ":"تعيين ")+"محفظة "+names[name]+(active?"":" كأساسية"));
     button.title=active?"محفظة "+names[name]+" هي الأساسية حاليًا — اضغط لإلغاء الاختيار":"اجعل محفظة "+names[name]+" أساسية بدل المحفظة الأخرى";
    }
@@ -71,7 +71,7 @@
    action.setAttribute("aria-label",(active?"إلغاء الأساسية عن ":"تعيين الأساسية في ")+names[wallet]);
    action.title=(active?"إلغاء":"تفعيل")+" الأساسية لمحفظة "+names[wallet];
    const caption=action.querySelector("b");
-   if(caption)caption.textContent=active?"✓ الأساسية":"اجعلها أساسية";
+   if(caption)caption.innerHTML=active?'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> الأساسية':'اجعلها أساسية';
   }
  }
  async function load(){

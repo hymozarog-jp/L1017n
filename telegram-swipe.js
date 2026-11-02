@@ -4,7 +4,7 @@
   'use strict';
   var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   var backSelector = '#robloxGamePage [data-rgp-back],#robuxModal .package-close,#pubgCategoryPage [data-pubg-close]';
-  var blockers = '#robuxPurchaseScreen,#rgpMm2Checkout,#sabCheckout,#pubgAccountCheckoutOverlay,#gbCodePurchaseConfirm';
+  var blockers = '#robuxPurchaseScreen,#rgpMm2Checkout,#sabCheckout,#pubgAccountCheckoutOverlay,#gbCodePurchaseConfirm,#topupDedicatedPage,#topupModal:not(.hidden),#phoneVerifyPage';
   var activeGesture = null;
   var busy = false;
   var bypass = null;
@@ -75,17 +75,7 @@
     page.style.removeProperty('transform');
     tween(page,start,0,200,function(){clean(page);busy=false;});
   }
-  // Animate ordinary 'رجوع' taps too, without modifying their original behavior.
-  document.addEventListener('click',function(event){
-    var button=event.target instanceof Element && event.target.closest(backSelector);
-    if (!button || button===bypass) return;
-    if (busy) { event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();return; }
-    var page=button.closest('#robloxGamePage,#robuxModal,#pubgCategoryPage');
-    if (!page || !visible(page) || !closesPage(page) || reduced()) return;
-    event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
-    exit(page,button,0);
-  },true);
-
+  // Native back buttons run immediately; swipe gestures alone animate navigation.
   function clearGesture() { activeGesture=null; }
   document.addEventListener('touchstart',function(event) {
     if (busy || activeGesture || event.touches.length!==1) return;

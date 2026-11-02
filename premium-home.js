@@ -128,6 +128,7 @@ function mount(){
  drawer.innerHTML='<div class="ph-drawer-sheet" role="dialog" aria-modal="true" aria-label="قائمة المتجر">'+
   '<div class="ph-drawer-top"><strong>L1017N</strong><button type="button" class="ph-drawer-close" aria-label="إغلاق القائمة">×</button></div>'+
   '<button type="button" class="ph-drawer-link" data-view="home">الرئيسية</button>'+
+   '<button type="button" class="ph-drawer-link" data-view="offers">العروض</button>'+
   '<button type="button" class="ph-drawer-link" data-view="store">الألعاب</button>'+
   '<button type="button" class="ph-drawer-link" data-view="wallet">المحفظة</button>'+
   '<button type="button" class="ph-drawer-link" data-view="orders">طلباتي</button>'+

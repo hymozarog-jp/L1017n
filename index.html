@@ -3,34 +3,80 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style id="l1017-entry-splash-style">
-/* First visit splash: only the store name, no images or external dependencies. */
+/* Lightweight, CSS-only animated store entry. Only the brand name is textual. */
 #l1017EntrySplash{
   position:fixed!important;inset:0!important;z-index:2147483647!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;
+  display:grid!important;place-items:center!important;
   width:100%!important;height:100vh!important;height:100dvh!important;
   background:#080f1c!important;color:#f8fbff!important;
   pointer-events:auto!important;overflow:hidden!important;
   opacity:1;visibility:visible;
   transition:opacity .28s ease,visibility .28s ease;
 }
+#l1017EntrySplash .l1017-entry-stage{
+  position:relative;isolation:isolate;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;min-width:min(75vw,290px);padding:32px 20px;
+  animation:l1017-stage-float 2s ease-in-out 0.65s infinite alternate;
+}
+#l1017EntrySplash .l1017-entry-halo{
+  position:absolute;z-index:-1;top:50%;left:50%;
+  width:min(68vw,280px);height:min(68vw,280px);border-radius:50%;
+  background:radial-gradient(circle,rgba(93,157,252,.19) 0%,rgba(80,96,242,.07) 41%,transparent 70%);
+  transform:translate(-50%,-50%) scale(.83);
+  pointer-events:none;
+  animation:l1017-halo-breathe 1.8s ease-in-out infinite alternate;
+}
 #l1017EntrySplash .l1017-entry-name{
-  display:block;direction:ltr;unicode-bidi:isolate;
+  display:block;position:relative;z-index:1;
+  direction:ltr;unicode-bidi:isolate;white-space:nowrap;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size:clamp(42px,12vw,78px);font-weight:850;letter-spacing:1.5px;
-  line-height:1.2;text-align:center;
-  color:#f7fbff;text-shadow:0 0 32px rgba(139,192,255,.16);
-  animation:l1017-entry-reveal .95s cubic-bezier(.2,.72,.2,1) both;
+  font-size:clamp(44px,12vw,80px);font-weight:850;letter-spacing:1.8px;
+  line-height:1.18;text-align:center;
+  color:#f7fbff;
+  text-shadow:0 0 28px rgba(128,181,255,.23);
+  animation:l1017-entry-reveal .72s cubic-bezier(.22,1,.36,1) both;
+}
+#l1017EntrySplash .l1017-entry-track{
+  position:relative;z-index:1;
+  display:block;width:clamp(100px,32vw,170px);height:3px;
+  overflow:hidden;border-radius:100px;
+  background:rgba(147,178,242,.18);
+  animation:l1017-track-reveal .55s ease-out .15s both;
+}
+#l1017EntrySplash .l1017-entry-track::after{
+  content:"";display:block;width:46%;height:100%;border-radius:100px;
+  background:linear-gradient(90deg,#67b9ff,#e0ecff,#9e88ff);
+  box-shadow:0 0 12px #87b9ff;
+  animation:l1017-track-travel 1.05s cubic-bezier(.45,0,.55,1) infinite alternate;
 }
 @keyframes l1017-entry-reveal{
-  from{opacity:.4;transform:translateY(8px) scale(.96)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+  from{opacity:0;transform:translateY(12px) scale(.91);filter:blur(5px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@keyframes l1017-stage-float{
+  from{transform:translateY(0)}
+  to{transform:translateY(-4px)}
+}
+@keyframes l1017-halo-breathe{
+  from{opacity:.55;transform:translate(-50%,-50%) scale(.83)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+}
+@keyframes l1017-track-reveal{
+  from{opacity:0;transform:scaleX(.6)}
+  to{opacity:1;transform:scaleX(1)}
+}
+@keyframes l1017-track-travel{
+  from{transform:translateX(-10%)}
+  to{transform:translateX(129%)}
 }
 #l1017EntrySplash.l1017-entry-done{
   opacity:0!important;visibility:hidden!important;pointer-events:none!important;
 }
 @media(prefers-reduced-motion:reduce){
-  #l1017EntrySplash,#l1017EntrySplash .l1017-entry-name{
-    animation:none!important;transition:none!important;
+  #l1017EntrySplash,#l1017EntrySplash *,
+  #l1017EntrySplash *::before,#l1017EntrySplash *::after{
+    animation:none!important;transition:none!important;filter:none!important;
   }
 }
 </style>
@@ -83,7 +129,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&amp;display=swap">
 </head>
 <body>
-<div id="l1017EntrySplash" role="status" aria-label="جاري فتح L1017n"><span class="l1017-entry-name" aria-hidden="true">L1017n</span></div>
+<div id="l1017EntrySplash" role="status" aria-label="جاري فتح L1017n"><div class="l1017-entry-stage"><span class="l1017-entry-halo" aria-hidden="true"></span><span class="l1017-entry-name" aria-hidden="true">L1017n</span><span class="l1017-entry-track" aria-hidden="true"></span></div></div>
 <script>
 /* Unblock in all cases: the splash never depends on network/API or checkout state. */
 (function(){

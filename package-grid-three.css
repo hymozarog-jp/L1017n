@@ -2,7 +2,7 @@
 html #llLanding .ll-catalog:has(.ll-game-section),
 html #robloxGamePage .rgp-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;align-items:stretch!important}
 html #llLanding .ll-game-section{min-width:0!important}
-html #llLanding .ll-game-section-art{width:100%!important;aspect-ratio:1!important;height:auto!important;border-radius:16px!important;overflow:hidden!important}
+html #llLanding .ll-game-section-art{width:100%!important;aspect-ratio:4/5!important;height:auto!important;border-radius:16px!important;overflow:hidden!important}
 html #llLanding .ll-game-section-art img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;padding:7px!important;box-sizing:border-box!important}
 html #llLanding .ll-game-section-details strong{font-size:clamp(12px,3vw,18px)!important;line-height:1.5!important}
 html #llLanding .ll-game-section-details small{font-size:10px!important;line-height:1.6!important;overflow-wrap:anywhere}

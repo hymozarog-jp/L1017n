@@ -1,0 +1,126 @@
+/* Referral program panel — same indigo/gold design as L1017n leaderboard. */
+#l1017Referrals{
+  direction:rtl;
+  position:relative;max-width:980px;margin:20px auto 25px;
+  padding:clamp(17px,3vw,25px);
+  border:1px solid #b79ede7e;border-radius:22px;
+  background:linear-gradient(122deg,rgba(51,48,90,.92),rgba(32,44,83,.93) 66%,rgba(61,52,105,.92));
+  box-shadow:0 12px 34px #0a15302e,inset 0 1px #ffffff1a;
+  color:#f7f4ff;text-align:right;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif
+}
+#l1017Referrals *{box-sizing:border-box}
+#l1017Referrals .hidden{display:none!important}
+#l1017Referrals .l1017-ref-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:12px}
+#l1017Referrals .l1017-ref-brand{
+  display:grid;place-items:center;flex:none;width:50px;height:50px;
+  border:1px solid #cab0ec88;border-radius:16px;
+  background:linear-gradient(130deg,#8869c7,#554b92);color:#fff
+}
+#l1017Referrals .l1017-ref-brand .l1017-icon{width:25px;height:25px}
+#l1017Referrals .l1017-ref-head small{
+  font:750 10px system-ui,sans-serif;letter-spacing:.75px;color:#b7a6e6
+}
+#l1017Referrals .l1017-ref-head h2{
+  margin:2px 0 4px;font-size:clamp(19px,4vw,25px);font-weight:900;color:#fff;line-height:1.4
+}
+#l1017Referrals .l1017-ref-head p{margin:0;font-size:12px;color:#d4d6e8;line-height:1.85}
+#l1017Referrals .l1017-ref-head p strong{color:#f0cf96}
+#l1017Referrals .l1017-ref-rules{
+  display:flex;gap:7px;align-items:flex-start;
+  border:1px solid #c0abd43b;border-radius:12px;
+  padding:10px 12px;background:#ffffff07;
+  color:#c1c9df;font-size:11px;line-height:1.9;margin-bottom:16px
+}
+#l1017Referrals .l1017-ref-rules .l1017-icon{color:#accdb3;width:16px;height:16px;margin-top:3px}
+#l1017Referrals .l1017-ref-guest{display:grid;gap:10px}
+#l1017Referrals .l1017-ref-guest p{font-size:13px;color:#d1d6e9;margin:0}
+#l1017Referrals button{
+  min-height:41px;padding:9px 13px;border-radius:11px;
+  font-family:inherit;font-weight:800;font-size:12px;cursor:pointer
+}
+#l1017Referrals button:disabled{opacity:.45;cursor:not-allowed}
+#l1017Referrals button:focus-visible,#l1017Referrals input:focus-visible{
+ outline:2px solid #efcc91;outline-offset:3px
+}
+#l1017Referrals .l1017-ref-guest button,
+#l1017Referrals #l1017CreateRefCode,
+#l1017Referrals #l1017ClaimRefSubmit{
+  background:linear-gradient(135deg,#7d62c7,#6552ad);
+  border:1px solid #bb9bea99;color:#fff
+}
+#l1017Referrals .l1017-ref-code{
+  border:1px solid #ab97d356;border-radius:15px;padding:12px;
+  background:#ffffff08;display:grid;gap:10px
+}
+#l1017Referrals .l1017-ref-code label,
+#l1017Referrals #l1017ClaimReferralForm>label{
+  font-size:12px;font-weight:800;color:#e6dcfa
+}
+#l1017Referrals .l1017-ref-code-value{
+  display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+#l1017Referrals .l1017-ref-code-value strong{
+  letter-spacing:1px;font:900 clamp(16px,4vw,22px) system-ui,sans-serif;
+  direction:ltr;overflow-wrap:anywhere;color:#f8dcab
+}
+#l1017Referrals .l1017-ref-code-value button{white-space:nowrap}
+#l1017Referrals .l1017-ref-actions{display:flex;flex-wrap:wrap;gap:8px}
+#l1017Referrals .l1017-ref-actions button{
+  display:inline-flex;gap:6px;align-items:center;justify-content:center;
+  min-width:112px;flex:1 1 120px;
+  background:#584f81aa;border:1px solid #ac9acc80;color:#f0e8fd
+}
+#l1017Referrals .l1017-ref-actions .l1017-icon{width:16px;height:16px}
+#l1017Referrals .l1017-ref-stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0
+}
+#l1017Referrals .l1017-ref-stats>div{
+  padding:11px 8px;border:1px solid #a3a0c547;border-radius:12px;
+  background:#ffffff09;display:grid;gap:5px;text-align:center;min-width:0
+}
+#l1017Referrals .l1017-ref-stats small{font-size:10px;color:#b6bfd7;line-height:1.65}
+#l1017Referrals .l1017-ref-stats strong{font:800 18px 'IBM Plex Sans Arabic',system-ui,sans-serif;color:#f4dfba}
+#l1017Referrals #l1017ClaimReferralForm{
+  margin-top:5px;padding:12px 0 0;border-top:1px solid #ffffff26;
+  display:grid;gap:9px
+}
+#l1017Referrals .l1017-ref-claim-row{display:flex;gap:9px;align-items:stretch}
+#l1017Referrals .l1017-ref-claim-row input{
+  flex:1;min-width:0;min-height:44px;border-radius:10px;
+  border:1px solid #ad9fc88c;background:#1b2342;color:#f7edff;
+  padding:10px 12px;font:800 14px system-ui,sans-serif;letter-spacing:.4px
+}
+#l1017Referrals .l1017-ref-claim-row button{flex:none;white-space:nowrap}
+#l1017Referrals .l1017-ref-claim-help{color:#aeb9d3;font-size:11px;margin:0}
+#l1017Referrals .l1017-ref-monthly{
+  margin:12px 0 0;color:#afb8d1;font-size:11px;line-height:1.8
+}
+#l1017Referrals .l1017-ref-notice{
+  margin:12px 0 0;font-size:12px;color:#aee7c4;line-height:1.8;min-height:0
+}
+#l1017Referrals .l1017-ref-notice[data-error="1"]{color:#ffd0c0}
+#l1017Referrals .l1017-ref-notice:empty{display:none}
+#l1017InviteLanding{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  background:linear-gradient(120deg,#494479,#34385d);
+  border:1px solid #b49bd080;border-radius:14px;
+  padding:12px 14px;color:#e7dffe;margin:12px 0 15px;
+  font:700 12px/1.8 'IBM Plex Sans Arabic',system-ui,sans-serif
+}
+#l1017InviteLanding .l1017-icon{color:#f2d3a4;width:19px;height:19px}
+#l1017InviteLanding span{flex:1;min-width:185px}
+#l1017InviteLanding button{
+  border:1px solid #cbb6ee95;border-radius:9px;background:#7359b7;color:#fff;
+  font:800 12px 'IBM Plex Sans Arabic',system-ui,sans-serif;
+  padding:9px 12px;cursor:pointer
+}
+@media(max-width:600px){
+  #l1017Referrals{margin:13px 5px 22px;padding:15px 12px;border-radius:17px}
+  #l1017Referrals .l1017-ref-brand{width:41px;height:41px;border-radius:12px}
+  #l1017Referrals .l1017-ref-brand .l1017-icon{width:21px;height:21px}
+  #l1017Referrals .l1017-ref-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #l1017Referrals .l1017-ref-claim-row{flex-wrap:wrap}
+  #l1017Referrals .l1017-ref-claim-row button{flex:1;width:100%}
+  #l1017Referrals .l1017-ref-head p{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){#l1017Referrals *,#l1017InviteLanding *{transition:none!important}}

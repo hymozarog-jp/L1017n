@@ -117,8 +117,8 @@
   async function showRealBalance(form,panel,price){
     const line=panel.querySelector('.gbj-total');
     try {
-      if(typeof window.supabaseClient==='undefined')return;
-      const db=window.supabaseClient;
+      if(typeof supabaseClient==='undefined')return;
+      const db=supabaseClient;
       const {data:auth,error:authError}=await db.auth.getUser();
       if(!panel.isConnected)return;
       if(authError||!auth?.user){line.textContent='سجّل الدخول لتعبئة المحفظة والشراء.';return}

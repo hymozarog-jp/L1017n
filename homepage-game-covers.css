@@ -1,0 +1,140 @@
+/* Main category cover cards — source: user-supplied visual reference.
+   Only the three homepage Roblox categories. No checkout, product grid or account styles. */
+body.l1017-live-ui #llLanding .ll-catalog:has(.ll-game-section) {
+  display: grid !important;
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  align-items: start !important;
+  gap: 10px !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section {
+  min-width: 0 !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-link {
+  width: 100% !important;
+  min-width: 0 !important;
+  aspect-ratio: 1 / 1.85 !important;
+  height: auto !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #353a45 !important;
+  border-radius: 20px !important;
+  background: #171e27 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.34) !important;
+  color: #f7f8ff !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  -webkit-tap-highlight-color: transparent;
+}
+body.l1017-live-ui #llLanding .ll-game-section-art {
+  flex: 0 0 69% !important;
+  width: 100% !important;
+  height: 69% !important;
+  min-height: 0 !important;
+  max-height: 69% !important;
+  aspect-ratio: auto !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #111d30 !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-art img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  box-sizing: border-box !important;
+  filter: none !important;
+}
+body.l1017-live-ui #llLanding .ll-game-roblox .ll-game-section-art {
+  background: linear-gradient(165deg,#1b59ff,#1247db) !important;
+}
+body.l1017-live-ui #llLanding .ll-game-roblox .ll-game-section-art img {
+  object-fit: contain !important;
+  padding: 15% !important;
+  filter: drop-shadow(0 6px 13px rgba(4,17,69,.36)) !important;
+}
+body.l1017-live-ui #llLanding .ll-game-mm2 .ll-game-section-art {
+  background: #242035 !important;
+}
+body.l1017-live-ui #llLanding .ll-game-steal-a-brainrot .ll-game-section-art img {
+  object-fit: cover !important;
+  padding: 0 !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-tag {
+  display: none !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-details {
+  flex: 1 1 31% !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 6px 4px 8px !important;
+  border: 0 !important;
+  border-top: 7px solid #ffca00 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(180deg,#222b34,#151b23) !important;
+  box-sizing: border-box !important;
+  color: #fff !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-details strong {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: clamp(11px,2.9vw,18px) !important;
+  line-height: 1.35 !important;
+  font-weight: 850 !important;
+  color: #fff !important;
+  text-align: center !important;
+  overflow-wrap: anywhere !important;
+}
+body.l1017-live-ui #llLanding .ll-game-section-details small {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  font-size: clamp(9px,2.05vw,12px) !important;
+  line-height: 1.4 !important;
+  color: #c3cbd8 !important;
+  text-align: center !important;
+  overflow-wrap: anywhere !important;
+}
+@media(max-width:400px) {
+  body.l1017-live-ui #llLanding .ll-catalog:has(.ll-game-section) {
+    gap: 8px !important;
+  }
+  body.l1017-live-ui #llLanding .ll-game-section-link {
+    border-radius: 16px !important;
+  }
+  body.l1017-live-ui #llLanding .ll-game-section-details {
+    border-top-width: 6px !important;
+    gap: 2px !important;
+    padding: 5px 3px 6px !important;
+  }
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference) {
+  body.l1017-live-ui #llLanding .ll-game-section-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 28px rgba(0,0,0,.4) !important;
+  }
+}

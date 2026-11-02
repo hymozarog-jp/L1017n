@@ -15,7 +15,7 @@
       var on=item===tile;
       item.classList.toggle('selected',on);
       var marker=item.querySelector('.robux-plus');
-      if(marker)marker.textContent=on?'✓':'＋';
+      if(marker)marker.innerHTML=on?'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg>':'＋';
     });
     Promise.resolve().then(async function(){
       if(typeof window.selectPackage!=='function')throw new Error('نموذج الطلب غير جاهز');

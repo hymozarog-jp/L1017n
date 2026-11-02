@@ -1,0 +1,403 @@
+/* L1017N Royal Leaderboard • premium animated podium.
+   Presentation-only override: data, purchases and privacy stay in their existing modules. */
+#leaderboardView{
+  --royal-gold:#ffd978;
+  --royal-violet:#b672ff;
+  --royal-blue:#9aceff;
+  --royal-bronze:#ffae91;
+  --royal-border:#a96dff69;
+  color:#f8f3ff!important;
+}
+#leaderboardView.l1017-rank-ready:not(.hidden){
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;
+  background:
+    radial-gradient(ellipse 62% 33% at 51% 30%,#7a24b441,transparent 75%),
+    radial-gradient(ellipse 45% 30% at 3% 45%,#772eea2a,transparent 72%),
+    radial-gradient(ellipse 46% 27% at 98% 66%,#622bdd2c,transparent 70%),
+    linear-gradient(180deg,#0b0920 0%,#110b25 57%,#080b19 100%)!important;
+  overflow-x:hidden!important;
+  padding-top:max(12px,env(safe-area-inset-top))!important;
+  scroll-behavior:smooth;
+}
+#leaderboardView.l1017-rank-ready:not(.hidden) > *,
+#leaderboardView .lb-podium,
+#leaderboardView .lb-results > *,
+#leaderboardView #leaderboardList > *{
+  box-sizing:border-box;max-width:880px;width:100%;margin-right:auto;margin-left:auto;
+}
+#leaderboardView .l1017-rank-toolbar{
+  order:0!important;max-width:880px!important;
+  border:1px solid #ad68e690!important;
+  border-radius:22px!important;
+  background:linear-gradient(125deg,#201436ee,#101126f2)!important;
+  box-shadow:inset 0 1px #e4a9ff29,0 9px 35px #02020b80,0 0 23px #a15aff16!important;
+}
+#leaderboardView .l1017-rank-toolbar-brand b{
+  color:#ecd2ff!important;text-shadow:0 0 14px #bd80ff66;
+  font-size:clamp(13px,3.7vw,17px)!important;letter-spacing:1px!important
+}
+#leaderboardView .l1017-rank-toolbar-brand small{color:#b3a0d6!important}
+#leaderboardView .l1017-rank-back,
+#leaderboardView .l1017-rank-refresh{
+  border-color:#895da7!important;background:linear-gradient(135deg,#3a2656,#1b1b35)!important;
+  color:#fff3ff!important;box-shadow:inset 0 1px #ffffff1f!important
+}
+#leaderboardView .l1017-rank-back:hover,
+#leaderboardView .l1017-rank-refresh:hover{background:#573277!important}
+#leaderboardView .royal-intro{
+  order:1;position:relative;text-align:center;isolation:isolate;
+  padding:19px 8px 10px;margin:0 auto 0!important;
+}
+#leaderboardView .royal-intro:before{
+  content:"";position:absolute;z-index:-1;left:22%;right:22%;top:35px;height:105px;
+  background:radial-gradient(ellipse,#c477ff80,transparent 68%);
+  filter:blur(22px);pointer-events:none
+}
+#leaderboardView .royal-crown{
+  display:grid;place-items:center;margin:0 auto -2px;
+  width:64px;height:57px;filter:drop-shadow(0 4px 18px #fac66ea0);
+  color:#ffd66f
+}
+#leaderboardView .royal-crown svg{width:100%;height:100%;overflow:visible}
+#leaderboardView .royal-intro h1{
+  color:#fff7ff;font-weight:900;font-size:clamp(25px,5.8vw,41px);
+  margin:0;line-height:1.3;text-shadow:0 0 21px #bd72fb7d
+}
+#leaderboardView .royal-intro p{
+  font-size:clamp(11px,2.4vw,14px);color:#cabce1;margin:5px 0 0
+}
+#leaderboardView .royal-intro .royal-leaves{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+#leaderboardView .royal-intro .royal-leaves:before,
+#leaderboardView .royal-intro .royal-leaves:after{
+  content:"❧";color:#f5c977;display:inline-block;font:26px Georgia,serif;
+  text-shadow:0 0 12px #f5b65b88
+}
+#leaderboardView .royal-intro .royal-leaves:after{transform:scaleX(-1)}
+#leaderboardView > .lb-glass-title,
+#leaderboardView > .lb-section-label{display:none!important}
+#leaderboardView #leaderboardList{display:contents!important}
+#leaderboardView #leaderboardList .lb-results{display:contents!important}
+#leaderboardView #leaderboardList > .lb-empty-message{order:2;max-width:780px}
+#leaderboardView .lb-podium{
+  order:2!important;direction:ltr!important;
+  position:relative;isolation:isolate;display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  align-items:end!important;gap:clamp(6px,1.7vw,13px)!important;
+  padding:90px 12px 67px!important;margin:0 auto 5px!important;
+  min-height:395px!important;max-width:850px!important;overflow:visible;
+}
+#leaderboardView .lb-podium:before{
+  content:"";position:absolute;z-index:-2;inset:-8% -8% -2%;
+  border-radius:50%;pointer-events:none;
+  background:
+    radial-gradient(ellipse 52% 34% at 50% 39%,#ffd08537,transparent 95%),
+    radial-gradient(ellipse 75% 30% at 50% 80%,#b551f54d,transparent 86%);
+}
+#leaderboardView .lb-podium:after{
+  content:"";position:absolute;z-index:-1;
+  left:3%;right:3%;bottom:0;height:69px;
+  border-radius:50% / 42%;
+  border:2px solid #f3a4ffbf;
+  background:
+    radial-gradient(ellipse at 50% 2%,#bd7afc8a,#753badc0 60%,#2c165d 100%);
+  box-shadow:0 9px 0 #30124d,0 13px 1px #ae5bea,0 26px 21px #49166e91,
+    inset 0 5px 15px #f9cbff90,0 0 25px #bd64ff8c;
+}
+#leaderboardView .lb-podium-card{
+  --tone:#be83ff;--tone-shadow:#9f3bff80;--tone-dark:#4c216e;
+  min-width:0!important;
+  position:relative!important;z-index:2;
+  display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;
+  direction:rtl!important;gap:7px!important;
+  min-height:245px!important;
+  padding:29px clamp(5px,1.3vw,12px) 16px!important;
+  border-radius:24px 24px 19px 19px!important;
+  border:1.5px solid var(--tone)!important;
+  background:
+    radial-gradient(ellipse at 50% -21%,var(--tone-shadow),transparent 60%),
+    linear-gradient(151deg,#382354,#18162f 63%,var(--tone-dark))!important;
+  box-shadow:inset 0 1px 1px #fff8,0 0 21px var(--tone-shadow),0 20px 28px #0009!important;
+  transform:translateZ(0);
+}
+#leaderboardView .lb-podium-card:before{
+  content:"♛";display:block;position:absolute;top:-46px;left:0;right:0;
+  text-align:center;font:46px Georgia,serif;color:var(--tone);
+  text-shadow:0 0 10px var(--tone),0 0 27px var(--tone-shadow);
+  transform-origin:center bottom
+}
+#leaderboardView .lb-podium-card:after{
+  content:"";position:absolute;pointer-events:none;z-index:-1;
+  inset:1px;border-radius:inherit;
+  background:linear-gradient(115deg,transparent 25%,#ffffff17 38%,transparent 52%);
+  opacity:.65
+}
+#leaderboardView .lb-podium-card.lb-first{
+  --tone:#ffd46c;--tone-shadow:#ffad446c;--tone-dark:#70401c;
+  min-height:292px!important;padding-top:34px!important;
+  background:radial-gradient(ellipse at 50% -17%,#f1c45a64,transparent 62%),
+    linear-gradient(150deg,#53311e,#2d1d26 62%,#654017)!important;
+  border-width:2px!important;
+  box-shadow:inset 0 1px 2px #fff7ba,0 0 26px #ffc76a7b,0 19px 40px #000a!important;
+  z-index:4
+}
+#leaderboardView .lb-podium-card.lb-second{
+  --tone:#9fcfff;--tone-shadow:#7293ff77;--tone-dark:#252f70;
+  z-index:3
+}
+#leaderboardView .lb-podium-card.lb-third{
+  --tone:#ffc09d;--tone-shadow:#d56a6e6a;--tone-dark:#62304c;
+  z-index:3
+}
+#leaderboardView .lb-podium-avatar{
+  flex:none!important;position:relative!important;
+  display:grid!important;place-items:center!important;
+  width:clamp(48px,9vw,83px)!important;height:clamp(48px,9vw,83px)!important;
+  margin:2px 0 8px!important;border:3px solid var(--tone)!important;
+  border-radius:50%!important;background:#2a244b!important;
+  box-shadow:0 0 0 5px var(--tone-shadow),0 0 22px var(--tone-shadow)!important;
+}
+#leaderboardView .lb-first .lb-podium-avatar{
+  width:clamp(57px,11vw,100px)!important;height:clamp(57px,11vw,100px)!important;
+}
+#leaderboardView .lb-podium-avatar img{
+  max-width:100%;max-height:100%;object-fit:cover;border-radius:50%;
+}
+#leaderboardView .lb-podium-medal{
+  position:absolute!important;z-index:3!important;right:-5px!important;bottom:-11px!important;
+  width:31px!important;height:31px!important;
+  color:#23172a!important;font-size:14px!important;font-weight:900!important;
+  background:var(--tone)!important;border:2px solid #281b32!important;
+  box-shadow:0 2px 11px var(--tone-shadow)!important
+}
+#leaderboardView .lb-podium-name{
+  display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  white-space:normal!important;max-width:100%;min-width:0!important;
+  overflow:hidden!important;text-overflow:ellipsis;
+  font-size:clamp(11px,2.6vw,17px)!important;font-weight:900!important;
+  color:#fff!important;line-height:1.4!important;min-height:2em!important;
+  text-shadow:0 2px 8px #0008
+}
+#leaderboardView .lb-podium-amount{
+  margin:2px 0 0!important;direction:ltr!important;white-space:normal!important;
+  overflow-wrap:anywhere!important;font-variant-numeric:tabular-nums;
+  font-size:clamp(12px,2.7vw,21px)!important;line-height:1.35!important;
+  color:#ffe4af!important;text-shadow:0 0 14px var(--tone-shadow)
+}
+#leaderboardView .lb-podium-card>small{font-size:10px!important;color:#c9b6d8!important}
+#leaderboardView .lb-money-widget{width:100%!important;margin-top:8px!important}
+#leaderboardView .lb-money-action{
+  min-height:47px!important;padding:7px 6px!important;
+  border:1px solid #d7a7ff6c!important;border-radius:13px!important;
+  background:linear-gradient(120deg,#1b1239bd,#301d50aa)!important;
+  box-shadow:inset 0 1px #ffffff16!important;color:#f4e8ff!important
+}
+#leaderboardView .lb-money-label{font-size:clamp(9px,1.3vw,12px)!important;color:#d5bae9!important}
+#leaderboardView .lb-money-percent{
+  font-weight:900!important;color:var(--tone,#ebbcff)!important;
+  font-size:clamp(10px,1.6vw,14px)!important
+}
+#leaderboardView .lb-money-rail{
+  height:10px!important;border-radius:20px!important;
+  background:#140c28!important;border-color:#a17cba75!important;
+  box-shadow:inset 0 2px 5px #0007!important
+}
+#leaderboardView .lb-money-fill{
+  background:linear-gradient(90deg,#8041ee,#d078ff,#f7a1ff)!important;
+  box-shadow:0 0 10px #cc8bffb0!important
+}
+#leaderboardView .lb-first .lb-money-fill{
+  background:linear-gradient(90deg,#e89020,#ffd157,#fff0ad)!important;
+  box-shadow:0 0 10px #ffd87d9c!important
+}
+#leaderboardView .lb-second .lb-money-fill{
+  background:linear-gradient(90deg,#5674fa,#8dc9ff,#d0eeff)!important;
+  box-shadow:0 0 10px #83b8ffab!important
+}
+#leaderboardView .lb-third .lb-money-fill{
+  background:linear-gradient(90deg,#a34c9c,#ed8e92,#ffd0ae)!important
+}
+#leaderboardView .lb-money-details{
+  text-align:right!important;background:#190f30!important;color:#eee2ff!important;
+  border:1px solid #ab79eb78!important;box-shadow:0 7px 18px #05030d66
+}
+#leaderboardView .l1017-rank-mini-heading{
+  order:3!important;align-self:stretch;max-width:880px!important;
+  border-top:1px solid #a46de643!important;
+  padding-top:13px;font-size:15px!important;color:#efddff!important
+}
+#leaderboardView #lbMyRank{
+  order:4!important;max-width:880px!important;
+  background:linear-gradient(130deg,#30204ac9,#18152dbd)!important;
+  border:1px solid #ae7aff8c!important;
+  border-radius:20px!important;
+  box-shadow:inset 0 1px #ffffff2a,0 10px 24px #0004!important;
+  padding:18px!important
+}
+#leaderboardView #lbMyRank.hidden{display:none!important}
+#leaderboardView .lb-self-avatar{border-color:#d2a5ff!important;box-shadow:0 0 13px #aa68ff7c!important}
+#leaderboardView .lb-progress-track span{
+  background:linear-gradient(90deg,#704be6,#bd71f4,#f6d8ff)!important
+}
+#leaderboardView .lb-results>.lb-section-label{
+  order:5!important;margin:13px auto 11px!important;
+  max-width:880px!important;border-top:1px solid #9e62c33a;padding-top:17px!important
+}
+#leaderboardView .lb-other-rows{
+  order:6!important;max-width:880px!important;
+  display:grid!important;gap:9px!important;margin:0 auto 15px!important
+}
+#leaderboardView .lb-other-row{
+  min-height:76px!important;padding:10px 13px!important;gap:10px!important;
+  border:1px solid #a777f277!important;border-radius:17px!important;
+  background:linear-gradient(115deg,#241d40e8,#16192fef)!important;
+  box-shadow:inset 0 1px #edd9ff25,0 5px 18px #0005!important
+}
+#leaderboardView .lb-other-position{
+  display:grid;place-items:center;width:31px;height:31px;min-width:31px;
+  border:1px solid #b789ff7d;border-radius:12px;
+  color:#edd8ff!important;background:#a36eff21;font-size:14px!important
+}
+#leaderboardView .lb-other-avatar{
+  border:2px solid #bca2ff!important;
+  background:#442b73!important;box-shadow:0 0 12px #9752f77a!important
+}
+#leaderboardView .lb-other-info{min-width:0;flex:1}
+#leaderboardView .lb-other-info-top .lb-other-name{
+  color:#f8eeff!important;font-size:clamp(12px,2.6vw,16px)!important
+}
+#leaderboardView .lb-other-info-top .lb-other-amount{
+  color:#ffe0a1!important;font-size:clamp(11px,2.3vw,15px)!important
+}
+#leaderboardView .lb-other-row .lb-money-action{padding:6px 9px!important;min-height:36px!important}
+#leaderboardView .lb-prize{
+  order:9!important;max-width:880px!important;
+  border:1px solid #e3b76f7b!important;border-radius:17px!important;
+  background:linear-gradient(110deg,#4d285757,#221428af)!important;
+  color:#f7e2b9!important
+}
+#leaderboardView .leaderboard-privacy{order:11!important;max-width:880px!important}
+#leaderboardView .l1017-rank-settings-link{
+  order:10!important;max-width:880px!important;
+  color:#f0daff!important;background:#5b338747!important;
+  border-color:#ac79f078!important;border-radius:15px!important
+}
+#leaderboardView .royal-stats{
+  order:8!important;max-width:880px!important;width:100%;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;
+  margin:10px auto 8px!important
+}
+#leaderboardView .royal-stat{
+  min-width:0;display:grid;justify-items:center;gap:4px;
+  padding:12px 7px;border-radius:15px;
+  border:1px solid #ba79ff7c;background:linear-gradient(135deg,#302049b3,#19162bdc);
+  box-shadow:inset 0 1px #fff2,0 6px 16px #0004;
+  text-align:center
+}
+#leaderboardView .royal-stat-icon{font-size:20px;line-height:1.2}
+#leaderboardView .royal-stat strong{
+  color:#fbe9ff;font-size:clamp(13px,3vw,20px);
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere
+}
+#leaderboardView .royal-stat small{
+  font-size:clamp(9px,2.2vw,12px);color:#b9a6d1;line-height:1.45
+}
+#leaderboardView .lb-results > .lb-empty-message{
+  order:7!important;max-width:880px!important;margin:10px auto!important
+}
+/* Smooth staged animations and subtle light sweeps; no JS animation loops. */
+@media(prefers-reduced-motion:no-preference){
+ #leaderboardView.l1017-rank-ready:not(.hidden) .royal-crown{
+  animation:royalCrownHover 4.4s ease-in-out infinite
+ }
+ #leaderboardView.l1017-rank-ready:not(.hidden) .royal-intro{
+  animation:royalReveal .5s ease-out both
+ }
+ #leaderboardView .lb-podium-card.lb-first{
+  animation:royalCardRise .72s cubic-bezier(.2,.7,.2,1) .05s both,royalFirstBreath 4.2s ease-in-out .9s infinite!important
+ }
+ #leaderboardView .lb-podium-card.lb-second{
+  animation:royalCardRise .64s cubic-bezier(.2,.7,.2,1) .18s both!important
+ }
+ #leaderboardView .lb-podium-card.lb-third{
+  animation:royalCardRise .64s cubic-bezier(.2,.7,.2,1) .3s both!important
+ }
+ #leaderboardView .lb-podium-card:before{
+  animation:royalCrownHover 4.2s ease-in-out infinite
+ }
+ #leaderboardView .lb-money-fill:after{
+  animation:lbMoneyShimmer 3.8s ease-in-out infinite!important
+ }
+ #leaderboardView .lb-other-row{
+  animation:royalReveal .45s ease both;
+  animation-delay:calc(min(var(--royal-index,0),12) * 55ms)
+ }
+ #leaderboardView .royal-stat{animation:royalReveal .45s ease both}
+ #leaderboardView .royal-stat:nth-child(2){animation-delay:.09s}
+ #leaderboardView .royal-stat:nth-child(3){animation-delay:.16s}
+ #leaderboardView .l1017-rank-refresh svg{transition:transform .4s ease}
+ #leaderboardView .l1017-rank-refresh:hover svg{transform:rotate(35deg)}
+ @keyframes royalReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+ @keyframes royalCardRise{from{opacity:0;transform:translateY(35px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+ @keyframes royalCrownHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+ @keyframes royalFirstBreath{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14)}}
+}
+@media(min-width:700px){
+ #leaderboardView .lb-podium{min-height:505px!important;padding-top:110px!important;padding-bottom:84px!important}
+ #leaderboardView .lb-podium-card{min-height:320px!important}
+ #leaderboardView .lb-podium-card.lb-first{min-height:370px!important}
+ #leaderboardView .lb-podium:after{height:88px}
+ #leaderboardView .royal-intro{padding-top:27px}
+}
+@media(max-width:520px){
+ #leaderboardView.l1017-rank-ready:not(.hidden){
+  padding-left:10px!important;padding-right:10px!important
+ }
+ #leaderboardView .royal-intro{padding:11px 0 0!important}
+ #leaderboardView .royal-crown{width:50px;height:45px}
+ #leaderboardView .royal-intro h1{font-size:25px}
+ #leaderboardView .lb-podium{
+  min-height:338px!important;padding:65px 3px 50px!important;
+  gap:6px!important;margin-bottom:5px!important
+ }
+ #leaderboardView .lb-podium-card{
+  min-height:212px!important;border-radius:18px!important;
+  padding:25px 5px 10px!important;gap:5px!important
+ }
+ #leaderboardView .lb-podium-card.lb-first{min-height:256px!important;padding-top:29px!important}
+ #leaderboardView .lb-podium-card:before{font-size:35px!important;top:-34px!important}
+ #leaderboardView .lb-podium:after{height:50px}
+ #leaderboardView .lb-podium-avatar{width:52px!important;height:52px!important}
+ #leaderboardView .lb-first .lb-podium-avatar{width:60px!important;height:60px!important}
+ #leaderboardView .lb-podium-name{font-size:11px!important}
+ #leaderboardView .lb-podium-amount{font-size:12px!important}
+ #leaderboardView .lb-podium-card>small{font-size:9px!important}
+ #leaderboardView .lb-money-label{font-size:9px!important;white-space:normal!important}
+ #leaderboardView .lb-money-percent{font-size:10px!important}
+ #leaderboardView .lb-money-action{padding:5px 4px!important;border-radius:9px!important}
+ #leaderboardView .lb-money-rail{height:8px!important}
+ #leaderboardView .lb-other-row{padding:9px!important;gap:8px!important}
+ #leaderboardView .lb-other-position{width:28px;min-width:28px;height:28px}
+ #leaderboardView .lb-other-avatar{height:35px!important;width:35px!important}
+ #leaderboardView .lb-other-info-top{flex-wrap:wrap!important}
+ #leaderboardView .royal-stat{padding:10px 4px}
+}
+@media(max-width:355px){
+ #leaderboardView .lb-podium-card{padding-inline:3px!important}
+ #leaderboardView .lb-podium-name{font-size:10px!important}
+ #leaderboardView .lb-podium-amount{font-size:10.5px!important}
+ #leaderboardView .lb-money-label{font-size:8px!important}
+ #leaderboardView .lb-money-percent{font-size:9px!important}
+ #leaderboardView .royal-stat strong{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #leaderboardView .royal-crown,
+ #leaderboardView .lb-podium-card,
+ #leaderboardView .lb-podium-card:before,
+ #leaderboardView .lb-money-fill:after,
+ #leaderboardView .royal-stat,
+ #leaderboardView .lb-other-row{animation:none!important;transition:none!important}
+}

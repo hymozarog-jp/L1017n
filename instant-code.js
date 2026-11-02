@@ -27,7 +27,7 @@
     const box = document.createElement('div');
     box.style.cssText='width:min(96vw,480px);border-radius:22px;background:#102020;color:#fff;padding:25px;box-shadow:0 18px 70px #0009;text-align:center';
     const title=document.createElement('h2');
-    title.textContent='✅ تم الشراء واستلام الكود';
+    title.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check-circle"></use></svg> تم الشراء واستلام الكود';
     const product=document.createElement('p');
     product.textContent=name;
     const help=document.createElement('p');
@@ -41,7 +41,7 @@
     copy.className='btn btn-primary';
     copy.style.marginInlineEnd='8px';
     copy.onclick=async()=>{
-      try{await navigator.clipboard.writeText(code);copy.textContent='تم النسخ ✓';}
+      try{await navigator.clipboard.writeText(code);copy.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> تم النسخ';}
       catch(_){copy.textContent='حدد الكود بالأعلى وانسخه';}
     };
     const close=document.createElement('button');

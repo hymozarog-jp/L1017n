@@ -250,7 +250,7 @@ async function renderOrders(){
 function mountRobuxQuantityCalculator(modal,robux){
  // The customer can enter ANY integer Robux quantity, not only catalog packages.
  // The server computes and validates the authoritative price and checks inventory.
- const offers=robux.map(p=>({id:String(p.id),amount:Number(p.amount),price:Number(p.price)}))
+ const offers=products.filter(p=>String(p.game||'').toLowerCase()==='roblox' && !String(p.product_key||'').startsWith('robux-promo-')).map(p=>({id:String(p.id),amount:Number(p.amount),price:Number(p.price)}))
    .filter(p=>Number.isSafeInteger(p.amount)&&p.amount>0&&Number.isFinite(p.price)&&p.price>0)
    .sort((a,b)=>a.amount-b.amount||a.price-b.price);
  const anchor=modal.querySelector('.robux-reference-section');

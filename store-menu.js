@@ -16,6 +16,10 @@
     if(key==='mm2-elderwood-blade')return mm2ElderwoodBladeImage;
     return '';
   }
+function deliveryBlock(game){
+    var label=window.L1017nDeliveryPolicy?.label(game)||'وقت التسليم: لم تُحدَّد مدة ثابتة حاليًا. التنفيذ يدوي بعد مراجعة الطلب، وليس فوريًا.';
+    return '<div class="l1017-delivery-time" role="note"><svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-clock"></use></svg><span>'+escapeHtml(label)+'</span></div>';
+  }
   var styleId='robloxGamePageStyles';
 
   function addStyles(){
@@ -221,7 +225,7 @@
           (available?' data-mm2-id="'+escapeHtml(x.id)+'"':' disabled aria-disabled="true"')+'>'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
           '<span class="mm2-price">'+Number(x.price||0).toFixed(2)+' د.ل</span>'+
-          '<small class="mm2-delivery">'+(available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">فتح القائمة ←</span>':'')+'</button>';
+          '<small class="mm2-delivery">'+(available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?deliveryBlock('mm2'):'')+(available?'<span class="gb-card-open">فتح القائمة ←</span>':'')+'</button>';
       }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;
@@ -242,7 +246,7 @@
       '<h2 style="margin:14px 0 7px">'+escapeHtml(product.name)+'</h2>'+
       '<p style="color:#92e8a9;font-size:22px;font-weight:800;margin:0 0 12px">'+Number(product.price).toFixed(2)+' د.ل</p>'+
       '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox. بعد إتمام الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام السلاح داخل MM2.</p>'+
-      '<form><label for="mm2RobloxName">اسم مستخدم Roblox</label>'+
+      deliveryBlock('mm2')+'<form><label for="mm2RobloxName">اسم مستخدم Roblox</label>'+
       '<input id="mm2RobloxName" type="text" pattern="[A-Za-z0-9_]{3,20}" minlength="3" maxlength="20" autocomplete="off" required placeholder="Roblox username">'+
       '<div class="mm2-actions"><button type="button" data-mm2-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'+
       '<div class="mm2-state" role="status" aria-live="polite"></div></form></div>';

@@ -13,6 +13,7 @@
     chevron: '<path d="m14 6-6 6 6 6"/>',
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>'
   };
+  ICONS.gift = '<path d="M3 10h18v11H3zM2 6h20v4H2zM12 6v15M12 6c-2.4-4-6.5-5.2-7.5-2.2C3.6 6 7 7 12 6Zm0 0c2.4-4 6.5-5.2 7.5-2.2C20.4 6 17 7 12 6Z"/>';
   const SVG = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
   const GAME_META = {
     roblox: {name:"Robux",tag:"روبوكس",color:"purple",art:"R"},
@@ -245,6 +246,7 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
+      ["offers", "العروض", "gift"],
       ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],

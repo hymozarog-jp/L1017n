@@ -184,18 +184,13 @@
     if(!grid)return;
     const section=document.createElement("section");
     section.className="sab-inner";
-    section.innerHTML='<div class="sab-nav">'
-      +'<a href="https://www.roblox.com/games/109983668079237/Steal-a-Brainrot" target="_blank" rel="noopener noreferrer" class="sab-original-link">الماب الأصلي في Roblox</a></div>'
-      +'<div class="sab-hero"><div class="sab-hero-copy"><span>ROBLOX · L1017N</span>'
-      +'<h2>ماب السرقة</h2><p>STEAL A BRAINROT</p><small>اختر الشخصية اللي تبيها وشوف السعر والتوفر.</small></div>'
-      +'<img src="'+escapeHtml(officialIcon)+'" alt="صورة ماب Steal a Brainrot الأصلي في Roblox" data-steal-official-icon loading="lazy"></div>'
-      +'<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>03 عناصر</small></div>'
+    // Open directly to the items for sale: omit the original-game link and oversized hero.
+    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>03 عناصر</small></div>'
       +'<div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
     if(typeof window.setRobloxInnerHeader==="function"){
       window.setRobloxInnerHeader(root,"ماب السرقة","brainrot");
     }
-    applyOfficialImages(section);
     renderItems(section,[]);
     loadItems(section).catch(()=>{
       if(section.isConnected)renderItems(section,[]);

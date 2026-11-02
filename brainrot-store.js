@@ -7,7 +7,7 @@
   const GAME_ID = "7709344486";
   const API = "https://thumbnails.roblox.com/v1/games/icons?universeIds="+GAME_ID+"&size=512x512&format=Png&isCircular=false";
   // A previously published image on Roblox's official thumbnail CDN.
-  const OFFICIAL_FALLBACK = "game-covers/steal-a-brainrot-original.png";
+  const OFFICIAL_FALLBACK = "game-covers/official/mobile/brainrot.webp?v=official-art-20261102";
   const ART_FALLBACK = "game-covers/roblox.svg";
   const ITEMS = [
     { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },

@@ -1,0 +1,28 @@
+/* MM2: restore the original Roblox page and weapon-art backgrounds.
+   This is a visual-only fix. No order, quantity, price or purchase logic. */
+#robloxGamePage.rgp-mm2-page{
+  background:radial-gradient(ellipse at 70% 0%,#192c58 0%,#080d1e 45%,#050913 100%)!important;
+  background-color:#101a30!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art{
+  background:radial-gradient(ellipse at 50% 35%,#484a78 0%,#283355 53%,#1a2740 100%)!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-package .mm2-item-art img{
+  background:transparent!important;
+  mix-blend-mode:normal!important;
+}
+#rgpMm2Checkout:not(.gb-package-dialog){
+  background:rgba(18,29,54,.7)!important;
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+#rgpMm2Checkout.gb-package-dialog{
+  background:radial-gradient(ellipse at 70% 0%,#192c58 0%,#080d1e 45%,#050913 100%)!important;
+  background-color:#101a30!important;
+}
+#rgpMm2Checkout .mm2-checkout-box>img{
+  background:radial-gradient(ellipse at 50% 35%,#484a78 0%,#283355 53%,#1a2740 100%)!important;
+  object-fit:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+}

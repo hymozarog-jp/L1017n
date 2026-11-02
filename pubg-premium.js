@@ -180,7 +180,7 @@
         });
         if(error)throw error;
         if(!order?.id)throw new Error("لم نستلم رقم الطلب من المتجر.");
-        status.textContent="✅ تم دفع الطلب بنجاح. شحن الشدات بانتظار تنفيذ الإدارة. تابع الحالة من طلباتي.";
+        status.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check-circle"></use></svg> تم دفع الطلب بنجاح. شحن الشدات بانتظار تنفيذ الإدارة. تابع الحالة من طلباتي.';
         form.querySelectorAll("input").forEach(el=>el.disabled=true);
         ordersButton.hidden=false;
         submit.textContent="تم إنشاء الطلب";

@@ -1,0 +1,68 @@
+/* Telegram-like navigation polish for L1017n. Presentation only. */
+:root {
+  --tg-motion-ease: cubic-bezier(.22, 1, .36, 1);
+}
+html[data-tg-direction="forward"] { --tg-enter-x: -30px; --tg-exit-x: 18px; }
+html[data-tg-direction="back"] { --tg-enter-x: 30px; --tg-exit-x: -18px; }
+@keyframes tg-screen-in {
+  from { opacity: .45; transform: translate3d(var(--tg-enter-x, -30px), 0, 0) scale(.988); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes tg-screen-out {
+  from { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+  to { opacity: .65; transform: translate3d(var(--tg-exit-x, 18px),0,0) scale(.993); }
+}
+@supports (view-transition-name: tg-app-surface) {
+  #app { view-transition-name: tg-app-surface; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  ::view-transition-old(tg-app-surface) {
+    animation: tg-screen-out 200ms cubic-bezier(.4,0,.7,1) both;
+    transform-origin: 50% 0;
+  }
+  ::view-transition-new(tg-app-surface) {
+    animation: tg-screen-in 330ms var(--tg-motion-ease) both;
+    transform-origin: 50% 0;
+  }
+  /* Prevent legacy entrance animations from being captured mid-frame. */
+  html.tg-transitioning #app > section:not(.hidden) {
+    animation: none !important;
+  }
+}
+@keyframes tg-overlay-rise {
+  from { opacity: .4; transform: translate3d(0,25px,0) scale(.985); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+#topupDedicatedPage, #robuxPurchaseScreen {
+  animation: tg-overlay-rise 320ms var(--tg-motion-ease) both;
+}
+/* Tactile touch feedback on navigation and purchasing controls. */
+.tg-tap-wave {
+  position: absolute;
+  display: block;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: rgba(208, 255, 195, .25);
+  transform: scale(0);
+  animation: tg-wave 450ms ease-out forwards;
+}
+@keyframes tg-wave {
+  0% { opacity: 1; transform: scale(0); }
+  70% { opacity: .5; transform: scale(var(--tg-wave-scale, 13)); }
+  100% { opacity: 0; transform: scale(var(--tg-wave-scale, 13)); }
+}
+@media (hover: hover) {
+  .mobile-nav button:hover, .desktop-nav [data-view]:hover {
+    filter: brightness(1.1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(tg-app-surface), ::view-transition-new(tg-app-surface) {
+    animation: none !important;
+  }
+  #topupDedicatedPage, #robuxPurchaseScreen { animation: none !important; }
+  .tg-tap-wave { display: none !important; }
+}

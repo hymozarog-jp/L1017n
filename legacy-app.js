@@ -255,7 +255,7 @@ async function renderOrders(){
    const mini=document.createElement('div');mini.className='orders-mini-progress';
    mini.setAttribute('aria-hidden','true');
    mini.innerHTML=Array.from({length:5},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
-   card.appendChild(mini,details);
+   card.append(mini,details);
  });
  root.dataset.ordersRendered='1';
  if(!orders.length){

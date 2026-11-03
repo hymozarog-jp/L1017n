@@ -8,9 +8,11 @@
   const q=s=>document.querySelector(s);
   let loading=false,session=null,code='',initAttempts=0,disposed=false;
   const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-'+name+'"></use></svg>';
+  // Every qualifying first purchase pays 1 LYD exactly once. These are
+  // cumulative reward totals, NOT extra bonuses for completing a milestone.
   const TASK_TARGETS=Object.freeze([1,5,10]);
   const TASK_NAMES=Object.freeze(['ادعُ صديقًا واحدًا','ادعُ 5 أصدقاء','ادعُ 10 أصدقاء']);
-  const TASK_LABELS=Object.freeze(['البداية','مرحلة الأصدقاء','سفير المتجر']);
+  const TASK_LABELS=Object.freeze(['الخطوة الأولى','الخطوة الثانية','الخطوة الثالثة']);
   function renderReferralTasks(rewarded){
     const root=q('#l1017ReferralTasksList');
     if(!root)return;
@@ -18,22 +20,43 @@
     let activeStage=TASK_TARGETS.findIndex(target=>done<target);
     if(activeStage<0)activeStage=TASK_TARGETS.length;
     root.innerHTML=TASK_TARGETS.map((target,index)=>{
-      const completed=done>=target,active=index===activeStage,progress=Math.min(done,target);
-      const label=completed?'مكتملة':active?'المهمة الحالية':'مقفلة';
-      const icon=completed?'check-circle':active?'gift':'lock';
-      const width=Math.min(100,Math.round(progress/target*100));
-      return '<article class="l1017-ref-task '+(completed?'is-done':active?'is-active':'is-locked')+'" aria-label="'+TASK_NAMES[index]+' — '+label+'">'
-        +'<div class="l1017-ref-task-line"><div class="l1017-ref-task-mark">'+uiIcon(icon)+'</div>'
-        +'<div class="l1017-ref-task-main"><small>المستوى '+(index+1)+' · '+TASK_LABELS[index]+'</small>'
-        +'<strong>'+TASK_NAMES[index]+'</strong><span>عدد الدعوات المؤهلة: '+progress+' من '+target+'</span></div>'
-        +'<span class="l1017-ref-task-state">'+label+'</span></div>'
-        +'<div class="l1017-ref-task-track" role="progressbar" aria-valuemin="0" aria-valuemax="'+target+'" aria-valuenow="'+progress+'" aria-label="تقدم مهمة '+TASK_NAMES[index]+'"><span style="width:'+width+'%"></span></div>'
+      const completed=done>=target;
+      const active=index===activeStage;
+      const progress=Math.min(done,target);
+      const remaining=Math.max(0,target-done);
+      const state=completed?'مكتملة':active?'المهمة الحالية':'المهمة القادمة';
+      const taskClass=completed?'is-done':active?'is-active':'is-locked';
+      const marker=completed?'check-circle':active?'gift':'lock';
+      const percent=Math.round(progress/target*100);
+      const detail=completed
+        ?'حصلت على مكافآت '+target+' دعوات مؤهلة'
+        :active?'باقي '+remaining+' '+(remaining===1?'صديق مؤهّل':'أصدقاء مؤهّلين')+' لإكمال المرحلة'
+          :'تُفتح بعد إكمال المرحلة السابقة';
+      return '<article class="l1017-ref-task '+taskClass+'" aria-label="'+TASK_NAMES[index]+' — '+state+' — إجمالي المكافأة '+target+' دينار ليبي">'
+        +'<div class="l1017-ref-task-top">'
+          +'<span class="l1017-ref-task-mark">'+uiIcon(marker)+'</span>'
+          +'<div class="l1017-ref-task-main"><small>المهمة '+(index+1)+' من 3 · '+TASK_LABELS[index]+'</small>'
+          +'<strong>'+TASK_NAMES[index]+'</strong></div>'
+          +'<div class="l1017-ref-task-reward"><small>إجمالي المكافأة</small><strong>'+target+' <span>د.ل</span></strong></div>'
+        +'</div>'
+        +'<div class="l1017-ref-task-details"><span class="l1017-ref-task-state">'+state+'</span>'
+        +'<span class="l1017-ref-task-count">التقدم <b dir="ltr">'+progress+' / '+target+'</b></span></div>'
+        +'<div class="l1017-ref-task-track" role="progressbar" aria-valuemin="0" aria-valuemax="'+target+'" aria-valuenow="'+progress+'" aria-label="تقدم مهمة '+TASK_NAMES[index]+'"><span style="width:'+percent+'%"></span></div>'
+        +'<p class="l1017-ref-task-detail">'+detail+'</p>'
         +'</article>';
     }).join('');
+    const finished=TASK_TARGETS.filter(target=>done>=target).length;
     const total=q('#l1017TasksCompleted');
-    if(total)total.textContent=TASK_TARGETS.filter(target=>done>=target).length+' من 3 مكتملة';
+    if(total)total.textContent=finished+' / 3 مهام مكتملة';
     const headline=q('#l1017TasksHeadline');
-    if(headline)headline.textContent=activeStage===3?'أكملت جميع مستويات الدعوات!':'المستوى الحالي: '+TASK_NAMES[activeStage];
+    if(headline)headline.textContent=activeStage===TASK_TARGETS.length
+      ?'مبروك! أنهيت مستويات دعوة الأصدقاء'
+      :'المهمة الحالية: '+TASK_NAMES[activeStage];
+    const overall=q('#l1017RefOverallCount');
+    if(overall)overall.textContent=Math.min(done,10)+' / 10';
+    const summary=q('#l1017RefOverviewStatus');
+    if(summary)summary.textContent=done>=10?'أنهيت المراحل الثلاث':
+      'تبقّى '+Math.max(0,10-done)+' '+(10-done===1?'دعوة مؤهلة':'دعوات مؤهلة')+' للوصول للمستوى الأخير';
   }
   function getDb(){return typeof supabaseClient==='undefined'?null:supabaseClient}
   function uiStatus(message,error){
@@ -58,12 +81,15 @@
     node.setAttribute('aria-label','دعوة صديق ومكافأة المحفظة');
     node.innerHTML='<div class="l1017-ref-head"><span class="l1017-ref-brand">'+uiIcon('gift')+'</span>'
       +'<div><small>INVITE & EARN / L1017n</small><h2>ادعُ صديقك واربح</h2><p>خذ <strong>1 د.ل في محفظتك</strong> بعد إكمال أول طلب لصديقك بقيمة 15 د.ل أو أكثر.</p></div></div>'
-      +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'الهاتف الموثّق مطلوب للطرفين · لا مكافأة لمجرد التسجيل · حتى 10 مكافآت شهريًا</div>'
+      +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'تُحسب الدعوة بعد توثيق الهاتف وإكمال أول طلب مؤهل بقيمة 15 د.ل أو أكثر · حتى 10 مكافآت شهريًا</div>'
+      +'<div class="l1017-ref-earn-hero"><div><small>هدية كل صديق مؤهل</small><strong>1 <span>د.ل</span></strong></div>'
+      +'<div class="l1017-ref-earn-hero-side"><small>مجموع المكافآت عند دعوة 10 أصدقاء</small><strong>10 د.ل</strong><span>تُجمع تدريجيًا، دون مكافأة إضافية للمستوى</span></div></div>'
       +'<div class="l1017-ref-tasks" aria-label="مهام دعوة الأصدقاء">'
-      +'<div class="l1017-ref-tasks-heading"><div><small>مراحل الدعوات</small><h3>مهامك بالترتيب</h3><p id="l1017TasksHeadline">ابدأ بدعوة صديق واحد</p></div>'
-      +'<span id="l1017TasksCompleted">0 من 3 مكتملة</span></div>'
+      +'<div class="l1017-ref-tasks-heading"><div><small>MISSIONS · 01 / 03</small><h3>مهام الدعوات</h3><p id="l1017TasksHeadline">المهمة الحالية: ادعُ صديقًا واحدًا</p></div>'
+      +'<span id="l1017TasksCompleted">0 / 3 مهام مكتملة</span></div>'
+      +'<div class="l1017-ref-overall"><span>تقدمك نحو 10 دعوات</span><strong id="l1017RefOverallCount" dir="ltr">0 / 10</strong><small id="l1017RefOverviewStatus">تبقّى 10 دعوات مؤهلة للوصول للمستوى الأخير</small></div>'
       +'<div id="l1017ReferralTasksList" class="l1017-ref-tasks-list" aria-live="polite"></div>'
-      +'<p class="l1017-ref-tasks-disclaimer">تُحتسب الدعوة بعد اكتمال أول طلب مؤهّل للصديق. المكافأة الأساسية 1 د.ل لكل دعوة، ولا توجد هدية إضافية عند إنهاء المستوى.</p></div>'
+      +'<p class="l1017-ref-tasks-disclaimer">'+uiIcon('shield-check')+' المبالغ الظاهرة هي <strong>إجمالي</strong> المكافآت عند الوصول لكل مستوى، وليست جوائز إضافية. مكافأة 1 د.ل تُضاف للمحفظة عند اكتمال طلب كل صديق مؤهل.</p></div>'
       +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتأخذ كود دعوة خاص بك وتتابع أصدقاءك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
       +'<div id="l1017ReferralAccount" class="hidden">'
       +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود دعوتك</label>'

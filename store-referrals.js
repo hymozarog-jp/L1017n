@@ -58,7 +58,14 @@
     if(!holder)return;
     const completed=Math.min(10,Math.max(0,Math.floor(Number(monthlyCount)||0)));
     if(summary)summary.textContent=completed+' / 10 دعوات هذا الشهر';
-    const targets=[1,5,10];
+    const progress=q('#l1017RefMissionBar');
+    if(progress){
+      progress.style.width=(completed*10)+'%';
+      progress.parentElement?.setAttribute('aria-valuenow',String(completed));
+    }
+    // Additional milestones are previews of cumulative referral earnings,
+    // not extra prizes. Server credit remains 1 LYD per confirmed sign-in.
+    const targets=[1,2,3,4,5,7,10];
     holder.innerHTML=targets.map(target=>{
       const done=completed>=target;
       const active=!done&&(target===targets.find(x=>completed<x));
@@ -107,6 +114,8 @@
         +'</div>'
         +'<section class="l1017-ref-compact-missions" aria-labelledby="l1017RefCompactHeading">'
           +'<div class="l1017-ref-compact-heading"><h3 id="l1017RefCompactHeading">مهام الدعوات</h3><small id="l1017RefCompactProgress">0 / 10 دعوات هذا الشهر</small></div>'
+          +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
+          +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="تقدم مهام الدعوات هذا الشهر" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017RefMissionBar"></span></div>'
           +'<div class="l1017-ref-compact-list" id="l1017RefCompactList" aria-live="polite"></div>'
           +'<p class="l1017-ref-compact-note">المبالغ إجمالي أرباح الدعوات في الشهر، وليست جوائز إضافية.</p>'
         +'</section>'

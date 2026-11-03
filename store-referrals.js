@@ -23,7 +23,7 @@
     try{const saved=sessionStorage.getItem(REF_STORAGE)||'';return isCode(saved)?saved:''}catch(_){return ''}
   }
   function build(){
-    const host=q('#leaderboardView');
+    const host=q('#referralsView');
     if(!host||q('#l1017Referrals'))return;
     const node=document.createElement('section');
     node.id='l1017Referrals';
@@ -45,8 +45,7 @@
       +'<p class="l1017-ref-claim-help" id="l1017MyClaimNotice"></p></form>'
       +'<p class="l1017-ref-monthly" id="l1017RefMonthly"></p></div>'
       +'<p class="l1017-ref-notice" id="l1017ReferralStatus" role="status" aria-live="polite"></p>';
-    const anchor=q('#lbMyRank');
-    if(anchor)anchor.insertAdjacentElement('afterend',node);else host.prepend(node);
+    host.appendChild(node);
     q('#l1017ReferredCode').value=copyReferralFromQuery();
     q('#l1017RefLogin')?.addEventListener('click',()=>{
       if(typeof window.switchView==='function')window.switchView('account');
@@ -58,7 +57,7 @@
     q('#l1017ShareRef')?.addEventListener('click',()=>void share());
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
     document.addEventListener('click',event=>{
-      if(event.target.closest('[data-view="leaderboard"],[data-ll-nav="leaderboard"],#l1017ReferralRefresh'))setTimeout(()=>void load(),130);
+      if(event.target.closest('[data-view="referrals"],#l1017ReferralRefresh'))setTimeout(()=>void load(),130);
     });
     const db=getDb();
     if(db)bindAuth(db);
@@ -78,8 +77,8 @@
     banner.className='l1017-invite-landing';
     banner.innerHTML=uiIcon('gift')+'<span>وصلك كود دعوة! وثّق رقم هاتفك وفعّله قبل أول عملية شراء.</span><button type="button">فتح الدعوة</button>';
     banner.querySelector('button').addEventListener('click',()=>{
-      const nav=q('#llBottomNav [data-ll-nav="leaderboard"]')||q('.mobile-nav [data-view="leaderboard"]');
-      if(nav)nav.click();else if(typeof window.switchView==='function')window.switchView('leaderboard');
+      const nav=q('[data-view="referrals"]');
+      if(nav)nav.click();else if(typeof window.switchView==='function')window.switchView('referrals');
       setTimeout(()=>q('#l1017Referrals')?.scrollIntoView({behavior:'smooth',block:'start'}),200);
     });
     host.prepend(banner);

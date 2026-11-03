@@ -140,8 +140,8 @@ async function renderOrders(){
  }
 
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...(tr.data||[]).map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
- const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||x.status==='approved'?'completed':'pending';
- const status=x=>x.status==='approved'?'تم القبول':group(x)==='completed'?'تم التنفيذ':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
+ const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||(x.kind==='topup'&&x.status==='approved')?'completed':'pending';
+ const status=x=>x.status==='approved'?'تم القبول':x.status==='processing'?'قيد المعالجة':x.status==='fulfilling'?'قيد التنفيذ':group(x)==='completed'?'تم التنفيذ':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');
  // Show static matching artwork; financial states, totals and transactions are unchanged.
  const orderArt=x=>{
@@ -155,13 +155,14 @@ async function renderOrders(){
  const date=x=>new Date(x.created_at).toLocaleDateString('en-GB',{timeZone:'Africa/Tripoli'});
  const orderTime=x=>new Date(x.created_at).toLocaleTimeString('ar-LY',{timeZone:'Africa/Tripoli',hour:'2-digit',minute:'2-digit'});
  const stageFor=x=>{
-   if(group(x)==='completed')return 4;
-   if(group(x)==='refunded')return 0;
+   if(x.kind==='topup')return ['approved','rejected'].includes(x.status)?1:0;
+   if(x.status==='completed')return 4;
+   if(x.status==='approved')return 1;
    if(['processing','in_processing'].includes(x.status))return 2;
    if(['fulfilling','in_progress'].includes(x.status))return 3;
-   return 1;
+   return 0;
  };
- const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مسترجعة</button></div>';
+ const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مرفوضة/مسترجعة</button></div>';
  const manualOrders=new Map();
  const cards=orders.map(x=>{
    const g=group(x),title=escapeHtml(label(x)),
@@ -208,16 +209,21 @@ async function renderOrders(){
      :state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
      :progress===3?'قيد التنفيذ':progress===2?'قيد المعالجة'
      :topup?'قيد المراجعة':'قيد الانتظار';
-   const caption=order.status==='approved'?'تم قبول طلب شحن المحفظة وإضافة الرصيد.'
+   const caption=order.status==='approved'
+     ?(topup?'تم قبول طلب شحن المحفظة وإضافة الرصيد.':'تم قبول طلب الشراء، ولم يتم التسليم بعد.')
      :state==='completed'
-     ?(topup?'تم إكمال شحن المحفظة وفق حالة الطلب.':'تم تنفيذ طلبك بنجاح.')
-     :state==='refunded'?'الطلب مغلق. راجع ملاحظة المتجر إن وجدت.'
+     ?(topup?'تم اعتماد شحن المحفظة.':'تم تنفيذ طلبك بنجاح.')
+     :state==='refunded'
+       ?(topup?'تم رفض طلب الشحن دون إضافة رصيد للمحفظة.':'تم رفض الشراء وإرجاع قيمة الطلب إلى محفظة المتجر.')
+     :order.status==='processing'?'طلب الشراء قيد المعالجة، ولم يتم التسليم بعد.'
+     :order.status==='fulfilling'?'الطلب قيد التنفيذ، وسيتم تحديث حالته عند تأكيد التسليم.'
      :topup?'طلب شحن المحفظة مسجل وقيد التحقق من التحويل.'
        :'طلبك في قائمة الانتظار وسيبدأ التنفيذ بعد مراجعته.';
    // Source statuses only: intermediate phases are not silently assumed to happen.
-   const stageNames=topup?['تم الاستلام','قيد الانتظار','قيد المراجعة','تم التحقق',order.status==='approved'?'تم القبول':'مكتمل']
-     :['تم الاستلام','قيد الانتظار','قيد المعالجة','قيد التنفيذ','تم التنفيذ'];
-   const stageMarkup='<div class="orders-track-steps" aria-label="مراحل الطلب" style="--track-progress:'+(progress*25)+'%">'
+   const stageNames=topup?['قيد المراجعة',state==='refunded'?'مرفوض':'تم القبول']
+     :['تم الاستلام','تم القبول','قيد المعالجة','قيد التنفيذ','تم التنفيذ'];
+   const stageCount=stageNames.length;
+   const stageMarkup='<div class="orders-track-steps" data-stage-count="'+stageCount+'" aria-label="مراحل الطلب" style="--track-progress:'+(topup?progress*100:progress*25)+'%">'
      +stageNames.map((name,i)=>'<span class="orders-track-step '+(i<=progress?'is-on ':'')+(i===progress?'is-current':'')+'">'
        +'<span class="orders-track-node" aria-hidden="true">'+(i<=progress?'✓':'•')+'</span>'
        +'<span class="orders-track-label">'+name+'</span></span>').join('')+'</div>';
@@ -265,7 +271,8 @@ async function renderOrders(){
    if(contact)details.querySelector('.orders-detail-body').appendChild(contact);
    const mini=document.createElement('div');mini.className='orders-mini-progress';
    mini.setAttribute('aria-hidden','true');
-   mini.innerHTML=Array.from({length:5},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
+   mini.dataset.stageCount=String(stageCount);
+   mini.innerHTML=Array.from({length:stageCount},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
    card.append(mini,details);
    // The whole compact order card toggles its details; actions inside stay clickable.
    // The newly placed order remains opened by the existing justPlacedId handling.

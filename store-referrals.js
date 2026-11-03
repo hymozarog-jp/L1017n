@@ -82,7 +82,7 @@
     node.setAttribute('aria-label','دعوة صديق ومكافأة المحفظة');
     node.innerHTML='<div class="l1017-ref-earn-hero">'
       +'<div class="l1017-ref-hero-copy"><h2>ادعُ أصدقاءك واربح معهم</h2>'
-      +'<p>اربح <strong>1 د.ل</strong> عن كل صديق يدعوك بكودك، بعد توثيق هاتفه وإكمال أول طلب بقيمة 15 د.ل أو أكثر. تُضاف المكافأة إلى محفظتك.</p></div>'
+      +'<p>اربح <strong>1 د.ل</strong> عن كل صديق يسجّل بكودك، بعد توثيق هاتفه وإكمال أول طلب بقيمة 15 د.ل أو أكثر. تُضاف المكافأة إلى محفظتك.</p></div>'
       +'<div class="l1017-ref-hero-badge" aria-label="مكافأة كل صديق مؤهل: دينار ليبي واحد"><strong>1</strong><span>د.ل</span></div></div>'
       +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتنشئ كود الدعوة الخاص بك وتتابع مكافآتك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
       +'<div id="l1017ReferralAccount" class="hidden">'
@@ -106,7 +106,7 @@
           +'<strong id="l1017EarnedTotal">0.00 د.ل</strong><small>أرباحك من الدعوات</small></div>'
         +'</div>'
         +'<section class="l1017-ref-how" aria-labelledby="l1017RefHowHeading">'
-          +'<h3 id="l1017RefHowHeading"><span class="l1017-ref-how-bulb" aria-hidden="true">♧</span>كيف يعمل؟</h3>'
+          +'<h3 id="l1017RefHowHeading"><span class="l1017-ref-how-bulb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4M8.8 15.6c-.5-1.1-2.3-2.1-2.3-5.3a5.5 5.5 0 1 1 11 0c0 3.2-1.8 4.2-2.3 5.3l-.5 1.3h-5.4l-.5-1.3Z"/></svg></span>كيف يعمل؟</h3>'
           +'<ol class="l1017-ref-steps">'
             +'<li><span class="l1017-ref-step-number">1</span><span class="l1017-ref-step-text">شارك كودك مع أصدقائك</span><span class="l1017-ref-step-icon">'+uiIcon('share')+'</span></li>'
             +'<li><span class="l1017-ref-step-number">2</span><span class="l1017-ref-step-text">يسجّل صديقك ويُفعّل كودك بعد توثيق هاتفه</span><span class="l1017-ref-step-icon">'+uiIcon('user')+'</span></li>'

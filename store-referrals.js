@@ -87,17 +87,15 @@
       +'<div id="l1017ReferralAccount" class="hidden">'
       +'<section class="l1017-ref-code-card" aria-label="رابط الدعوة الذي يفتح المتجر">'
         +'<div class="l1017-ref-code"><div class="l1017-ref-invite-label">رابط دعوتك الشخصي — افتح الموقع وسجّل الدخول</div>'
-        +'<div class="l1017-ref-link-row"><small>هذا الرابط يفتح الموقع مباشرة، وتنحسب الدعوة بعد تسجيل دخول صديقك:</small>'
-        +'<a id="l1017RefLinkValue" href="#" aria-disabled="true" tabindex="-1" target="_blank" rel="noopener noreferrer" dir="ltr" aria-label="رابط الدعوة الذي يفتح المتجر">أنشئ كودك لعرض رابط الدعوة</a></div>'
+        +'<div class="l1017-ref-link-row"><small>انسخ الرابط وارسله لصديقك. بمجرد تسجيل دخوله بحساب مؤكّد تنحسب الدعوة:</small>'
+        +'<div class="l1017-ref-link-copy"><a id="l1017RefLinkValue" href="#" aria-disabled="true" tabindex="-1" target="_blank" rel="noopener noreferrer" dir="ltr" aria-label="فتح رابط الدعوة في المتجر">أنشئ رابط دعوتك أولاً</a>'
+        +'<button type="button" id="l1017CopyRefLink" aria-label="نسخ رابط الدعوة">'+uiIcon('copy')+'<span>نسخ الرابط</span></button></div></div>'
         +'<button type="button" id="l1017CreateRefCode">إنشاء رابط الدعوة</button>'
         +'<div class="l1017-ref-actions">'
           +'<button type="button" id="l1017ShareRef" class="l1017-ref-whatsapp">'
           +'<svg viewBox="0 0 32 32" aria-hidden="true" fill="currentColor"><path d="M16 3a13 13 0 0 0-11.1 19.7L3 29l6.5-1.7A13 13 0 1 0 16 3zm0 23.5a10.5 10.5 0 0 1-5.3-1.4l-.4-.2-3.9 1 1-3.8-.3-.4a10.5 10.5 0 1 1 8.9 4.8zm5.8-7.9c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.7.2-.1.3-.4.5-.6.1-.2.2-.4.3-.6.1-.2 0-.5 0-.7-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.5-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.3 3.3 1.4 3.5.2.2 2.5 3.8 6.1 5.3.9.4 1.5.6 2.1.7.9.3 1.7.2 2.3.2.7-.1 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.2-.2-.3-.5-.4z"/></svg>'
           +'<span>مشاركة عبر واتساب</span></button>'
-          +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+'<span>نسخ الرابط لفتح الموقع</span></button>'
         +'</div>'
-        +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong>'
-        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الرمز فقط</span></button></div>'
         +'</div></section>'
         +'<div class="l1017-ref-stats" aria-label="إحصائيات الدعوات">'
           +'<div class="l1017-ref-stat-card"><span class="l1017-ref-stat-icon l1017-ref-stat-purple" aria-hidden="true">'
@@ -131,7 +129,6 @@
       else q('[data-view="account"]')?.click();
     });
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
-    q('#l1017CopyRefCode')?.addEventListener('click',()=>copy(code,'الكود'));
     q('#l1017CopyRefLink')?.addEventListener('click',()=>copy(referralLink(code),'الرابط'));
     q('#l1017ShareRef')?.addEventListener('click',shareWhatsApp);
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
@@ -241,7 +238,6 @@
       if(error)throw error;
       const stats=data||{};
       code=isCode(stats.code)?stats.code:'';
-      q('#l1017RefCodeValue').textContent=code||'—';
       const invitation=q('#l1017RefLinkValue');
       if(invitation){
         invitation.href=code?referralLink(code):'#';
@@ -250,7 +246,7 @@
         invitation.tabIndex=code?0:-1;
       }
       q('#l1017CreateRefCode').classList.toggle('hidden',!!code);
-      for(const id of ['l1017CopyRefCode','l1017CopyRefLink','l1017ShareRef'])q('#'+id).disabled=!code;
+      for(const id of ['l1017CopyRefLink','l1017ShareRef'])q('#'+id).disabled=!code;
       const totals=stats.summary||{};
       q('#l1017InvitedCount').textContent=Number(totals.invited||0).toLocaleString('ar-LY');
 
@@ -310,8 +306,8 @@
     finally{field.remove();}
     return copied;
   }
-  function selectReferralText(){
-    const value=q('#l1017RefCodeValue');
+  function selectReferralLink(){
+    const value=q('#l1017RefLinkValue');
     if(!value)return;
     const selection=window.getSelection?.();
     if(!selection)return;
@@ -319,19 +315,20 @@
     range.selectNodeContents(value);
     selection.removeAllRanges();
     selection.addRange(range);
+    value.focus?.({preventScroll:true});
   }
   function copy(value,label){
     if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}
     const text=String(value||'');
     if(!text)return;
-    const button=q(label==='الكود'?'#l1017CopyRefCode':'#l1017CopyRefLink');
+    const button=q('#l1017CopyRefLink');
     const textNode=button?.querySelector('span');
     const original=textNode?.textContent||'';
     function feedback(ok){
-      uiStatus(ok?'تم نسخ '+label+' بنجاح.':'تعذر النسخ تلقائيًا. اضغط مطولًا على الكود لنسخه يدويًا.',!ok);
-      if(!ok&&label==='الكود')selectReferralText();
+      uiStatus(ok?'تم نسخ رابط الدعوة بنجاح. أرسله لصديقك.':'تعذر النسخ تلقائيًا. اضغط مطولًا على رابط الدعوة لنسخه.',!ok);
+      if(!ok)selectReferralLink();
       if(textNode){
-        textNode.textContent=ok?'تم النسخ ✓':'نسخ يدوي';
+        textNode.textContent=ok?'تم النسخ ✓':'انسخ الرابط يدويًا';
         window.setTimeout(()=>{if(textNode.isConnected)textNode.textContent=original},1800);
       }
     }

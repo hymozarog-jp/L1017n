@@ -40,9 +40,42 @@
     copy.type='button'; copy.textContent='نسخ الكود';
     copy.className='btn btn-primary';
     copy.style.marginInlineEnd='8px';
-    copy.onclick=async()=>{
-      try{await navigator.clipboard.writeText(code);copy.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> تم النسخ';}
-      catch(_){copy.textContent='حدد الكود بالأعلى وانسخه';}
+    copy.onclick=()=>{
+      const text=String(code||'');
+      if(!text)return;
+      const field=document.createElement('textarea');
+      field.value=text;field.readOnly=true;
+      field.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;font-size:16px';
+      document.body.appendChild(field);
+      let copied=false;
+      try{
+        field.focus({preventScroll:true});
+        field.select();
+        field.setSelectionRange(0,text.length);
+        copied=document.execCommand('copy')===true;
+      }catch(_){}
+      finally{field.remove();}
+      const feedback=ok=>{
+        if(!copy.isConnected)return;
+        copy.textContent=ok?'✓ تم نسخ الكود':'اضغط مطولًا على الكود لنسخه';
+        if(!ok){
+          try{
+            const selection=window.getSelection();
+            const range=document.createRange();
+            range.selectNodeContents(value);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }catch(_){}
+        }
+      };
+      if(copied){feedback(true);return}
+      if(!navigator.clipboard?.writeText){feedback(false);return}
+      let settled=false;
+      const finish=ok=>{if(settled)return;settled=true;clearTimeout(timeout);feedback(ok)};
+      const timeout=setTimeout(()=>finish(false),1800);
+      try{
+        Promise.resolve(navigator.clipboard.writeText(text)).then(()=>finish(true),()=>finish(false));
+      }catch(_){finish(false)}
     };
     const close=document.createElement('button');
     close.type='button';close.className='btn btn-soft';close.textContent='إغلاق';

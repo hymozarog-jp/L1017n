@@ -73,8 +73,8 @@
       else q('[data-view="account"]')?.click();
     });
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
-    q('#l1017CopyRefCode')?.addEventListener('click',()=>void copy(code,'الكود'));
-    q('#l1017CopyRefLink')?.addEventListener('click',()=>void copy(HOME+'?ref='+encodeURIComponent(code),'الرابط'));
+    q('#l1017CopyRefCode')?.addEventListener('click',()=>copy(code,'الكود'));
+    q('#l1017CopyRefLink')?.addEventListener('click',()=>copy(HOME+'?ref='+encodeURIComponent(code),'الرابط'));
     q('#l1017ShareRef')?.addEventListener('click',shareWhatsApp);
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
     document.addEventListener('click',event=>{
@@ -174,13 +174,60 @@
       uiStatus(msg.includes('referral_phone_verification_required')?'وثّق رقم ليبيانا من حسابي أولًا، وبعدها أنشئ كود الدعوة.':msg.includes('referral_phone_already_used')?'هذا الرقم مرتبط بكود دعوة آخر؛ تواصل مع إدارة المتجر.':'تعذر إنشاء الكود. تأكد من توثيق هاتفك وحاول مرة ثانية.',true);
     }finally{button.disabled=false}
   }
-  async function copy(value,label){
-    if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}
+  // Copy immediately in the tap event (important for iOS in-app browsers).
+  // Prefer the synchronous selection copy; the modern API may never resolve
+  // when clipboard permission hangs. In that case show a manual-copy fallback.
+  function legacyCopy(text){
+    const field=document.createElement('textarea');
+    field.value=text;
+    field.readOnly=true;
+    field.setAttribute('aria-hidden','true');
+    field.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none;font-size:16px;z-index:-1';
+    document.body.appendChild(field);
+    let copied=false;
     try{
-      if(!navigator.clipboard?.writeText)throw Error('clipboard_unavailable');
-      await navigator.clipboard.writeText(value);
-      uiStatus('تم نسخ '+label+'، ابعته لصديقك.');
-    }catch(_){window.prompt('انسخ '+label+' يدويًا:',value)}
+      field.focus({preventScroll:true});
+      field.select();
+      field.setSelectionRange(0,text.length);
+      copied=document.execCommand('copy')===true;
+    }catch(_){}
+    finally{field.remove();}
+    return copied;
+  }
+  function selectReferralText(){
+    const value=q('#l1017RefCodeValue');
+    if(!value)return;
+    const selection=window.getSelection?.();
+    if(!selection)return;
+    const range=document.createRange();
+    range.selectNodeContents(value);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+  function copy(value,label){
+    if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}
+    const text=String(value||'');
+    if(!text)return;
+    const button=q(label==='الكود'?'#l1017CopyRefCode':'#l1017CopyRefLink');
+    const textNode=button?.querySelector('span');
+    const original=textNode?.textContent||'';
+    function feedback(ok){
+      uiStatus(ok?'تم نسخ '+label+' بنجاح.':'تعذر النسخ تلقائيًا. اضغط مطولًا على الكود لنسخه يدويًا.',!ok);
+      if(!ok&&label==='الكود')selectReferralText();
+      if(textNode){
+        textNode.textContent=ok?'تم النسخ ✓':'نسخ يدوي';
+        window.setTimeout(()=>{if(textNode.isConnected)textNode.textContent=original},1800);
+      }
+    }
+    if(legacyCopy(text)){feedback(true);return}
+    if(!navigator.clipboard?.writeText){feedback(false);return}
+    let complete=false;
+    const done=ok=>{if(complete)return;complete=true;clearTimeout(timer);feedback(ok)};
+    const timer=setTimeout(()=>done(false),1800);
+    try{
+      // Invoke during the original click handler, before user activation expires.
+      Promise.resolve(navigator.clipboard.writeText(text)).then(()=>done(true),()=>done(false));
+    }catch(_){done(false)}
   }
   function shareWhatsApp(){
     if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}

@@ -47,12 +47,13 @@
       const [productsResult,inventoryResult]=await Promise.all([
         db.from('products').select('id,product_key,name,game,amount,price,active,sort_order')
           .eq('active',true).like('product_key',promoPrefix+'%').order('sort_order'),
-        db.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()
+        db.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()
       ]);
       if(token!==requestId||!root.isConnected||root.classList.contains('hidden'))return;
       if(productsResult.error)throw productsResult.error;
-      const availableStock=!inventoryResult.error&&inventoryResult.data
-        ?Number(inventoryResult.data.robux_available):null;
+      const inventory=!inventoryResult.error&&inventoryResult.data?inventoryResult.data:null;
+      const availableStock=inventory?Number(inventory.robux_available):null;
+      const unlimited=inventory?.robux_unlimited===true;
       const list=(productsResult.data||[]).filter(p=>
         p.active===true&&
         String(p.game||'').toLowerCase()==='roblox'&&
@@ -61,14 +62,14 @@
         Number.isFinite(Number(p.price))&&Number(p.price)>0
       );
       cached={};
-      for(const item of list)cached[item.id]={...item,available:availableStock!==null&&availableStock>=Number(item.amount)};
+      for(const item of list)cached[item.id]={...item,available:unlimited||(availableStock!==null&&availableStock>=Number(item.amount))};
       byId('offersCount').textContent=list.length?list.length+' عرض متوفر بالقائمة':'لا توجد عروض حاليًا';
       if(!list.length){
         target.innerHTML='<div class="l1017-offer-message"><strong>مافيش عروض متاحة حاليًا</strong><p>العروض الجديدة بتظهر هنا وقت ما تتفعّل في المتجر.</p></div>';
         return;
       }
       target.innerHTML=list.map(p=>display(p,cached[p.id].available)).join('');
-      if(availableStock===null){
+      if(!inventory){
         target.querySelectorAll('.l1017-offer-availability').forEach(x=>x.textContent='تعذر التحقق من المخزون؛ حدّث الصفحة.');
       }
     }catch(error){

@@ -79,6 +79,85 @@
       +'</div>';
     }).join('');
   }
+  // These tabs display existing, verifiable milestones. Only referral sign-ins
+  // produce wallet rewards; purchase and account tasks never write balances.
+  let currentMissionTab='referrals',purchaseFetchInFlight=false;
+  const renderTask=(index,title,detail,done,progress,unit)=>'<div class="l1017-ref-compact-row '+(done?'is-done':'is-next')+'">'
+    +'<span class="l1017-ref-compact-check" aria-hidden="true">'+(done?'✓':index)+'</span>'
+    +'<span class="l1017-ref-compact-description"><strong>'+title+'</strong><small>'+detail+'</small></span>'
+    +'<span class="l1017-ref-compact-money l1017-mission-counter"><strong>'+progress+'</strong><small>'+unit+'</small></span>'
+  +'</div>';
+  function setTaskProgress(barId,count,max,summaryId,summary){
+    const bar=q('#'+barId);
+    if(bar){bar.style.width=(Math.min(max,Math.max(0,count))/max*100)+'%';
+      bar.parentElement?.setAttribute('aria-valuenow',String(Math.min(max,Math.max(0,count))));}
+    const label=q('#'+summaryId);if(label)label.textContent=summary;
+  }
+  async function setMissionTab(tab){
+    if(!['referrals','purchases','login'].includes(tab))return;
+    currentMissionTab=tab;
+    q('#l1017Referrals')?.querySelectorAll('[data-l1017-mission-tab]').forEach(button=>{
+      const active=button.dataset.l1017MissionTab===tab;
+      button.classList.toggle('is-active',active);
+      button.setAttribute('aria-selected',String(active));
+      button.tabIndex=active?0:-1;
+    });
+    const panels={referrals:'#l1017MissionPanelReferrals',purchases:'#l1017MissionPanelPurchases',login:'#l1017MissionPanelLogin'};
+    for(const [name,selector] of Object.entries(panels)){
+      const panel=q(selector);if(panel)panel.hidden=name!==tab;
+    }
+    if(tab==='purchases')await loadPurchaseMissions();
+    if(tab==='login')await loadLoginMissions();
+  }
+  async function loadPurchaseMissions(){
+    const list=q('#l1017PurchaseMissionList'),db=getDb();
+    if(!list||!db||purchaseFetchInFlight)return;
+    purchaseFetchInFlight=true;
+    list.innerHTML='<p class="l1017-mission-loading">جاري تحميل المشتريات المكتملة…</p>';
+    try{
+      const {data:{user},error:userError}=await db.auth.getUser();
+      if(userError||!user)throw Error('auth_required');
+      // Owner-only RLS on purchase_orders. Count actually completed purchases,
+      // not unpaid, rejected, or still-in-progress orders.
+      const {count,error}=await db.from('purchase_orders')
+        .select('id',{count:'exact',head:true}).eq('user_id',user.id).eq('status','completed');
+      if(error||count===null)throw error||Error('count_unavailable');
+      const completed=Math.max(0,Number(count)||0),targets=[1,3,5,10];
+      list.innerHTML=targets.map((target,i)=>renderTask(i+1,
+        target===1?'أكمل أول عملية شراء':'أكمل '+target+' عمليات شراء',
+        completed>=target?'مكتملة':'من المشتريات التي تم تنفيذها',
+        completed>=target,Math.min(target,completed)+' / '+target,'طلبات')).join('');
+      setTaskProgress('l1017PurchaseMissionBar',completed,10,'l1017PurchaseMissionSummary',completed+' مشتريات مكتملة');
+    }catch(err){
+      list.innerHTML='<p class="l1017-mission-loading">تعذر تحميل المشتريات. افتح القسم مجددًا للمحاولة.</p>';
+      const summary=q('#l1017PurchaseMissionSummary');if(summary)summary.textContent='غير متاح مؤقتًا';
+      console.warn('[referrals/purchase missions]',String(err?.message||err).slice(0,125));
+    }finally{purchaseFetchInFlight=false}
+  }
+  async function loadLoginMissions(){
+    const list=q('#l1017LoginMissionList'),db=getDb();
+    if(!list||!db)return;
+    list.innerHTML='<p class="l1017-mission-loading">جاري التحقق من حسابك…</p>';
+    try{
+      const {data:{user},error}=await db.auth.getUser();
+      if(error||!user)throw Error('auth_required');
+      const {data:wallet,error:walletError}=await db.from('wallet_accounts')
+        .select('libyana_phone').eq('user_id',user.id).maybeSingle();
+      // Account preparation tasks can be checked from auth and the wallet profile.
+      // A saved phone is not claimed to be SMS-verified here.
+      const tasks=[
+        {label:'سجّل الدخول إلى المتجر',detail:'الحساب مفتوح الآن',done:true},
+        {label:'أكّد بريدك الإلكتروني',detail:user.email_confirmed_at?'تم تأكيد البريد':'افتح رسالة تأكيد البريد الإلكتروني',done:!!user.email_confirmed_at},
+        {label:'اربط رقم هاتفك بالحساب',detail:walletError?'تعذر التحقق من بيانات الهاتف':wallet?.libyana_phone?'تم حفظ رقم الهاتف':'أضف رقم هاتفك من حسابي',done:!walletError&&!!wallet?.libyana_phone}
+      ];
+      const done=tasks.filter(t=>t.done).length;
+      list.innerHTML=tasks.map((t,i)=>renderTask(i+1,t.label,t.detail,t.done,t.done?'مكتملة':'بانتظارك','الحالة')).join('');
+      setTaskProgress('l1017LoginMissionBar',done,3,'l1017LoginMissionSummary',done+' / 3 مهام');
+    }catch(err){
+      list.innerHTML='<p class="l1017-mission-loading">تعذر التحقق من حسابك. جرّب مرة ثانية.</p>';
+      console.warn('[referrals/login missions]',String(err?.message||err).slice(0,125));
+    }
+  }
   function build(){
     const host=q('#referralsView');
     if(!host||q('#l1017Referrals'))return;
@@ -112,12 +191,36 @@
           +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a7 7 0 0 1 7-5h4l1.5-2v4a6.5 6.5 0 0 1 2.5 5v2h2v4h-3a7 7 0 0 1-3 2v2h-3v-2H9v2H6v-4A6.5 6.5 0 0 1 5 9Z"/><path d="M8 4 6 2m11 8h.01"/></svg></span>'
           +'<strong id="l1017EarnedTotal">0.00 د.ل</strong><small>أرباحك من الدعوات</small></div>'
         +'</div>'
-        +'<section class="l1017-ref-compact-missions" aria-labelledby="l1017RefCompactHeading">'
-          +'<div class="l1017-ref-compact-heading"><h3 id="l1017RefCompactHeading">مهام الدعوات</h3><small id="l1017RefCompactProgress">0 / 10 دعوات هذا الشهر</small></div>'
-          +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
-          +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="تقدم مهام الدعوات هذا الشهر" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017RefMissionBar"></span></div>'
-          +'<div class="l1017-ref-compact-list" id="l1017RefCompactList" aria-live="polite"></div>'
-          +'<p class="l1017-ref-compact-note">المبالغ إجمالي أرباح الدعوات في الشهر، وليست جوائز إضافية.</p>'
+        +'<section class="l1017-ref-compact-missions" aria-label="مهام المتجر">'
+          +'<div class="l1017-mission-tabs" role="tablist" aria-label="اختيار نوع المهام">'
+            +'<button type="button" role="tab" class="is-active" id="l1017MissionTabReferrals" data-l1017-mission-tab="referrals" aria-controls="l1017MissionPanelReferrals" aria-selected="true" tabindex="0">'
+            +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M2 20v-2a6 6 0 0 1 12 0v2M17 8v8m-4-4h8"/></svg><span>مهام الدعوات</span></button>'
+            +'<button type="button" role="tab" id="l1017MissionTabPurchases" data-l1017-mission-tab="purchases" aria-controls="l1017MissionPanelPurchases" aria-selected="false" tabindex="-1">'
+            +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.2 11H5.2L4 9ZM8 10V7a4 4 0 0 1 8 0v3"/><path d="m9 15 2 2 4-4"/></svg><span>مهام المشتريات</span></button>'
+            +'<button type="button" role="tab" id="l1017MissionTabLogin" data-l1017-mission-tab="login" aria-controls="l1017MissionPanelLogin" aria-selected="false" tabindex="-1">'
+            +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="12" height="18" rx="2"/><path d="M10 12h11m-4-4 4 4-4 4"/></svg><span>مهام تسجيل الدخول</span></button>'
+          +'</div>'
+          +'<div id="l1017MissionPanelReferrals" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabReferrals">'
+            +'<div class="l1017-ref-compact-heading"><h3 id="l1017RefCompactHeading">تقدم الدعوات</h3><small id="l1017RefCompactProgress">0 / 10 دعوات هذا الشهر</small></div>'
+            +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
+            +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="تقدم مهام الدعوات هذا الشهر" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017RefMissionBar"></span></div>'
+            +'<div class="l1017-ref-compact-list" id="l1017RefCompactList" aria-live="polite"></div>'
+            +'<p class="l1017-ref-compact-note">المبالغ إجمالي أرباح الدعوات في الشهر، وليست جوائز إضافية.</p>'
+          +'</div>'
+          +'<div id="l1017MissionPanelPurchases" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabPurchases" hidden>'
+            +'<div class="l1017-ref-compact-heading"><h3>تقدم المشتريات</h3><small id="l1017PurchaseMissionSummary">مراجعة الطلبات…</small></div>'
+            +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
+            +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="مشتريات مكتملة من 10" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017PurchaseMissionBar"></span></div>'
+            +'<div class="l1017-ref-compact-list" id="l1017PurchaseMissionList" aria-live="polite"><p class="l1017-mission-loading">اضغط على القسم لعرض مهام المشتريات.</p></div>'
+            +'<p class="l1017-ref-compact-note">تُحتسب المشتريات التي تم تنفيذها فقط. هذه مهام إنجاز، ولا تُضاف عنها أرباح مالية.</p>'
+          +'</div>'
+          +'<div id="l1017MissionPanelLogin" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabLogin" hidden>'
+            +'<div class="l1017-ref-compact-heading"><h3>تقدم تسجيل الدخول</h3><small id="l1017LoginMissionSummary">0 / 3 مهام</small></div>'
+            +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
+            +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="مهام تسجيل الدخول" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><span id="l1017LoginMissionBar"></span></div>'
+            +'<div class="l1017-ref-compact-list" id="l1017LoginMissionList" aria-live="polite"><p class="l1017-mission-loading">اضغط على القسم لعرض مهام حسابك.</p></div>'
+            +'<p class="l1017-ref-compact-note">مهام إعداد الحساب تُحتسب مرة واحدة لكل خطوة، ولا تمنح أرصدة إضافية.</p>'
+          +'</div>'
         +'</section>'
         +'<section class="l1017-ref-how" aria-labelledby="l1017RefHowHeading">'
           +'<h3 id="l1017RefHowHeading"><span class="l1017-ref-how-bulb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4M8.8 15.6c-.5-1.1-2.3-2.1-2.3-5.3a5.5 5.5 0 1 1 11 0c0 3.2-1.8 4.2-2.3 5.3l-.5 1.3h-5.4l-.5-1.3Z"/></svg></span>كيف يعمل؟</h3>'
@@ -138,6 +241,20 @@
       else q('[data-view="account"]')?.click();
     });
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
+    q('#l1017Referrals .l1017-mission-tabs')?.addEventListener('click',e=>{
+      const button=e.target.closest('[data-l1017-mission-tab]');
+      if(button)void setMissionTab(button.dataset.l1017MissionTab);
+    });
+    q('#l1017Referrals .l1017-mission-tabs')?.addEventListener('keydown',e=>{
+      const tabs=Array.from(q('#l1017Referrals .l1017-mission-tabs').querySelectorAll('[data-l1017-mission-tab]'));
+      const current=tabs.indexOf(document.activeElement);
+      const key=e.key;
+      if(key!=='ArrowLeft'&&key!=='ArrowRight'&&key!=='Home'&&key!=='End')return;
+      e.preventDefault();
+      const next=key==='Home'?0:key==='End'?tabs.length-1:(current+(key==='ArrowLeft'?1:-1)+tabs.length)%tabs.length;
+      tabs[next]?.focus();
+      if(tabs[next])void setMissionTab(tabs[next].dataset.l1017MissionTab);
+    });
     q('#l1017CopyRefLink')?.addEventListener('click',()=>copy(referralLink(code),'الرابط'));
     q('#l1017ShareRef')?.addEventListener('click',shareWhatsApp);
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
@@ -263,6 +380,8 @@
 
       q('#l1017EarnedTotal').textContent=Number(totals.credited_lyd||0).toFixed(2)+' د.ل';
       renderCompactMissions(stats.monthly_used);
+      if(currentMissionTab==='purchases')void loadPurchaseMissions();
+      if(currentMissionTab==='login')void loadLoginMissions();
       q('#l1017RefMonthly').textContent='مكافآت هذا الشهر: '+Number(stats.monthly_used||0)+' من '+Number(stats.monthly_limit||10)+' · تُحتسب الدعوة عند تسجيل الدخول بحساب مؤكّد';
       const existing=stats.my_claim;
       const form=q('#l1017ClaimReferralForm');

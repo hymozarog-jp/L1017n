@@ -1,0 +1,211 @@
+/* Orders: screenshot-inspired reference design, presentation only.
+   Status and progress are derived from server-returned orders in legacy-app.js. */
+#ordersView #ordersList .orders-modern-list{
+  display:grid!important;gap:16px!important;
+}
+#ordersView #ordersList .orders-modern-card{
+  position:relative!important;display:grid!important;
+  grid-template-columns:clamp(45px,10vw,65px) minmax(0,1fr) auto!important;
+  grid-auto-rows:auto!important;
+  align-items:center!important;column-gap:11px!important;row-gap:13px!important;
+  min-width:0!important;padding:16px 14px!important;
+  border:1px solid #34323b!important;border-inline-start:5px solid #ffc21d!important;
+  border-radius:23px!important;background:#16161c!important;
+  color:#f9f9fd!important;box-shadow:0 10px 24px #0004!important;
+  overflow:hidden!important;
+}
+#ordersView #ordersList .orders-game-icon{
+  grid-column:1!important;border-radius:17px!important;
+  background:#111115!important;border-color:#28272d!important;
+  width:clamp(45px,10vw,65px)!important;height:clamp(45px,10vw,65px)!important;
+}
+#ordersView #ordersList .orders-card-main{grid-column:2!important}
+#ordersView #ordersList .orders-card-title{
+  font-weight:850!important;font-size:clamp(14px,3.8vw,20px)!important;
+  color:#fff!important;white-space:normal!important;
+}
+#ordersView #ordersList .orders-card-meta{
+  color:#b3b3bd!important;font-size:clamp(10px,2.65vw,13px)!important;
+  white-space:normal!important;line-height:1.7!important;
+}
+#ordersView #ordersList .orders-card-side{grid-column:3!important;align-items:flex-end!important}
+#ordersView #ordersList .orders-card-side>strong{
+  color:#fff!important;font-size:clamp(13px,3.1vw,19px)!important;
+}
+#ordersView #ordersList .orders-status{
+  background:rgba(250,188,14,.11)!important;border:1px solid #906b18!important;
+  color:#ffc635!important;font-size:11px!important;border-radius:99px!important;
+  padding:7px 10px!important;
+}
+#ordersView #ordersList .orders-status-completed{
+  background:#14372d!important;border-color:#3e8a70!important;color:#9af4d1!important;
+}
+#ordersView #ordersList .orders-status-refunded{
+  background:#3a2427!important;border-color:#9a5663!important;color:#ffb9bc!important;
+}
+#ordersView #ordersList .orders-mini-progress{
+  grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;margin:0;padding:0 0 2px;
+}
+#ordersView #ordersList .orders-mini-progress span{
+  display:block;height:9px;min-width:0;background:#383b48;border-radius:20px;
+}
+#ordersView #ordersList .orders-mini-progress span.is-on{background:#ffbf13}
+#ordersView #ordersList .orders-extra-details{
+  grid-column:1/-1!important;min-width:0!important;padding-top:11px!important;
+  border-top:1px solid #38353a!important;
+}
+#ordersView #ordersList .orders-extra-details>summary{
+  color:#efc35d!important;font-weight:750!important;
+}
+#ordersView #ordersList .orders-detail-body{
+  padding:13px 0 1px!important;display:grid!important;gap:12px!important;
+  color:#dfd6c9!important;
+}
+#ordersView #ordersList .orders-track-panel{
+  position:relative;isolation:isolate;overflow:hidden;
+  border:1px solid #846316;border-radius:24px;
+  padding:clamp(15px,4vw,29px);
+  background:radial-gradient(ellipse at 25% 0%,rgba(130,92,25,.22),transparent 70%),
+             linear-gradient(137deg,#322916,#1c1c20 82%);
+  box-shadow:inset 0 1px 0 #ffffff10;
+  direction:rtl;
+}
+#ordersView #ordersList .orders-track-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;min-width:0;
+}
+#ordersView #ordersList .orders-track-heading{min-width:0;flex:1}
+#ordersView #ordersList .orders-track-eyebrow{
+  display:block;font-size:clamp(12px,3vw,16px);font-weight:700;color:#aaa4a5;
+}
+#ordersView #ordersList .orders-track-title{
+  display:block;margin:3px 0 0;
+  font-size:clamp(24px,7vw,43px)!important;line-height:1.3!important;
+  font-weight:900;color:#ffbf16!important;
+}
+#ordersView #ordersList .orders-track-symbol{
+  display:grid;place-items:center;flex:0 0 auto;
+  width:clamp(56px,15vw,91px);height:clamp(56px,15vw,91px);
+  border-radius:50%;border:3px solid #ae8012;
+  background:#584418;box-shadow:0 0 0 7px #bc881423,inset 0 0 0 4px #241f20;
+}
+#ordersView #ordersList .orders-track-symbol svg{
+  display:block;width:52%;height:52%;stroke:#ffc21d;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;fill:none;
+}
+#ordersView #ordersList .orders-track-note{
+  font-size:clamp(12px,3.15vw,17px);line-height:1.8;
+  margin:18px 0 24px;color:#ddd8d4;
+}
+#ordersView #ordersList .orders-track-steps{
+  --track-progress:25%;
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  position:relative;gap:2px;direction:rtl;
+  padding:0!important;margin:0 0 22px!important;
+}
+#ordersView #ordersList .orders-track-steps::before{
+  content:"";position:absolute;z-index:0;
+  top:18px;right:9%;left:9%;height:5px;border-radius:10px;
+  background:linear-gradient(to left,#ffbd16 0 var(--track-progress),
+    #30323d var(--track-progress) 100%);
+}
+#ordersView #ordersList .orders-track-step{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:0;gap:8px;position:relative;z-index:1;
+  text-align:center;color:#818494;
+}
+#ordersView #ordersList .orders-track-node{
+  display:grid;place-items:center;
+  width:39px;height:39px;border-radius:50%;
+  background:#282b39;border:2px solid #282b39;color:#9ea3b5;
+  box-sizing:border-box;font:800 19px/1 system-ui,sans-serif;
+}
+#ordersView #ordersList .orders-track-step.is-on .orders-track-node{
+  color:#1a1a1f;background:#ffc01a;border-color:#ffc01a;
+}
+#ordersView #ordersList .orders-track-step.is-current .orders-track-label{
+  color:#fff;font-weight:900;
+}
+#ordersView #ordersList .orders-track-label{
+  font-size:clamp(8px,2vw,12px);line-height:1.45;
+  font-weight:750;overflow-wrap:anywhere;
+}
+#ordersView #ordersList .orders-track-refresh{
+  display:flex;width:100%;align-items:center;justify-content:center;gap:8px;
+  min-height:53px;padding:12px 15px;
+  border:2px solid #906d1a;border-radius:18px;
+  background:rgba(128,89,12,.20);color:#ffc928;
+  font:900 clamp(14px,4vw,20px)/1.2 inherit;cursor:pointer;
+}
+#ordersView #ordersList .orders-track-refresh svg{
+  width:22px;height:22px;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;fill:none;
+}
+#ordersView #ordersList .orders-track-refresh:disabled{opacity:.6;cursor:progress}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"]{
+  border-color:#37765c;background:linear-gradient(140deg,#173c31,#151e22);
+}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"] .orders-track-title{color:#a7f6d0!important}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"] .orders-track-symbol{
+  border-color:#4b9d78;background:#204b3b;
+}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"] .orders-track-symbol svg{stroke:#a7f6d0}
+#ordersView #ordersList .orders-track-panel[data-progress-state="refunded"]{
+  border-color:#79515c;background:linear-gradient(140deg,#3d222a,#211c23);
+}
+#ordersView #ordersList .orders-track-panel[data-progress-state="refunded"] .orders-track-title{color:#ffb8bd!important}
+#ordersView #ordersList .orders-track-panel[data-progress-state="refunded"] .orders-track-symbol{
+  border-color:#ac586c;background:#52303b;
+}
+#ordersView #ordersList .orders-track-panel[data-progress-state="refunded"] .orders-track-symbol svg{stroke:#ffb8bd}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"] .orders-track-steps::before{background:#69cba4}
+#ordersView #ordersList .orders-track-panel[data-progress-state="completed"] .orders-track-step.is-on .orders-track-node{background:#76e2b4;border-color:#76e2b4}
+#ordersView #ordersList .orders-track-panel[data-progress-state="refunded"] .orders-track-steps::before{background:#34303b}
+#ordersView #ordersList .orders-track-meta{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+}
+#ordersView #ordersList .orders-track-meta>div{
+  min-width:0;padding:12px;background:#1c1c23;
+  border:1px solid #343440;border-radius:13px;
+}
+#ordersView #ordersList .orders-track-meta span{
+  display:block;color:#a3a5b1;font-size:11px;margin-bottom:4px;
+}
+#ordersView #ordersList .orders-track-meta strong{
+  display:block;color:#f7f7fa;font-size:13px;font-weight:800;
+  overflow-wrap:anywhere;
+}
+#ordersView #ordersList .orders-complaint{
+  display:flex;width:100%;min-height:47px;align-items:center;justify-content:center;
+  gap:8px;border:1px solid #326c52;border-radius:14px;
+  background:#163728;color:#a4ebc9;font-size:14px;font-weight:850;
+  text-decoration:none!important;padding:12px 14px;box-sizing:border-box;
+}
+#ordersView #ordersList .orders-detail-actions{
+  display:flex!important;align-items:center;gap:8px;flex-wrap:wrap!important;
+}
+#ordersView #ordersList .orders-card-note{margin:0!important}
+#ordersView #ordersList .orders-manual-handover{grid-column:auto;margin:0!important}
+@media(max-width:540px){
+  #ordersView #ordersList .orders-modern-card{padding:13px 11px!important;column-gap:8px!important}
+  #ordersView #ordersList .orders-track-panel{border-radius:20px}
+  #ordersView #ordersList .orders-track-note{margin:13px 0 17px}
+  #ordersView #ordersList .orders-track-steps::before{top:13px;height:4px}
+  #ordersView #ordersList .orders-track-node{width:29px;height:29px;font-size:15px}
+  #ordersView #ordersList .orders-track-steps{margin-bottom:17px!important}
+  #ordersView #ordersList .orders-track-refresh{min-height:48px;border-radius:14px}
+}
+@media(max-width:350px){
+  #ordersView #ordersList .orders-modern-card{grid-template-columns:40px minmax(0,1fr)!important}
+  #ordersView #ordersList .orders-card-side{
+    grid-column:2!important;grid-row:auto!important;
+    flex-direction:row!important;align-items:center!important;justify-content:space-between!important;
+  }
+  #ordersView #ordersList .orders-mini-progress,
+  #ordersView #ordersList .orders-extra-details{grid-column:1/-1!important}
+  #ordersView #ordersList .orders-track-meta{grid-template-columns:1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #ordersView #ordersList *{transition:none!important;animation:none!important}
+}

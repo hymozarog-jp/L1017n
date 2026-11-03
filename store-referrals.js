@@ -12,7 +12,7 @@
   // cumulative reward totals, NOT extra bonuses for completing a milestone.
   const TASK_TARGETS=Object.freeze([1,5,10]);
   const TASK_NAMES=Object.freeze(['ادعُ صديقًا واحدًا','ادعُ 5 أصدقاء','ادعُ 10 أصدقاء']);
-  const TASK_LABELS=Object.freeze(['الخطوة الأولى','الخطوة الثانية','الخطوة الثالثة']);
+  const TASK_LABELS=Object.freeze(['المرحلة الأولى','المرحلة الثانية','المرحلة الثالثة']);
   function renderReferralTasks(rewarded){
     const root=q('#l1017ReferralTasksList');
     if(!root)return;
@@ -29,18 +29,19 @@
       const marker=completed?'check-circle':active?'gift':'lock';
       const percent=Math.round(progress/target*100);
       const detail=completed
-        ?'حصلت على مكافآت '+target+' دعوات مؤهلة'
-        :active?'باقي '+remaining+' '+(remaining===1?'صديق مؤهّل':'أصدقاء مؤهّلين')+' لإكمال المرحلة'
-          :'تُفتح بعد إكمال المرحلة السابقة';
+        ?'أكملت المطلوب وحصلت على مكافآت الدعوات المؤهلة.'
+        :active?'تبقّى '+remaining+' '+(remaining===1?'دعوة مؤهلة':'دعوات مؤهلة')+' لإكمال هذه المهمة.'
+          :'أكمل المهمة السابقة لفتح هذه المرحلة.';
       return '<article class="l1017-ref-task '+taskClass+'" aria-label="'+TASK_NAMES[index]+' — '+state+' — إجمالي المكافأة '+target+' دينار ليبي">'
         +'<div class="l1017-ref-task-top">'
           +'<span class="l1017-ref-task-mark">'+uiIcon(marker)+'</span>'
           +'<div class="l1017-ref-task-main"><small>المهمة '+(index+1)+' من 3 · '+TASK_LABELS[index]+'</small>'
-          +'<strong>'+TASK_NAMES[index]+'</strong></div>'
-          +'<div class="l1017-ref-task-reward"><small>إجمالي المكافأة</small><strong>'+target+' <span>د.ل</span></strong></div>'
+          +'<strong>'+TASK_NAMES[index]+'</strong>'
+          +'<span class="l1017-ref-task-required">المطلوب: <b>'+target+' '+(target===1?'دعوة مؤهلة':'دعوات مؤهلة')+'</b></span></div>'
+          +'<div class="l1017-ref-task-reward"><small>مجموع مكافآتك</small><strong>'+target+' <span>د.ل</span></strong></div>'
         +'</div>'
         +'<div class="l1017-ref-task-details"><span class="l1017-ref-task-state">'+state+'</span>'
-        +'<span class="l1017-ref-task-count">التقدم <b dir="ltr">'+progress+' / '+target+'</b></span></div>'
+        +'<span class="l1017-ref-task-count">تم إنجاز <b dir="ltr">'+progress+' / '+target+'</b></span></div>'
         +'<div class="l1017-ref-task-track" role="progressbar" aria-valuemin="0" aria-valuemax="'+target+'" aria-valuenow="'+progress+'" aria-label="تقدم مهمة '+TASK_NAMES[index]+'"><span style="width:'+percent+'%"></span></div>'
         +'<p class="l1017-ref-task-detail">'+detail+'</p>'
         +'</article>';
@@ -85,7 +86,7 @@
       +'<div class="l1017-ref-earn-hero"><div><small>هدية كل صديق مؤهل</small><strong>1 <span>د.ل</span></strong></div>'
       +'<div class="l1017-ref-earn-hero-side"><small>مجموع المكافآت عند دعوة 10 أصدقاء</small><strong>10 د.ل</strong><span>تُجمع تدريجيًا، دون مكافأة إضافية للمستوى</span></div></div>'
       +'<div class="l1017-ref-tasks" aria-label="مهام دعوة الأصدقاء">'
-      +'<div class="l1017-ref-tasks-heading"><div><small>MISSIONS · 01 / 03</small><h3>مهام الدعوات</h3><p id="l1017TasksHeadline">المهمة الحالية: ادعُ صديقًا واحدًا</p></div>'
+      +'<div class="l1017-ref-tasks-heading"><div><small>MISSIONS · 01 / 03</small><h3>المهام المطلوبة</h3><p id="l1017TasksHeadline">المهمة الحالية: ادعُ صديقًا واحدًا</p></div>'
       +'<span id="l1017TasksCompleted">0 / 3 مهام مكتملة</span></div>'
       +'<div class="l1017-ref-overall"><span>تقدمك نحو 10 دعوات</span><strong id="l1017RefOverallCount" dir="ltr">0 / 10</strong><small id="l1017RefOverviewStatus">تبقّى 10 دعوات مؤهلة للوصول للمستوى الأخير</small></div>'
       +'<div id="l1017ReferralTasksList" class="l1017-ref-tasks-list" aria-live="polite"></div>'

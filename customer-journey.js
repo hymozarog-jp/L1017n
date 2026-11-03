@@ -65,7 +65,10 @@
     guide.id='gbWalletGuide';
     guide.setAttribute('aria-label','دليل تعبئة المحفظة');
     guide.innerHTML='<strong>شحن المحفظة في 3 خطوات</strong>'+
-      '<div class="gbwg-steps"><span>1 · اختار المبلغ</span><span>2 · تأكد من رقم ليبيانا</span><span>3 · حوّل وتابع التحقق</span></div>'+
+      '<div class="gbwg-steps">'
+      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 9c0-2 6-2 6 0s-6 1-6 4 6 3 6 1M12 5.5v13"/></svg>1 · اختار المبلغ</span>'
+      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-3 13h2"/><path d="m9 12 2 2 4-4"/></svg>2 · تأكد من رقم ليبيانا</span>'
+      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 8 4v6c0 5.5-4 8-8 10-4-2-8-4.5-8-10V6l8-4Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>3 · حوّل وتابع التحقق</span></div>'+
       '<p class="gbwg-next" id="gbWalletNext" role="status" aria-live="polite">اختار المبلغ اللي تبيه من تحت.</p>'+
       '<div class="gbwg-tools"><button type="button" class="gbwg-next-action" data-gbwg="proceed">متابعة الشحن</button><button type="button" data-gbwg="store">تصفح المتجر</button></div>';
     form.prepend(guide);

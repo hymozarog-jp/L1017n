@@ -26,3 +26,67 @@
   border:0!important;
   box-shadow:none!important;
 }
+
+/* Deathshard + Elderwood Blade: enlarge the ACTUAL weapon image instead of
+   making the full product card/screenshot bigger. Existing stock is unchanged. */
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-deathshard"]),
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-elderwood-blade"]){
+  height:clamp(146px,23vw,190px)!important;
+  position:relative!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  isolation:isolate!important;
+  background:radial-gradient(ellipse at 50% 43%,#4a4578 0%,#30365f 48%,#1c2944 100%)!important;
+  border:1px solid #7771af5e!important;
+  box-shadow:inset 0 1px 0 #ffffff1c!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-deathshard"],
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-elderwood-blade"]{
+  display:block!important;
+  width:90%!important;
+  height:90%!important;
+  max-width:none!important;
+  max-height:none!important;
+  flex:0 0 auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  mix-blend-mode:screen!important;
+  transform:scale(1.75)!important;
+  transform-origin:50% 50%!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  filter:brightness(1.22) contrast(1.22) drop-shadow(0 4px 7px #0b07186b)!important;
+  image-rendering:auto!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package.rgp-soldout .mm2-item-art img[src*="mm2-deathshard"],
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package.rgp-soldout .mm2-item-art img[src*="mm2-elderwood-blade"]{
+  filter:brightness(1.08) contrast(1.2) saturate(.83) drop-shadow(0 4px 8px #0009)!important;
+}
+/* Keep checkout preview consistent with the larger product tiles. */
+#rgpMm2Checkout .mm2-checkout-box>img[src*="mm2-deathshard"],
+#rgpMm2Checkout .mm2-checkout-box>img[src*="mm2-elderwood-blade"]{
+  mix-blend-mode:screen!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  filter:brightness(1.15) contrast(1.2)!important;
+  transform:scale(1.12)!important;
+}
+@media(max-width:570px){
+  #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-deathshard"]),
+  #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-elderwood-blade"]){
+    height:clamp(139px,39vw,166px)!important;
+    border-radius:15px!important;
+  }
+  #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-deathshard"],
+  #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-elderwood-blade"]{
+    transform:scale(1.55)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img{
+    transition:none!important;
+  }
+}

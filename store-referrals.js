@@ -85,10 +85,8 @@
       +'<div class="l1017-ref-hero-badge" aria-label="مكافأة كل صديق مؤهل: دينار ليبي واحد"><strong>1</strong><span>د.ل</span></div></div>'
       +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتنشئ كود الدعوة الخاص بك وتتابع مكافآتك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
       +'<div id="l1017ReferralAccount" class="hidden">'
-      +'<section class="l1017-ref-code-card" aria-label="كود الدعوة الخاص بك">'
-        +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود الدعوة الخاص بك</label>'
-        +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong>'
-        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الرمز فقط</span></button></div>'
+      +'<section class="l1017-ref-code-card" aria-label="رابط الدعوة الذي يفتح المتجر">'
+        +'<div class="l1017-ref-code"><label for="l1017RefLinkValue">رابط دعوتك الشخصي — افتح الموقع وسجّل الدخول</label>'
         +'<div class="l1017-ref-link-row"><small>هذا الرابط يفتح الموقع مباشرة، وتنحسب الدعوة بعد تسجيل دخول صديقك:</small>'
         +'<a id="l1017RefLinkValue" href="#" target="_blank" rel="noopener noreferrer" dir="ltr" aria-label="رابط الدعوة الذي يفتح المتجر">أنشئ كودك لعرض رابط الدعوة</a></div>'
         +'<button type="button" id="l1017CreateRefCode">إنشاء رابط الدعوة</button>'
@@ -97,11 +95,14 @@
           +'<svg viewBox="0 0 32 32" aria-hidden="true" fill="currentColor"><path d="M16 3a13 13 0 0 0-11.1 19.7L3 29l6.5-1.7A13 13 0 1 0 16 3zm0 23.5a10.5 10.5 0 0 1-5.3-1.4l-.4-.2-3.9 1 1-3.8-.3-.4a10.5 10.5 0 1 1 8.9 4.8zm5.8-7.9c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.7.2-.1.3-.4.5-.6.1-.2.2-.4.3-.6.1-.2 0-.5 0-.7-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.5-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.3 3.3 1.4 3.5.2.2 2.5 3.8 6.1 5.3.9.4 1.5.6 2.1.7.9.3 1.7.2 2.3.2.7-.1 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.2-.2-.3-.5-.4z"/></svg>'
           +'<span>مشاركة عبر واتساب</span></button>'
           +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+'<span>نسخ الرابط لفتح الموقع</span></button>'
-        +'</div></div></section>'
+        +'</div>'
+        +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong>'
+        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الرمز فقط</span></button></div>'
+        +'</div></section>'
         +'<div class="l1017-ref-stats" aria-label="إحصائيات الدعوات">'
           +'<div class="l1017-ref-stat-card"><span class="l1017-ref-stat-icon l1017-ref-stat-purple" aria-hidden="true">'
           +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m-3-3h6m-5 10v-2a4 4 0 0 0-3-3.9"/></svg></span>'
-          +'<strong id="l1017InvitedCount">0</strong><small>أصدقاء سجّلوا بكودك</small></div>'
+          +'<strong id="l1017InvitedCount">0</strong><small>أصدقاء سجّلوا برابطك</small></div>'
           +'<div class="l1017-ref-stat-card l1017-ref-stat-earn"><span class="l1017-ref-stat-icon l1017-ref-stat-green" aria-hidden="true">'
           +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a7 7 0 0 1 7-5h4l1.5-2v4a6.5 6.5 0 0 1 2.5 5v2h2v4h-3a7 7 0 0 1-3 2v2h-3v-2H9v2H6v-4A6.5 6.5 0 0 1 5 9Z"/><path d="M8 4 6 2m11 8h.01"/></svg></span>'
           +'<strong id="l1017EarnedTotal">0.00 د.ل</strong><small>أرباحك من الدعوات</small></div>'
@@ -281,7 +282,7 @@
       if(error)throw error;
       if(!isCode(data))throw Error('invalid_code_generated');
       code=data;
-      uiStatus('كود دعوتك جاهز. تقدر تنسخه أو تشاركه.');
+      uiStatus('رابط دعوتك جاهز! أرسله لصديقك، وبتنحسب الدعوة عند تسجيل دخوله بحساب مؤكد.');
       await load();
     }catch(err){
       console.warn('[referrals] code',err);

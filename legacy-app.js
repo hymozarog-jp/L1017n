@@ -833,6 +833,10 @@ $('#googleSignInBtn')?.addEventListener('click',async()=>{
          const url=new URL('./',window.location.href);
          let referral=new URL(window.location.href).searchParams.get('ref');
          if(!referral)try{referral=sessionStorage.getItem('l1017n-invited-by-code-v1')}catch(_){}
+        if(!referral)try{
+          const saved=JSON.parse(localStorage.getItem('l1017n-invite-link-with-expiry-v2')||'null');
+          if(saved&&Date.now()-Number(saved.time)<604800000&&Date.now()>=Number(saved.time))referral=saved.code;
+        }catch(_){}
          referral=String(referral||'').toUpperCase();
          if(/^L1[0-9A-F]{12}$/.test(referral))url.searchParams.set('ref',referral);
          return url.href;
@@ -881,6 +885,10 @@ $('#authForm').addEventListener('submit',async e=>{
           const url=new URL('./',window.location.href);
           let referral=new URL(window.location.href).searchParams.get('ref');
           if(!referral)try{referral=sessionStorage.getItem('l1017n-invited-by-code-v1')}catch(_){}
+        if(!referral)try{
+          const saved=JSON.parse(localStorage.getItem('l1017n-invite-link-with-expiry-v2')||'null');
+          if(saved&&Date.now()-Number(saved.time)<604800000&&Date.now()>=Number(saved.time))referral=saved.code;
+        }catch(_){}
           referral=String(referral||'').toUpperCase();
           if(/^L1[0-9A-F]{12}$/.test(referral))url.searchParams.set('ref',referral);
           return url.href;

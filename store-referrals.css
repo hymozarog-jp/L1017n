@@ -469,3 +469,168 @@
 @media(prefers-reduced-motion:reduce){
  #l1017Referrals .l1017-ref-task{transition:none}
 }
+
+
+/* ── 2026-11-03 Referrals palette: midnight / orchid / champagne ──
+   Deliberately scoped: the leaderboard and other store pages are unchanged.
+   Reduced gradients, consistent contrast, meaningful completed/active states. */
+#referralsView{
+  --ref-bg:#0d1428;
+  --ref-surface:#151e35;
+  --ref-surface-2:#1c2741;
+  --ref-line:#384461;
+  --ref-text:#f2f5fc;
+  --ref-muted:#b9c5da;
+  --ref-accent:#af9af4;
+  --ref-gold:#f1cd8b;
+  --ref-good:#80debc;
+  background:
+    radial-gradient(ellipse 95% 33% at 50% 0%,rgba(96,74,164,.18),transparent 90%),
+    linear-gradient(180deg,#0c1122,#10182c 75%,#0d1428)!important;
+  color:var(--ref-text)
+}
+#referralsView .l1017-ref-page-back{
+  background:#1b2640;border-color:#425171;color:#e7ecfa
+}
+#referralsView .l1017-ref-page-kicker{color:#c5b3f4}
+#referralsView .l1017-ref-page-back:hover{background:#263451;border-color:#8d84cb}
+#referralsView #l1017Referrals{
+  background:linear-gradient(155deg,#19213b,#121b30 75%);
+  color:var(--ref-text);
+  border:1px solid #465274;
+  box-shadow:0 12px 32px #04091542,inset 0 1px #ffffff0b
+}
+#referralsView #l1017Referrals .l1017-ref-brand{
+  background:#44376d;border-color:#9b86d0;color:#f6ecff;
+  box-shadow:inset 0 1px #ffffff16
+}
+#referralsView #l1017Referrals .l1017-ref-head h2{color:#f5f4ff}
+#referralsView #l1017Referrals .l1017-ref-head small{color:#bfa7ef}
+#referralsView #l1017Referrals .l1017-ref-head p{color:var(--ref-muted)}
+#referralsView #l1017Referrals .l1017-ref-head p strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-rules{
+  background:#1e2943;border-color:#3c4965;color:#c9d2e5
+}
+#referralsView #l1017Referrals .l1017-ref-rules .l1017-icon{color:var(--ref-good)}
+#referralsView #l1017Referrals .l1017-ref-earn-hero{
+  background:linear-gradient(112deg,#252842,#31304d);
+  border-color:#766c70;box-shadow:inset 0 1px #ffffff14
+}
+#referralsView #l1017Referrals .l1017-ref-earn-hero small{color:#d2d9ea}
+#referralsView #l1017Referrals .l1017-ref-earn-hero>div:first-child{
+  border-left-color:#ffffff28
+}
+#referralsView #l1017Referrals .l1017-ref-earn-hero>div:first-child>strong,
+#referralsView #l1017Referrals .l1017-ref-earn-hero-side strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-earn-hero-side>span{color:#bbc5d8}
+#referralsView #l1017Referrals .l1017-ref-tasks{
+  background:#111c31;border-color:#364666;
+  box-shadow:inset 0 1px #ffffff09
+}
+#referralsView #l1017Referrals .l1017-ref-tasks-heading h3,
+#referralsView #l1017Referrals .l1017-ref-task-main strong{color:#f1f4ff}
+#referralsView #l1017Referrals .l1017-ref-tasks-heading small{color:#b9a7ee}
+#referralsView #l1017Referrals .l1017-ref-tasks-heading p,
+#referralsView #l1017Referrals .l1017-ref-overall small{color:#b7c4da}
+#referralsView #l1017Referrals #l1017TasksCompleted{
+  background:#322d43;border-color:#685b71;color:var(--ref-gold)
+}
+#referralsView #l1017Referrals .l1017-ref-overall{
+  background:#1a263d;border-color:#344762
+}
+#referralsView #l1017Referrals .l1017-ref-overall span{color:#dfe5f3}
+#referralsView #l1017Referrals .l1017-ref-overall strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-task{
+  background:#19263c;border-color:#3c4d69;
+  box-shadow:none;opacity:1
+}
+#referralsView #l1017Referrals .l1017-ref-task.is-active{
+  background:#222743;border-color:#9888dc;
+  box-shadow:inset 3px 0 #af9af4,0 5px 15px #070d2030
+}
+#referralsView #l1017Referrals .l1017-ref-task.is-done{
+  background:#1b303a;border-color:#497e72;
+  box-shadow:inset 3px 0 #80debc
+}
+#referralsView #l1017Referrals .l1017-ref-task.is-locked{
+  background:#182238;border-color:#35435e;opacity:.83
+}
+#referralsView #l1017Referrals .l1017-ref-task-mark{
+  background:#28344f;border-color:#445572;color:#a9b4d0
+}
+#referralsView #l1017Referrals .is-active .l1017-ref-task-mark{
+  background:#43375f;border-color:#8673c4;color:#d6c6ff
+}
+#referralsView #l1017Referrals .is-done .l1017-ref-task-mark{
+  background:#285248;border-color:#477f70;color:#a6eed2
+}
+#referralsView #l1017Referrals .l1017-ref-task-main small{color:#aebcd6}
+#referralsView #l1017Referrals .l1017-ref-task-reward{
+  background:#2b2b3e;border-color:#76674f
+}
+#referralsView #l1017Referrals .l1017-ref-task-reward small{color:#e0cba7}
+#referralsView #l1017Referrals .l1017-ref-task-reward strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-task-state{
+  color:#bbc7df;border-color:#45526c;background:#25314b
+}
+#referralsView #l1017Referrals .is-active .l1017-ref-task-state{
+  color:#e5d7ff;border-color:#7667ae;background:#40365f
+}
+#referralsView #l1017Referrals .is-done .l1017-ref-task-state{
+  color:#b7efd7;border-color:#497e6e;background:#24463f
+}
+#referralsView #l1017Referrals .l1017-ref-task-count,
+#referralsView #l1017Referrals .l1017-ref-task-detail{color:#b9c7dc}
+#referralsView #l1017Referrals .l1017-ref-task-count b{color:#f1e8ff}
+#referralsView #l1017Referrals .l1017-ref-task-track{
+  background:#33415a;box-shadow:none
+}
+#referralsView #l1017Referrals .l1017-ref-task-track span{
+  background:linear-gradient(90deg,#8976d7,#bba9f2)
+}
+#referralsView #l1017Referrals .is-done .l1017-ref-task-track span{
+  background:linear-gradient(90deg,#4db08a,#8bdfbf)
+}
+#referralsView #l1017Referrals .l1017-ref-tasks-disclaimer{
+  color:#acbcd6;border-top-color:#34435f
+}
+#referralsView #l1017Referrals .l1017-ref-tasks-disclaimer strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-tasks-disclaimer .l1017-icon{color:var(--ref-good)}
+#referralsView #l1017Referrals .l1017-ref-code{
+  background:#18243c;border-color:#455373
+}
+#referralsView #l1017Referrals .l1017-ref-code label,
+#referralsView #l1017Referrals #l1017ClaimReferralForm>label{color:#e5e9f6}
+#referralsView #l1017Referrals .l1017-ref-code-value strong{color:var(--ref-gold)}
+#referralsView #l1017Referrals .l1017-ref-guest button,
+#referralsView #l1017Referrals #l1017CreateRefCode,
+#referralsView #l1017Referrals #l1017ClaimRefSubmit{
+  background:#6752ac;border:1px solid #9884dd;color:#fff
+}
+#referralsView #l1017Referrals .l1017-ref-guest button:hover,
+#referralsView #l1017Referrals #l1017CreateRefCode:hover,
+#referralsView #l1017Referrals #l1017ClaimRefSubmit:hover{
+  background:#7a62c5
+}
+#referralsView #l1017Referrals .l1017-ref-actions button{
+  background:#253452;border-color:#4d5c83;color:#e6eafa
+}
+#referralsView #l1017Referrals .l1017-ref-actions button:hover{
+  background:#344467;border-color:#7c81b9
+}
+#referralsView #l1017Referrals .l1017-ref-stats>div{
+  background:#1c2941;border-color:#40516f
+}
+#referralsView #l1017Referrals .l1017-ref-stats small{color:#bdc9de}
+#referralsView #l1017Referrals .l1017-ref-stats strong{color:#f3d4a0}
+#referralsView #l1017Referrals .l1017-ref-claim-row input{
+  background:#121d33;border-color:#556584;color:#f4f5fc
+}
+#referralsView #l1017Referrals .l1017-ref-monthly{color:#b2c3da}
+#referralsView #l1017Referrals button:focus-visible,
+#referralsView #l1017Referrals input:focus-visible{outline-color:#e6c783}
+#accountModern .l1017-account-referral-link{
+  background:#202c43;border-color:#455475;color:#eef0f9
+}
+#accountModern .l1017-account-referral-link .l1017-icon{color:#e7c58c}
+#accountModern .l1017-account-referral-link small{color:#b5c5da}

@@ -226,6 +226,9 @@
 #ordersView #ordersList .orders-extra-details>summary::after{
   display:none!important;
 }
+#ordersView #ordersList .orders-extra-details:not([open]){
+  display:none!important;
+}
 #ordersView #ordersList .orders-extra-details[open]{
   cursor:default!important;
 }

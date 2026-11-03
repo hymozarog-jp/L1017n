@@ -8,13 +8,13 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const statusText={pending:'قيد المراجعة',approved:'تمت الموافقة',rejected:'مرفوض'};
 const orderStatusText={paid_pending_fulfillment:'تم الدفع — بانتظار التنفيذ',completed:'مكتمل',rejected:'مرفوض — تم إرجاع الرصيد',refunded:'تم إرجاع الرصيد'};
 function orderStatusClass(status){return status==='completed'?'approved':(['rejected','refunded'].includes(status)?'rejected':'pending')}
-let toastTimer,products=[],robuxAvailable=1000,showTopupCode=false;
+let toastTimer,products=[],robuxAvailable=1000,robuxUnlimited=false,showTopupCode=false;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
 
 async function currentUser(){const {data:{user}}=await supabaseClient.auth.getUser();return user}
-async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data)robuxAvailable=Number(inventoryResult.data.robux_available)||0;renderProducts()}
+async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data){robuxAvailable=Number(inventoryResult.data.robux_available)||0;robuxUnlimited=inventoryResult.data.robux_unlimited===true;}renderProducts()}
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
@@ -266,13 +266,13 @@ async function renderOrders(){
    Exact checkout still calls the existing server-validated product RPC. */
 function mountRobuxQuantityCalculator(modal,robux){
  // The customer can enter ANY integer Robux quantity, not only catalog packages.
- // The server computes and validates the authoritative price and checks inventory.
+ // The server computes and validates the authoritative price. Stock limits apply only in finite mode.
  const offers=products.filter(p=>String(p.game||'').toLowerCase()==='roblox' && !String(p.product_key||'').startsWith('robux-promo-')).map(p=>({id:String(p.id),amount:Number(p.amount),price:Number(p.price)}))
    .filter(p=>Number.isSafeInteger(p.amount)&&p.amount>0&&Number.isFinite(p.price)&&p.price>0)
    .sort((a,b)=>a.amount-b.amount||a.price-b.price);
  const anchor=modal.querySelector('.robux-reference-section');
  if(!anchor||!offers.length)return;
- const firstAmount=Math.min(100,Math.max(1,robuxAvailable));
+ const firstAmount=robuxUnlimited?100:Math.min(100,Math.max(1,robuxAvailable));
  const section=document.createElement('section');
  section.className='robux-quantity-calculator';
  section.setAttribute('aria-label','اختيار كمية الروبوكس');
@@ -309,7 +309,7 @@ function mountRobuxQuantityCalculator(modal,robux){
  const normalize=value=>String(value).replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
    .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).trim();
  let quoteSeq=0,quoteTimer=null,confirmed=null;
- const maxQuantity=()=>Math.min(100000,Math.max(0,Number(robuxAvailable)||0));
+ const maxQuantity=()=>robuxUnlimited?100000:Math.min(100000,Math.max(0,Number(robuxAvailable)||0));
  function clearPrevious(){
    modal.querySelectorAll('.robux-package.selected').forEach(tile=>{
      tile.classList.remove('selected');
@@ -430,22 +430,23 @@ function mountRobuxQuantityCalculator(modal,robux){
 function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox' && ((Number.isInteger(Number(p.amount)) && Number(p.amount)>=100 && Number(p.amount)<=1000 && Number(p.amount)%100===0 && Number(p.amount)!==300) || String(p.product_key||'').startsWith('robux-promo-'))).sort((a,b)=>Number(a.amount)-Number(b.amount));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">◆ شحن روبوكس</span></div><div class="robux-reference-features">'
 +'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6.5v5.3c0 4.6 3.2 7.6 7.5 9.2 4.3-1.6 7.5-4.6 7.5-9.2V6.5L12 3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><small>طلب موثّق</small></span>'
 +'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg><small>محفظة آمنة</small></span>'
-+'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="12" width="4" height="7" rx="2"/><rect x="17.5" y="12" width="4" height="7" rx="2"/><path d="M19 19c0 1.4-2 2-5 2h-2"/></svg><small>دعم للطلبات</small></span></div><h2 class="robux-reference-section">باقات وعروض الروبوكس</h2><p class="robux-packages-help">اختار الباقة أو العرض، وتأكد من اسم حساب Roblox قبل الدفع. الهدية محسوبة ضمن إجمالي الروبوكس.</p><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxAvailable>=Number(p.amount||0);const promo=String(p.product_key||'').startsWith('robux-promo-');const giftMatch=String(p.name||'').match(/\+\s*(\d{1,5})\s*هدية/);const gift=giftMatch?Number(giftMatch[1]):0;return '<button class="robux-package'+(promo?' robux-promo':'')+'" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><img class="robux-display-art" src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" aria-hidden="true" loading="eager" decoding="async"><span class="robux-plus">＋</span>'+(promo&&gift?'<b class="robux-promo-ribbon">+'+gift+' هدية</b>':'')+'<span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?'متوفر':'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.add('robux-single-offer');modal.classList.remove('hidden');const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
++'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="12" width="4" height="7" rx="2"/><rect x="17.5" y="12" width="4" height="7" rx="2"/><path d="M19 19c0 1.4-2 2-5 2h-2"/></svg><small>دعم للطلبات</small></span></div><h2 class="robux-reference-section">باقات وعروض الروبوكس</h2><p class="robux-packages-help">اختار الباقة أو العرض، وتأكد من اسم حساب Roblox قبل الدفع. الهدية محسوبة ضمن إجمالي الروبوكس.</p><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxUnlimited||robuxAvailable>=Number(p.amount||0);const promo=String(p.product_key||'').startsWith('robux-promo-');const giftMatch=String(p.name||'').match(/\+\s*(\d{1,5})\s*هدية/);const gift=giftMatch?Number(giftMatch[1]):0;return '<button class="robux-package'+(promo?' robux-promo':'')+'" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><img class="robux-display-art" src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" aria-hidden="true" loading="eager" decoding="async"><span class="robux-plus">＋</span>'+(promo&&gift?'<b class="robux-promo-ribbon">+'+gift+' هدية</b>':'')+'<span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?(robuxUnlimited?'متاح للطلب':'متوفر'):'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.add('robux-single-offer');modal.classList.remove('hidden');const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
 // The page and its image are already visible. Refresh stock without delaying navigation.
 requestAnimationFrame(()=>{
-  supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()
+  supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()
     .then(({data,error})=>{
       if(error||!data)return;
       robuxAvailable=Number(data.robux_available)||0;
+      robuxUnlimited=data.robux_unlimited===true;
       if(modal.classList.contains('hidden'))return;
       modal.querySelectorAll('[data-robux]').forEach(btn=>{
         const product=robux.find(p=>String(p.id)===btn.dataset.robux);
         if(!product)return;
-        const available=robuxAvailable>=Number(product.amount||0);
+        const available=robuxUnlimited||robuxAvailable>=Number(product.amount||0);
         btn.disabled=!available;
         btn.setAttribute('aria-disabled',String(!available));
         const label=btn.querySelector('.stock-label');
-        if(label)label.textContent=available?'متوفر':'غير متوفر';
+        if(label)label.textContent=available?(robuxUnlimited?'متاح للطلب':'متوفر'):'غير متوفر';
         if(!available&&btn.classList.contains('selected')){
           btn.classList.remove('selected');
           modal.querySelector('.robux-checkout-bar')?.classList.remove('visible');
@@ -865,9 +866,15 @@ async function loadAdminDashboard(){
     supabaseClient.from('topup_requests').select('id,user_id,amount,method,phone,transfer_reference,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('purchase_orders').select('id,user_id,product_name,total_amount,roblox_username,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('products').select('*').order('sort_order'),
-    supabaseClient.from('store_inventory').select('robux_available').eq('id',true).maybeSingle()
+    supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()
   ]);
-  if(!inventoryResult.error&&inventoryResult.data)$('#adminRobuxStock').value=Number(inventoryResult.data.robux_available)||0;
+  if(!inventoryResult.error&&inventoryResult.data){
+    $('#adminRobuxStock').value=Number(inventoryResult.data.robux_available)||0;
+    const mode=$('#adminRobuxStockMode');
+    if(mode)mode.textContent=inventoryResult.data.robux_unlimited===true
+      ? '♾ وضع الطلبات بدون حد مخزون مفعّل. هذا الرقم مرجعي فقط؛ كل طلب يُراجع قبل التسليم.'
+      : 'المخزون المحدود مفعّل، والطلبات تخصم من الكمية المسجلة.';
+  }
   if(topups.error)$('#adminTopups').innerHTML='<p class="muted">تعذر تحميل طلبات الشحن: '+escapeHtml(topups.error.message)+'</p>';
   else $('#adminTopups').innerHTML=topups.data?.length?topups.data.map(x=>adminItem('شحن '+(x.method==='libyana'?'ليبيانا':'المدار')+' · '+x.amount+' د.ل','الهاتف: '+(x.phone||'—')+' · رقم العملية: '+(x.transfer_reference||'—')+' · المستخدم: '+x.user_id,x.amount,x.id,x.status,x.status==='pending'?'<button class="btn btn-primary" data-topup-action="approved" data-id="'+x.id+'">موافقة وإضافة الرصيد</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+x.id+'">رفض الطلب</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شحن.</p>';
   if(orders.error)$('#adminPurchases').innerHTML='<p class="muted">تعذر تحميل طلبات الشراء: '+escapeHtml(orders.error.message)+'</p>';
@@ -890,7 +897,7 @@ async function reviewPurchase(id,decision){
   toast(decision==='completed'?'تم تأكيد تنفيذ الطلب.':'تم رفض الطلب وإرجاع الرصيد.');
   await loadAdminDashboard();
 }
-async function saveAdminRobuxStock(){const input=$('#adminRobuxStock');const stock=Number(input.value);if(!Number.isInteger(stock)||stock<0){toast('اكتب كمية صحيحة من صفر أو أكثر');return}const btn=$('#saveAdminRobuxStock');btn.disabled=true;btn.textContent='جاري الحفظ…';const {error}=await supabaseClient.rpc('admin_set_robux_stock',{p_stock:stock});btn.disabled=false;btn.textContent='حفظ المخزون';if(error){toast('تعذر حفظ المخزون: '+error.message);return}robuxAvailable=stock;toast('تم تحديث مخزون الروبوكس إلى '+stock);await loadProducts();await loadAdminDashboard()}
+async function saveAdminRobuxStock(){const input=$('#adminRobuxStock');const stock=Number(input.value);if(!Number.isInteger(stock)||stock<0){toast('اكتب كمية صحيحة من صفر أو أكثر');return}const btn=$('#saveAdminRobuxStock');btn.disabled=true;btn.textContent='جاري الحفظ…';const {error}=await supabaseClient.rpc('admin_set_robux_stock',{p_stock:stock});btn.disabled=false;btn.textContent='حفظ المخزون';if(error){toast('تعذر حفظ المخزون: '+error.message);return}robuxAvailable=stock;toast('تم حفظ كمية الروبوكس المرجعية: '+stock);await loadProducts();await loadAdminDashboard()}
 function clearAdminProductForm(){
   $('#adminProductForm').reset();$('#adminProductId').value='';$('#adminProductSort').value='0';$('#adminProductActive').checked=true;
 }

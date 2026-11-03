@@ -547,3 +547,56 @@ footer .footer-faq-link{
 @media(prefers-reduced-motion:reduce){
   #gbQuickActions .gbqa-art{transition:none!important}
 }
+
+/* Final iconography across the store: empty orders and the top-up guide. */
+#ordersView .orders-empty-state{
+  padding:clamp(22px,5vw,39px)!important;
+  border:1px solid #504875!important;
+  background:radial-gradient(ellipse 50% 45% at 50% 8%,#5b48a63b,transparent 95%),
+    linear-gradient(135deg,#192139,#131b2f)!important;
+  box-shadow:inset 0 1px #ffffff0c,0 15px 35px #0002!important;
+}
+#ordersView .orders-empty-state .orders-empty-mark{
+  display:grid!important;place-items:center!important;
+  width:146px!important;height:126px!important;margin:0 auto 8px!important;
+  border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+}
+#ordersView .orders-empty-state .orders-empty-mark svg{
+  display:block!important;width:136px!important;height:116px!important;
+  max-width:100%!important;overflow:visible!important;
+  filter:drop-shadow(0 12px 15px #0c0f284a);
+}
+#ordersView .orders-empty-state button{
+  background:linear-gradient(130deg,#8D68DB,#6849BC)!important;
+  color:#fff!important;box-shadow:0 6px 17px #694db43d!important;
+}
+#gbWalletGuide .gbwg-steps span{
+  display:inline-flex!important;align-items:center;gap:7px!important;
+  border-color:#57917e!important;
+  background:linear-gradient(135deg,#1c3e38,#17312e)!important;
+  padding:8px 10px!important;line-height:1.5!important;
+  font-size:11px!important;
+}
+#gbWalletGuide .gbwg-steps span svg{
+  width:19px!important;height:19px!important;flex:0 0 19px!important;
+  color:#99E9C6!important;stroke:currentColor!important;
+}
+#gbWalletGuide .gbwg-steps span:nth-child(2){
+  border-color:#637cb5!important;background:linear-gradient(135deg,#233859,#202e47)!important;
+}
+#gbWalletGuide .gbwg-steps span:nth-child(2) svg{color:#a9cdff!important}
+#gbWalletGuide .gbwg-steps span:nth-child(3){
+  border-color:#8b6ea7!important;background:linear-gradient(135deg,#3b2e55,#292744)!important;
+}
+#gbWalletGuide .gbwg-steps span:nth-child(3) svg{color:#d1b5ff!important}
+@media(max-width:540px){
+  #ordersView .orders-empty-state .orders-empty-mark{
+    width:129px!important;height:117px!important;
+  }
+  #ordersView .orders-empty-state .orders-empty-mark svg{
+    width:124px!important;height:108px!important;
+  }
+  #gbWalletGuide .gbwg-steps span{font-size:10.5px!important;padding:7px 9px!important}
+  #gbWalletGuide .gbwg-steps span svg{width:17px!important;height:17px!important;flex-basis:17px!important}
+}

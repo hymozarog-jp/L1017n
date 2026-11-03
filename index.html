@@ -355,7 +355,7 @@
     <div id="accountModern" class="hidden">
       <button type="button" class="l1017-account-referral-link" data-view="referrals" aria-label="فتح صفحة شارك واربح">
         <svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-gift"></use></svg>
-        <span><strong>شارك واربح</strong><small>شارك كود الدعوة واربح 1 د.ل عن كل صديق يسجّل ويوثّق هاتفه</small></span>
+        <span><strong>شارك واربح</strong><small>شارك رابطك واربح 1 د.ل عند تسجيل دخول صديقك بحساب مؤكّد</small></span>
         <svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-share"></use></svg>
       </button>
       <div class="account-id-card">
@@ -476,7 +476,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=robux-unlimited-20261103-1';
+      var s=document.createElement('script');s.src='app.js?v=referral-login-credit-20261103-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -885,6 +885,6 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="offers-page.css?v=offers-bottom-nav-20261102-1">
 <script src="roblox-methods.js?v=roblox-3-methods-20261102-1" defer></script>
 <script src="offers-page.js?v=robux-unlimited-20261103-1" defer></script>
-<script src="store-referrals.js?v=clipboard-fix-20261103-1" defer></script>
+<script src="store-referrals.js?v=referral-login-credit-20261103-1" defer></script>
 <script src="responsive-4k-images.js?v=fix-resizeobserver-mm2-20261102-1" defer></script>
 </body></html>

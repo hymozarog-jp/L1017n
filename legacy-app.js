@@ -297,6 +297,11 @@ async function renderOrders(){
      }catch(e){console.warn('[orders/modal]',e)}
    };
    const closeOrder=()=>{if(modal.open)modal.close()};
+   // The digital-code and manual-handover actions open their own overlays.
+   // Release the native top-layer dialog before those existing actions run.
+   modal.addEventListener('click',e=>{
+     if(e.target.closest('[data-order-code], [data-order-contact]'))closeOrder();
+   },true);
    modal.querySelector('.orders-modal-close').addEventListener('click',closeOrder);
    modal.addEventListener('click',e=>{
      if(e.target===modal)closeOrder();

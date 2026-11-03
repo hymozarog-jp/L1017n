@@ -77,8 +77,8 @@
     banner.className='l1017-invite-landing';
     banner.innerHTML=uiIcon('gift')+'<span>وصلك كود دعوة! وثّق رقم هاتفك وفعّله قبل أول عملية شراء.</span><button type="button">فتح الدعوة</button>';
     banner.querySelector('button').addEventListener('click',()=>{
-      const nav=q('[data-view="referrals"]');
-      if(nav)nav.click();else if(typeof window.switchView==='function')window.switchView('referrals');
+      if(typeof window.switchView==='function')window.switchView('referrals');
+      else q('[data-view="referrals"]')?.click();
       setTimeout(()=>q('#l1017Referrals')?.scrollIntoView({behavior:'smooth',block:'start'}),200);
     });
     host.prepend(banner);

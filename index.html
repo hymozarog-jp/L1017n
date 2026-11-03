@@ -476,7 +476,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=wallet-long-pill-20261103-1';
+      var s=document.createElement('script');s.src='app.js?v=wallet-long-pill-20261103-1&orders-status=20261103-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -887,4 +887,5 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <script src="offers-page.js?v=robux-unlimited-20261103-1" defer></script>
 <script src="store-referrals.js?v=compact-missions-20261103-1" defer></script>
 <script src="responsive-4k-images.js?v=fix-resizeobserver-mm2-20261102-1" defer></script>
+<link rel="stylesheet" href="order-status-reference.css?v=status-card-whatsapp-20261103-1">
 </body></html>

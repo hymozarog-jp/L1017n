@@ -363,3 +363,21 @@
 #ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-refresh{
   background:#1c4267!important;border-color:#4b9ddc!important;color:#b5e3ff!important;
 }
+
+/* Wallet top-ups have two decisions only: approval or rejection.
+   Purchase orders retain their five independent progress steps. */
+#ordersView #ordersList .orders-mini-progress[data-stage-count="2"]{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#ordersView #ordersList .orders-track-steps[data-stage-count="2"]{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#ordersView #ordersList .orders-track-steps[data-stage-count="2"]::before{
+  left:25%!important;right:25%!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-steps[data-stage-count="2"]::before{
+  background:#ea738a!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-steps[data-stage-count="2"]::before{
+  background:#4da9fa!important;
+}

@@ -381,3 +381,125 @@
 #ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-steps[data-stage-count="2"]::before{
   background:#4da9fa!important;
 }
+
+/* Order detail popup: a native modal in the top layer, not a disclosure below
+   the order card. The body scrolls INSIDE the popup on smaller phones. */
+#ordersView #ordersList .orders-view-dialog:not([open]){
+  display:none!important;
+}
+#ordersView #ordersList .orders-view-dialog[open]{
+  display:block!important;
+  position:fixed!important;
+  inset:0!important;
+  width:min(94vw,560px)!important;
+  max-width:560px!important;
+  max-height:min(88dvh,820px)!important;
+  height:auto!important;
+  padding:14px 15px max(18px,env(safe-area-inset-bottom))!important;
+  margin:auto!important;
+  border:1px solid #656273!important;
+  border-radius:23px!important;
+  background:#15151d!important;
+  box-sizing:border-box!important;
+  color:#faf9ff!important;
+  box-shadow:0 26px 100px rgba(0,0,0,.78)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  direction:rtl!important;
+  text-align:right!important;
+  cursor:default!important;
+}
+#ordersView #ordersList .orders-view-dialog::backdrop{
+  background:rgba(2,3,11,.84);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+#ordersView #ordersList .orders-modal-head{
+  position:sticky;
+  top:-14px;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0 14px;
+  margin-bottom:5px;
+  background:#15151d;
+  border-bottom:1px solid #393946;
+}
+#ordersView #ordersList .orders-modal-heading{
+  min-width:0;display:grid;gap:3px;
+}
+#ordersView #ordersList .orders-modal-heading small{
+  color:#a4a8ba;font-size:12px;font-weight:650;
+}
+#ordersView #ordersList .orders-modal-heading strong{
+  color:#fff;font-size:clamp(16px,4vw,21px);font-weight:850;
+  line-height:1.5;overflow-wrap:anywhere;
+}
+#ordersView #ordersList .orders-modal-close{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+  width:43px!important;
+  height:43px!important;
+  min-width:43px!important;
+  min-height:43px!important;
+  padding:0!important;
+  border-radius:13px!important;
+  border:1px solid #5a5c6a!important;
+  background:#292a36!important;
+  color:#fff!important;
+  font:700 29px/1 system-ui,sans-serif!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent;
+}
+#ordersView #ordersList .orders-modal-close:focus-visible{
+  outline:2px solid #ffc122;
+  outline-offset:3px;
+}
+#ordersView #ordersList .orders-view-dialog .orders-extra-details{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  margin:0!important;
+}
+#ordersView #ordersList .orders-view-dialog .orders-detail-body{
+  padding:5px 0 0!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-view-dialog{
+  border-color:#4a96d4!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-view-dialog{
+  border-color:#3db885!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-view-dialog{
+  border-color:#b36376!important;
+}
+@media(max-width:540px){
+  #ordersView #ordersList .orders-view-dialog[open]{
+    width:calc(100vw - 20px)!important;
+    max-height:calc(100dvh - 46px)!important;
+    padding:11px 11px max(16px,env(safe-area-inset-bottom))!important;
+    border-radius:19px!important;
+  }
+  #ordersView #ordersList .orders-modal-head{
+    top:-11px;padding:8px 1px 11px;
+  }
+  #ordersView #ordersList .orders-track-panel{
+    padding:clamp(13px,3.6vw,22px)!important;
+  }
+}
+@media(prefers-reduced-motion:no-preference){
+  #ordersView #ordersList .orders-view-dialog[open]{
+    animation:orders-modal-appear .16s ease-out both;
+  }
+  @keyframes orders-modal-appear{
+    from{opacity:.65;transform:translateY(12px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+}

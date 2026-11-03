@@ -111,8 +111,7 @@ function instructions(){if(typeof window.refreshAutoTopup==='function')window.re
 async function renderWallet(){initWalletShowcase();if(typeof window.refreshAutoTopup==='function')window.refreshAutoTopup();const user=await currentUser();const topupForm=$('#topupForm');if(topupForm){let gate=$('#libyanaTopupGate');if(!gate){gate=document.createElement('div');gate.id='libyanaTopupGate';gate.className='panel';gate.style.cssText='padding:20px;text-align:center;border-radius:16px;margin-bottom:14px';topupForm.parentNode.insertBefore(gate,topupForm)}let allowed=false;if(user){const r=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();allowed=!r.error&&!!r.data?.libyana_phone}topupForm.style.display=allowed?'':'none';gate.style.display=allowed?'none':'';gate.innerHTML='<h3>'+uiIcon('smartphone')+' يجب تسجيل رقم الهاتف أولاً</h3><p>قبل استخدام المحفظة، سجّل رقم هاتفك على حسابك. الرقم لا يمكن تسجيله في حساب ثانٍ.</p><button type="button" class="btn btn-primary" id="goLibyanaSettings">إدخال رقم الهاتف ←</button>';gate.querySelector('button').onclick=()=>switchView('account')} if(!user){$('#balanceAmount').textContent='0.00';if($('#walletShowcaseBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#walletShowcaseBalance'));else $('#walletShowcaseBalance').textContent='0.000';}if($('#madarWalletBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#madarWalletBalance'));else $('#madarWalletBalance').textContent='0.000';}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent='0.000 د.ل';$('#walletUserState').innerHTML='<i></i> غير مسجل';$('#topupHistory').innerHTML='<div class="muted">سجّل دخولك أولاً باش تقدر تشحن المحفظة.</div>';return}const {data:wallet}=await supabaseClient.from('wallet_accounts').select('balance,madar_balance,primary_balance').eq('user_id',user.id).maybeSingle();if($('#madarWalletBalance')){const val=Number(wallet?.madar_balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#madarWalletBalance'),val);else $('#madarWalletBalance').textContent=val.toFixed(3);}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent=Number(wallet?.primary_balance||0).toFixed(3)+' د.ل';$('#balanceAmount').textContent=Number(wallet?.balance||0).toFixed(2);if($('#walletShowcaseBalance')){const val=Number(wallet?.balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#walletShowcaseBalance'),val);else $('#walletShowcaseBalance').textContent=val.toFixed(3);}$('#walletUserState').innerHTML='<i></i> '+escapeHtml(user.email);const {data:list,error}=await supabaseClient.from('topup_requests').select('id,user_id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);if(error){$('#topupHistory').innerHTML='<div class="muted">تعذر تحميل طلبات الشحن. حاول تحديث الصفحة.</div>';return}$('#topupHistory').innerHTML=walletTransactionRows(list);applyWalletTransactionFilter();instructions()}
 async function renderOrders(){
  const root=$('#ordersList');if(!root)return;
- const openedOrderIds=new Set([...root.querySelectorAll('.orders-modern-card')]
-   .filter(c=>c.querySelector('.orders-extra-details[open]')).map(c=>c.dataset.orderId));
+ const previouslyShownId=root.querySelector('.orders-view-dialog[open]')?.closest('.orders-modern-card')?.dataset.orderId||null;
  const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
@@ -193,6 +192,8 @@ async function renderOrders(){
      :art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
    return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'" data-order-phase="'+(x.status==='approved'?'approved':g==='completed'?'delivered':g==='refunded'?'closed':'waiting')+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
  }).join('');
+ // Close any visible native dialog before regenerating the list on status refresh.
+ root.querySelectorAll('.orders-view-dialog[open]').forEach(dialog=>dialog.close());
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';
 
  // Premium orders dashboard; all metrics are derived from the signed-in user's existing order records.
@@ -253,7 +254,7 @@ async function renderOrders(){
      +'<div><span>المبلغ</span><strong dir="ltr">'+Number(topup?order.amount:order.total_amount||0).toFixed(3)+' د.ل</strong></div>'
      +'</div>';
    const details=document.createElement('details');details.className='orders-extra-details';
-   details.open=openedOrderIds.has(String(order.id));
+   details.open=true;
    details.innerHTML='<summary>حالة الطلب والتفاصيل</summary><div class="orders-detail-body">'
      +tracker+metadata
      +(topup&&order.transfer_reference?'<div class="orders-detail-ref"><span>مرجع التحويل</span><b>'
@@ -273,30 +274,51 @@ async function renderOrders(){
    mini.setAttribute('aria-hidden','true');
    mini.dataset.stageCount=String(stageCount);
    mini.innerHTML=Array.from({length:stageCount},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
-   card.append(mini,details);
-   // The whole compact order card toggles its details; actions inside stay clickable.
-   // The newly placed order remains opened by the existing justPlacedId handling.
-   const toggleOrder=()=>{
-     details.open=!details.open;
-     card.classList.toggle('orders-card-expanded',details.open);
-     card.setAttribute('aria-expanded',String(details.open));
+   // A native modal displays the chosen order immediately in the viewport.
+   // Keep the existing details node (and all real order actions) inside the
+   // same card so the existing buttons, order status colors, and events work.
+   const modal=document.createElement('dialog');
+   modal.className='orders-view-dialog';
+   modal.dir='rtl';
+   modal.setAttribute('aria-label','تفاصيل الطلب: '+label(order));
+   const heading=document.createElement('div');heading.className='orders-modal-head';
+   heading.innerHTML='<div class="orders-modal-heading"><small>تفاصيل الطلب</small>'
+     +'<strong>'+escapeHtml(label(order))+'</strong></div>'
+     +'<button type="button" class="orders-modal-close" aria-label="إغلاق تفاصيل الطلب" title="إغلاق">×</button>';
+   modal.append(heading,details);
+   card.append(mini,modal);
+   const openOrder=()=>{
+     if(modal.open)return;
+     try{
+       modal.showModal();
+       card.classList.add('orders-card-expanded');
+       card.setAttribute('aria-expanded','true');
+       modal.querySelector('.orders-modal-close')?.focus({preventScroll:true});
+     }catch(e){console.warn('[orders/modal]',e)}
    };
+   const closeOrder=()=>{if(modal.open)modal.close()};
+   modal.querySelector('.orders-modal-close').addEventListener('click',closeOrder);
+   modal.addEventListener('click',e=>{
+     if(e.target===modal)closeOrder();
+   });
+   modal.addEventListener('close',()=>{
+     card.classList.remove('orders-card-expanded');
+     card.setAttribute('aria-expanded','false');
+     if(card.isConnected&&document.getElementById('ordersView')?.contains(card)){
+       card.focus({preventScroll:true});
+     }
+   });
    card.tabIndex=0;
-   card.setAttribute('aria-label','تفاصيل الطلب: '+label(order));
-   card.setAttribute('aria-expanded',String(details.open));
-   card.classList.toggle('orders-card-expanded',details.open);
+   card.setAttribute('aria-label','فتح تفاصيل الطلب: '+label(order));
+   card.setAttribute('aria-expanded','false');
    card.addEventListener('click',e=>{
-     if(e.target.closest('.orders-extra-details, button, a, input, select, textarea, [role="button"]'))return;
-     toggleOrder();
+     if(e.target.closest('.orders-view-dialog, button, a, input, select, textarea, [role="button"]'))return;
+     openOrder();
    });
    card.addEventListener('keydown',e=>{
-     if(e.target!==card || (e.key!=='Enter'&&e.key!==' '))return;
+     if(e.target!==card||(e.key!=='Enter'&&e.key!==' '))return;
      e.preventDefault();
-     toggleOrder();
-   });
-   details.addEventListener('toggle',()=>{
-     card.classList.toggle('orders-card-expanded',details.open);
-     card.setAttribute('aria-expanded',String(details.open));
+     openOrder();
    });
  });
  root.dataset.ordersRendered='1';
@@ -334,13 +356,20 @@ async function renderOrders(){
    const tab=root.querySelector('[data-order-filter="'+priorFilter+'"]');
    if(tab)tab.click();
  }
+ // After a purchase, open the new order's popup immediately.
+ // During refresh, reopen the same popup without scrolling the page.
  const justPlacedId=window.L1017nJustPlacedOrderId;
- if(justPlacedId){
-   const justPlaced=[...root.querySelectorAll('.orders-modern-card')].find(card=>card.dataset.orderId===justPlacedId);
-   if(justPlaced){
-     justPlaced.querySelector('.orders-extra-details')?.setAttribute('open','');
-     delete window.L1017nJustPlacedOrderId;
-     justPlaced.scrollIntoView({block:'nearest',behavior:'smooth'});
+ const openId=justPlacedId||previouslyShownId;
+ if(openId){
+   const orderCard=[...root.querySelectorAll('.orders-modern-card')]
+     .find(card=>card.dataset.orderId===String(openId)&&!card.hidden);
+   const modal=orderCard?.querySelector('.orders-view-dialog');
+   if(modal&&typeof modal.showModal==='function'){
+     modal.showModal();
+     orderCard.classList.add('orders-card-expanded');
+     orderCard.setAttribute('aria-expanded','true');
+     modal.querySelector('.orders-modal-close')?.focus({preventScroll:true});
+     if(justPlacedId)delete window.L1017nJustPlacedOrderId;
    }
  }
 }

@@ -634,3 +634,74 @@
 }
 #accountModern .l1017-account-referral-link .l1017-icon{color:#e7c58c}
 #accountModern .l1017-account-referral-link small{color:#b5c5da}
+
+/* Referral missions: full-width readable rows, visible requirements and clear mobile hierarchy. */
+#referralsView #l1017Referrals .l1017-ref-tasks{min-width:0}
+#referralsView #l1017Referrals .l1017-ref-tasks-list{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0
+}
+#referralsView #l1017Referrals .l1017-ref-task{
+  width:100%;min-width:0;padding:15px 16px;border-radius:14px
+}
+#referralsView #l1017Referrals .l1017-ref-task-top{
+  display:grid;grid-template-columns:42px minmax(0,1fr) minmax(105px,auto);
+  align-items:center;gap:12px;min-width:0
+}
+#referralsView #l1017Referrals .l1017-ref-task-mark{
+  width:42px;height:42px
+}
+#referralsView #l1017Referrals .l1017-ref-task-main{
+  min-width:0;overflow-wrap:break-word
+}
+#referralsView #l1017Referrals .l1017-ref-task-main strong{
+  display:block;font-size:15px;line-height:1.55
+}
+#referralsView #l1017Referrals .l1017-ref-task-required{
+  display:block;margin-top:3px;color:#c4d1e7;font-size:11px;line-height:1.6
+}
+#referralsView #l1017Referrals .l1017-ref-task-required b{
+  color:#e9eef9;font-weight:800
+}
+#referralsView #l1017Referrals .l1017-ref-task-reward{
+  min-width:105px;max-width:150px;min-height:65px;
+  padding:8px 10px;text-align:center
+}
+#referralsView #l1017Referrals .l1017-ref-task-reward small{
+  white-space:normal;font-size:10px;line-height:1.35
+}
+#referralsView #l1017Referrals .l1017-ref-task-details{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:7px 10px;margin:12px 0 10px
+}
+#referralsView #l1017Referrals .l1017-ref-task-count{white-space:nowrap}
+#referralsView #l1017Referrals .l1017-ref-task-track{height:8px}
+#referralsView #l1017Referrals .l1017-ref-task-detail{
+  margin-top:8px;font-size:11px;line-height:1.6
+}
+#referralsView #l1017Referrals .l1017-ref-tasks-heading>div{min-width:0}
+@media(max-width:520px){
+  #referralsView #l1017Referrals .l1017-ref-tasks{padding:11px}
+  #referralsView #l1017Referrals .l1017-ref-tasks-list{gap:9px}
+  #referralsView #l1017Referrals .l1017-ref-task{padding:12px 10px}
+  #referralsView #l1017Referrals .l1017-ref-task-top{
+    grid-template-columns:34px minmax(0,1fr) 87px;gap:8px
+  }
+  #referralsView #l1017Referrals .l1017-ref-task-mark{width:34px;height:34px}
+  #referralsView #l1017Referrals .l1017-ref-task-main strong{font-size:13px}
+  #referralsView #l1017Referrals .l1017-ref-task-main small{font-size:9px}
+  #referralsView #l1017Referrals .l1017-ref-task-required{font-size:10px}
+  #referralsView #l1017Referrals .l1017-ref-task-reward{
+    min-width:0;width:87px;min-height:60px;padding:7px 4px
+  }
+  #referralsView #l1017Referrals .l1017-ref-task-reward small{font-size:9px}
+  #referralsView #l1017Referrals .l1017-ref-task-reward strong{font-size:23px}
+  #referralsView #l1017Referrals .l1017-ref-tasks-heading{align-items:flex-start;flex-wrap:wrap;gap:8px}
+}
+@media(max-width:365px){
+  #referralsView #l1017Referrals .l1017-ref-task-top{
+    grid-template-columns:minmax(0,1fr) 84px;gap:8px
+  }
+  #referralsView #l1017Referrals .l1017-ref-task-mark{display:none}
+  #referralsView #l1017Referrals .l1017-ref-task-reward{width:84px}
+  #referralsView #l1017Referrals .l1017-ref-task-main strong{font-size:12px}
+}

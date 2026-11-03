@@ -52,7 +52,48 @@
     q('#l1017InviteLanding')?.remove();
   }
   function referralLink(value){return HOME+'?ref='+encodeURIComponent(value)}
+  let claimedMissions=new Set(),monthlyReferralCount=0;
+  const claimKey=(kind,target)=>kind+':'+Number(target);
+  function claimButton(kind,target,completed){
+    if(!completed)return '<span class="l1017-mission-awaiting">بانتظار الإنجاز</span>';
+    if(claimedMissions.has(claimKey(kind,target)))
+      return '<span class="l1017-mission-received" aria-label="تم استلام المهمة">✓ تم الاستلام</span>';
+    return '<button type="button" class="l1017-mission-claim-btn" data-l1017-mission-claim="'+kind+'" data-l1017-mission-target="'+target+'">استلام</button>';
+  }
+  async function claimMission(button){
+    const kind=button?.dataset.l1017MissionClaim;
+    const target=Number(button?.dataset.l1017MissionTarget);
+    if(button?.disabled||!['referrals','purchases','login'].includes(kind)||!Number.isInteger(target))return;
+    const db=getDb();if(!db)return;
+    button.disabled=true;button.textContent='جاري الاستلام…';
+    try{
+      // The authenticated server function rechecks task completion before
+      // persisting exactly one claim. No direct wallet writes from the client.
+      const {data,error}=await db.rpc('claim_my_store_mission',{p_kind:kind,p_target:target});
+      if(error)throw error;
+      if(!data?.claimed)throw Error('mission_claim_not_confirmed');
+      claimedMissions.add(claimKey(kind,target));
+      const complete=document.createElement('span');
+      complete.className='l1017-mission-received';
+      complete.textContent='✓ تم الاستلام';
+      complete.setAttribute('aria-label','تم استلام المهمة بنجاح');
+      button.replaceWith(complete);
+      const message=kind==='referrals'
+        ?'تم استلام الإنجاز. أرباح الدعوات أُضيفت لمحفظتك عند تسجيل أصدقائك.'
+        :'تم استلام المهمة وتسجيل إنجازك.';
+      uiStatus(message,false);
+      if(typeof window.toast==='function')window.toast(message);
+    }catch(error){
+      const message=String(error?.message||error||'');
+      const label=message.includes('mission_not_completed')?'المهمة ما اكتملتش بعد؛ راجع تقدمك.':
+        message.includes('not_authenticated')?'لازم تسجّل الدخول أولًا.':'تعذر استلام المهمة. حاول مرة ثانية.';
+      uiStatus(label,true);
+      if(typeof window.toast==='function')window.toast(label);
+      button.disabled=false;button.textContent='استلام';
+    }
+  }
   function renderCompactMissions(monthlyCount){
+    monthlyReferralCount=monthlyCount;
     const holder=q('#l1017RefCompactList');
     const summary=q('#l1017RefCompactProgress');
     if(!holder)return;
@@ -75,17 +116,17 @@
       return '<div class="l1017-ref-compact-row '+kind+'">'
         +'<span class="l1017-ref-compact-check" aria-hidden="true">'+(done?'✓':target)+'</span>'
         +'<span class="l1017-ref-compact-description"><strong>'+label+'</strong><small>'+status+'</small></span>'
-        +'<span class="l1017-ref-compact-money"><strong>'+target+' د.ل</strong><small>الإجمالي</small></span>'
+        +'<span class="l1017-ref-compact-money"><strong>'+target+' د.ل</strong><small>الإجمالي المدفوع</small>'+claimButton('referrals',target,done)+'</span>'
       +'</div>';
     }).join('');
   }
   // These tabs display existing, verifiable milestones. Only referral sign-ins
   // produce wallet rewards; purchase and account tasks never write balances.
   let currentMissionTab='referrals',purchaseFetchInFlight=false;
-  const renderTask=(index,title,detail,done,progress,unit)=>'<div class="l1017-ref-compact-row '+(done?'is-done':'is-next')+'">'
+  const renderTask=(index,title,detail,done,progress,unit,kind,target)=>'<div class="l1017-ref-compact-row '+(done?'is-done':'is-next')+'">'
     +'<span class="l1017-ref-compact-check" aria-hidden="true">'+(done?'✓':index)+'</span>'
     +'<span class="l1017-ref-compact-description"><strong>'+title+'</strong><small>'+detail+'</small></span>'
-    +'<span class="l1017-ref-compact-money l1017-mission-counter"><strong>'+progress+'</strong><small>'+unit+'</small></span>'
+    +'<span class="l1017-ref-compact-money l1017-mission-counter"><strong>'+progress+'</strong><small>'+unit+'</small>'+claimButton(kind,target,done)+'</span>'
   +'</div>';
   function setTaskProgress(barId,count,max,summaryId,summary){
     const bar=q('#'+barId);
@@ -126,7 +167,7 @@
       list.innerHTML=targets.map((target,i)=>renderTask(i+1,
         target===1?'أكمل أول عملية شراء':'أكمل '+target+' عمليات شراء',
         completed>=target?'مكتملة':'من المشتريات التي تم تنفيذها',
-        completed>=target,Math.min(target,completed)+' / '+target,'طلبات')).join('');
+        completed>=target,Math.min(target,completed)+' / '+target,'طلبات','purchases',target)).join('');
       setTaskProgress('l1017PurchaseMissionBar',completed,10,'l1017PurchaseMissionSummary',completed+' مشتريات مكتملة');
     }catch(err){
       list.innerHTML='<p class="l1017-mission-loading">تعذر تحميل المشتريات. افتح القسم مجددًا للمحاولة.</p>';
@@ -151,7 +192,7 @@
         {label:'اربط رقم هاتفك بالحساب',detail:walletError?'تعذر التحقق من بيانات الهاتف':wallet?.libyana_phone?'تم حفظ رقم الهاتف':'أضف رقم هاتفك من حسابي',done:!walletError&&!!wallet?.libyana_phone}
       ];
       const done=tasks.filter(t=>t.done).length;
-      list.innerHTML=tasks.map((t,i)=>renderTask(i+1,t.label,t.detail,t.done,t.done?'مكتملة':'بانتظارك','الحالة')).join('');
+      list.innerHTML=tasks.map((t,i)=>renderTask(i+1,t.label,t.detail,t.done,t.done?'مكتملة':'بانتظارك','الحالة','login',i+1)).join('');
       setTaskProgress('l1017LoginMissionBar',done,3,'l1017LoginMissionSummary',done+' / 3 مهام');
     }catch(err){
       list.innerHTML='<p class="l1017-mission-loading">تعذر التحقق من حسابك. جرّب مرة ثانية.</p>';
@@ -205,21 +246,21 @@
             +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
             +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="تقدم مهام الدعوات هذا الشهر" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017RefMissionBar"></span></div>'
             +'<div class="l1017-ref-compact-list" id="l1017RefCompactList" aria-live="polite"></div>'
-            +'<p class="l1017-ref-compact-note">المبالغ إجمالي أرباح الدعوات في الشهر، وليست جوائز إضافية.</p>'
+            +'<p class="l1017-ref-compact-note">الدنانير في الدعوات تضاف تلقائيًا للمحفظة عند قبول الدعوة. زر «استلام» لتسجيل إكمال المهمة فقط، بدون دفع إضافي.</p>'
           +'</div>'
           +'<div id="l1017MissionPanelPurchases" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabPurchases" hidden>'
             +'<div class="l1017-ref-compact-heading"><h3>تقدم المشتريات</h3><small id="l1017PurchaseMissionSummary">مراجعة الطلبات…</small></div>'
             +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
             +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="مشتريات مكتملة من 10" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017PurchaseMissionBar"></span></div>'
             +'<div class="l1017-ref-compact-list" id="l1017PurchaseMissionList" aria-live="polite"><p class="l1017-mission-loading">اضغط على القسم لعرض مهام المشتريات.</p></div>'
-            +'<p class="l1017-ref-compact-note">تُحتسب المشتريات التي تم تنفيذها فقط. هذه مهام إنجاز، ولا تُضاف عنها أرباح مالية.</p>'
+            +'<p class="l1017-ref-compact-note">بعد اكتمال الشراء يظهر زر «استلام». هذه مهام إنجاز محفوظة ولا تضيف رصيدًا ماليًا.</p>'
           +'</div>'
           +'<div id="l1017MissionPanelLogin" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabLogin" hidden>'
             +'<div class="l1017-ref-compact-heading"><h3>تقدم تسجيل الدخول</h3><small id="l1017LoginMissionSummary">0 / 3 مهام</small></div>'
             +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
             +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="مهام تسجيل الدخول" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><span id="l1017LoginMissionBar"></span></div>'
             +'<div class="l1017-ref-compact-list" id="l1017LoginMissionList" aria-live="polite"><p class="l1017-mission-loading">اضغط على القسم لعرض مهام حسابك.</p></div>'
-            +'<p class="l1017-ref-compact-note">مهام إعداد الحساب تُحتسب مرة واحدة لكل خطوة، ولا تمنح أرصدة إضافية.</p>'
+            +'<p class="l1017-ref-compact-note">بعد إنهاء كل خطوة اضغط «استلام» لتثبيت الإنجاز في حسابك، بدون مكافأة نقدية إضافية.</p>'
           +'</div>'
         +'</section>'
         +'<section class="l1017-ref-how" aria-labelledby="l1017RefHowHeading">'
@@ -241,6 +282,10 @@
       else q('[data-view="account"]')?.click();
     });
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
+    node.addEventListener('click',e=>{
+      const claimButton=e.target.closest('[data-l1017-mission-claim]');
+      if(claimButton)void claimMission(claimButton);
+    });
     q('#l1017Referrals .l1017-mission-tabs')?.addEventListener('click',e=>{
       const button=e.target.closest('[data-l1017-mission-tab]');
       if(button)void setMissionTab(button.dataset.l1017MissionTab);
@@ -379,6 +424,11 @@
 
 
       q('#l1017EarnedTotal').textContent=Number(totals.credited_lyd||0).toFixed(2)+' د.ل';
+      // Restore claim state from the server, including after refresh or relogin.
+      const {data:myClaims,error:claimsError}=await db.rpc('get_my_store_mission_claims');
+      if(claimsError)console.warn('[mission claims/read]',String(claimsError.message||claimsError).slice(0,140));
+      else claimedMissions=new Set((Array.isArray(myClaims)?myClaims:[])
+        .map(item=>claimKey(item.kind,item.target)));
       renderCompactMissions(stats.monthly_used);
       if(currentMissionTab==='purchases')void loadPurchaseMissions();
       if(currentMissionTab==='login')void loadLoginMissions();

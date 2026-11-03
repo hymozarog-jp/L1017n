@@ -276,3 +276,202 @@ footer .footer-faq-link{
 @media(prefers-reduced-motion:reduce){
  #storeView #l1017nFaqInline .l1017-inline-faq-arrow{transition:none!important}
 }
+
+/* Illustration direction: crisp original SVG artwork with consistent purple,
+   sea-green and sky-blue highlights. No external image requests. */
+#storeView #l1017nFaqInline{
+  overflow:visible!important;
+  background:
+    radial-gradient(ellipse 77% 64% at 99% 0%,rgba(105,64,176,.13),transparent),
+    linear-gradient(148deg,#171629,#111826 85%)!important;
+  border-color:#60507c!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(170px,310px)!important;
+  align-items:center!important;
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:206px!important;
+  padding:17px clamp(15px,4vw,29px)!important;
+  margin-bottom:19px!important;
+  background:radial-gradient(ellipse 75% 120% at 80% 45%,#49316b76,transparent 65%),
+    linear-gradient(110deg,#232143,#17203d)!important;
+  border:1px solid #715890!important;
+  border-radius:21px!important;
+  box-shadow:inset 0 1px #ffffff12,0 13px 27px #0002!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(#c4b0ff28 .8px,transparent 1px);
+  background-size:19px 19px;mask-image:linear-gradient(90deg,transparent,#000);
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head>div:first-child{
+  position:relative;z-index:1;min-width:0;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head .l1017-inline-faq-tag{
+  display:inline-flex!important;align-items:center;gap:7px;
+  padding:6px 11px!important;margin:0 0 13px!important;
+  border:1px solid #9776d65b;border-radius:99px;
+  background:#9980da1b;color:#e6ccff!important;
+  font-size:11px!important;font-weight:800!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head h2{
+  font-size:clamp(25px,5vw,37px)!important;
+  font-weight:900!important;letter-spacing:-.5px;
+  text-shadow:0 3px 24px #0006;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head p{
+  max-width:390px;font-size:clamp(11.5px,2.5vw,14px)!important;
+  color:#c9c4e0!important;line-height:1.9!important;
+}
+#storeView #l1017nFaqInline .l1017-faq-art{
+  position:relative;z-index:1;align-self:center;
+  width:100%;max-width:310px;aspect-ratio:348/258;
+  justify-self:center;pointer-events:none;filter:drop-shadow(0 17px 15px #080a2850);
+}
+#storeView #l1017nFaqInline .l1017-faq-art svg{
+  display:block;width:100%;height:100%;object-fit:contain;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item{
+  transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease!important;
+  background:linear-gradient(120deg,#1d2134,#181d2c)!important;
+  border-color:#454460!important;
+  box-shadow:inset 0 1px #ffffff08!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item:hover{
+  background:linear-gradient(115deg,#25253d,#1c2134)!important;
+  border-color:#8370a9!important;
+  transform:translateY(-1px);
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item[open]{
+  border-color:#9f7cdb!important;
+  background:linear-gradient(120deg,#292241,#1e2338)!important;
+  box-shadow:0 8px 25px #0003,inset 0 1px #ffffff12!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index{
+  display:grid!important;place-items:center!important;
+  flex:0 0 43px!important;width:43px!important;height:43px!important;
+  border-radius:14px!important;border:1px solid #8065ac!important;
+  background:linear-gradient(130deg,#483267,#302641)!important;
+  box-shadow:inset 0 1px #ffffff12;
+  color:#e9d9ff!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index svg{
+  display:block!important;width:23px!important;height:23px!important;
+  flex:none!important;stroke:currentColor!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index[data-tint="mint"]{
+  border-color:#4d957b!important;
+  background:linear-gradient(130deg,#24594b,#193b3d)!important;
+  color:#b5f7d9!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index[data-tint="blue"]{
+  border-color:#4f7cac!important;
+  background:linear-gradient(130deg,#2a4c76,#1d3458)!important;
+  color:#b9ddff!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index[data-tint="amber"]{
+  border-color:#a7854b!important;
+  background:linear-gradient(130deg,#6e4d25,#493627)!important;
+  color:#ffdfa2!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item>summary{
+  gap:13px!important;
+  min-height:73px!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item[open] .l1017-inline-faq-arrow{
+  border-color:#dcc7ff!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-more{
+  padding:15px 2px 2px!important;
+  border-top:1px solid #655b784d!important;
+  margin-top:24px!important;
+}
+#accountModern .account-contact-options [data-account-action="faq"] .account-row-icon{
+  background:linear-gradient(145deg,#603897,#32264d)!important;
+  color:#e7cbff!important;border-color:#9970bd!important;
+  box-shadow:inset 0 1px #ffffff2c,0 5px 12px #2d174e55;
+}
+#accountModern .account-contact-options [data-account-action="faq"] .account-row-icon svg{
+  filter:drop-shadow(0 2px 3px #0e082b);
+}
+footer .footer-faq-link{
+  border-color:#8b6db766!important;
+  background:linear-gradient(135deg,#392a56,#25213d)!important;
+  color:#ebd9ff!important;box-shadow:inset 0 1px #ffffff0c;
+}
+#l1017nFaqPage .faq-hero-art{
+  width:min(195px,50vw);height:auto;display:block;
+  margin:0 auto 9px;filter:drop-shadow(0 14px 22px #6d4eb526);
+}
+#l1017nFaqPage .faq-hero-art svg{width:100%;height:auto;display:block}
+#l1017nFaqPage .faq-card>.faq-number{display:none}
+#l1017nFaqPage .faq-number svg{display:block;width:21px;height:21px}
+#l1017nFaqPage .faq-number{
+  width:39px;flex-basis:39px;height:39px;border-radius:13px;
+  background:linear-gradient(140deg,#4b326f,#312447);
+  color:#eedcff;border-color:#8464b5;
+}
+#l1017nFaqPage .faq-number[data-category="wallet"]{
+  background:linear-gradient(140deg,#24554b,#20383e);
+  color:#bbf9e1;border-color:#4b887a;
+}
+#l1017nFaqPage .faq-number[data-category="account"]{
+  background:linear-gradient(140deg,#294c73,#243750);
+  color:#c3e4ff;border-color:#608baf;
+}
+#l1017nFaqPage .faq-card:hover{border-color:#725997}
+#l1017nFaqPage .faq-card[open]{
+  background:linear-gradient(126deg,#292242,#1e253b);
+  box-shadow:inset 0 1px #ffffff12,0 7px 21px #0003;
+}
+#l1017nFaqPage .faq-hero{
+  background:radial-gradient(ellipse 75% 45% at 50% 38%,#593e9550,transparent 76%);
+  border-radius:24px;
+}
+@media(max-width:600px){
+  #storeView #l1017nFaqInline .l1017-inline-faq-head{
+    grid-template-columns:minmax(0,1fr) 39%!important;
+    min-height:157px!important;gap:0!important;
+    padding:14px 10px 14px 14px!important;border-radius:18px!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-head .l1017-inline-faq-tag{
+    font-size:9px!important;margin-bottom:9px!important;
+    padding:5px 8px!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-head h2{
+    font-size:clamp(21px,5.9vw,29px)!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-head p{
+    font-size:10.5px!important;line-height:1.7!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-item>summary{
+    min-height:66px!important;gap:9px!important;padding:11px!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-index{
+    width:37px!important;height:37px!important;flex-basis:37px!important;
+    border-radius:12px!important;
+  }
+  #storeView #l1017nFaqInline .l1017-inline-faq-index svg{
+    width:20px!important;height:20px!important;
+  }
+}
+@media(max-width:345px){
+  #storeView #l1017nFaqInline .l1017-inline-faq-head{
+    grid-template-columns:minmax(0,1fr) 33%!important;
+  }
+}
+@media(prefers-reduced-motion:no-preference){
+  #storeView #l1017nFaqInline .l1017-faq-art{
+    animation:l1017-faq-hover 6s ease-in-out infinite;
+  }
+  @keyframes l1017-faq-hover{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-5px)}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #storeView #l1017nFaqInline .l1017-faq-art{animation:none!important}
+  #storeView #l1017nFaqInline .l1017-inline-faq-item{transition:none!important}
+}

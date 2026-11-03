@@ -1,0 +1,159 @@
+/* L1017n FAQ — standalone searchable help center, dark premium and mobile-first. */
+#l1017nFaqPage{
+  position:fixed;inset:0;margin:0;padding:0;border:0;
+  width:100%;height:100%;max-width:none;max-height:none;
+  background:radial-gradient(ellipse 110% 58% at 80% 0%,rgba(92,49,156,.28),transparent 65%),#0d1020;
+  color:#f8f8ff;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  direction:rtl;box-sizing:border-box;
+}
+#l1017nFaqPage::backdrop{background:#080a12}
+#l1017nFaqPage *{box-sizing:border-box}
+#l1017nFaqPage [hidden]{display:none!important}
+#l1017nFaqPage .faq-shell{max-width:660px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 17px calc(32px + env(safe-area-inset-bottom));}
+#l1017nFaqPage .faq-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#l1017nFaqPage button,#l1017nFaqPage input{font:inherit}
+#l1017nFaqPage .faq-back{
+  display:inline-flex;align-items:center;gap:5px;padding:9px 13px;min-height:43px;
+  border:1px solid #52517b;border-radius:13px;background:#24213e;
+  color:#eae7ff;font-size:13px;font-weight:750;cursor:pointer;
+}
+#l1017nFaqPage .faq-back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#l1017nFaqPage .faq-brand{font-size:11px;letter-spacing:.5px;font-weight:750;color:#9c9cb9;direction:ltr}
+#l1017nFaqPage .faq-brand span{color:#8055bb}
+#l1017nFaqPage .faq-hero{text-align:center;padding:35px 10px 27px;display:flex;flex-direction:column;align-items:center}
+#l1017nFaqPage .faq-hero-kicker{font-size:12px;letter-spacing:1px;color:#d8baff;font-weight:800;margin-bottom:15px}
+#l1017nFaqPage .faq-hero-icon{
+  width:73px;height:73px;display:grid;place-items:center;border-radius:24px;
+  border:1px solid #b18bf760;background:linear-gradient(145deg,#7234b1,#35255e);
+  color:#faf1ff;box-shadow:0 15px 46px #9c49ef31;margin-bottom:17px;
+}
+#l1017nFaqPage .faq-hero-icon svg{width:38px;height:38px;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;fill:none}
+#l1017nFaqPage h1{margin:0;font-size:clamp(26px,7vw,36px);line-height:1.5;font-weight:900;outline:none}
+#l1017nFaqPage .faq-hero p{font-size:13px;line-height:1.9;color:#b0b5cb;max-width:440px;margin:7px auto 0}
+#l1017nFaqPage .faq-search-wrap{position:relative;display:flex;align-items:center;margin:0 0 16px}
+#l1017nFaqPage .faq-search-wrap svg{
+  position:absolute;right:16px;width:20px;height:20px;stroke:#aaa6c1;
+  fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none;
+}
+#l1017nFaqPage .faq-search-wrap input{
+  width:100%;min-height:54px;padding:13px 46px 13px 16px;border:1px solid #595276;
+  border-radius:17px;background:#1b1c30;color:#fff;font-size:14px;outline:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+#l1017nFaqPage .faq-search-wrap input::placeholder{color:#9299af}
+#l1017nFaqPage .faq-search-wrap input:focus{border-color:#b58cff;box-shadow:0 0 0 3px #965ad024}
+#l1017nFaqPage .faq-filters{
+  display:flex;gap:8px;overflow-x:auto;padding:1px 0 14px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+#l1017nFaqPage .faq-filters::-webkit-scrollbar{display:none}
+#l1017nFaqPage .faq-filter{
+  flex:0 0 auto;min-height:37px;padding:8px 13px;border-radius:99px;
+  border:1px solid #43445f;background:#1b2034;color:#b9bed0;
+  font-size:12px;font-weight:700;cursor:pointer;
+}
+#l1017nFaqPage .faq-filter.is-active{
+  background:linear-gradient(125deg,#7650bc,#59388e);border-color:#a47be1;
+  color:#fff;box-shadow:0 4px 14px #7040b624;
+}
+#l1017nFaqPage .faq-result-label{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:7px 1px 12px;
+}
+#l1017nFaqPage .faq-result-label strong{font-size:15px;font-weight:800}
+#l1017nFaqPage .faq-result-label span{font-size:12px;color:#a9a8c0}
+#l1017nFaqPage .faq-list{display:grid;gap:9px}
+#l1017nFaqPage .faq-card{
+  border:1px solid #3b3b57;border-radius:17px;background:#191c2c;
+  overflow:hidden;transition:border-color .18s,background .18s;
+}
+#l1017nFaqPage .faq-card[open]{border-color:#825dbb;background:#221d37}
+#l1017nFaqPage .faq-card>summary{
+  display:flex;align-items:center;gap:12px;min-height:62px;padding:15px;
+  cursor:pointer;list-style:none;user-select:none;
+}
+#l1017nFaqPage .faq-card>summary::-webkit-details-marker{display:none}
+#l1017nFaqPage .faq-number{
+  flex:0 0 31px;display:grid;place-items:center;width:31px;height:31px;
+  border-radius:10px;background:#2f2947;border:1px solid #493c67;color:#d3b8fa;
+  font-size:11px;font-weight:850;direction:ltr;
+}
+#l1017nFaqPage .faq-question{
+  flex:1;min-width:0;color:#f3effa;font-size:13px;font-weight:800;
+  line-height:1.7;overflow-wrap:anywhere;
+}
+#l1017nFaqPage .faq-chevron{
+  display:block;flex:0 0 10px;width:10px;height:10px;margin:0 5px;
+  border-left:2px solid #b5a8cf;border-bottom:2px solid #b5a8cf;
+  transform:rotate(-45deg);transition:transform .18s;
+}
+#l1017nFaqPage .faq-card[open] .faq-chevron{transform:rotate(135deg)}
+#l1017nFaqPage .faq-answer{padding:0 16px 17px 56px;color:#c8c6da}
+#l1017nFaqPage .faq-answer p{
+  margin:0;padding-top:12px;border-top:1px solid #5f536b66;
+  line-height:2;font-size:12.5px;overflow-wrap:anywhere;
+}
+#l1017nFaqPage .faq-no-results{
+  text-align:center;padding:24px;border-radius:16px;background:#201d34;
+  color:#c7c3dd;font-size:13px;line-height:1.8;
+}
+#l1017nFaqPage .faq-support{
+  margin-top:23px;padding:20px 17px;border-radius:19px;
+  border:1px solid #436a66;background:linear-gradient(130deg,#19332e,#161f30);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+#l1017nFaqPage .faq-support strong{font-size:15px;color:#eaffef}
+#l1017nFaqPage .faq-support p{margin:6px 0 0;font-size:12px;line-height:1.8;color:#aebfb9}
+#l1017nFaqPage .faq-support a{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:13px;border:1px solid #379575;background:#1d664e;color:#fff;
+  font-weight:850;font-size:12px;text-decoration:none;padding:12px 14px;min-height:44px;
+}
+#l1017nFaqPage .faq-security{
+  margin:18px auto 0;text-align:center;color:#8d95ad;
+  font-size:11px;line-height:1.9;
+}
+#l1017nFaqPage :is(button,summary,a):focus-visible{
+  outline:2px solid #c4a3ff;outline-offset:3px;
+}
+@media(max-width:510px){
+  #l1017nFaqPage .faq-shell{padding-left:13px;padding-right:13px}
+  #l1017nFaqPage .faq-hero{padding-top:23px}
+  #l1017nFaqPage .faq-support{display:grid;gap:12px;padding:17px}
+  #l1017nFaqPage .faq-support a{width:100%}
+  #l1017nFaqPage .faq-answer{padding-left:14px}
+  #l1017nFaqPage .faq-card>summary{padding:13px;gap:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  #l1017nFaqPage *{transition:none!important;animation:none!important}
+}
+
+/* FAQ entry alongside existing support and TikTok inside Account. */
+#accountModern .account-contact-options [data-account-action="faq"]{
+  display:flex;align-items:center;gap:12px;min-height:63px;width:100%;
+  box-sizing:border-box;padding:11px 14px;border:0;border-bottom:1px solid #263652;
+  background:transparent;color:#f6f8ff;text-align:right;line-height:1.35;
+  cursor:pointer;font:inherit;transition:background .18s,transform .18s;
+}
+#accountModern .account-contact-options [data-account-action="faq"]:hover{background:#ffffff0c}
+#accountModern .account-contact-options [data-account-action="faq"]:active{background:#ffffff13;transform:scale(.995)}
+#accountModern .account-contact-options [data-account-action="faq"] .account-row-icon{
+  background:#2f2754;border:1px solid #5d478b;color:#d1afff;
+}
+#accountModern .account-contact-options [data-account-action="faq"] .account-row-icon svg{
+  width:23px;height:23px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;
+}
+footer .footer-faq-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#b9b1e0;background:transparent;border:1px solid #6e658466;
+  border-radius:9px;padding:7px 11px;font:inherit;font-size:12px;
+  cursor:pointer;text-decoration:none;margin-inline:6px;
+}
+footer .footer-faq-link:hover{background:#ffffff12;color:#fff}
+footer .footer-faq-link:focus-visible{outline:2px solid #c2a3ff;outline-offset:3px}
+@media(max-width:600px){
+  #accountModern .account-contact-options [data-account-action="faq"]{
+    min-height:61px;padding:10px 12px;gap:10px;
+  }
+}

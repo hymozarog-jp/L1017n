@@ -111,6 +111,10 @@ function instructions(){if(typeof window.refreshAutoTopup==='function')window.re
 async function renderWallet(){initWalletShowcase();if(typeof window.refreshAutoTopup==='function')window.refreshAutoTopup();const user=await currentUser();const topupForm=$('#topupForm');if(topupForm){let gate=$('#libyanaTopupGate');if(!gate){gate=document.createElement('div');gate.id='libyanaTopupGate';gate.className='panel';gate.style.cssText='padding:20px;text-align:center;border-radius:16px;margin-bottom:14px';topupForm.parentNode.insertBefore(gate,topupForm)}let allowed=false;if(user){const r=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();allowed=!r.error&&!!r.data?.libyana_phone}topupForm.style.display=allowed?'':'none';gate.style.display=allowed?'none':'';gate.innerHTML='<h3>'+uiIcon('smartphone')+' يجب تسجيل رقم الهاتف أولاً</h3><p>قبل استخدام المحفظة، سجّل رقم هاتفك على حسابك. الرقم لا يمكن تسجيله في حساب ثانٍ.</p><button type="button" class="btn btn-primary" id="goLibyanaSettings">إدخال رقم الهاتف ←</button>';gate.querySelector('button').onclick=()=>switchView('account')} if(!user){$('#balanceAmount').textContent='0.00';if($('#walletShowcaseBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#walletShowcaseBalance'));else $('#walletShowcaseBalance').textContent='0.000';}if($('#madarWalletBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#madarWalletBalance'));else $('#madarWalletBalance').textContent='0.000';}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent='0.000 د.ل';$('#walletUserState').innerHTML='<i></i> غير مسجل';$('#topupHistory').innerHTML='<div class="muted">سجّل دخولك أولاً باش تقدر تشحن المحفظة.</div>';return}const {data:wallet}=await supabaseClient.from('wallet_accounts').select('balance,madar_balance,primary_balance').eq('user_id',user.id).maybeSingle();if($('#madarWalletBalance')){const val=Number(wallet?.madar_balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#madarWalletBalance'),val);else $('#madarWalletBalance').textContent=val.toFixed(3);}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent=Number(wallet?.primary_balance||0).toFixed(3)+' د.ل';$('#balanceAmount').textContent=Number(wallet?.balance||0).toFixed(2);if($('#walletShowcaseBalance')){const val=Number(wallet?.balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#walletShowcaseBalance'),val);else $('#walletShowcaseBalance').textContent=val.toFixed(3);}$('#walletUserState').innerHTML='<i></i> '+escapeHtml(user.email);const {data:list,error}=await supabaseClient.from('topup_requests').select('id,user_id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);if(error){$('#topupHistory').innerHTML='<div class="muted">تعذر تحميل طلبات الشحن. حاول تحديث الصفحة.</div>';return}$('#topupHistory').innerHTML=walletTransactionRows(list);applyWalletTransactionFilter();instructions()}
 async function renderOrders(){
  const root=$('#ordersList');if(!root)return;
+ const openedOrderIds=new Set([...root.querySelectorAll('.orders-modern-card')]
+   .filter(c=>c.querySelector('.orders-extra-details[open]')).map(c=>c.dataset.orderId));
+ const hadRendered=root.dataset.ordersRendered==='1';
+ const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
  const [pr,tr]=await Promise.all([
@@ -138,7 +142,7 @@ async function renderOrders(){
 
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...(tr.data||[]).map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||x.status==='approved'?'completed':'pending';
- const status=x=>group(x)==='completed'?'مكتملة':group(x)==='refunded'?'مسترجعة':'قيد التنفيذ';
+ const status=x=>group(x)==='completed'?'مكتمل':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');
  // Show static matching artwork; financial states, totals and transactions are unchanged.
  const orderArt=x=>{
@@ -149,7 +153,15 @@ async function renderOrders(){
    return null;
  };
  const label=x=>x.kind==='topup'?'شحن '+(x.method==='libyana'?'ليبيانا':'المدار الجديد'):(x.product_name||'طلب شراء');
- const date=x=>new Date(x.created_at).toLocaleDateString('en-GB');
+ const date=x=>new Date(x.created_at).toLocaleDateString('en-GB',{timeZone:'Africa/Tripoli'});
+ const orderTime=x=>new Date(x.created_at).toLocaleTimeString('ar-LY',{timeZone:'Africa/Tripoli',hour:'2-digit',minute:'2-digit'});
+ const stageFor=x=>{
+   if(group(x)==='completed')return 4;
+   if(group(x)==='refunded')return 0;
+   if(['processing','in_processing'].includes(x.status))return 2;
+   if(['fulfilling','in_progress'].includes(x.status))return 3;
+   return 1;
+ };
  const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مسترجعة</button></div>';
  const manualOrders=new Map();
  const cards=orders.map(x=>{
@@ -169,67 +181,93 @@ async function renderOrders(){
    const contact=manual?'<div class="orders-manual-handover"><p>لتستلم الغرض داخل الماب، لازم تكلم المتجر عبر واتساب أو تيليجرام وتذكر رقم الطلب.</p><button type="button" data-order-contact="'+escapeHtml(x.id)+'">تواصل لاستلام الغرض</button></div>':'';
    const art=orderArt(x);
    const orderImage=art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
-   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
+   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
  }).join('');
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';
 
  // Premium orders dashboard; all metrics are derived from the signed-in user's existing order records.
  const primeCounts={all:orders.length,pending:0,completed:0,refunded:0};
  orders.forEach(order=>{primeCounts[group(order)]++});
- const primeIntro='<div class="orders-prime-heading"><div><strong>طلباتك تحت المتابعة</strong><p>حالة كل طلب وتفاصيله في مكان واحد</p></div>'
-  +'<button type="button" class="orders-prime-refresh" data-orders-reload aria-label="تحديث الطلبات"><svg viewBox="0 0 24 24" aria-hidden="true">'
-  +'<path d="M20 11a8 8 0 1 0-2.1 5.4M20 4v7h-7" stroke-linecap="round" stroke-linejoin="round"/></svg>تحديث</button></div>';
- const primeStats='<div class="orders-prime-stats" aria-label="إحصائيات الطلبات">'
-  +'<div class="orders-prime-stat"><span>كل الطلبات</span><strong>'+primeCounts.all+'</strong></div>'
-  +'<div class="orders-prime-stat"><span>قيد التنفيذ</span><strong>'+primeCounts.pending+'</strong></div>'
-  +'<div class="orders-prime-stat"><span>مكتملة</span><strong>'+primeCounts.completed+'</strong></div></div>';
- root.insertAdjacentHTML('afterbegin',primeIntro+primeStats);
  root.querySelectorAll('[data-order-filter]').forEach(button=>{
    const count=document.createElement('span');count.className='orders-tab-count';
    count.textContent=String(primeCounts[button.dataset.orderFilter]||0);button.appendChild(count);
  });
  [...root.querySelectorAll('.orders-modern-card')].forEach((card,index)=>{
-   const order=orders[index],state=group(order);
-   const help=state==='completed'
-     ?(order.kind==='topup'?'تم اعتماد شحن المحفظة وفق حالة الطلب.':'تم إكمال طلبك وفق الحالة المسجلة.')
-     :state==='refunded'?'تم إغلاق هذا الطلب؛ راجع ملاحظات المتجر إن وجدت.'
-     :order.kind==='topup'?'طلب شحن المحفظة مسجل، وستتغير حالته بعد التحقق من التحويل.'
-     :'تم تسجيل طلب الشراء، وسيتم تحديث حالته بعد التنفيذ.';
-   const stages=state==='refunded'?['تم تسجيل الطلب','قيد المراجعة','أُغلق الطلب']:['تم تسجيل الطلب','قيد المعالجة','مكتمل'];
-   const stepIndex=state==='pending'?1:2;
-   const track='<div class="orders-stage-track" aria-label="مراحل الطلب">'
-      +stages.map((step,i)=>'<span class="'+(i<=stepIndex?'is-on':'')+'">'+step+'</span>').join('')+'</div>';
-   // Delivery timing appears only after an actual purchase order exists.
-   const deliveryAfterOrder=order.kind==='purchase'&&state==='pending'&&order.roblox_username!=='DIGITAL_CODE'
-     ? '<div class="l1017-delivery-time" role="note">'+uiIcon('clock')
-       +'<span>'+escapeHtml(window.L1017nDeliveryPolicy?.label(categories.get(String(order.product_id))?.game||'roblox')
-         ||'وقت التسليم: لم تُحدَّد مدة ثابتة حاليًا. التنفيذ يدوي بعد مراجعة الطلب، وليس فوريًا.')+'</span></div>'
-     : '';
+   const order=orders[index],state=group(order),progress=stageFor(order);
+   const topup=order.kind==='topup';
+   const headline=state==='completed'?'مكتمل'
+     :state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
+     :progress===3?'قيد التنفيذ':progress===2?'قيد المعالجة'
+     :topup?'قيد المراجعة':'قيد الانتظار';
+   const caption=state==='completed'
+     ?(topup?'تم اعتماد شحن المحفظة وفق حالة الطلب.':'تم تنفيذ طلبك بنجاح.')
+     :state==='refunded'?'الطلب مغلق. راجع ملاحظة المتجر إن وجدت.'
+     :topup?'طلب شحن المحفظة مسجل وقيد التحقق من التحويل.'
+       :'طلبك في قائمة الانتظار وسيبدأ التنفيذ بعد مراجعته.';
+   // Source statuses only: intermediate phases are not silently assumed to happen.
+   const stageNames=['تم الاستلام','قيد الانتظار','قيد المعالجة','قيد التنفيذ','مكتمل'];
+   const stageMarkup='<div class="orders-track-steps" aria-label="مراحل الطلب" style="--track-progress:'+(progress*25)+'%">'
+     +stageNames.map((name,i)=>'<span class="orders-track-step '+(i<=progress?'is-on ':'')+(i===progress?'is-current':'')+'">'
+       +'<span class="orders-track-node" aria-hidden="true">'+(i<=progress?'✓':'•')+'</span>'
+       +'<span class="orders-track-label">'+name+'</span></span>').join('')+'</div>';
+   const hourglass='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3v4l5 5-5 5v4m10-18v4l-5 5 5 5v4"/></svg>';
+   const check='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 12 5 5L20 6"/></svg>';
+   const clock='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+   const refresh='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 5.4M20 4v7h-7"/></svg>';
+   const complaintText='مرحباً، أريد تقديم شكوى بشأن طلبي في متجر L1017n.'
+     +'\nرقم الطلب: '+order.id
+     +'\nالمنتج: '+label(order)
+     +'\nتفاصيل الشكوى: ';
+   // Same WhatsApp contact already configured for post-purchase handover.
+   const whatsapp='https://wa.me/218925620538?text='+encodeURIComponent(complaintText);
+   const tracker='<div class="orders-track-panel" data-progress-state="'+state+'">'
+     +'<div class="orders-track-head"><span class="orders-track-symbol">'
+     +(state==='completed'?check:state==='refunded'?clock:hourglass)
+     +'</span><div class="orders-track-heading"><span class="orders-track-eyebrow">حالة الطلب</span>'
+     +'<strong class="orders-track-title">'+escapeHtml(headline)+'</strong></div></div>'
+     +'<p class="orders-track-note">'+escapeHtml(caption)+'</p>'
+     +stageMarkup
+     +'<button type="button" class="orders-track-refresh" data-order-refresh="'+escapeHtml(String(order.id))+'">'
+     +refresh+' تحديث الحالة</button></div>';
+   const metadata='<div class="orders-track-meta">'
+     +'<div><span>تاريخ الطلب</span><strong dir="ltr">'+escapeHtml(date(order))+'</strong></div>'
+     +'<div><span>وقت الطلب (ليبيا)</span><strong>'+escapeHtml(orderTime(order))+'</strong></div>'
+     +'<div><span>رقم الطلب</span><strong dir="ltr">#'+escapeHtml(String(order.id).slice(0,8).toUpperCase())+'</strong></div>'
+     +'<div><span>المبلغ</span><strong dir="ltr">'+Number(topup?order.amount:order.total_amount||0).toFixed(3)+' د.ل</strong></div>'
+     +'</div>';
    const details=document.createElement('details');details.className='orders-extra-details';
-   details.innerHTML='<summary>عرض تفاصيل الطلب</summary><div class="orders-detail-body">'
-       +'<p class="orders-detail-help">'+help+'</p>'+deliveryAfterOrder+track
-       +(order.kind==='topup'&&order.transfer_reference?'<div class="orders-detail-ref">'
-        +'<span>مرجع التحويل</span><b>'+escapeHtml(order.transfer_reference)+'</b></div>':'')
-       +'<div class="orders-detail-actions"></div></div>';
+   details.open=openedOrderIds.has(String(order.id))||(!hadRendered&&index===0);
+   details.innerHTML='<summary>حالة الطلب والتفاصيل</summary><div class="orders-detail-body">'
+     +tracker+metadata
+     +(topup&&order.transfer_reference?'<div class="orders-detail-ref"><span>مرجع التحويل</span><b>'
+       +escapeHtml(order.transfer_reference)+'</b></div>':'')
+     +'<a class="orders-complaint" href="'+whatsapp+'" target="_blank" rel="noopener noreferrer">تقديم شكوى عبر واتساب</a>'
+     +'<div class="orders-detail-actions"></div></div>';
    const actions=details.querySelector('.orders-detail-actions');
-   const id=card.querySelector('.orders-card-id');if(id)actions.appendChild(id);
+   const id=card.querySelector('.orders-card-id');if(id)actions.appendChild(id.cloneNode(true));
    const copy=document.createElement('button');copy.type='button';copy.className='orders-copy-id';
    copy.dataset.orderCopy=String(order.id);copy.textContent='نسخ رقم الطلب';actions.appendChild(copy);
    const note=card.querySelector('.orders-card-note');if(note)actions.appendChild(note);
    const codeButton=card.querySelector('[data-order-code]');
    if(codeButton){codeButton.textContent='عرض الكود الرقمي';actions.appendChild(codeButton)}
-   card.appendChild(details);
+   const contact=card.querySelector('.orders-manual-handover');
+   if(contact)details.querySelector('.orders-detail-body').appendChild(contact);
+   const mini=document.createElement('div');mini.className='orders-mini-progress';
+   mini.setAttribute('aria-hidden','true');
+   mini.innerHTML=Array.from({length:5},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
+   card.appendChild(mini,details);
  });
+ root.dataset.ordersRendered='1';
  if(!orders.length){
    const list=root.querySelector('.orders-modern-list');
    if(list)list.innerHTML='<div class="orders-empty-state"><span class="orders-empty-mark" aria-hidden="true">▤</span>'
      +'<h3>ما عندكش طلبات حتى الآن</h3><p>أول ما تشحن محفظتك أو تطلب منتج، بتشوف طلبك هنا.</p>'
      +'<button type="button" data-orders-shop>تصفح المنتجات</button></div>';
- }else{
-   root.insertAdjacentHTML('beforeend','<div class="orders-prime-note"><span class="orders-note-mark" aria-hidden="true">i</span>'
-      +'<div><strong>كيف تتابع طلبك؟</strong><p>افتح تفاصيل الطلب لمتابعة الحالة أو نسخ رقم الطلب، وعرض الكود والملاحظات إن وجدت.</p></div></div>');
  }
- root.querySelector('[data-orders-reload]')?.addEventListener('click',()=>{void renderOrders()});
+ root.querySelectorAll('[data-order-refresh]').forEach(btn=>btn.addEventListener('click',()=>{
+   btn.disabled=true;
+   void renderOrders().catch(e=>{console.warn('[orders/status refresh]',e);if(btn.isConnected)btn.disabled=false;});
+ }));
  root.querySelector('[data-orders-shop]')?.addEventListener('click',()=>switchView('store'));
  root.querySelectorAll('[data-order-copy]').forEach(button=>button.addEventListener('click',async()=>{
    const id=button.dataset.orderCopy;
@@ -250,6 +288,10 @@ async function renderOrders(){
  }));
 
  root.querySelectorAll('[data-order-filter]').forEach(b=>b.addEventListener('click',()=>{root.querySelectorAll('[data-order-filter]').forEach(t=>t.classList.toggle('active',t===b));let visible=0;root.querySelectorAll('[data-order-status]').forEach(card=>{const show=b.dataset.orderFilter==='all'||card.dataset.orderStatus===b.dataset.orderFilter;card.hidden=!show;if(show)visible++});const empty=root.querySelector('.orders-filter-empty');if(empty)empty.hidden=visible!==0||orders.length===0}));
+ if(priorFilter!=='all'&&!window.L1017nJustPlacedOrderId){
+   const tab=root.querySelector('[data-order-filter="'+priorFilter+'"]');
+   if(tab)tab.click();
+ }
  const justPlacedId=window.L1017nJustPlacedOrderId;
  if(justPlacedId){
    const justPlaced=[...root.querySelectorAll('.orders-modern-card')].find(card=>card.dataset.orderId===justPlacedId);

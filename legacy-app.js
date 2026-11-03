@@ -113,7 +113,6 @@ async function renderOrders(){
  const root=$('#ordersList');if(!root)return;
  const openedOrderIds=new Set([...root.querySelectorAll('.orders-modern-card')]
    .filter(c=>c.querySelector('.orders-extra-details[open]')).map(c=>c.dataset.orderId));
- const hadRendered=root.dataset.ordersRendered==='1';
  const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
@@ -236,7 +235,7 @@ async function renderOrders(){
      +'<div><span>المبلغ</span><strong dir="ltr">'+Number(topup?order.amount:order.total_amount||0).toFixed(3)+' د.ل</strong></div>'
      +'</div>';
    const details=document.createElement('details');details.className='orders-extra-details';
-   details.open=openedOrderIds.has(String(order.id))||(!hadRendered&&index===0);
+   details.open=openedOrderIds.has(String(order.id));
    details.innerHTML='<summary>حالة الطلب والتفاصيل</summary><div class="orders-detail-body">'
      +tracker+metadata
      +(topup&&order.transfer_reference?'<div class="orders-detail-ref"><span>مرجع التحويل</span><b>'
@@ -256,6 +255,30 @@ async function renderOrders(){
    mini.setAttribute('aria-hidden','true');
    mini.innerHTML=Array.from({length:5},(_,i)=>'<span class="'+(i<=progress?'is-on':'')+'"></span>').join('');
    card.append(mini,details);
+   // The whole compact order card toggles its details; actions inside stay clickable.
+   // The newly placed order remains opened by the existing justPlacedId handling.
+   const toggleOrder=()=>{
+     details.open=!details.open;
+     card.classList.toggle('orders-card-expanded',details.open);
+     card.setAttribute('aria-expanded',String(details.open));
+   };
+   card.tabIndex=0;
+   card.setAttribute('aria-label','تفاصيل الطلب: '+label(order));
+   card.setAttribute('aria-expanded',String(details.open));
+   card.classList.toggle('orders-card-expanded',details.open);
+   card.addEventListener('click',e=>{
+     if(e.target.closest('.orders-extra-details, button, a, input, select, textarea, [role="button"]'))return;
+     toggleOrder();
+   });
+   card.addEventListener('keydown',e=>{
+     if(e.target!==card || (e.key!=='Enter'&&e.key!==' '))return;
+     e.preventDefault();
+     toggleOrder();
+   });
+   details.addEventListener('toggle',()=>{
+     card.classList.toggle('orders-card-expanded',details.open);
+     card.setAttribute('aria-expanded',String(details.open));
+   });
  });
  root.dataset.ordersRendered='1';
  if(!orders.length){

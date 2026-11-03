@@ -239,3 +239,83 @@
 }
 #ordersView #ordersList .orders-detail-body button{cursor:pointer}
 #ordersView #ordersList .orders-detail-body a{cursor:pointer}
+
+/* Order acceptance/completion palette. Presentation only: data-order-status
+   comes from the existing backend and is never modified by these rules. */
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"]{
+  border-color:#27654c!important;
+  border-inline-start-color:#35da93!important;
+  background:linear-gradient(135deg,#13291f,#14181b 67%)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"].orders-card-expanded{
+  border-color:#39bd82!important;
+  border-inline-start-color:#49e6a1!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"]:focus-visible{
+  outline-color:#58eab1!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-mini-progress span.is-on{
+  background:#3ade9a!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-panel{
+  border-color:#3d9c75!important;
+  background:radial-gradient(ellipse at 22% 0%,rgba(54,177,122,.22),transparent 70%),
+    linear-gradient(135deg,#153b2a,#151b1a 82%)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-title{
+  color:#79f4b7!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-symbol{
+  border-color:#39bf83!important;
+  background:#205039!important;
+  box-shadow:0 0 0 7px #32c98022,inset 0 0 0 4px #182820!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-symbol svg{
+  stroke:#91ffd0!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-steps::before{
+  background:#3cd99a!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-step.is-on .orders-track-node{
+  background:#43dda0!important;border-color:#43dda0!important;color:#102e20!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="completed"] .orders-track-refresh{
+  background:#1c4835!important;border-color:#3dbe83!important;color:#a1fbd2!important;
+}
+/* Rejected/refunded orders turn red, rather than keeping the yellow waiting bar. */
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"]{
+  border-color:#854250!important;
+  border-inline-start-color:#f46e86!important;
+  background:linear-gradient(135deg,#332027,#1b191e 74%)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"].orders-card-expanded{
+  border-color:#dd6a7e!important;border-inline-start-color:#ff7c94!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"]:focus-visible{
+  outline-color:#ff889e!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-mini-progress span.is-on{
+  background:#ec6c81!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-panel{
+  border-color:#a75b6a!important;
+  background:linear-gradient(140deg,#442630,#211b22)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-title{
+  color:#ffb4c3!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-symbol{
+  border-color:#d5677d!important;background:#542c38!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-symbol svg{
+  stroke:#ffb4c3!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-steps::before{
+  background:#38303c!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-step.is-on .orders-track-node{
+  background:#e87487!important;border-color:#e87487!important;color:#2b151e!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-refresh{
+  background:#48262f!important;border-color:#a75b6a!important;color:#ffb4c3!important;
+}

@@ -1,4 +1,5 @@
 /* Referral program panel — same indigo/gold design as L1017n leaderboard. */
+#leaderboardView.l1017-rank-ready #l1017Referrals{order:5!important;align-self:stretch;max-width:880px!important;width:100%}
 #l1017Referrals{
   direction:rtl;
   position:relative;max-width:980px;margin:20px auto 25px;

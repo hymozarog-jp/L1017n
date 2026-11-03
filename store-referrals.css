@@ -265,3 +265,207 @@
  #l1017Referrals .l1017-ref-task-state{font-size:9px;padding:4px 6px}
  #l1017Referrals .l1017-ref-tasks-heading h3{font-size:15px}
 }
+
+/* Mission refresh: prominent reward totals and balanced mobile cards */
+#l1017Referrals .l1017-ref-earn-hero{
+  display:grid;grid-template-columns:minmax(105px,.7fr) minmax(0,1.65fr);
+  align-items:center;gap:12px;margin:16px 0 18px;padding:15px;
+  border:1px solid rgba(231,197,148,.5);border-radius:17px;
+  background:linear-gradient(112deg,rgba(119,81,168,.35),rgba(83,69,127,.46) 55%,rgba(104,71,95,.23));
+  box-shadow:inset 0 1px rgba(255,255,255,.1);
+}
+#l1017Referrals .l1017-ref-earn-hero>div:first-child{
+  display:grid;justify-content:start;gap:4px;
+  border-left:1px solid rgba(221,204,238,.22);
+  padding-left:13px
+}
+#l1017Referrals .l1017-ref-earn-hero small{
+  display:block;color:#e3d5fa;font-size:10.5px;font-weight:750;line-height:1.65;
+}
+#l1017Referrals .l1017-ref-earn-hero>div:first-child>strong{
+  color:#f6d99d;font-size:clamp(28px,6vw,39px);font-weight:900;line-height:1.2;
+  font-variant-numeric:tabular-nums
+}
+#l1017Referrals .l1017-ref-earn-hero strong span{font-size:14px}
+#l1017Referrals .l1017-ref-earn-hero-side{
+  display:grid;gap:3px;align-content:center;min-width:0
+}
+#l1017Referrals .l1017-ref-earn-hero-side strong{
+  font-size:19px;font-weight:900;color:#f7ebff
+}
+#l1017Referrals .l1017-ref-earn-hero-side>span{
+  font-size:10.5px;line-height:1.7;color:#c9c3da
+}
+#l1017Referrals .l1017-ref-tasks{
+  margin:0 0 20px;padding:15px;
+  background:linear-gradient(135deg,rgba(60,46,109,.32),rgba(23,39,74,.4));
+  border:1px solid #b39ed66c;border-radius:17px
+}
+#l1017Referrals .l1017-ref-tasks-heading{margin-bottom:11px}
+#l1017Referrals .l1017-ref-tasks-heading h3{
+  font-size:19px;line-height:1.45;letter-spacing:-.15px
+}
+#l1017Referrals .l1017-ref-tasks-heading small{color:#d9b9f8;letter-spacing:1px}
+#l1017Referrals .l1017-ref-tasks-heading p{color:#c8cce4}
+#l1017Referrals #l1017TasksCompleted{
+  color:#f4dba5;border-color:#c5a97a89;background:#a27e5330
+}
+#l1017Referrals .l1017-ref-overall{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;
+  margin-bottom:13px;padding:10px 12px;
+  background:#151f3b57;border:1px solid #b0a1cd43;border-radius:11px
+}
+#l1017Referrals .l1017-ref-overall span{
+  font-size:11px;font-weight:800;color:#e4d9f4
+}
+#l1017Referrals .l1017-ref-overall strong{
+  font:900 14px system-ui,sans-serif;color:#f2d89c
+}
+#l1017Referrals .l1017-ref-overall small{
+  grid-column:1/-1;color:#b7bed7;font-size:10.5px;line-height:1.65
+}
+#l1017Referrals .l1017-ref-tasks-list{gap:10px}
+#l1017Referrals .l1017-ref-task{
+  padding:14px;
+  border-radius:15px;
+  border:1px solid #968ebc6c;
+  background:linear-gradient(120deg,rgba(32,40,75,.83),rgba(44,42,82,.89));
+  overflow:hidden
+}
+#l1017Referrals .l1017-ref-task.is-active{
+  background:linear-gradient(120deg,rgba(95,61,147,.77),rgba(46,42,89,.9));
+  border-color:#d3abe8b8;
+  box-shadow:0 7px 21px rgba(23,12,43,.25),inset 0 1px #ffffff20
+}
+#l1017Referrals .l1017-ref-task.is-done{
+  background:linear-gradient(115deg,rgba(45,91,78,.52),rgba(46,65,105,.73));
+  border-color:#92cfb7aa
+}
+#l1017Referrals .l1017-ref-task.is-locked{opacity:.86}
+#l1017Referrals .l1017-ref-task-top{
+  display:flex;align-items:center;gap:11px;min-width:0
+}
+#l1017Referrals .l1017-ref-task-mark{
+  display:grid;place-items:center;flex:none;
+  width:43px;height:43px;border-radius:12px;
+  background:#655b8552;border:1px solid #b6a1d677;
+  color:#d9c2f1
+}
+#l1017Referrals .l1017-ref-task.is-active .l1017-ref-task-mark{
+  color:#ffe7b7;background:#a374cf53;border-color:#d5abeb99
+}
+#l1017Referrals .l1017-ref-task.is-done .l1017-ref-task-mark{
+  color:#c1f7d9;background:#528e6c68;border-color:#8cccab92
+}
+#l1017Referrals .l1017-ref-task-main{
+  min-width:0;flex:1;gap:3px
+}
+#l1017Referrals .l1017-ref-task-main small{
+  color:#b8bad9;font-size:10px;font-weight:700
+}
+#l1017Referrals .l1017-ref-task-main strong{
+  display:block;color:#fff2ff;font-weight:900;
+  font-size:clamp(12px,2.9vw,16px);line-height:1.6
+}
+#l1017Referrals .l1017-ref-task-reward{
+  display:grid;align-content:center;justify-items:center;gap:1px;
+  min-width:92px;min-height:62px;padding:8px 10px;flex:none;
+  border:1px solid #e6c99775;border-radius:12px;
+  background:linear-gradient(140deg,#cfb27624,#e5b65e15)
+}
+#l1017Referrals .l1017-ref-task-reward small{
+  font-size:9px;font-weight:800;color:#efdbb6;white-space:nowrap
+}
+#l1017Referrals .l1017-ref-task-reward strong{
+  color:#ffdfa2;font-size:26px;font-weight:950;
+  line-height:1.25;font-variant-numeric:tabular-nums;
+}
+#l1017Referrals .l1017-ref-task-reward strong span{
+  font-size:11px;font-weight:850
+}
+#l1017Referrals .l1017-ref-task-details{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin:11px 0 8px
+}
+#l1017Referrals .l1017-ref-task-state{
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#c4c5df;font-size:10px;font-weight:800;
+  border:1px solid #9b91bf66;background:#ffffff09;
+  padding:5px 11px;border-radius:99px
+}
+#l1017Referrals .is-active .l1017-ref-task-state{
+  color:#ffe4b2;border-color:#dcbd929c;background:#cf9d5550
+}
+#l1017Referrals .is-done .l1017-ref-task-state{
+  color:#c1f9d6;border-color:#8dccb19e;background:#368a6252
+}
+#l1017Referrals .l1017-ref-task-count{
+  display:inline-flex;align-items:center;gap:7px;
+  color:#d4d0e5;font-size:10.5px
+}
+#l1017Referrals .l1017-ref-task-count b{
+  color:#fff0be;font:900 12px system-ui,sans-serif
+}
+#l1017Referrals .l1017-ref-task-track{
+  width:100%;height:9px;margin:0;
+  border-radius:999px;background:#aba1c131;
+  box-shadow:inset 0 1px 4px #0a102e5e
+}
+#l1017Referrals .l1017-ref-task-track span{
+  border-radius:999px;
+  background:linear-gradient(90deg,#ac8ce9,#e4c8fc)
+}
+#l1017Referrals .is-done .l1017-ref-task-track span{
+  background:linear-gradient(90deg,#5caf88,#b6f5d2)
+}
+#l1017Referrals .l1017-ref-task-detail{
+  margin:8px 0 0;color:#b9c5dd;font-size:10.5px;
+  line-height:1.7
+}
+#l1017Referrals .l1017-ref-tasks-disclaimer{
+  display:block;padding:11px 11px 1px;
+  margin:9px 0 0;color:#c2c5dd;
+  border-top:1px solid #ffffff25;
+  font-size:10.5px;line-height:1.9
+}
+#l1017Referrals .l1017-ref-tasks-disclaimer .l1017-icon{
+  display:inline-block;width:14px;height:14px;
+  margin-inline-end:4px;color:#a6dfc0
+}
+#l1017Referrals .l1017-ref-tasks-disclaimer strong{color:#efdbb4}
+@media(max-width:520px){
+ #l1017Referrals .l1017-ref-earn-hero{
+   grid-template-columns:minmax(100px,.85fr) minmax(0,1.45fr);
+   gap:10px;padding:11px;
+ }
+ #l1017Referrals .l1017-ref-earn-hero>div:first-child{padding-left:9px}
+ #l1017Referrals .l1017-ref-earn-hero-side strong{font-size:17px}
+ #l1017Referrals .l1017-ref-tasks{padding:10px}
+ #l1017Referrals .l1017-ref-task{padding:10px}
+ #l1017Referrals .l1017-ref-task-top{gap:8px}
+ #l1017Referrals .l1017-ref-task-mark{
+   width:34px;height:34px;border-radius:10px
+ }
+ #l1017Referrals .l1017-ref-task-reward{
+   min-width:80px;min-height:54px;padding:6px
+ }
+ #l1017Referrals .l1017-ref-task-reward strong{font-size:23px}
+ #l1017Referrals .l1017-ref-task-reward small{font-size:8px}
+ #l1017Referrals .l1017-ref-task-main strong{font-size:12px}
+ #l1017Referrals .l1017-ref-task-count{font-size:10px}
+ #l1017Referrals .l1017-ref-earn-hero-side>span{font-size:9.5px}
+ #l1017Referrals .l1017-ref-tasks-heading h3{font-size:17px}
+}
+@media(max-width:360px){
+ #l1017Referrals .l1017-ref-task-mark{display:none}
+ #l1017Referrals .l1017-ref-task-reward{min-width:70px}
+ #l1017Referrals .l1017-ref-tasks-heading{flex-wrap:wrap}
+ #l1017Referrals .l1017-ref-earn-hero{grid-template-columns:1fr}
+ #l1017Referrals .l1017-ref-earn-hero>div:first-child{
+   border-left:none;border-bottom:1px solid #ffffff24;
+   padding:0 0 10px
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #l1017Referrals .l1017-ref-task{transition:none}
+}

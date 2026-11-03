@@ -179,7 +179,17 @@ async function renderOrders(){
    });
    const contact=manual?'<div class="orders-manual-handover"><p>لتستلم الغرض داخل الماب، لازم تكلم المتجر عبر واتساب أو تيليجرام وتذكر رقم الطلب.</p><button type="button" data-order-contact="'+escapeHtml(x.id)+'">تواصل لاستلام الغرض</button></div>':'';
    const art=orderArt(x);
-   const orderImage=art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
+   const libyanaDrawing='<svg class="orders-topup-illustration" viewBox="0 0 56 56" role="img" aria-label="شحن ليبيانا" xmlns="http://www.w3.org/2000/svg">'
+     +'<circle cx="28" cy="28" r="23" fill="#914bc2" opacity=".15"/>'
+     +'<rect x="17" y="7.5" width="22" height="41" rx="5.5" fill="#282040" stroke="#d5b4ff" stroke-width="2"/>'
+     +'<path d="M24 13h8" stroke="#b4a1d7" stroke-width="2" stroke-linecap="round"/>'
+     +'<path d="M23 24h10M28 19v10" stroke="#ffd771" stroke-width="3.2" stroke-linecap="round"/>'
+     +'<path d="M25 41h6" stroke="#ac95c9" stroke-width="2" stroke-linecap="round"/>'
+     +'<circle cx="39" cy="39" r="10" fill="#b862e5" stroke="#20122d" stroke-width="2"/>'
+     +'<path d="m35 39 3 3 5-6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+     +'</svg>';
+   const orderImage=x.kind==='topup'&&x.method==='libyana'?libyanaDrawing
+     :art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
    return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
  }).join('');
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';

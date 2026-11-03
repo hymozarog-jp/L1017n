@@ -1592,3 +1592,83 @@
     animation:none!important;
   }
 }
+
+/* Claim a mission once: earned -> clickable claim -> permanently received. */
+#referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-claim-btn{
+  display:inline-flex!important;
+  width:100%!important;
+  min-width:73px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:32px!important;
+  margin:7px 0 1px!important;
+  padding:6px 9px!important;
+  border:1px solid #79ecbc!important;
+  border-radius:10px!important;
+  background:linear-gradient(130deg,#65edb6,#28ae84)!important;
+  color:#0a2c25!important;
+  font:900 11.5px/1.2 system-ui,sans-serif!important;
+  box-shadow:0 3px 13px #12bc853a!important;
+  cursor:pointer!important;
+  white-space:nowrap!important;
+  touch-action:manipulation!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-claim-btn:disabled{
+  cursor:wait!important;opacity:.62!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-claim-btn:focus-visible{
+  outline:2px solid #fff!important;outline-offset:2px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-received{
+  display:block!important;
+  margin-top:7px!important;
+  padding:6px 3px!important;
+  min-width:72px!important;
+  border-radius:9px!important;
+  border:1px solid #397c65!important;
+  background:#1b4539!important;
+  color:#abf0d0!important;
+  text-align:center!important;
+  font:800 10px/1.45 system-ui,sans-serif!important;
+  white-space:normal!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-awaiting{
+  display:block!important;
+  margin-top:7px!important;
+  font-size:9.5px!important;
+  line-height:1.35!important;
+  color:#8797b3!important;
+  white-space:normal!important;
+  text-align:center!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-done{
+  border-color:#34785e!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money{
+  min-width:84px!important;
+  max-width:114px!important;
+}
+#referralsView #l1017Referrals .l1017-mission-counter{
+  min-width:84px!important;
+}
+@media(max-width:390px){
+  #referralsView #l1017Referrals .l1017-ref-compact-money,
+  #referralsView #l1017Referrals .l1017-mission-counter{
+    min-width:71px!important;
+    max-width:84px!important;
+    padding-right:5px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-claim-btn{
+    min-width:64px!important;
+    font-size:10px!important;
+    padding:5px 4px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-compact-money .l1017-mission-received{
+    min-width:62px!important;font-size:9px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #referralsView #l1017Referrals .l1017-mission-claim-btn{
+    animation:none!important;transition:none!important;
+  }
+}

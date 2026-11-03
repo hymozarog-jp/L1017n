@@ -133,6 +133,7 @@ function mount(){
   '<button type="button" class="ph-drawer-link" data-view="wallet">المحفظة</button>'+
   '<button type="button" class="ph-drawer-link" data-view="orders">طلباتي</button>'+
   '<button type="button" class="ph-drawer-link" data-view="leaderboard">التصنيف</button>'+
+   '<button type="button" class="ph-drawer-link" data-view="referrals">دعوة صديق</button>'+
   '<button type="button" class="ph-drawer-link" data-view="account">حسابي</button>'+
   '<p class="ph-drawer-note">L1017N — تسوق بأمان وتابع طلباتك من حسابك.</p></div>';
  document.body.appendChild(drawer);

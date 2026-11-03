@@ -8,6 +8,33 @@
   const q=s=>document.querySelector(s);
   let loading=false,session=null,code='',initAttempts=0,disposed=false;
   const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-'+name+'"></use></svg>';
+  const TASK_TARGETS=Object.freeze([1,5,10]);
+  const TASK_NAMES=Object.freeze(['ادعُ صديقًا واحدًا','ادعُ 5 أصدقاء','ادعُ 10 أصدقاء']);
+  const TASK_LABELS=Object.freeze(['البداية','مرحلة الأصدقاء','سفير المتجر']);
+  function renderReferralTasks(rewarded){
+    const root=q('#l1017ReferralTasksList');
+    if(!root)return;
+    const done=Math.max(0,Math.floor(Number(rewarded)||0));
+    let activeStage=TASK_TARGETS.findIndex(target=>done<target);
+    if(activeStage<0)activeStage=TASK_TARGETS.length;
+    root.innerHTML=TASK_TARGETS.map((target,index)=>{
+      const completed=done>=target,active=index===activeStage,progress=Math.min(done,target);
+      const label=completed?'مكتملة':active?'المهمة الحالية':'مقفلة';
+      const icon=completed?'check-circle':active?'gift':'lock';
+      const width=Math.min(100,Math.round(progress/target*100));
+      return '<article class="l1017-ref-task '+(completed?'is-done':active?'is-active':'is-locked')+'" aria-label="'+TASK_NAMES[index]+' — '+label+'">'
+        +'<div class="l1017-ref-task-line"><div class="l1017-ref-task-mark">'+uiIcon(icon)+'</div>'
+        +'<div class="l1017-ref-task-main"><small>المستوى '+(index+1)+' · '+TASK_LABELS[index]+'</small>'
+        +'<strong>'+TASK_NAMES[index]+'</strong><span>عدد الدعوات المؤهلة: '+progress+' من '+target+'</span></div>'
+        +'<span class="l1017-ref-task-state">'+label+'</span></div>'
+        +'<div class="l1017-ref-task-track" role="progressbar" aria-valuemin="0" aria-valuemax="'+target+'" aria-valuenow="'+progress+'" aria-label="تقدم مهمة '+TASK_NAMES[index]+'"><span style="width:'+width+'%"></span></div>'
+        +'</article>';
+    }).join('');
+    const total=q('#l1017TasksCompleted');
+    if(total)total.textContent=TASK_TARGETS.filter(target=>done>=target).length+' من 3 مكتملة';
+    const headline=q('#l1017TasksHeadline');
+    if(headline)headline.textContent=activeStage===3?'أكملت جميع مستويات الدعوات!':'المستوى الحالي: '+TASK_NAMES[activeStage];
+  }
   function getDb(){return typeof supabaseClient==='undefined'?null:supabaseClient}
   function uiStatus(message,error){
     const n=q('#l1017ReferralStatus');if(!n)return;
@@ -32,6 +59,11 @@
     node.innerHTML='<div class="l1017-ref-head"><span class="l1017-ref-brand">'+uiIcon('gift')+'</span>'
       +'<div><small>INVITE & EARN / L1017n</small><h2>ادعُ صديقك واربح</h2><p>خذ <strong>1 د.ل في محفظتك</strong> بعد إكمال أول طلب لصديقك بقيمة 15 د.ل أو أكثر.</p></div></div>'
       +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'الهاتف الموثّق مطلوب للطرفين · لا مكافأة لمجرد التسجيل · حتى 10 مكافآت شهريًا</div>'
+      +'<div class="l1017-ref-tasks" aria-label="مهام دعوة الأصدقاء">'
+      +'<div class="l1017-ref-tasks-heading"><div><small>مراحل الدعوات</small><h3>مهامك بالترتيب</h3><p id="l1017TasksHeadline">ابدأ بدعوة صديق واحد</p></div>'
+      +'<span id="l1017TasksCompleted">0 من 3 مكتملة</span></div>'
+      +'<div id="l1017ReferralTasksList" class="l1017-ref-tasks-list" aria-live="polite"></div>'
+      +'<p class="l1017-ref-tasks-disclaimer">تُحتسب الدعوة بعد اكتمال أول طلب مؤهّل للصديق. المكافأة الأساسية 1 د.ل لكل دعوة، ولا توجد هدية إضافية عند إنهاء المستوى.</p></div>'
       +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتأخذ كود دعوة خاص بك وتتابع أصدقاءك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
       +'<div id="l1017ReferralAccount" class="hidden">'
       +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود دعوتك</label>'
@@ -47,6 +79,7 @@
       +'<p class="l1017-ref-notice" id="l1017ReferralStatus" role="status" aria-live="polite"></p>';
     host.appendChild(node);
     q('#l1017ReferredCode').value=copyReferralFromQuery();
+    renderReferralTasks(0);
     q('#l1017RefLogin')?.addEventListener('click',()=>{
       if(typeof window.switchView==='function')window.switchView('account');
       else q('[data-view="account"]')?.click();
@@ -97,7 +130,7 @@
       const loggedIn=!!user&&!authError;
       q('#l1017ReferralGuest')?.classList.toggle('hidden',loggedIn);
       q('#l1017ReferralAccount')?.classList.toggle('hidden',!loggedIn);
-      if(!loggedIn){code='';return}
+      if(!loggedIn){code='';renderReferralTasks(0);return}
       const {data,error}=await db.rpc('get_my_store_referral_stats');
       if(error)throw error;
       const stats=data||{};
@@ -109,6 +142,7 @@
       q('#l1017InvitedCount').textContent=Number(totals.invited||0).toLocaleString('ar-LY');
       q('#l1017PendingCount').textContent=Number(totals.pending||0).toLocaleString('ar-LY');
       q('#l1017RewardedCount').textContent=Number(totals.rewarded||0).toLocaleString('ar-LY');
+      renderReferralTasks(totals.rewarded);
       q('#l1017EarnedTotal').textContent=Number(totals.credited_lyd||0).toFixed(2)+' د.ل';
       q('#l1017RefMonthly').textContent='مكافآت هذا الشهر: '+Number(stats.monthly_used||0)+' من '+Number(stats.monthly_limit||10)+' · هدية واحدة لكل صديق مؤهّل';
       const existing=stats.my_claim;

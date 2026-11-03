@@ -777,8 +777,8 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #personalDetailsPage .personal-save{display:block;width:100%;margin-top:24px;padding:16px;border:0;border-radius:17px;background:#1479e5;color:#fff;font-size:19px;font-weight:800}
 #personalDetailsPage #personalSaveStatus{color:#95e5ad;text-align:center;margin-top:12px}
 </style><style>
-/* Remove redundant top-header balance and nickname/account shortcut; bottom Account tab remains */
-.topbar .account-wallet-group{display:none!important}
+/* Keep only the small wallet chip beside the signed-in profile; the extra account shortcut stays hidden. */
+.topbar .account-wallet-group #accountBtn{display:none!important}
 </style><style>#accountModern .account-settings-list .account-tiktok-link{display:flex;align-items:center;gap:13px;text-align:right;color:#f2f5ff;text-decoration:none;min-height:74px;padding:13px 15px}#accountModern .account-settings-list .account-tiktok-link b{flex:1;font-size:15px}#accountModern .account-tiktok-link .account-row-icon{color:#fff;background:linear-gradient(135deg,#17c9d6,#ee3265);font-weight:900}</style><style>#accountModern .account-tiktok-link .account-tiktok-icon{background:#050505!important;border:1px solid #273047;border-radius:13px}</style><style>
 /* Direct-to-catalog homepage: no intro, wallet balance, or international-card teaser */
 #homeView,.wallet-promo.home-balance,.steps-section{display:none!important}
@@ -837,7 +837,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=navback-gameboxly2">
-<link rel="stylesheet" href="libyana-header-chip.css?v=wallet-compact-pill-20261103-2">
+<link rel="stylesheet" href="libyana-header-chip.css?v=wallet-beside-avatar-20261103-3">
 <link rel="stylesheet" href="email-profile.css?v=email-profile1">
 <script defer src="email-profile.js?v=email-profile1"></script>
 <script defer src="ranking-room.js?v=hide-hero-gameboxly3"></script>

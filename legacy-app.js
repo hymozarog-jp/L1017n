@@ -538,7 +538,9 @@ async function renderCustomerHeaderWallet(user){
  const {data,error}=await supabaseClient.from('wallet_accounts')
    .select('balance,madar_balance').eq('user_id',user.id).maybeSingle();
  if(sequence!==customerHeaderWalletSeq)return;
- amount.textContent=error?'— د.ل':Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(2)+' د.ل';
+ const shownBalance=Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(3);
+  amount.textContent=error?'—':shownBalance;
+  amount.setAttribute('aria-label',error?'تعذر عرض رصيد المحفظة':shownBalance+' دينار ليبي');
 }
 // Trust only Google avatar hosts or the signed-in user's own uploaded Supabase image.
 function approvedProfilePhoto(user){

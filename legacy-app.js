@@ -141,7 +141,7 @@ async function renderOrders(){
 
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...(tr.data||[]).map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||x.status==='approved'?'completed':'pending';
- const status=x=>group(x)==='completed'?'مكتمل':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
+ const status=x=>x.status==='approved'?'تم القبول':group(x)==='completed'?'تم التنفيذ':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');
  // Show static matching artwork; financial states, totals and transactions are unchanged.
  const orderArt=x=>{
@@ -190,7 +190,7 @@ async function renderOrders(){
      +'</svg>';
    const orderImage=x.kind==='topup'&&x.method==='libyana'?libyanaDrawing
      :art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
-   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
+   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'" data-order-phase="'+(x.status==='approved'?'approved':g==='completed'?'delivered':g==='refunded'?'closed':'waiting')+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
  }).join('');
  root.innerHTML=tabs+'<div class="orders-modern-list">'+(cards||'<p class="orders-empty">ما عندكش طلبات حتى الآن.</p>')+'</div><p class="orders-empty orders-filter-empty" hidden>ما فيش طلبات في هذا التصنيف.</p>';
 
@@ -204,17 +204,19 @@ async function renderOrders(){
  [...root.querySelectorAll('.orders-modern-card')].forEach((card,index)=>{
    const order=orders[index],state=group(order),progress=stageFor(order);
    const topup=order.kind==='topup';
-   const headline=state==='completed'?'مكتمل'
+   const headline=order.status==='approved'?'تم القبول':state==='completed'?'تم التنفيذ'
      :state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
      :progress===3?'قيد التنفيذ':progress===2?'قيد المعالجة'
      :topup?'قيد المراجعة':'قيد الانتظار';
-   const caption=state==='completed'
-     ?(topup?'تم اعتماد شحن المحفظة وفق حالة الطلب.':'تم تنفيذ طلبك بنجاح.')
+   const caption=order.status==='approved'?'تم قبول طلب شحن المحفظة وإضافة الرصيد.'
+     :state==='completed'
+     ?(topup?'تم إكمال شحن المحفظة وفق حالة الطلب.':'تم تنفيذ طلبك بنجاح.')
      :state==='refunded'?'الطلب مغلق. راجع ملاحظة المتجر إن وجدت.'
      :topup?'طلب شحن المحفظة مسجل وقيد التحقق من التحويل.'
        :'طلبك في قائمة الانتظار وسيبدأ التنفيذ بعد مراجعته.';
    // Source statuses only: intermediate phases are not silently assumed to happen.
-   const stageNames=['تم الاستلام','قيد الانتظار','قيد المعالجة','قيد التنفيذ','مكتمل'];
+   const stageNames=topup?['تم الاستلام','قيد الانتظار','قيد المراجعة','تم التحقق',order.status==='approved'?'تم القبول':'مكتمل']
+     :['تم الاستلام','قيد الانتظار','قيد المعالجة','قيد التنفيذ','تم التنفيذ'];
    const stageMarkup='<div class="orders-track-steps" aria-label="مراحل الطلب" style="--track-progress:'+(progress*25)+'%">'
      +stageNames.map((name,i)=>'<span class="orders-track-step '+(i<=progress?'is-on ':'')+(i===progress?'is-current':'')+'">'
        +'<span class="orders-track-node" aria-hidden="true">'+(i<=progress?'✓':'•')+'</span>'
@@ -229,7 +231,7 @@ async function renderOrders(){
      +'\nتفاصيل الشكوى: ';
    // Same WhatsApp contact already configured for post-purchase handover.
    const whatsapp='https://wa.me/218925620538?text='+encodeURIComponent(complaintText);
-   const tracker='<div class="orders-track-panel" data-progress-state="'+state+'">'
+   const tracker='<div class="orders-track-panel" data-progress-state="'+(order.status==='approved'?'approved':state)+'">'
      +'<div class="orders-track-head"><span class="orders-track-symbol">'
      +(state==='completed'?check:state==='refunded'?clock:hourglass)
      +'</span><div class="orders-track-heading"><span class="orders-track-eyebrow">حالة الطلب</span>'

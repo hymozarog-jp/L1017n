@@ -475,3 +475,75 @@ footer .footer-faq-link{
   #storeView #l1017nFaqInline .l1017-faq-art{animation:none!important}
   #storeView #l1017nFaqInline .l1017-inline-faq-item{transition:none!important}
 }
+
+/* Compact illustrated support CTA and homepage action glyphs. */
+#l1017nFaqPage .faq-support-icon{
+  display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;
+  border-radius:14px;border:1px solid #62bd9c;
+  color:#c4ffe5;background:linear-gradient(140deg,#235f52,#17423d);
+  box-shadow:inset 0 1px #ffffff19;
+}
+#l1017nFaqPage .faq-support-icon svg{
+  display:block;width:25px;height:25px;
+}
+#l1017nFaqPage .faq-support>div{
+  flex:1;min-width:0;
+}
+#l1017nFaqPage .faq-support{
+  gap:13px!important;
+}
+#gbQuickActions .gbqa-art{
+  display:grid;place-items:center;flex:0 0 auto;
+  width:32px;height:32px;padding:6px;
+  box-sizing:border-box;border:1px solid #8172a059;
+  border-radius:11px;background:#ffffff14;
+  box-shadow:inset 0 1px #ffffff20;
+  transition:transform .18s ease;
+}
+#gbQuickActions .gbqa-art svg{
+  display:block;width:20px;height:20px;
+  fill:none;stroke:currentColor;
+}
+#gbQuickActions .gbqa-art-wallet{
+  color:#18382b;background:linear-gradient(140deg,#eefecf,#bee8ae);
+  border-color:#e7ffd7;
+}
+#gbQuickActions .gbqa-art-store{
+  color:#ddcaff;background:linear-gradient(145deg,#52407f,#302a55);
+  border-color:#8e77c7;
+}
+#gbQuickActions .gbqa-art-orders{
+  color:#c4e7ff;background:linear-gradient(145deg,#315d87,#293e6a);
+  border-color:#6790c4;
+}
+#gbQuickActions .gbqa-action:hover .gbqa-art{
+  transform:translateY(-2px);
+}
+#llLanding #gbQuickActions .gbqa-art{
+  width:27px!important;height:27px!important;padding:5px!important;
+  flex-basis:27px!important;border-radius:9px!important;
+}
+#llLanding #gbQuickActions .gbqa-art svg{
+  width:17px!important;height:17px!important;
+}
+#llLanding #gbQuickActions .gbqa-action{
+  overflow:visible!important;
+  border-color:#62538f!important;
+  background:linear-gradient(130deg,#272440,#252642)!important;
+}
+#llLanding #gbQuickActions .gbqa-action.gbqa-primary{
+  border-color:#a1cf9a!important;
+  background:linear-gradient(120deg,#c1e7ab,#a8d49b)!important;
+}
+@media(max-width:510px){
+  #l1017nFaqPage .faq-support{
+    grid-template-columns:44px minmax(0,1fr)!important;
+    align-items:start!important;
+  }
+  #l1017nFaqPage .faq-support-icon{grid-column:1;grid-row:1}
+  #l1017nFaqPage .faq-support>div{grid-column:2;grid-row:1}
+  #l1017nFaqPage .faq-support>a{grid-column:1/-1;grid-row:2}
+}
+@media(prefers-reduced-motion:reduce){
+  #gbQuickActions .gbqa-art{transition:none!important}
+}

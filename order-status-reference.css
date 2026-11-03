@@ -209,3 +209,30 @@
 @media(prefers-reduced-motion:reduce){
   #ordersView #ordersList *{transition:none!important;animation:none!important}
 }
+
+/* Entire order card is the disclosure target; no separate summary arrow/text. */
+#ordersView #ordersList .orders-modern-card{
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent;
+}
+#ordersView #ordersList .orders-modern-card:focus-visible{
+  outline:2px solid #ffc21d!important;
+  outline-offset:3px!important;
+}
+#ordersView #ordersList .orders-modern-card.orders-card-expanded{
+  border-color:#916f23!important;
+}
+#ordersView #ordersList .orders-extra-details>summary,
+#ordersView #ordersList .orders-extra-details>summary::after{
+  display:none!important;
+}
+#ordersView #ordersList .orders-extra-details[open]{
+  cursor:default!important;
+}
+#ordersView #ordersList .orders-detail-body,
+#ordersView #ordersList .orders-detail-body button,
+#ordersView #ordersList .orders-detail-body a{
+  cursor:auto;
+}
+#ordersView #ordersList .orders-detail-body button{cursor:pointer}
+#ordersView #ordersList .orders-detail-body a{cursor:pointer}

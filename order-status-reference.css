@@ -319,3 +319,47 @@
 #ordersView #ordersList .orders-modern-card[data-order-status="refunded"] .orders-track-refresh{
   background:#48262f!important;border-color:#a75b6a!important;color:#ffb4c3!important;
 }
+
+/* Approved (top-up accepted) is BLUE, distinct from completed delivery GREEN.
+   Approval remains a database-driven status; nothing here changes the backend. */
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"]{
+  border-color:#315b94!important;
+  border-inline-start-color:#4ca7ff!important;
+  background:linear-gradient(135deg,#132641,#151b28 75%)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"].orders-card-expanded{
+  border-color:#438cdb!important;border-inline-start-color:#68baff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"]:focus-visible{
+  outline-color:#70c5ff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-status{
+  background:#183b66!important;border-color:#427db7!important;color:#b1dcff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-mini-progress span.is-on{
+  background:#4faeff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-panel{
+  border-color:#468bc8!important;
+  background:radial-gradient(ellipse at 22% 0%,rgba(54,136,228,.25),transparent 70%),
+    linear-gradient(135deg,#163557,#17202d 83%)!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-title{
+  color:#89caff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-symbol{
+  border-color:#4aabf7!important;background:#1b4d7b!important;
+  box-shadow:0 0 0 7px #4caaff22,inset 0 0 0 4px #10253a!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-symbol svg{
+  stroke:#a2deff!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-steps::before{
+  background:#4da9fa!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-step.is-on .orders-track-node{
+  background:#62b9ff!important;border-color:#62b9ff!important;color:#0c2945!important;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-track-refresh{
+  background:#1c4267!important;border-color:#4b9ddc!important;color:#b5e3ff!important;
+}

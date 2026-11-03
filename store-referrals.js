@@ -22,6 +22,26 @@
     }
     try{const saved=sessionStorage.getItem(REF_STORAGE)||'';return isCode(saved)?saved:''}catch(_){return ''}
   }
+  function renderCompactMissions(monthlyCount){
+    const holder=q('#l1017RefCompactList');
+    const summary=q('#l1017RefCompactProgress');
+    if(!holder)return;
+    const completed=Math.min(10,Math.max(0,Math.floor(Number(monthlyCount)||0)));
+    if(summary)summary.textContent=completed+' / 10 دعوات هذا الشهر';
+    const targets=[1,5,10];
+    holder.innerHTML=targets.map(target=>{
+      const done=completed>=target;
+      const active=!done&&(target===targets.find(x=>completed<x));
+      const kind=done?'is-done':active?'is-current':'is-next';
+      const label=target===1?'دعوة صديق واحد':'دعوة '+target+' أصدقاء';
+      const status=done?'مكتملة':active?'المهمة الحالية':'قادمة';
+      return '<div class="l1017-ref-compact-row '+kind+'">'
+        +'<span class="l1017-ref-compact-check" aria-hidden="true">'+(done?'✓':target)+'</span>'
+        +'<span class="l1017-ref-compact-description"><strong>'+label+'</strong><small>'+status+'</small></span>'
+        +'<span class="l1017-ref-compact-money"><strong>'+target+' د.ل</strong><small>الإجمالي</small></span>'
+      +'</div>';
+    }).join('');
+  }
   function build(){
     const host=q('#referralsView');
     if(!host||q('#l1017Referrals'))return;
@@ -54,6 +74,11 @@
           +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a7 7 0 0 1 7-5h4l1.5-2v4a6.5 6.5 0 0 1 2.5 5v2h2v4h-3a7 7 0 0 1-3 2v2h-3v-2H9v2H6v-4A6.5 6.5 0 0 1 5 9Z"/><path d="M8 4 6 2m11 8h.01"/></svg></span>'
           +'<strong id="l1017EarnedTotal">0.00 د.ل</strong><small>أرباحك من الدعوات</small></div>'
         +'</div>'
+        +'<section class="l1017-ref-compact-missions" aria-labelledby="l1017RefCompactHeading">'
+          +'<div class="l1017-ref-compact-heading"><h3 id="l1017RefCompactHeading">مهام الدعوات</h3><small id="l1017RefCompactProgress">0 / 10 دعوات هذا الشهر</small></div>'
+          +'<div class="l1017-ref-compact-list" id="l1017RefCompactList" aria-live="polite"></div>'
+          +'<p class="l1017-ref-compact-note">المبالغ إجمالي أرباح الدعوات في الشهر، وليست جوائز إضافية.</p>'
+        +'</section>'
         +'<section class="l1017-ref-how" aria-labelledby="l1017RefHowHeading">'
           +'<h3 id="l1017RefHowHeading"><span class="l1017-ref-how-bulb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4M8.8 15.6c-.5-1.1-2.3-2.1-2.3-5.3a5.5 5.5 0 1 1 11 0c0 3.2-1.8 4.2-2.3 5.3l-.5 1.3h-5.4l-.5-1.3Z"/></svg></span>كيف يعمل؟</h3>'
           +'<ol class="l1017-ref-steps">'
@@ -148,6 +173,7 @@
 
 
       q('#l1017EarnedTotal').textContent=Number(totals.credited_lyd||0).toFixed(2)+' د.ل';
+      renderCompactMissions(stats.monthly_used);
       q('#l1017RefMonthly').textContent='مكافآت هذا الشهر: '+Number(stats.monthly_used||0)+' من '+Number(stats.monthly_limit||10)+' · تُحتسب الدعوة عند تسجيل الدخول بحساب مؤكّد';
       const existing=stats.my_claim;
       const form=q('#l1017ClaimReferralForm');

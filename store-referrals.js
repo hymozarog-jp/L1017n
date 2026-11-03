@@ -80,30 +80,49 @@
     node.id='l1017Referrals';
     node.className='l1017-referrals';
     node.setAttribute('aria-label','دعوة صديق ومكافأة المحفظة');
-    node.innerHTML='<div class="l1017-ref-head"><span class="l1017-ref-brand">'+uiIcon('gift')+'</span>'
-      +'<div><small>INVITE & EARN / L1017n</small><h2>ادعُ صديقك واربح</h2><p>خذ <strong>1 د.ل في محفظتك</strong> بعد إكمال أول طلب لصديقك بقيمة 15 د.ل أو أكثر.</p></div></div>'
-      +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'تُحسب الدعوة بعد توثيق الهاتف وإكمال أول طلب مؤهل بقيمة 15 د.ل أو أكثر · حتى 10 مكافآت شهريًا</div>'
-      +'<div class="l1017-ref-earn-hero"><div><small>هدية كل صديق مؤهل</small><strong>1 <span>د.ل</span></strong></div>'
-      +'<div class="l1017-ref-earn-hero-side"><small>مجموع المكافآت عند دعوة 10 أصدقاء</small><strong>10 د.ل</strong><span>تُجمع تدريجيًا، دون مكافأة إضافية للمستوى</span></div></div>'
-      +'<div class="l1017-ref-tasks" aria-label="مهام دعوة الأصدقاء">'
-      +'<div class="l1017-ref-tasks-heading"><div><small>MISSIONS · 01 / 03</small><h3>المهام المطلوبة</h3><p id="l1017TasksHeadline">المهمة الحالية: ادعُ صديقًا واحدًا</p></div>'
-      +'<span id="l1017TasksCompleted">0 / 3 مهام مكتملة</span></div>'
-      +'<div class="l1017-ref-overall"><span>تقدمك نحو 10 دعوات</span><strong id="l1017RefOverallCount" dir="ltr">0 / 10</strong><small id="l1017RefOverviewStatus">تبقّى 10 دعوات مؤهلة للوصول للمستوى الأخير</small></div>'
-      +'<div id="l1017ReferralTasksList" class="l1017-ref-tasks-list" aria-live="polite"></div>'
-      +'<p class="l1017-ref-tasks-disclaimer">'+uiIcon('shield-check')+' المبالغ الظاهرة هي <strong>إجمالي</strong> المكافآت عند الوصول لكل مستوى، وليست جوائز إضافية. مكافأة 1 د.ل تُضاف للمحفظة عند اكتمال طلب كل صديق مؤهل.</p></div>'
-      +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتأخذ كود دعوة خاص بك وتتابع أصدقاءك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
+    node.innerHTML='<div class="l1017-ref-earn-hero">'
+      +'<div class="l1017-ref-hero-copy"><h2>ادعُ أصدقاءك واربح معهم</h2>'
+      +'<p>اربح <strong>1 د.ل</strong> عن كل صديق يدعوك بكودك، بعد توثيق هاتفه وإكمال أول طلب بقيمة 15 د.ل أو أكثر. تُضاف المكافأة إلى محفظتك.</p></div>'
+      +'<div class="l1017-ref-hero-badge" aria-label="مكافأة كل صديق مؤهل: دينار ليبي واحد"><strong>1</strong><span>د.ل</span></div></div>'
+      +'<div id="l1017ReferralGuest" class="l1017-ref-guest hidden"><p>سجّل دخولك لتنشئ كود الدعوة الخاص بك وتتابع مكافآتك.</p><button type="button" id="l1017RefLogin">تسجيل الدخول</button></div>'
       +'<div id="l1017ReferralAccount" class="hidden">'
-      +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود دعوتك</label>'
-      +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong><button type="button" id="l1017CreateRefCode">إنشاء كود الدعوة</button></div>'
-      +'<div class="l1017-ref-actions"><button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+' نسخ الكود</button>'
-      +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+' نسخ رابط الدعوة</button>'
-      +'<button type="button" id="l1017ShareRef">'+uiIcon('share')+' مشاركة</button></div></div>'
-      +'<div class="l1017-ref-stats" aria-label="نتائج دعواتك"><div><small>الدعوات المسجّلة</small><strong id="l1017InvitedCount">0</strong></div><div><small>بانتظار أول شراء</small><strong id="l1017PendingCount">0</strong></div><div><small>مكافآت مستلمة</small><strong id="l1017RewardedCount">0</strong></div><div><small>رصيد هدايا الدعوات</small><strong id="l1017EarnedTotal">0 د.ل</strong></div></div>'
-      +'<form id="l1017ClaimReferralForm"><label for="l1017ReferredCode">وصلك كود من صديق؟ فعّله قبل أول طلب</label>'
-      +'<div class="l1017-ref-claim-row"><input id="l1017ReferredCode" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="L1XXXXXXXXXXXX" dir="ltr" required><button type="submit" id="l1017ClaimRefSubmit">تفعيل الدعوة</button></div>'
-      +'<p class="l1017-ref-claim-help" id="l1017MyClaimNotice"></p></form>'
-      +'<p class="l1017-ref-monthly" id="l1017RefMonthly"></p></div>'
-      +'<p class="l1017-ref-notice" id="l1017ReferralStatus" role="status" aria-live="polite"></p>';
+      +'<section class="l1017-ref-code-card" aria-label="كود الدعوة الخاص بك">'
+        +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود الدعوة الخاص بك</label>'
+        +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong>'
+        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الكود</span></button></div>'
+        +'<button type="button" id="l1017CreateRefCode">إنشاء كود الدعوة</button>'
+        +'<div class="l1017-ref-actions">'
+          +'<button type="button" id="l1017ShareRef" class="l1017-ref-whatsapp">'
+          +'<svg viewBox="0 0 32 32" aria-hidden="true" fill="currentColor"><path d="M16 3a13 13 0 0 0-11.1 19.7L3 29l6.5-1.7A13 13 0 1 0 16 3zm0 23.5a10.5 10.5 0 0 1-5.3-1.4l-.4-.2-3.9 1 1-3.8-.3-.4a10.5 10.5 0 1 1 8.9 4.8zm5.8-7.9c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.7.2-.1.3-.4.5-.6.1-.2.2-.4.3-.6.1-.2 0-.5 0-.7-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.5-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.3 3.3 1.4 3.5.2.2 2.5 3.8 6.1 5.3.9.4 1.5.6 2.1.7.9.3 1.7.2 2.3.2.7-.1 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.2-.2-.3-.5-.4z"/></svg>'
+          +'<span>مشاركة عبر واتساب</span></button>'
+          +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+'<span>نسخ رابط الدعوة</span></button>'
+        +'</div></div></section>'
+        +'<div class="l1017-ref-stats" aria-label="إحصائيات الدعوات">'
+          +'<div class="l1017-ref-stat-card"><span class="l1017-ref-stat-icon l1017-ref-stat-purple" aria-hidden="true">'
+          +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m-3-3h6m-5 10v-2a4 4 0 0 0-3-3.9"/></svg></span>'
+          +'<strong id="l1017InvitedCount">0</strong><small>أصدقاء سجّلوا بكودك</small></div>'
+          +'<div class="l1017-ref-stat-card l1017-ref-stat-earn"><span class="l1017-ref-stat-icon l1017-ref-stat-green" aria-hidden="true">'
+          +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a7 7 0 0 1 7-5h4l1.5-2v4a6.5 6.5 0 0 1 2.5 5v2h2v4h-3a7 7 0 0 1-3 2v2h-3v-2H9v2H6v-4A6.5 6.5 0 0 1 5 9Z"/><path d="M8 4 6 2m11 8h.01"/></svg></span>'
+          +'<strong id="l1017EarnedTotal">0.00 د.ل</strong><small>أرباحك من الدعوات</small></div>'
+        +'</div>'
+        +'<section class="l1017-ref-how" aria-labelledby="l1017RefHowHeading">'
+          +'<h3 id="l1017RefHowHeading"><span class="l1017-ref-how-bulb" aria-hidden="true">♧</span>كيف يعمل؟</h3>'
+          +'<ol class="l1017-ref-steps">'
+            +'<li><span class="l1017-ref-step-number">1</span><span class="l1017-ref-step-text">شارك كودك مع أصدقائك</span><span class="l1017-ref-step-icon">'+uiIcon('share')+'</span></li>'
+            +'<li><span class="l1017-ref-step-number">2</span><span class="l1017-ref-step-text">يسجّل صديقك ويُفعّل كودك بعد توثيق هاتفه</span><span class="l1017-ref-step-icon">'+uiIcon('user')+'</span></li>'
+            +'<li><span class="l1017-ref-step-number">3</span><span class="l1017-ref-step-text">بعد أول طلب مؤهّل لصديقك بقيمة 15 د.ل أو أكثر، تحصل على 1 د.ل في محفظتك</span><span class="l1017-ref-step-icon">'+uiIcon('coins')+'</span></li>'
+          +'</ol></section>'
+        +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'تُحسب الدعوات بعد توثيق الهاتف وإتمام أول شراء مؤهّل. الحد الأقصى 10 مكافآت شهريًا.</div>'
+        +'<section class="l1017-ref-tasks" aria-label="مهام دعوة الأصدقاء">'
+          +'<div class="l1017-ref-tasks-heading"><div><small>YOUR MISSIONS · 01—03</small><h3>المهام المطلوبة</h3><p id="l1017TasksHeadline">المهمة الحالية: ادعُ صديقًا واحدًا</p></div><span id="l1017TasksCompleted">0 / 3 مهام مكتملة</span></div>'
+          +'<div class="l1017-ref-overall"><span>تقدمك نحو 10 دعوات</span><strong id="l1017RefOverallCount" dir="ltr">0 / 10</strong><small id="l1017RefOverviewStatus">تبقّى 10 دعوات مؤهلة للوصول للمستوى الأخير</small></div>'
+          +'<div id="l1017ReferralTasksList" class="l1017-ref-tasks-list" aria-live="polite"></div>'
+          +'<p class="l1017-ref-tasks-disclaimer">'+uiIcon('shield-check')+' المكافآت في المهام هي إجمالي رصيد الدعوات، وليست مكافآت إضافية عند إنهاء المرحلة.</p>'
+        +'</section>'
+        +'<div class="l1017-ref-mini-stats"><span>بانتظار أول طلب <b id="l1017PendingCount">0</b></span><span>دعوات حصلت على مكافأة <b id="l1017RewardedCount">0</b></span></div>'
+        +'<form id="l1017ClaimReferralForm"><label for="l1017ReferredCode">وصلك كود من صديق؟ فعّله قبل أول طلب</label><div class="l1017-ref-claim-row"><input id="l1017ReferredCode" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="L1XXXXXXXXXXXX" dir="ltr" required><button type="submit" id="l1017ClaimRefSubmit">تفعيل الدعوة</button></div><p class="l1017-ref-claim-help" id="l1017MyClaimNotice"></p></form>'
+        +'<p class="l1017-ref-monthly" id="l1017RefMonthly"></p>'
+      +'</div><p class="l1017-ref-notice" id="l1017ReferralStatus" role="status" aria-live="polite"></p>';
     host.appendChild(node);
     q('#l1017ReferredCode').value=copyReferralFromQuery();
     renderReferralTasks(0);
@@ -114,7 +133,7 @@
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
     q('#l1017CopyRefCode')?.addEventListener('click',()=>void copy(code,'الكود'));
     q('#l1017CopyRefLink')?.addEventListener('click',()=>void copy(HOME+'?ref='+encodeURIComponent(code),'الرابط'));
-    q('#l1017ShareRef')?.addEventListener('click',()=>void share());
+    q('#l1017ShareRef')?.addEventListener('click',shareWhatsApp);
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
     document.addEventListener('click',event=>{
       if(event.target.closest('[data-view="referrals"],#l1017ReferralRefresh'))setTimeout(()=>void load(),130);
@@ -207,13 +226,13 @@
       uiStatus('تم نسخ '+label+'، ابعته لصديقك.');
     }catch(_){window.prompt('انسخ '+label+' يدويًا:',value)}
   }
-  async function share(){
+  function shareWhatsApp(){
     if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}
     const url=HOME+'?ref='+encodeURIComponent(code);
-    if(navigator.share){
-      try{await navigator.share({title:'دعوة لمتجر L1017n',text:'سجّل في متجر L1017n وفعّل كود الدعوة قبل أول شراء: '+code,url})}
-      catch(error){if(error?.name!=='AbortError')void copy(url,'الرابط')}
-    }else void copy(url,'الرابط');
+    const message='انضم إلى متجر L1017n واستخدم كود دعوتي '+code+' قبل أول طلب: '+url;
+    const whatsapp='https://wa.me/?text='+encodeURIComponent(message);
+    const tab=window.open(whatsapp,'_blank','noopener,noreferrer');
+    if(!tab)uiStatus('إذا لم يفتح واتساب، استخدم زر نسخ رابط الدعوة.');
   }
   async function claim(){
     const db=getDb(),button=q('#l1017ClaimRefSubmit');

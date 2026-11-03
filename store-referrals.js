@@ -78,11 +78,30 @@
       complete.textContent='✓ تم الاستلام';
       complete.setAttribute('aria-label','تم استلام المهمة بنجاح');
       button.replaceWith(complete);
+      const walletCredited=Number(data.wallet_credited||0);
       const message=kind==='referrals'
         ?'تم استلام الإنجاز. أرباح الدعوات أُضيفت لمحفظتك عند تسجيل أصدقائك.'
-        :'تم استلام المهمة وتسجيل إنجازك.';
+        :kind==='purchases'
+          ?walletCredited>0
+            ?'تمت إضافة '+walletCredited.toFixed(2)+' د.ل إلى محفظة المتجر بنجاح!'
+            :'مكافأة هذه المهمة مستلمة من قبل، ولن يُضاف رصيد مرة ثانية.'
+          :'تم استلام المهمة وتسجيل إنجازك.';
       uiStatus(message,false);
       if(typeof window.toast==='function')window.toast(message);
+      if(walletCredited>0){
+        // Wallet credit is confirmed by the server; reload customer balances
+        // without requiring navigation away from the completed mission.
+        try{
+          const operations=[];
+          if(typeof window.renderWallet==='function')operations.push(Promise.resolve(window.renderWallet()));
+          if(typeof window.renderAccount==='function')operations.push(Promise.resolve(window.renderAccount()));
+          if(typeof window.renderCustomerHeaderWallet==='function'){
+            operations.push(db.auth.getUser().then(({data})=>
+              window.renderCustomerHeaderWallet(data?.user||null)));
+          }
+          void Promise.allSettled(operations).catch(err=>console.warn('[missions/wallet display]',err));
+        }catch(err){console.warn('[missions/wallet refresh]',err)}
+      }
     }catch(error){
       const message=String(error?.message||error||'');
       const label=message.includes('mission_not_completed')?'المهمة ما اكتملتش بعد؛ راجع تقدمك.':
@@ -120,13 +139,17 @@
       +'</div>';
     }).join('');
   }
-  // These tabs display existing, verifiable milestones. Only referral sign-ins
-  // produce wallet rewards; purchase and account tasks never write balances.
+  // Purchased item milestones have one-time, independently claimable wallet
+  // rewards; invitations retain their existing 1 LYD automatic referral credit.
+  const purchaseMissionRewards=Object.freeze({1:0.50,3:1.00,5:2.00,10:4.00});
+  const formatPurchaseReward=target=>Number(purchaseMissionRewards[target]||0).toFixed(2)+' د.ل';
   let currentMissionTab='referrals',purchaseFetchInFlight=false;
   const renderTask=(index,title,detail,done,progress,unit,kind,target)=>'<div class="l1017-ref-compact-row '+(done?'is-done':'is-next')+'">'
     +'<span class="l1017-ref-compact-check" aria-hidden="true">'+(done?'✓':index)+'</span>'
     +'<span class="l1017-ref-compact-description"><strong>'+title+'</strong><small>'+detail+'</small></span>'
-    +'<span class="l1017-ref-compact-money l1017-mission-counter"><strong>'+progress+'</strong><small>'+unit+'</small>'+claimButton(kind,target,done)+'</span>'
+    +'<span class="l1017-ref-compact-money l1017-mission-counter'+(kind==='purchases'?' is-paid':'')+'"><strong>'
+    +(kind==='purchases'?formatPurchaseReward(target):progress)
+    +'</strong><small>'+(kind==='purchases'?progress+' '+unit:unit)+'</small>'+claimButton(kind,target,done)+'</span>'
   +'</div>';
   function setTaskProgress(barId,count,max,summaryId,summary){
     const bar=q('#'+barId);
@@ -166,7 +189,7 @@
       const completed=Math.max(0,Number(count)||0),targets=[1,3,5,10];
       list.innerHTML=targets.map((target,i)=>renderTask(i+1,
         target===1?'أكمل أول عملية شراء':'أكمل '+target+' عمليات شراء',
-        completed>=target?'مكتملة':'من المشتريات التي تم تنفيذها',
+        completed>=target?'مكتملة — المكافأة جاهزة للاستلام':'تُحتسب الطلبات المنفذة فقط',
         completed>=target,Math.min(target,completed)+' / '+target,'طلبات','purchases',target)).join('');
       setTaskProgress('l1017PurchaseMissionBar',completed,10,'l1017PurchaseMissionSummary',completed+' مشتريات مكتملة');
     }catch(err){
@@ -253,7 +276,7 @@
             +'<div class="l1017-ref-mission-underline" aria-hidden="true"></div>'
             +'<div class="l1017-ref-mission-progress" role="progressbar" aria-label="مشتريات مكتملة من 10" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="l1017PurchaseMissionBar"></span></div>'
             +'<div class="l1017-ref-compact-list" id="l1017PurchaseMissionList" aria-live="polite"><p class="l1017-mission-loading">اضغط على القسم لعرض مهام المشتريات.</p></div>'
-            +'<p class="l1017-ref-compact-note">بعد اكتمال الشراء يظهر زر «استلام». هذه مهام إنجاز محفوظة ولا تضيف رصيدًا ماليًا.</p>'
+            +'<p class="l1017-ref-compact-note">مكافآت المشتريات تُضاف إلى محفظة المتجر بعد الضغط على «استلام» لكل مرحلة: 0.50 د.ل لأول شراء، 1 د.ل لـ3، 2 د.ل لـ5، و4 د.ل لـ10 مشتريات. المجموع 7.50 د.ل مرة واحدة للحساب.</p>'
           +'</div>'
           +'<div id="l1017MissionPanelLogin" role="tabpanel" tabindex="0" aria-labelledby="l1017MissionTabLogin" hidden>'
             +'<div class="l1017-ref-compact-heading"><h3>تقدم تسجيل الدخول</h3><small id="l1017LoginMissionSummary">0 / 3 مهام</small></div>'

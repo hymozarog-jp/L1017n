@@ -157,3 +157,122 @@ footer .footer-faq-link:focus-visible{outline:2px solid #c2a3ff;outline-offset:3
     min-height:61px;padding:10px 12px;gap:10px;
   }
 }
+
+/* Always-visible frequently asked questions at the BOTTOM of the storefront.
+   Unlike the help dialog, this content is static HTML and needs no JavaScript. */
+#storeView #l1017nFaqInline{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ position:relative!important;z-index:1!important;clear:both!important;
+ width:100%!important;max-width:980px!important;height:auto!important;
+ margin:clamp(28px,6vw,60px) auto 14px!important;
+ padding:clamp(17px,4vw,28px)!important;
+ border:1px solid #5b497e!important;border-radius:24px!important;
+ background:linear-gradient(145deg,#16152a,#111827 80%)!important;
+ box-shadow:0 15px 40px #0004!important;
+ color:#f9f6ff!important;box-sizing:border-box!important;
+ direction:rtl!important;text-align:right!important;
+}
+#storeView #l1017nFaqInline *{box-sizing:border-box!important}
+#storeView #l1017nFaqInline .l1017-inline-faq-head{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:14px;margin-bottom:21px;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-tag{
+ display:block;margin-bottom:6px;font-size:11px;font-weight:850;color:#c4a3ff;
+}
+#storeView #l1017nFaqInline h2{
+ display:block!important;font-size:clamp(23px,5.5vw,32px)!important;
+ font-weight:900!important;line-height:1.4!important;color:#fff!important;
+ margin:0 0 4px!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head p{
+ font-size:13px!important;line-height:1.8!important;color:#aeb4c9!important;margin:0!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-mark{
+ display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;
+ border-radius:17px;border:1px solid #a885e0;
+ background:linear-gradient(140deg,#7c40b5,#3a2d69);
+ color:#fff;font-size:34px;font-weight:900;line-height:1;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-list{
+ display:grid!important;gap:10px!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item{
+ display:block!important;visibility:visible!important;
+ border:1px solid #3b3e54!important;border-radius:16px!important;
+ background:#1c2032!important;overflow:hidden!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item[open]{
+ border-color:#8968c5!important;background:#22213b!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item>summary{
+ display:flex!important;align-items:center!important;gap:11px!important;
+ padding:14px 13px!important;min-height:60px!important;
+ color:#f4f2ff!important;cursor:pointer!important;list-style:none!important;
+ font-size:clamp(12px,3.1vw,15px)!important;font-weight:800!important;
+ line-height:1.65!important;user-select:none;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item>summary::-webkit-details-marker{
+ display:none!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index{
+ display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;
+ border:1px solid #695081;border-radius:10px;
+ background:#302945;color:#d5b8ff;font-size:11px;font-weight:850;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item>summary>span:nth-child(2){
+ flex:1;min-width:0;overflow-wrap:anywhere;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-arrow{
+ flex:0 0 9px;width:9px;height:9px;margin:0 4px;
+ border-right:2px solid #b1a4ca;border-bottom:2px solid #b1a4ca;
+ transform:rotate(45deg);transition:transform .18s;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item[open] .l1017-inline-faq-arrow{
+ transform:rotate(225deg);
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item>p{
+ display:block!important;margin:0 13px 15px!important;
+ padding:12px 4px 0!important;border-top:1px solid #5e59706b!important;
+ color:#d0c9dc!important;font-size:13px!important;line-height:1.95!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-more{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;
+ flex-wrap:wrap;margin-top:19px;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-more>span{
+ color:#b6b5ce;font-size:13px;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-more button{
+ border:1px solid #ae8bdd!important;border-radius:14px!important;
+ background:linear-gradient(130deg,#7541b2,#503282)!important;color:#fff!important;
+ padding:12px 19px!important;min-height:46px!important;cursor:pointer!important;
+ font-family:inherit!important;font-weight:850!important;font-size:13px!important;
+}
+#storeView #l1017nFaqInline :is(summary,button):focus-visible{
+ outline:2px solid #d7baff!important;outline-offset:3px!important;
+}
+#accountModern .account-contact-options>[data-account-action="faq"]{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ position:relative!important;min-height:65px!important;
+}
+footer .footer-faq-link{
+ display:inline-flex!important;visibility:visible!important;opacity:1!important;
+ min-height:36px!important;position:relative!important;
+}
+@media(max-width:600px){
+ #storeView #l1017nFaqInline{
+  width:calc(100% - 2px)!important;padding:16px 12px!important;
+  border-radius:20px!important;margin-top:30px!important;
+ }
+ #storeView #l1017nFaqInline .l1017-inline-faq-mark{
+  width:46px;height:46px;flex-basis:46px;font-size:29px;
+ }
+ #storeView #l1017nFaqInline .l1017-inline-faq-item>summary{
+  min-height:58px!important;padding:12px 11px!important;gap:9px!important;
+ }
+ #storeView #l1017nFaqInline .l1017-inline-faq-more button{width:100%!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #storeView #l1017nFaqInline .l1017-inline-faq-arrow{transition:none!important}
+}

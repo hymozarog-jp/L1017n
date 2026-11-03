@@ -1253,3 +1253,19 @@
   #referralsView #l1017Referrals #l1017RefLinkValue{font-size:11px!important;padding:11px 9px!important}
   #referralsView #l1017Referrals #l1017CopyRefLink{width:100%!important;flex-basis:100%!important}
 }
+
+/* The URL is the primary invitation; the bare code is a secondary fallback. */
+#referralsView #l1017Referrals .l1017-ref-invite-label{
+  display:block!important;font-size:14px!important;font-weight:900!important;
+  color:#dcf9e9!important;line-height:1.7!important;margin:0!important;
+}
+#referralsView #l1017Referrals .l1017-ref-code-value{
+  margin-top:6px!important;padding:10px 9px!important;
+  border-radius:12px!important;border:1px dashed #554d74!important;
+  background:#191e3040!important;
+}
+#referralsView #l1017Referrals .l1017-ref-code-value strong{
+  font-size:clamp(13px,3.4vw,16px)!important;color:#a7a5bd!important;
+  letter-spacing:.4px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-actions{margin-top:1px!important}

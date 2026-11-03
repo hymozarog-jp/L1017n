@@ -231,8 +231,7 @@
     const url=HOME+'?ref='+encodeURIComponent(code);
     const message='انضم إلى متجر L1017n واستخدم كود دعوتي '+code+' قبل أول طلب: '+url;
     const whatsapp='https://wa.me/?text='+encodeURIComponent(message);
-    const tab=window.open(whatsapp,'_blank','noopener,noreferrer');
-    if(!tab)uiStatus('إذا لم يفتح واتساب، استخدم زر نسخ رابط الدعوة.');
+    window.open(whatsapp,'_blank','noopener,noreferrer');
   }
   async function claim(){
     const db=getDb(),button=q('#l1017ClaimRefSubmit');

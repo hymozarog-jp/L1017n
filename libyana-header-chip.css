@@ -117,3 +117,150 @@ body .topbar #customerTopupShortcut:focus-visible{outline:2px solid #fff!importa
 #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
   overflow:hidden;text-overflow:ellipsis;max-width:100%;
 }
+
+/* L1017n header balance — long Libyana pill based on the customer's reference.
+   Keep logo, top-up click target, real wallet amount, and Madar carrier preference. */
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) 52px!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  width:min(100%,355px)!important;
+  max-width:355px!important;
+  min-width:0!important;
+  min-height:67px!important;
+  padding:6px 9px!important;
+  margin:0!important;
+  gap:12px!important;
+  border:2px solid #575a69!important;
+  border-radius:999px!important;
+  background:linear-gradient(125deg,#292c36,#20222e 54%,#262834)!important;
+  box-shadow:0 5px 14px #01030a4a,inset 0 1px 2px #ffffff1c!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip.hidden{
+  display:none!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+  grid-column:1;
+  width:52px!important;height:52px!important;
+  flex:0 0 52px!important;
+  border:2px solid #eeeeef!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  padding:4px!important;
+  box-shadow:0 1px 8px #ffffff2e!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge img{
+  width:100%!important;height:100%!important;
+  border-radius:50%!important;object-fit:contain!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip .gb-wallet-balance-content{
+  grid-column:2;
+  display:flex!important;align-items:center!important;
+  justify-content:center!important;flex:none!important;
+  min-width:0!important;width:100%!important;
+  text-align:center!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip .customer-wallet-label{
+  display:none!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  display:block!important;
+  max-width:100%!important;
+  margin:0!important;
+  text-align:center!important;
+  direction:ltr!important;
+  unicode-bidi:isolate!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:#f5f5f7!important;
+  font:900 clamp(21px,3.4vw,29px)/1.2 system-ui,"IBM Plex Sans Arabic",sans-serif!important;
+  letter-spacing:1.1px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  text-shadow:none!important;
+}
+body .topbar .account-wallet-group #customerTopupShortcut{
+  grid-column:3;
+  display:grid!important;place-items:center!important;
+  width:52px!important;height:52px!important;
+  min-width:52px!important;min-height:52px!important;
+  flex:0 0 52px!important;
+  padding:0!important;
+  border:2px solid #ee78c8!important;
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#dd43b0,#bf2695)!important;
+  color:#fff!important;
+  box-shadow:inset 0 1px 2px #ffffff55,0 2px 12px #c82ea74b!important;
+}
+body .topbar .account-wallet-group #customerTopupShortcut svg{
+  width:27px!important;height:27px!important;
+  stroke-width:2.8!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"]{
+  border-color:#638679!important;
+  background:linear-gradient(125deg,#1c3931,#18352d)!important;
+}
+body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] #customerTopupShortcut{
+  background:#1b694a!important;
+  border-color:#89cea9!important;
+  box-shadow:inset 0 1px #ffffff35!important;
+}
+@media(max-width:900px){
+  /* Give the full-width chip its own row below the existing header controls. */
+  body.l1017-live-ui .topbar:has(#customerWalletChip:not(.hidden)){
+    display:flex!important;
+    flex-wrap:wrap!important;
+    height:auto!important;
+    min-height:68px!important;
+    align-content:center!important;
+    row-gap:8px!important;
+    padding-bottom:12px!important;
+  }
+  body.l1017-live-ui .topbar .account-wallet-group:has(#customerWalletChip:not(.hidden)){
+    display:flex!important;
+    order:20!important;
+    flex:0 0 100%!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    justify-content:center!important;
+  }
+  body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+    width:min(100%,400px)!important;
+    max-width:400px!important;
+    min-height:66px!important;
+    padding:6px 10px!important;
+    grid-template-columns:51px minmax(0,1fr) 51px!important;
+    gap:10px!important;
+    border-radius:999px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+    width:51px!important;height:51px!important;flex-basis:51px!important;
+  }
+  body .topbar .account-wallet-group #customerTopupShortcut{
+    width:51px!important;height:51px!important;
+    min-width:51px!important;min-height:51px!important;flex-basis:51px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+    font-size:clamp(23px,5.6vw,29px)!important;
+  }
+}
+@media(max-width:390px){
+  body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+    grid-template-columns:46px minmax(0,1fr) 46px!important;
+    gap:9px!important;min-height:61px!important;
+    padding:5px 8px!important;
+    max-width:100%!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+    width:46px!important;height:46px!important;flex-basis:46px!important;
+  }
+  body .topbar .account-wallet-group #customerTopupShortcut{
+    width:46px!important;height:46px!important;
+    min-width:46px!important;min-height:46px!important;flex-basis:46px!important;
+  }
+  #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+    font-size:clamp(21px,6vw,27px)!important;
+  }
+}

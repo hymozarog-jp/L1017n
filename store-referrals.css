@@ -1365,3 +1365,88 @@
     transition:none!important;
   }
 }
+
+/* Additional referral missions: thin underline, a real monthly progress bar,
+   and separated compact rows (without implying extra currency payouts). */
+#referralsView #l1017Referrals .l1017-ref-compact-heading{
+  margin-bottom:9px!important;
+  padding-bottom:1px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading h3{
+  position:relative!important;
+  display:inline-block!important;
+  padding-bottom:5px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-mission-underline{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  height:2px!important;
+  border-radius:10px!important;
+  margin:0 0 13px!important;
+  background:linear-gradient(270deg,#bf9bff,#765ed5 32%,#4b5d7e80 78%,transparent)!important;
+  box-shadow:0 2px 9px #9f73ff25!important;
+}
+#referralsView #l1017Referrals .l1017-ref-mission-progress{
+  position:relative!important;
+  display:block!important;
+  height:7px!important;
+  width:100%!important;
+  margin:0 0 15px!important;
+  border-radius:99px!important;
+  border:1px solid #4d476e!important;
+  background:#22243c!important;
+  overflow:hidden!important;
+  direction:rtl!important;
+}
+#referralsView #l1017Referrals .l1017-ref-mission-progress>span{
+  display:block!important;
+  width:0;
+  height:100%!important;
+  background:linear-gradient(90deg,#78eec0,#3fcf9a)!important;
+  border-radius:99px!important;
+  box-shadow:0 0 11px #41dca657!important;
+  transition:width .3s ease!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-list{
+  gap:7px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row{
+  min-height:58px!important;
+  padding:8px 11px!important;
+  border-radius:11px!important;
+  position:relative!important;
+  overflow:visible!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row:not(:last-child)::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:12px!important;
+  right:12px!important;
+  bottom:-5px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,#7581a745 20%,#7581a745 80%,transparent)!important;
+  pointer-events:none!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-current{
+  border-color:#9472db!important;
+  box-shadow:inset 3px 0 0 #c69bff22!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money strong{
+  font-size:clamp(13px,3.35vw,17px)!important;
+}
+@media(max-width:390px){
+  #referralsView #l1017Referrals .l1017-ref-compact-row{
+    min-height:56px!important;
+    padding:8px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-mission-progress{
+    margin-bottom:12px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #referralsView #l1017Referrals .l1017-ref-mission-progress>span{
+    transition:none!important;
+  }
+}

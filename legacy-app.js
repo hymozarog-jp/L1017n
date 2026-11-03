@@ -329,7 +329,19 @@ async function renderOrders(){
  root.dataset.ordersRendered='1';
  if(!orders.length){
    const list=root.querySelector('.orders-modern-list');
-   if(list)list.innerHTML='<div class="orders-empty-state"><span class="orders-empty-mark" aria-hidden="true">▤</span>'
+   if(list)list.innerHTML='<div class="orders-empty-state"><span class="orders-empty-mark" aria-hidden="true">'
+     +'<svg viewBox="0 0 136 116" xmlns="http://www.w3.org/2000/svg" fill="none">'
+     +'<defs><linearGradient id="oEmptyA" x1="26" y1="24" x2="111" y2="90"><stop stop-color="#8D77E8"/><stop offset="1" stop-color="#4C4C9C"/></linearGradient></defs>'
+     +'<circle cx="68" cy="56" r="49" fill="#7358BE" opacity=".13"/><circle cx="68" cy="56" r="44" stroke="#8B79CF" stroke-opacity=".4" stroke-dasharray="3 7"/>'
+     +'<rect x="30" y="23" width="77" height="74" rx="12" fill="#202447" stroke="#7D78D6" stroke-width="2"/>'
+     +'<rect x="40" y="17" width="69" height="74" rx="12" fill="url(#oEmptyA)" stroke="#C3B5FF" stroke-width="2"/>'
+     +'<rect x="49" y="28" width="43" height="6" rx="3" fill="#E8DEFF" opacity=".84"/>'
+     +'<path d="M51 48 75 36l24 12v26L75 86 51 74V48Z" stroke="#F2E7FF" stroke-width="2.7" stroke-linejoin="round"/>'
+     +'<path d="m51 48 24 12 24-12M75 60v26" stroke="#F2E7FF" stroke-width="2.7" stroke-linejoin="round"/>'
+     +'<circle cx="106" cy="85" r="18" fill="#204D51" stroke="#8CEDC3" stroke-width="2.3"/>'
+     +'<path d="m98 85 6 6 11-13" stroke="#A2FCD8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>'
+     +'<path d="M17 47v9m-4.5-4.5h9M112 10v10m-5-5h10" stroke="#F1D38D" stroke-width="2" stroke-linecap="round"/>'
+     +'</svg></span>'
      +'<h3>ما عندكش طلبات حتى الآن</h3><p>أول ما تشحن محفظتك أو تطلب منتج، بتشوف طلبك هنا.</p>'
      +'<button type="button" data-orders-shop>تصفح المنتجات</button></div>';
  }

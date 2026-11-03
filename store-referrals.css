@@ -961,3 +961,75 @@
 @media(prefers-reduced-motion:reduce){
   #referralsView #l1017Referrals .l1017-ref-actions button{transition:none}
 }
+
+/* Small, horizontal referral milestones: no additional wallet payouts. */
+#referralsView #l1017Referrals .l1017-ref-compact-missions{
+  margin:0 0 20px;padding:14px;
+  background:#0c1527;border:1px solid #283a58;border-radius:18px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:11px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading h3{
+  margin:0;font:900 clamp(15px,3.6vw,19px)/1.4 system-ui,sans-serif;color:#f6f7ff;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading small{
+  color:#9dabc7;font-size:11px;font-weight:750;white-space:nowrap;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-list{
+  display:grid;gap:8px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row{
+  display:flex;direction:rtl;align-items:center;
+  gap:10px;min-width:0;min-height:66px;
+  border-radius:13px;border:1px solid #283955;
+  background:#121e33;padding:10px 12px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-current{
+  border-color:#8b6bd5;background:#241d40;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-done{
+  border-color:#2a6959;background:#112a2c;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-check{
+  flex:0 0 27px;display:grid;place-items:center;
+  width:27px;height:27px;border-radius:9px;
+  background:#283250;color:#b9b6e9;
+  font:900 12px/1 system-ui,sans-serif;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-current .l1017-ref-compact-check{
+  color:#fff;background:linear-gradient(145deg,#db4a99,#8b4ad9);
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row.is-done .l1017-ref-compact-check{
+  background:#167b60;color:white;font-size:16px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-description{
+  flex:1;min-width:0;display:grid;gap:2px;text-align:right;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-description strong{
+  color:#f0f2fb;font-size:clamp(12px,3vw,15px);font-weight:850;line-height:1.4;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-description small{
+  color:#98a7c1;font-size:10px;line-height:1.4;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money{
+  flex:none;min-width:72px;display:grid;gap:2px;text-align:left;direction:rtl;
+  padding-right:11px;border-right:1px solid #354362;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money strong{
+  color:#46dba4;font-size:clamp(14px,3.5vw,19px);font-weight:900;
+  white-space:nowrap;line-height:1.35;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money small{
+  color:#94a8bd;font-size:10px;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-note{
+  margin:10px 2px 0;color:#8f9cb7;
+  font-size:10px;line-height:1.7;
+}
+@media(max-width:365px){
+  #referralsView #l1017Referrals .l1017-ref-compact-missions{padding:10px}
+  #referralsView #l1017Referrals .l1017-ref-compact-row{gap:7px;padding:9px 8px}
+  #referralsView #l1017Referrals .l1017-ref-compact-money{min-width:65px;padding-right:7px}
+}

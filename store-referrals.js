@@ -3,6 +3,8 @@
 (function(){
   'use strict';
   const REF_STORAGE='l1017n-invited-by-code-v1';
+  const REF_PERSIST_STORAGE='l1017n-invite-link-with-expiry-v2';
+  const REF_TTL=7*24*60*60*1000;
   const HOME='https://hymozarog-jp.github.io/L1017n/';
   const isCode=v=>/^L1[0-9A-F]{12}$/.test(String(v||'').trim().toUpperCase());
   const q=s=>document.querySelector(s);
@@ -14,14 +16,42 @@
     n.textContent=message||'';n.dataset.error=error?'1':'0';
   }
   function copyReferralFromQuery(){
-    const u=new URL(location.href);
-    const fromUrl=String(u.searchParams.get('ref')||'').trim().toUpperCase();
+    // A referral is an actual website link (?ref=...), not a stand-alone code.
+    // Keep it across account creation and Google/email redirects; expire old links.
+    const fromUrl=String(new URL(location.href).searchParams.get('ref')||'').trim().toUpperCase();
     if(isCode(fromUrl)){
       try{sessionStorage.setItem(REF_STORAGE,fromUrl)}catch(_){}
+      try{localStorage.setItem(REF_PERSIST_STORAGE,JSON.stringify({code:fromUrl,time:Date.now()}))}catch(_){}
       return fromUrl;
     }
-    try{const saved=sessionStorage.getItem(REF_STORAGE)||'';return isCode(saved)?saved:''}catch(_){return ''}
+    try{
+      const saved=JSON.parse(localStorage.getItem(REF_PERSIST_STORAGE)||'null');
+      if(saved&&isCode(saved.code)&&Date.now()-Number(saved.time)<REF_TTL&&Date.now()>=Number(saved.time))return saved.code;
+      if(saved)localStorage.removeItem(REF_PERSIST_STORAGE);
+    }catch(_){}
+    // Backward compatible with invite links opened before this deployment.
+    try{
+      const saved=sessionStorage.getItem(REF_STORAGE)||'';
+      if(isCode(saved)){
+        try{localStorage.setItem(REF_PERSIST_STORAGE,JSON.stringify({code:saved,time:Date.now()}))}catch(_){}
+        return saved;
+      }
+    }catch(_){}
+    return '';
   }
+  function clearIncomingInvitation(){
+    try{sessionStorage.removeItem(REF_STORAGE)}catch(_){}
+    try{localStorage.removeItem(REF_PERSIST_STORAGE)}catch(_){}
+    try{
+      const url=new URL(window.location.href);
+      if(isCode(url.searchParams.get('ref'))){
+        url.searchParams.delete('ref');
+        history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+      }
+    }catch(_){}
+    q('#l1017InviteLanding')?.remove();
+  }
+  function referralLink(value){return HOME+'?ref='+encodeURIComponent(value)}
   function renderCompactMissions(monthlyCount){
     const holder=q('#l1017RefCompactList');
     const summary=q('#l1017RefCompactProgress');
@@ -58,13 +88,15 @@
       +'<section class="l1017-ref-code-card" aria-label="كود الدعوة الخاص بك">'
         +'<div class="l1017-ref-code"><label for="l1017RefCodeValue">كود الدعوة الخاص بك</label>'
         +'<div class="l1017-ref-code-value"><strong id="l1017RefCodeValue" dir="ltr" tabindex="0">—</strong>'
-        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الكود</span></button></div>'
-        +'<button type="button" id="l1017CreateRefCode">إنشاء كود الدعوة</button>'
+        +'<button type="button" id="l1017CopyRefCode">'+uiIcon('copy')+'<span>نسخ الرمز فقط</span></button></div>'
+        +'<div class="l1017-ref-link-row"><small>هذا الرابط يفتح الموقع مباشرة، وتنحسب الدعوة بعد تسجيل دخول صديقك:</small>'
+        +'<a id="l1017RefLinkValue" href="#" target="_blank" rel="noopener noreferrer" dir="ltr" aria-label="رابط الدعوة الذي يفتح المتجر">أنشئ كودك لعرض رابط الدعوة</a></div>'
+        +'<button type="button" id="l1017CreateRefCode">إنشاء رابط الدعوة</button>'
         +'<div class="l1017-ref-actions">'
           +'<button type="button" id="l1017ShareRef" class="l1017-ref-whatsapp">'
           +'<svg viewBox="0 0 32 32" aria-hidden="true" fill="currentColor"><path d="M16 3a13 13 0 0 0-11.1 19.7L3 29l6.5-1.7A13 13 0 1 0 16 3zm0 23.5a10.5 10.5 0 0 1-5.3-1.4l-.4-.2-3.9 1 1-3.8-.3-.4a10.5 10.5 0 1 1 8.9 4.8zm5.8-7.9c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.7.2-.1.3-.4.5-.6.1-.2.2-.4.3-.6.1-.2 0-.5 0-.7-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.5-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.3 3.3 1.4 3.5.2.2 2.5 3.8 6.1 5.3.9.4 1.5.6 2.1.7.9.3 1.7.2 2.3.2.7-.1 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4 0-.2-.2-.3-.5-.4z"/></svg>'
           +'<span>مشاركة عبر واتساب</span></button>'
-          +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+'<span>نسخ رابط الدعوة</span></button>'
+          +'<button type="button" id="l1017CopyRefLink">'+uiIcon('link')+'<span>نسخ الرابط لفتح الموقع</span></button>'
         +'</div></div></section>'
         +'<div class="l1017-ref-stats" aria-label="إحصائيات الدعوات">'
           +'<div class="l1017-ref-stat-card"><span class="l1017-ref-stat-icon l1017-ref-stat-purple" aria-hidden="true">'
@@ -87,7 +119,7 @@
             +'<li><span class="l1017-ref-step-number">3</span><span class="l1017-ref-step-text">بمجرد تسجيل دخوله بحساب مؤكّد، تحصل على 1 د.ل في محفظتك</span><span class="l1017-ref-step-icon">'+uiIcon('coins')+'</span></li>'
           +'</ol></section>'
         +'<div class="l1017-ref-rules">'+uiIcon('shield-check')+'تُحتسب الدعوة تلقائيًا بعد دخول الصديق بحساب مؤكّد، مرة واحدة لكل حساب، وبحد 10 مكافآت شهريًا.</div>'
-        +'<form id="l1017ClaimReferralForm"><label for="l1017ReferredCode">وصلك كود مكتوب؟ تقدر تفعّله هنا، لكن رابط الدعوة يُفعّل تلقائيًا بعد الدخول</label><div class="l1017-ref-claim-row"><input id="l1017ReferredCode" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="L1XXXXXXXXXXXX" dir="ltr" required><button type="submit" id="l1017ClaimRefSubmit">تفعيل الدعوة</button></div><p class="l1017-ref-claim-help" id="l1017MyClaimNotice"></p></form>'
+        +'<form id="l1017ClaimReferralForm"><label for="l1017ReferredCode">وصلك رمز فقط بدون رابط؟ تقدر تدخله هنا. الأفضل تستخدم رابط الدعوة الذي يفتح الموقع تلقائيًا.</label><div class="l1017-ref-claim-row"><input id="l1017ReferredCode" type="text" maxlength="14" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="L1XXXXXXXXXXXX" dir="ltr" required><button type="submit" id="l1017ClaimRefSubmit">تفعيل الدعوة</button></div><p class="l1017-ref-claim-help" id="l1017MyClaimNotice"></p></form>'
         +'<p class="l1017-ref-monthly" id="l1017RefMonthly"></p>'
       +'</div><p class="l1017-ref-notice" id="l1017ReferralStatus" role="status" aria-live="polite"></p>';
     host.appendChild(node);
@@ -99,7 +131,7 @@
     });
     q('#l1017CreateRefCode')?.addEventListener('click',()=>void createCode());
     q('#l1017CopyRefCode')?.addEventListener('click',()=>copy(code,'الكود'));
-    q('#l1017CopyRefLink')?.addEventListener('click',()=>copy(HOME+'?ref='+encodeURIComponent(code),'الرابط'));
+    q('#l1017CopyRefLink')?.addEventListener('click',()=>copy(referralLink(code),'الرابط'));
     q('#l1017ShareRef')?.addEventListener('click',shareWhatsApp);
     q('#l1017ClaimReferralForm')?.addEventListener('submit',e=>{e.preventDefault();void claim()});
     document.addEventListener('click',event=>{
@@ -115,7 +147,50 @@
   }
   function bindAuth(db){
     if(session)return;
-    session=db.auth.onAuthStateChange(()=>{setTimeout(()=>void load(),180)});
+    session=db.auth.onAuthStateChange((event,login)=>{
+      // Supabase auth callbacks must be synchronous: schedule DB work afterward.
+      if(event==='SIGNED_IN'||event==='INITIAL_SESSION'){
+        if(login?.user?.id&&isCode(copyReferralFromQuery())){
+          setTimeout(()=>void redeemAfterLogin(db,login.user),0);
+        }
+      }
+      if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='SIGNED_OUT'){
+        setTimeout(()=>void load(),180);
+      }
+    });
+  }
+  async function redeemAfterLogin(db,user){
+    const invite=copyReferralFromQuery();
+    if(!user?.id||!isCode(invite))return;
+    const attemptKey=user.id+'|'+invite;
+    if(autoClaimAttempt===attemptKey)return;
+    autoClaimAttempt=attemptKey;
+    try{
+      const {error}=await db.rpc('claim_my_store_referral_code',{p_code:invite});
+      if(error)throw error;
+      clearIncomingInvitation();
+      uiStatus('تم احتساب دخولك من رابط الدعوة بنجاح، وصديقك حصل على 1 د.ل.');
+      if(typeof window.toast==='function')window.toast('تم احتساب دعوة صديقك عند تسجيل دخولك.');
+      // Refresh visible statistics without requiring a visit to this page.
+      setTimeout(()=>void load(),50);
+    }catch(err){
+      const e=String(err?.message||err||'');
+      const permanent=['referral_already_claimed','referral_self_invitation','invalid_referral_code'];
+      if(permanent.some(code=>e.includes(code))){
+        clearIncomingInvitation();
+        uiStatus(e.includes('referral_self_invitation')?'ما تقدرش تستخدم رابط دعوتك أنت.':e.includes('referral_already_claimed')?'هذا الحساب سبق احتساب دعوته.':'رابط الدعوة غير صالح.',true);
+      }else{
+        // A pending confirmation, connection issue or monthly limit must not
+        // silently erase the invite; allow a later authenticated retry.
+        uiStatus(e.includes('referral_confirmed_login_required')
+          ?'تأكد من بريدك الإلكتروني أولًا ثم سجّل الدخول لتُحتسب الدعوة.'
+          :e.includes('referral_monthly_limit_reached')
+            ?'وصل صاحب الرابط للحد الشهري من الدعوات.'
+            :'تعذر احتساب الدعوة الآن. جرّب تسجيل الدخول مجددًا.',true);
+      }
+      autoClaimAttempt='';
+      console.warn('[referrals/automatic claim]',e.slice(0,145));
+    }
   }
   function showLandingInvite(){
     const from=copyReferralFromQuery();
@@ -124,11 +199,10 @@
     const banner=document.createElement('div');
     banner.id='l1017InviteLanding';
     banner.className='l1017-invite-landing';
-    banner.innerHTML=uiIcon('gift')+'<span>وصلت من رابط دعوة! سجّل دخولك فقط وسيحصل صديقك على المكافأة تلقائيًا.</span><button type="button">فتح الدعوة</button>';
+    banner.innerHTML=uiIcon('gift')+'<span>دخلت من رابط دعوة! سجّل دخولك وسيتم احتساب الدعوة لصديقك تلقائيًا بعد تأكيد الحساب.</span><button type="button">تسجيل الدخول</button>';
     banner.querySelector('button').addEventListener('click',()=>{
-      if(typeof window.switchView==='function')window.switchView('referrals');
-      else q('[data-view="referrals"]')?.click();
-      setTimeout(()=>q('#l1017Referrals')?.scrollIntoView({behavior:'smooth',block:'start'}),200);
+      if(typeof window.switchView==='function')window.switchView('account');
+      else q('[data-view="account"]')?.click();
     });
     host.prepend(banner);
   }
@@ -160,11 +234,20 @@
         }
         return;
       }
+      // Credit the referral at sign-in before loading any referral page UI.
+      await redeemAfterLogin(db,user);
       const {data,error}=await db.rpc('get_my_store_referral_stats');
       if(error)throw error;
       const stats=data||{};
       code=isCode(stats.code)?stats.code:'';
       q('#l1017RefCodeValue').textContent=code||'—';
+      const invitation=q('#l1017RefLinkValue');
+      if(invitation){
+        invitation.href=code?referralLink(code):'#';
+        invitation.textContent=code?referralLink(code):'أنشئ كودك لعرض رابط الدعوة';
+        invitation.setAttribute('aria-disabled',String(!code));
+        invitation.tabIndex=code?0:-1;
+      }
       q('#l1017CreateRefCode').classList.toggle('hidden',!!code);
       for(const id of ['l1017CopyRefCode','l1017CopyRefLink','l1017ShareRef'])q('#'+id).disabled=!code;
       const totals=stats.summary||{};
@@ -180,17 +263,10 @@
       form.classList.toggle('hidden',!!existing);
       q('#l1017MyClaimNotice').textContent=existing?'': '';
       if(existing)q('#l1017RefMonthly').textContent+=' · دعوتك الواردة: '+(existing.status==='pending'?'دعوة سابقة تنتظر إتمام الطلب':existing.status==='rewarded'?'تمت المكافأة':'غير مؤهلة');
-      // The ?ref= link is retained through sign-in and redeemed automatically
-      // when the visitor logs in; no OTP, purchase, or extra confirmation needed.
+      // Incoming referral links are redeemed at authentication time by
+      // redeemAfterLogin(), not by manually opening this page or buying.
       const incoming=copyReferralFromQuery();
-      if((!existing||existing.status==='pending') && isCode(incoming)){
-        q('#l1017ReferredCode').value=incoming;
-        const attemptKey=user.id+'|'+incoming;
-        if(autoClaimAttempt!==attemptKey){
-          autoClaimAttempt=attemptKey;
-          setTimeout(()=>void claim(true),80);
-        }
-      }
+      if(isCode(incoming))q('#l1017ReferredCode').value=incoming;
     }catch(err){
       console.warn('[referrals] stats',err);
       uiStatus('تعذر تحميل إحصائيات الدعوات. جرّب تحديث الصفحة.',true);
@@ -270,7 +346,7 @@
   }
   function shareWhatsApp(){
     if(!code){uiStatus('أنشئ كود الدعوة أولًا.',true);return}
-    const url=HOME+'?ref='+encodeURIComponent(code);
+    const url=referralLink(code);
     const message='سجّل دخولك إلى متجر L1017n عبر رابط دعوتي، وبتنحسب دعوتك تلقائيًا! '+url;
     const whatsapp='https://wa.me/?text='+encodeURIComponent(message);
     window.open(whatsapp,'_blank','noopener,noreferrer');
@@ -284,17 +360,8 @@
     try{
       const {error}=await db.rpc('claim_my_store_referral_code',{p_code:raw});
       if(error)throw error;
-      try{sessionStorage.removeItem(REF_STORAGE)}catch(_){}
+      clearIncomingInvitation();
       uiStatus('تم احتساب الدعوة بنجاح! أُضيف 1 د.ل لمحفظة صاحب الرابط.');
-      q('#l1017InviteLanding')?.remove();
-      // Clear the redeemed ref so refresh/re-login never prompts to claim twice.
-      try{
-        const url=new URL(window.location.href);
-        if(isCode(url.searchParams.get('ref'))){
-          url.searchParams.delete('ref');
-          window.history.replaceState(window.history.state,'',url.pathname+url.search+url.hash);
-        }
-      }catch(_){}
       if(automatic&&typeof window.toast==='function')window.toast('تم احتساب دعوتك لصديقك بنجاح!');
       await load();
     }catch(err){

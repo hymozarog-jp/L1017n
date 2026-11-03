@@ -697,7 +697,14 @@ $('#googleSignInBtn')?.addEventListener('click',async()=>{
    const {error}=await supabaseClient.auth.signInWithOAuth({
      provider:'google',
      options:{
-       redirectTo:new URL('./', window.location.href).href,
+       redirectTo:(()=>{
+         const url=new URL('./',window.location.href);
+         let referral=new URL(window.location.href).searchParams.get('ref');
+         if(!referral)try{referral=sessionStorage.getItem('l1017n-invited-by-code-v1')}catch(_){}
+         referral=String(referral||'').toUpperCase();
+         if(/^L1[0-9A-F]{12}$/.test(referral))url.searchParams.set('ref',referral);
+         return url.href;
+       })(),
        queryParams:{prompt:'select_account'}
      }
    });
@@ -736,7 +743,17 @@ $('#authForm').addEventListener('submit',async e=>{
      if(profileName.length<2||profileName.length>40)throw Error('اكتب اسمًا للمتجر من حرفين إلى 40 حرفًا.');
      const sharePublic=$('#authPublicIdentity')?.checked===true;
      const {data,error}=await supabaseClient.auth.signUp({
-       email,password,options:{data:{store_phone:phone,full_name:profileName,share_public_profile:sharePublic}}
+       email,password,options:{
+        data:{store_phone:phone,full_name:profileName,share_public_profile:sharePublic},
+        emailRedirectTo:(()=>{
+          const url=new URL('./',window.location.href);
+          let referral=new URL(window.location.href).searchParams.get('ref');
+          if(!referral)try{referral=sessionStorage.getItem('l1017n-invited-by-code-v1')}catch(_){}
+          referral=String(referral||'').toUpperCase();
+          if(/^L1[0-9A-F]{12}$/.test(referral))url.searchParams.set('ref',referral);
+          return url.href;
+        })()
+      }
      });
      if(error)throw error;
      if(data.session){

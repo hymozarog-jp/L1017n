@@ -166,7 +166,7 @@ body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip.hi
 }
 #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
   display:block!important;
-  width:min(85vw,285px)!important;max-width:285px!important;
+  max-width:100%!important;
   margin:0!important;
   text-align:center!important;
   direction:ltr!important;
@@ -251,7 +251,7 @@ body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[da
     grid-template-columns:41px minmax(0,1fr) 41px!important;
     gap:7px!important;min-height:55px!important;
     padding:5px 8px!important;
-    max-width:100%!important;
+    width:min(85vw,285px)!important;max-width:285px!important;
   }
   #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
     width:41px!important;height:41px!important;flex-basis:41px!important;

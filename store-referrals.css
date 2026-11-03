@@ -1033,3 +1033,166 @@
   #referralsView #l1017Referrals .l1017-ref-compact-row{gap:7px;padding:9px 8px}
   #referralsView #l1017Referrals .l1017-ref-compact-money{min-width:65px;padding-right:7px}
 }
+
+/* 2026-11-03: Prevent the stats and missions panels from overlapping on mobile.
+   Explicit document flow wins over older page rules and flex/float interference. */
+#referralsView #l1017Referrals #l1017ReferralAccount:not(.hidden){
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:18px!important;
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-code-card,
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-stats,
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-compact-missions,
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-how,
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-rules,
+#referralsView #l1017Referrals #l1017ReferralAccount>#l1017ClaimReferralForm,
+#referralsView #l1017Referrals #l1017ReferralAccount>#l1017RefMonthly{
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  float:none!important;
+  clear:both!important;
+  flex:0 0 auto!important;
+  box-sizing:border-box!important;
+  display:block;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  margin:0!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-stats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(min-content,auto)!important;
+  align-items:stretch!important;
+  gap:12px!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount .l1017-ref-stat-card{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  height:auto!important;
+  min-height:150px!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount .l1017-ref-stat-card strong{
+  max-width:100%!important;
+  line-height:1.3!important;
+  overflow-wrap:anywhere!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-compact-missions{
+  isolation:isolate;
+  z-index:auto!important;
+  padding:16px 14px!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  flex-wrap:wrap!important;
+  row-gap:5px!important;
+  margin-bottom:13px!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading h3{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-heading small{
+  white-space:normal!important;
+  text-align:left!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-list{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-row{
+  display:grid!important;
+  grid-template-columns:28px minmax(0,1fr) minmax(69px,max-content)!important;
+  align-items:center!important;
+  gap:9px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:69px!important;
+  height:auto!important;
+  padding:11px!important;
+  overflow:hidden!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-check{
+  min-width:0!important;
+  flex:none!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-description{
+  display:grid!important;
+  gap:3px!important;
+  min-width:0!important;
+  width:100%!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-description strong{
+  display:block!important;
+  overflow-wrap:anywhere!important;
+  white-space:normal!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money{
+  display:grid!important;
+  justify-items:start!important;
+  gap:2px!important;
+  width:auto!important;
+  min-width:69px!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  padding-right:9px!important;
+  border-right:1px solid #354362!important;
+  white-space:nowrap!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-money strong{
+  white-space:nowrap!important;
+  font-size:clamp(13px,3.6vw,18px)!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-how{
+  display:block!important;
+  padding-top:2px!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-rules{
+  display:flex!important;
+  gap:8px!important;
+}
+#referralsView #l1017Referrals #l1017ReferralAccount>#l1017ClaimReferralForm{
+  display:grid!important;
+  gap:10px!important;
+}
+@media(max-width:390px){
+  #referralsView #l1017Referrals #l1017ReferralAccount:not(.hidden){gap:14px!important}
+  #referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-stats{gap:8px!important}
+  #referralsView #l1017Referrals #l1017ReferralAccount .l1017-ref-stat-card{
+    min-height:140px!important;padding:12px 10px!important;
+  }
+  #referralsView #l1017Referrals #l1017ReferralAccount>.l1017-ref-compact-missions{
+    padding:12px 10px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-compact-row{
+    grid-template-columns:25px minmax(0,1fr) minmax(62px,max-content)!important;
+    gap:6px!important;padding:9px 8px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-compact-money{
+    min-width:62px!important;padding-right:6px!important;
+  }
+  #referralsView #l1017Referrals .l1017-ref-compact-money strong{
+    font-size:13px!important;
+  }
+}

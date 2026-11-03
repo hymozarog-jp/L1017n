@@ -35,3 +35,15 @@
 @media(prefers-reduced-motion:reduce){
  #ordersView .orders-game-icon .orders-product-art{transition:none!important}
 }
+
+/* Hand-drawn-style phone top-up symbol for Libyana orders (not a product photo). */
+#ordersView #ordersList .orders-game-icon.orders-icon-libyana{
+  display:grid!important;place-items:center!important;
+  background:radial-gradient(circle at 36% 28%,#68438b,#2a1b40 76%)!important;
+  border-color:#8154b8!important;overflow:hidden!important;
+}
+#ordersView #ordersList .orders-game-icon.orders-icon-libyana svg.orders-topup-illustration{
+  display:block!important;width:90%!important;height:90%!important;
+  max-width:none!important;max-height:none!important;
+  object-fit:contain!important;overflow:visible!important;flex:none!important;
+}

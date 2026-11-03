@@ -1,5 +1,46 @@
 /* Referral program panel — same indigo/gold design as L1017n leaderboard. */
-#leaderboardView.l1017-rank-ready #l1017Referrals{order:5!important;align-self:stretch;max-width:880px!important;width:100%}
+#referralsView{
+  display:block;direction:rtl;
+  min-height:calc(100dvh - 115px);
+  padding:clamp(15px,4vw,42px) 14px 120px!important;
+  background:radial-gradient(ellipse 72% 420px at 50% 0%,#503b7666,transparent 90%),
+    linear-gradient(180deg,#14182e,#0d162b 72%,#111b31)!important;
+}
+#referralsView.hidden{display:none!important}
+#referralsView .l1017-ref-page-top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  max-width:880px;margin:0 auto 12px;padding:2px 0
+}
+#referralsView .l1017-ref-page-back{
+  border:1px solid #9c8ac990;border-radius:11px;
+  padding:9px 13px;min-height:38px;background:#262849;
+  color:#e8e1fa;font:750 12px 'IBM Plex Sans Arabic',system-ui,sans-serif;
+  cursor:pointer
+}
+#referralsView .l1017-ref-page-kicker{
+  color:#bca8df;font:800 11px system-ui,sans-serif;letter-spacing:.8px
+}
+#referralsView #l1017Referrals{max-width:880px;width:100%;margin:0 auto!important}
+#accountModern .l1017-account-referral-link{
+  display:flex;align-items:center;gap:12px;justify-content:space-between;
+  width:100%;margin:12px 0;
+  border:1px solid #8e7ab36d;border-radius:14px;
+  padding:13px 14px;background:linear-gradient(115deg,#4836614a,#252c484f);
+  color:#f2e8ff;text-align:right;cursor:pointer;
+  font-family:'IBM Plex Sans Arabic',system-ui,sans-serif
+}
+#accountModern .l1017-account-referral-link .l1017-icon{
+  color:#e3c18f;width:22px;height:22px;flex:none
+}
+#accountModern .l1017-account-referral-link span{
+  display:grid;gap:2px;flex:1;min-width:0
+}
+#accountModern .l1017-account-referral-link strong{font-size:13px;font-weight:900}
+#accountModern .l1017-account-referral-link small{font-size:11px;color:#b9bfd4}
+#accountModern .l1017-account-referral-link:focus-visible,
+#referralsView .l1017-ref-page-back:focus-visible{outline:2px solid #eecf95;outline-offset:3px}
+@media(max-width:520px){#referralsView{padding:14px 10px calc(112px + env(safe-area-inset-bottom,0px))!important}}
+
 #l1017Referrals{
   direction:rtl;
   position:relative;max-width:980px;margin:20px auto 25px;

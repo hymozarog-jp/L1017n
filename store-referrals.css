@@ -1672,3 +1672,40 @@
     animation:none!important;transition:none!important;
   }
 }
+
+/* Purchase mission payouts: real one-time wallet credit confirmed by RPC. */
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-counter.is-paid{
+  min-width:87px!important;
+  max-width:118px!important;
+  border-right-color:#35876b!important;
+}
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-counter.is-paid strong,
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-ref-compact-row.is-done .l1017-mission-counter.is-paid strong{
+  color:#7aefbd!important;
+  font-size:clamp(13px,3.3vw,17px)!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 12px #1cc68b27!important;
+}
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-counter.is-paid small{
+  color:#9eb6b3!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+  text-align:center!important;
+}
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-ref-compact-row.is-done{
+  border-color:#368267!important;
+  background:linear-gradient(120deg,#13352f,#162c37)!important;
+}
+#referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-claim-btn{
+  border-color:#78f0bf!important;
+  background:linear-gradient(130deg,#88f5c7,#45d39b)!important;
+}
+@media(max-width:390px){
+  #referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-counter.is-paid{
+    min-width:74px!important;max-width:86px!important;
+  }
+  #referralsView #l1017Referrals #l1017MissionPanelPurchases .l1017-mission-counter.is-paid strong{
+    font-size:12px!important;
+  }
+}

@@ -136,7 +136,16 @@
     try{
       const {data:auth,error:authError}=await client.auth.getUser();
       if(serial!==state.serial)return;
-      if(authError||!auth?.user){close();return;}
+      if(authError||!auth?.user){
+        // Keep the screen open instead of silently doing nothing.
+        state.topups=[];state.purchases=[];state.errors=[];
+        page.querySelector('#l1017HistoryItems').replaceChildren();
+        page.querySelector('#l1017HistoryTopupCount').textContent='—';
+        page.querySelector('#l1017HistoryPurchaseCount').textContent='—';
+        status.dataset.mode='error';
+        status.textContent='تعذّر التحقق من حسابك. سجّل دخولك ثم اضغط تحديث، أو ارجع إلى حسابي.';
+        return;
+      }
       const id=auth.user.id;
       const [topups,purchases]=await Promise.all([
         client.from('topup_requests').select('id,amount,method,status,created_at,transfer_reference,admin_note')
@@ -161,30 +170,38 @@
       console.warn('[account/history] History request failed',error);
     }
   }
-  async function open(){
-    const client=typeof supabaseClient!=='undefined'?supabaseClient:null;
-    if(!client)return;
-    const {data,error}=await client.auth.getUser();
-    if(error||!data?.user)return;
+  function open(){
+    // Show the interface immediately. Auth/network checks happen in refresh().
+    // Never make a tap silently fail if auth.getUser() stalls or rejects.
     const page=ensurePage();
     page.classList.add('visible');
     document.body.classList.add('l1017-history-open');
     state.filter='all';
     state.topups=[];state.purchases=[];state.errors=[];
-    page.querySelector('#l1017HistoryItems').innerHTML='';
+    page.querySelector('#l1017HistoryItems').replaceChildren();
     page.querySelector('#l1017HistoryTopupCount').textContent='—';
     page.querySelector('#l1017HistoryPurchaseCount').textContent='—';
     page.querySelector('#l1017HistoryStatus').textContent='جاري تحميل السجل…';
     page.querySelector('.l1017-history-back').focus({preventScroll:true});
     page.scrollTop=0;
-    if(!state.authSubscribed){
+    const client=typeof supabaseClient!=='undefined'?supabaseClient:null;
+    if(client&&!state.authSubscribed){
       state.authSubscribed=true;
       client.auth.onAuthStateChange((event,session)=>{
         if(event==='SIGNED_OUT'||(!session?.user&&event==='USER_DELETED'))close();
       });
     }
-    await refresh();
+    void refresh();
   }
+  // Bind the action directly, independent of optional account menu handlers.
+  // Capture phase prevents another account handler consuming the tap first.
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('#accountModern [data-account-action="history"]');
+    if(!button)return;
+    event.preventDefault();
+    event.stopPropagation();
+    open();
+  },true);
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&document.getElementById(pageId)?.classList.contains('visible'))close();
   });

@@ -169,7 +169,7 @@ jobs:
             stepWizard.includes('if(!button||button!==proceed||stage===3)return;'),
             'Removing duplicate copy must not affect three-step recharge navigation or secure checkout');
 
-          assert(html.includes('topup-step-wizard.js?v=purple-mint-art-20261104-1') &&
+          assert(html.includes('topup-step-wizard.js?v=clear-icons-20261104-1') &&
             html.includes('topup-step-wizard.css?v=manual-without-otp-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&

@@ -37,7 +37,7 @@ jobs:
           const loader=read('app.js');
           const stepWizard=read('topup-step-wizard.js');
           const premiumCss=read('topup-premium-illustrated.css');
-          assert(html.includes('topup-premium-illustrated.css?v=clear-icons-20261104-1'),
+          assert(html.includes('topup-premium-illustrated.css?v=wider-mobile-topup-20261104-1'),
             'Premium illustrated top-up stylesheet must be loaded after base wallet styling');
           assert(html.includes('topup-step-wizard.js?v=clear-icons-20261104-1') &&
             stepWizard.includes('topup-illustration-amount.svg?v=clear-icons-20261104-1'),
@@ -63,6 +63,16 @@ jobs:
             bannerArt.includes('Large clearly identifiable closed padlock') &&
             bannerArt.includes('<circle cx="308" cy="106" r="4"'),
             'Banner wallet and phone symbols must be replaced by legible wallet and lock artwork');
+          assert(premiumCss.includes('max-width:680px!important;') &&
+            premiumCss.includes('padding-right:6px!important;') &&
+            premiumCss.includes('padding-left:6px!important;') &&
+            premiumCss.includes('height:151px!important;') &&
+            premiumCss.includes('min-height:76px!important;'),
+            'Top-up must use nearly the full iPhone screen without squeezing the cards');
+          assert(premiumCss.includes('#topupDedicatedPage #topupForm .tp-wizard-review') &&
+            premiumCss.includes('@media(max-width:430px)') &&
+            premiumCss.includes('@media(max-width:360px)'),
+            'Tighter margins must apply to amount, sender, and review steps at small widths');
           const artFiles=[
             'topup-illustration-amount.svg',
             'topup-illustration-sender.svg',

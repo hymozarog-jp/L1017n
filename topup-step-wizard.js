@@ -195,6 +195,9 @@
  transferObserver.observe(instructions,{childList:true,subtree:true});
  const pageObserver=new MutationObserver(records=>{
   for(const record of records){
+   for(const node of record.removedNodes){
+    if(node.nodeType===1&&node.id==='topupDedicatedPage')senderNotice.remove();
+   }
    for(const node of record.addedNodes){
     if(node.nodeType===1&&(node.id==='topupDedicatedPage'||node.querySelector?.('#topupDedicatedPage'))){
      initPage();return;

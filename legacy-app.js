@@ -687,8 +687,8 @@ async function renderCustomerHeaderWallet(user){
  const queryKey=user.id+':'+carrier;
  let pending=customerHeaderWalletQuery?.key===queryKey?customerHeaderWalletQuery.promise:null;
  if(!pending){
-   pending=supabaseClient.from('wallet_accounts')
-     .select('balance,madar_balance').eq('user_id',user.id).maybeSingle();
+   pending=Promise.resolve(supabaseClient.from('wallet_accounts')
+     .select('balance,madar_balance').eq('user_id',user.id).maybeSingle());
    customerHeaderWalletQuery={key:queryKey,promise:pending};
  }
  let result;

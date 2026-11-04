@@ -71,7 +71,7 @@
  senderNotice.innerHTML='<section class="tp-wizard-notice-card" dir="rtl">'+
    '<span class="tp-wizard-notice-symbol" aria-hidden="true">!</span>'+
    '<h3 id="tpTopupNoticeTitle">ملاحظة مهمة</h3>'+
-   '<p id="tpTopupNoticeText">مش لازم توثّق رقم ليبيانا في حسابك عشان تقدم طلب شحن. اكتب رقم المحوّل الصحيح، والرصيد يُضاف فقط بعد التأكد من وصول المبلغ وموافقة الإدارة.</p>'+
+   '<p id="tpTopupNoticeText">تقدر تشحن من رقم ليبيانا آخر بموافقة صاحبه، حتى لو مرتبط بحساب مختلف. الرصيد يُضاف فقط بعد مطابقة رسالة التحويل وموافقة الإدارة.</p>'+
    '<button type="button" id="tpTopupNoticeUnderstood">فهمت</button></section>';
  const understood=senderNotice.querySelector('#tpTopupNoticeUnderstood');
  understood.addEventListener('click',()=>senderNotice.remove());

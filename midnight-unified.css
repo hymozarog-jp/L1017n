@@ -418,3 +418,408 @@ button:disabled,[aria-disabled="true"]{
   html{scroll-behavior:auto!important}
   :is(button,.btn,a,[role="button"]){animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* L1017N VIOLET ON BLACK — original site artwork, buttons and UI, 2026-11-04.
+   Brand accents #8B5CF6 / #B69AFF; backgrounds #07070C / #15121E.
+   Business logic, prices, product thumbnails, carrier identifiers and semantic
+   success/error/stock messages are intentionally not modified. */
+:root{
+  --bg:#07070c;--panel:#111018;--panel2:#1c1827;--line:#4e4266;
+  --text:#faf8ff;--muted:#aaa3bb;--surface:#14111d;--surface-2:#1e192b;
+  --surface-elevated:#252034;--border-color:#534365;
+  --green:#a78bfa;--green2:#8b5cf6;--purple:#a78bfa;
+  --l1017-charcoal:#121018;--l1017-raised:#201a2c;
+  --l1017-line:#56466b;--l1017-silver:#ded2ff;
+  --l1017-violet:#8b5cf6;--l1017-lilac:#c4b5fd;
+  --l1017-purple-shadow:#6d28d941;
+}
+html{background:#07070c!important}
+body,body.l1017-live-ui{
+  background:
+    radial-gradient(ellipse 85% 27% at 50% -12%,#6435b15b 0%,transparent 78%),
+    radial-gradient(ellipse 60% 32% at 98% 55%,#351a5445,transparent 90%),
+    #07070c!important;
+  color:#f9f7ff!important;
+}
+body::before{
+  background:radial-gradient(ellipse at 18% 0%,#9857fd25,transparent 62%)!important;
+}
+:is(#storeView,#walletView,#ordersView,#accountView,#offersView,#referralsView,#rankingView,#adminView,#subscriptionsView){
+  background-color:#08070d!important;color:#f8f6ff!important;
+}
+#accountView:has(#accountModern:not(.hidden)){background:#08070d!important}
+
+/* Consistent purple header controls and navigation icons. */
+.topbar,body.l1017-live-ui .topbar,#llLanding .ph-topbar{
+  border-bottom:1px solid #624782!important;
+  background:linear-gradient(110deg,#111018f7,#0b0911f8)!important;
+  box-shadow:0 12px 37px #040107ab,0 1px 0 #9668e820!important;
+}
+.topbar .brand b,.topbar .google-welcome strong{color:#fff!important}
+.topbar .brand small,.topbar .google-welcome-label{color:#beaee0!important}
+.topbar .google-profile-button,#googleProfileButton{
+  background:#241c33!important;
+  border:2px solid #a88af3!important;
+  box-shadow:0 0 0 3px #9c75f927,0 8px 19px #0006!important;
+}
+.topbar #customerWalletChip,.topbar .account-wallet-group #customerWalletChip{
+  background:linear-gradient(120deg,#241b34,#111018)!important;
+  border-color:#7b5aa7!important;
+  box-shadow:inset 0 1px #ffffff18,0 8px 22px #18092a66!important;
+}
+.topbar #customerTopupShortcut,.topbar .account-wallet-group #customerTopupShortcut,
+.topbar #accountBtn,.ph-header-menu,.topbar .ph-header-menu,
+#llLanding .ph-header-menu{
+  background:linear-gradient(140deg,#4e3281,#2b2145)!important;
+  border:1px solid #9873d3!important;
+  color:#f9f5ff!important;
+  box-shadow:inset 0 1px #ffffff1d,0 5px 17px #3217595c!important;
+}
+.topbar .desktop-nav .nav-link{
+  border-color:#504063!important;
+  background:#211a2e!important;
+  color:#e1d5f2!important;
+}
+.topbar .desktop-nav .nav-link.active{
+  background:#624194!important;border-color:#ad83f1!important;color:#fff!important;
+}
+.mobile-nav,.mobile-bottom-nav,.bottom-nav,#llBottomNav,.gb-bottom-nav{
+  background:linear-gradient(135deg,#121018f8,#08070efb)!important;
+  border-color:#62477c!important;
+  box-shadow:0 -12px 28px #050208a1!important;
+}
+.mobile-nav button,.bottom-nav button,.mobile-bottom-nav button{
+  color:#baaed0!important;
+}
+.mobile-nav button.active,.mobile-nav button[aria-current="page"],
+.mobile-bottom-nav button.active,.bottom-nav button.active{
+  color:#f7efff!important;background:#473265!important;
+}
+.mobile-nav button.active .nav-icon,
+.mobile-nav button[aria-current="page"] .nav-icon,
+.mobile-nav button.active .l1017-icon{
+  color:#dfcbff!important;stroke:currentColor!important;
+}
+
+/* Black cards with purple edge lighting. */
+#accountView .account-panel,
+#ordersView .orders-premium-board,
+#ordersView .orders-modern-card,
+#ordersView .orders-track-panel,
+#ordersView #ordersList .orders-view-dialog[open],
+#accountModern .account-settings-list,
+#accountModern .account-settings-detail,
+#accountModern .account-contact-options,
+#l1017nFaqPage,
+#referralsView #l1017Referrals .l1017-ref-compact-missions{
+  background:linear-gradient(145deg,#211a2d,#100e16 80%)!important;
+  border-color:#55436f!important;
+  box-shadow:inset 0 1px #e9d8ff0e,0 12px 28px #04010680!important;
+}
+#accountModern .account-id-card{
+  background:
+    radial-gradient(ellipse 60% 75% at 0% 3%,#9361dc66,transparent 76%),
+    linear-gradient(120deg,#392651,#1a1426 80%)!important;
+  border:1px solid #9d79cd!important;
+  box-shadow:inset 0 1px #ffffff27,0 16px 36px #19092580!important;
+}
+#accountModern .account-id-card:before{color:#d8a7ff0c!important}
+#accountModern .account-id-avatar{
+  border-color:#d0b4ff!important;background:#5a3979!important;
+  box-shadow:0 0 0 5px #a27af51b!important;
+}
+#accountModern .account-id-details small{
+  background:#9d7aff31!important;color:#e9d9ff!important;
+}
+#accountModern .account-settings-list>button,
+#accountModern .account-contact-options>button{border-color:#483655!important}
+#accountModern .account-settings-list .account-row-icon{
+  color:#d9c7ff!important;
+  border-color:#8965ba!important;
+  background:linear-gradient(145deg,#493366,#2a213a)!important;
+}
+#accountModern .account-core-settings>button:hover,
+#accountModern .account-contact-options>button:hover{background:#70539a24!important}
+#accountView .account-avatar{
+  color:#fff!important;background:linear-gradient(140deg,#9e79e9,#543778)!important;
+}
+#accountView #signedInProfile,
+#accountView #accountPhoneGate{
+  background:#201827!important;border-color:#694d86!important;
+}
+#personalDetailsPage.premium-personal-profile{
+  background:
+    radial-gradient(ellipse 90% 38% at 45% -11%,#7143c753,transparent 80%),
+    #08070d!important;
+}
+#personalDetailsPage.premium-personal-profile .personal-page-user{
+  background:radial-gradient(ellipse at 9% 0%,#9360dd65,transparent 56%),
+    linear-gradient(135deg,#33244e,#150f22)!important;
+  border-color:#ab83e2!important;
+}
+#personalDetailsPage.premium-personal-profile .personal-page-avatar{
+  background:linear-gradient(140deg,#a47ce7,#4a2c79)!important;
+  color:#f7eeff!important;
+  border-color:#c9b2ff!important;
+  box-shadow:0 0 0 5px #c3a1ff20,0 12px 31px #3c196e66!important;
+}
+#personalDetailsPage.premium-personal-profile .premium-avatar-edit{
+  background:linear-gradient(125deg,#9b6af5,#6f42c1)!important;
+  border-color:#32214f!important;
+}
+
+/* Main page panels; no recoloring the actual Roblox/MM2/PUBG screenshots. */
+#storeView .ph-hero,#storeView .ph-slide{
+  background:
+    radial-gradient(ellipse 80% 120% at 78% 3%,#6637ab95,transparent 74%),
+    linear-gradient(118deg,#21162f,#0e0a16 82%)!important;
+  border-color:#8a63bd!important;
+  box-shadow:0 18px 44px #06020bad,inset 0 1px #ffffff14!important;
+}
+#storeView .ph-hero::before{opacity:.48!important}
+#storeView .ph-hero h1 span,#storeView .ph-slide h1 span,
+#storeView .ph-slide h2 span{
+  color:#cfb8ff!important;
+  text-shadow:0 0 16px #8b5cf679!important;
+}
+#storeView .game-tile,#storeView .game-tile-btn,
+#storeView .ph-news-card,#storeView .gbqa-action{
+  background:linear-gradient(140deg,#261b35,#110d1b)!important;
+  border-color:#745794!important;
+  box-shadow:0 9px 22px #0c0617a3!important;
+}
+#storeView .game-tile-info{background:linear-gradient(100deg,#211a2d,#15101d)!important}
+#storeView .game-tile-info strong{color:#fff!important}
+#robloxGamePage,#robloxGamePage.rgp-mm2-page,#robloxGamePage.rgp-brainrot-page,
+#pubgCategoryPage,#l1017nFaqPage{
+  background:radial-gradient(ellipse at 60% -12%,#4e31774d,transparent 65%),#09070f!important;
+  color:#f8f6ff!important;
+}
+#robloxGamePage .rgp-top,#robloxGamePage.rgp-inner-page .rgp-top{
+  background:#160f21f2!important;border-color:#755391!important;
+}
+#robloxGamePage .rgp-package,#robloxGamePage .rgp-card,
+#pubgCategoryPage .pubg-item,#l1017nFaqPage .faq-card,
+#storeView #l1017nFaqInline,
+#referralsView #l1017Referrals .l1017-ref-compact-row,.sab-item-card{
+  background:linear-gradient(135deg,#241a30,#120e1a)!important;
+  border-color:#65487e!important;
+}
+#robloxGamePage .mm2-item-art,
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art{
+  background:radial-gradient(ellipse at 50% 36%,#51376e,#24182f 64%,#0e0b13)!important;
+  border-color:#684d86!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head{
+  background:radial-gradient(ellipse 95% 95% at 82% 45%,#7653b34b,transparent 76%),
+    linear-gradient(110deg,#2b1d42,#120e1b)!important;
+  border-color:#916cc3!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item{
+  background:linear-gradient(115deg,#291c3b,#16101f)!important;
+  border-color:#5d477c!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item[open]{
+  border-color:#bd99ff!important;background:#372449!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-tag{
+  background:#8655c72c!important;color:#dbc5ff!important;
+  border-color:#a67ce09f!important;
+}
+
+/* Original vector illustrations: switch their palette as well as their cards.
+   These selectors are limited to decorative SVGs, not product images, warning
+   icons, carrier logos or verified financial status colors. */
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqPhone stop:first-child{stop-color:#a477fa!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqPhone stop:last-child{stop-color:#30204b!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqScreen stop:first-child{stop-color:#533574!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqScreen stop:last-child{stop-color:#160e24!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqCard stop:first-child{stop-color:#c8a7ff!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqCard stop:last-child{stop-color:#7650b8!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqPackage stop:first-child{stop-color:#b89afd!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg #lfaqPackage stop:last-child{stop-color:#7341b4!important}
+#storeView #l1017nFaqInline .l1017-faq-art svg{
+  filter:drop-shadow(0 15px 18px #7d46c642)!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index,
+#storeView #l1017nFaqInline .l1017-inline-faq-index[data-tint]{
+  background:linear-gradient(130deg,#604089,#312145)!important;
+  border-color:#986cc7!important;color:#e4d2ff!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-index svg{
+  stroke:currentColor!important;
+}
+#l1017nFaqPage .faq-hero{
+  background:radial-gradient(ellipse 70% 48% at 50% 30%,#704ca94c,transparent 86%)!important;
+}
+#l1017nFaqPage .faq-hero-art svg #faqphoneGrad stop:first-child{stop-color:#a483fa!important}
+#l1017nFaqPage .faq-hero-art svg #faqphoneGrad stop:last-child{stop-color:#3d255f!important}
+#l1017nFaqPage .faq-hero-art svg #faqchatGrad stop:first-child{stop-color:#e0c5ff!important}
+#l1017nFaqPage .faq-hero-art svg #faqchatGrad stop:last-child{stop-color:#7547bc!important}
+#l1017nFaqPage .faq-hero-art svg #faqwalletGrad stop:first-child{stop-color:#b59aff!important}
+#l1017nFaqPage .faq-hero-art svg #faqwalletGrad stop:last-child{stop-color:#6740a9!important}
+#l1017nFaqPage .faq-number,
+#l1017nFaqPage .faq-number[data-category]{
+  background:linear-gradient(145deg,#5e3d85,#261938)!important;
+  border-color:#8d63bd!important;color:#e6d3ff!important;
+}
+#l1017nFaqPage .faq-card[open]{
+  background:#2a1c3a!important;border-color:#a079d1!important;
+}
+#l1017nFaqPage .faq-support{
+  background:linear-gradient(120deg,#241830,#14101d)!important;
+  border-color:#72528b!important;
+}
+#l1017nFaqPage .faq-support-icon{
+  background:linear-gradient(130deg,#62448c,#35254d)!important;
+  border-color:#b092e3!important;color:#f5ecff!important;
+}
+#ordersView .orders-empty-state{
+  background:radial-gradient(ellipse 60% 60% at 50% 0%,#7f4dc046,transparent 95%),
+    linear-gradient(120deg,#241930,#110d18)!important;
+  border-color:#75518f!important;
+}
+#ordersView .orders-empty-state .orders-empty-mark svg #oEmptyA stop:first-child{
+  stop-color:#be96ff!important;
+}
+#ordersView .orders-empty-state .orders-empty-mark svg #oEmptyA stop:last-child{
+  stop-color:#6744a7!important;
+}
+#ordersView .orders-empty-state .orders-empty-mark svg{
+  filter:drop-shadow(0 13px 16px #8c58dd36)!important;
+}
+#gbQuickActions .gbqa-art,#llLanding #gbQuickActions .gbqa-art,
+#gbQuickActions .gbqa-art-wallet,#gbQuickActions .gbqa-art-store,#gbQuickActions .gbqa-art-orders{
+  background:linear-gradient(140deg,#7548ae,#342249)!important;
+  border-color:#bc92ef!important;color:#f3e9ff!important;
+  box-shadow:inset 0 1px #ffffff2a,0 4px 11px #25123555!important;
+}
+#gbWalletGuide .gbwg-steps span,#gbWalletGuide .gbwg-steps span:nth-child(2),
+#gbWalletGuide .gbwg-steps span:nth-child(3){
+  background:linear-gradient(145deg,#36244d,#1d1429)!important;
+  border-color:#7856a7!important;
+}
+#gbWalletGuide .gbwg-steps span svg,
+#gbWalletGuide .gbwg-steps span:nth-child(2) svg,
+#gbWalletGuide .gbwg-steps span:nth-child(3) svg{
+  color:#d6bdff!important;stroke:currentColor!important;
+}
+#accountModern .account-id-stats .account-balance-icon,
+#accountModern .account-balance-icon{
+  background:linear-gradient(140deg,#513578,#251a36)!important;
+  border-color:#9772c5!important;color:#e6d6ff!important;
+}
+/* Violet navigational icons, leave stock/error/success indicators intact. */
+:is(.topbar,.mobile-nav,#accountModern .account-settings-list,
+    #accountModern .account-contact-options,
+    #gbQuickActions,.ph-header-menu) .l1017-icon{
+  color:inherit;stroke:currentColor;
+}
+
+/* Wallet visuals and mission illustrations: preserve monetary values. */
+#walletView .wallet-actions,#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card,#walletView .primary-wallet-card,
+#walletView .wallet-transactions,#walletView .wallet-history,#walletView .wallet-showcase{
+  background:radial-gradient(ellipse 100% 76% at 5% 0%,#7950b24a,transparent 71%),
+    linear-gradient(145deg,#281e34,#120e1a 84%)!important;
+  border-color:#725695!important;
+}
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+  box-shadow:0 17px 38px #000a,inset 0 1px #eedcff1a!important;
+}
+#walletView .wallet-carousel-dots span.active{background:#a477f4!important}
+#walletView .wallet-actions .wallet-action:hover{background:#5c448132!important}
+#referralsView #l1017Referrals,
+#referralsView #l1017Referrals .l1017-ref-link-row,
+#referralsView #l1017Referrals .l1017-mission-tabs,
+#referralsView #l1017Referrals .l1017-ref-code-card{
+  background:linear-gradient(145deg,#211829,#100d15)!important;
+  border-color:#71528f!important;
+}
+#referralsView #l1017Referrals .l1017-mission-tabs button[data-l1017-mission-tab].is-active{
+  background:linear-gradient(130deg,#7546b3,#4e2c7d)!important;
+  border-color:#bb94ee!important;
+}
+#referralsView #l1017Referrals .l1017-ref-mission-underline{
+  background:linear-gradient(270deg,#e1c6ff,#a87cf6 36%,transparent)!important;
+}
+#referralsView #l1017Referrals .l1017-mission-tabs button svg{
+  color:currentColor!important;stroke:currentColor!important;
+}
+#referralsView #l1017Referrals .l1017-ref-compact-check{
+  background:linear-gradient(145deg,#493263,#21172e)!important;
+  border-color:#8b65b4!important;color:#ecdfff!important;
+}
+/* Design controls: coordinated black/purple surfaces, consistent motion. */
+:is(.btn,.ph-shop-button,.ph-slide-button,.robux-checkout-next,
+    .sab-buy,.rgp-back,.gb-package-back,#topupProceed,
+    #accountView .account-wallet-link,
+    #referralsView #l1017Referrals #l1017CopyRefLink,
+    #referralsView #l1017Referrals #l1017ShareRef,
+    #referralsView #l1017Referrals .l1017-mission-claim-btn,
+    #storeView .gbqa-action){
+  background:linear-gradient(140deg,#6e43aa,#442765)!important;
+  border:1px solid #a37ce4!important;
+  color:#fbf7ff!important;
+  box-shadow:inset 0 1px #ffffff26,0 6px 17px #3e176a66!important;
+}
+:is(.btn,.ph-shop-button,.ph-slide-button,.robux-checkout-next,
+    .sab-buy,#topupProceed,
+    #referralsView #l1017Referrals #l1017CopyRefLink,
+    #referralsView #l1017Referrals #l1017ShareRef,
+    #referralsView #l1017Referrals .l1017-mission-claim-btn):not(:disabled):hover{
+  background:linear-gradient(140deg,#8556d4,#56358b)!important;
+  border-color:#d4baff!important;
+  box-shadow:0 7px 21px #6c39b65c,inset 0 1px #ffffff2b!important;
+}
+#accountView .auth-mode-switch button.active{
+  background:linear-gradient(135deg,#9d79ef,#7650b5)!important;
+  color:#fff!important;border-color:#d1b7ff!important;
+}
+#accountView #googleSignInBtn,#accountView .auth-google-button{
+  background:linear-gradient(135deg,#f7f2ff,#e0d6f3)!important;
+  color:#211728!important;border-color:#ffffff!important;
+}
+#accountView .auth-google-label{color:#211728!important}
+#accountView .auth-returning-tip{
+  background:#241a2d!important;border-color:#72548f!important;color:#d8cbeb!important;
+}
+#accountView .auth-returning-tip svg{color:#b997ff!important}
+#accountView .auth-input-wrap,#accountView input:not([type="checkbox"]),
+#accountView select,#accountView textarea,
+#walletView input,#walletView select,#referralsView input{
+  background:#1a1422!important;color:#fbf8ff!important;
+  border-color:#6d5285!important;
+}
+#accountView #logoutBtn:not(.hidden){
+  /* The sign-out action remains RED for safety as requested. */
+  background:linear-gradient(135deg,#a52235,#751a29)!important;
+  border-color:#ff6576!important;
+  box-shadow:0 8px 23px #ab142d52!important;color:#fff!important;
+}
+#accountView #logoutBtn:not(.hidden):hover{
+  background:linear-gradient(135deg,#c53247,#8e1e32)!important;
+  border-color:#ff9ba5!important;
+}
+#accountView #logoutBtn.hidden{display:none!important}
+:is(button,a,[role="button"],input,select,textarea):focus-visible{
+  outline-color:#d2afff!important;
+}
+/* Fluid outlines across phones and desktops; motion preferences respected. */
+@media(max-width:600px){
+  #accountModern .account-id-card{border-radius:21px!important}
+  #storeView .ph-hero,#storeView .ph-slide{border-radius:19px!important}
+  #storeView #l1017nFaqInline .l1017-inline-faq-head{
+    border-radius:17px!important;
+  }
+  .topbar .google-profile-button{border-color:#ba99ff!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #storeView #l1017nFaqInline .l1017-faq-art,
+  #storeView .ph-slide,#gbQuickActions .gbqa-art,
+  #referralsView #l1017Referrals .l1017-mission-tabs button{
+    animation:none!important;transition:none!important;
+  }
+}

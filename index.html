@@ -599,6 +599,8 @@ document.addEventListener('click',async function(e){
 </script>
 <style>
 #walletView #topupForm{display:none!important}
+/* Prevent stale customer-journey scripts from showing the old big green guide. */
+#topupDedicatedPage #gbWalletGuide,#walletView #gbWalletGuide,#topupDedicatedPage .tp-steps{display:none!important}
 #topupDedicatedPage{position:fixed!important;inset:0!important;z-index:999990!important;background:#0b1510!important;overflow-y:auto!important;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top)) 16px calc(45px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;direction:rtl}
 #topupDedicatedPage #topupForm{display:block!important;width:100%!important;max-width:680px!important;margin:20px auto!important;box-sizing:border-box!important}
 #topupDedicatedPage .topup-dedicated-back{background:#23392b;color:#d8ffc1;border:1px solid #54775a;border-radius:14px;padding:12px 18px;font:inherit}

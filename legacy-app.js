@@ -647,6 +647,7 @@ if(RECOVERY_LINK){
 
 
 let customerHeaderWalletSeq=0;
+let customerHeaderWalletQuery=null;
 async function renderCustomerHeaderWallet(user){
  const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
  if(!chip||!amount)return;
@@ -678,12 +679,25 @@ async function renderCustomerHeaderWallet(user){
    topup.setAttribute('aria-label',isMadar?'شحن المدار غير متاح حاليًا':'شحن محفظة ليبيانا');
    topup.title=isMadar?'شحن المدار قريبًا':'شحن محفظة ليبيانا';
  }
- if(!user){chip.classList.add('hidden');return}
+ if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
  amount.textContent='…';
- const {data,error}=await supabaseClient.from('wallet_accounts')
-   .select('balance,madar_balance').eq('user_id',user.id).maybeSingle();
+ // The auth event and the detailed account renderer can request this balance
+ // together; share their in-flight query instead of fetching it twice.
+ const queryKey=user.id+':'+carrier;
+ let pending=customerHeaderWalletQuery?.key===queryKey?customerHeaderWalletQuery.promise:null;
+ if(!pending){
+   pending=supabaseClient.from('wallet_accounts')
+     .select('balance,madar_balance').eq('user_id',user.id).maybeSingle();
+   customerHeaderWalletQuery={key:queryKey,promise:pending};
+ }
+ let result;
+ try{result=await pending}
+ finally{
+   if(customerHeaderWalletQuery?.promise===pending)customerHeaderWalletQuery=null;
+ }
  if(sequence!==customerHeaderWalletSeq)return;
+ const {data,error}=result;
  const shownBalance=Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(3);
   amount.textContent=error?'—':shownBalance;
   amount.setAttribute('aria-label',error?'تعذر عرض رصيد المحفظة':shownBalance+' دينار ليبي');

@@ -36,6 +36,26 @@ jobs:
           const history=read('account-history.js');
           const bellCss=read('header-notification-bell.css');
           const notices=read('notifications-page.js');
+          const royal=read('leaderboard-royal.js');
+          const royalCss=read('leaderboard-royal.css');
+          const ranking=read('google-leaderboard.js');
+          assert(html.includes('leaderboard-royal.js?v=my-mini-rank-20261104-1') &&
+            html.includes('leaderboard-royal.css?v=my-mini-rank-20261104-1'),
+            'Compact personal rank assets must have a fresh cache version');
+          assert(royal.includes("podium.insertAdjacentElement('afterend',mini)") &&
+            royal.includes("ownRank?.querySelector('.lb-self-position strong')"),
+            'Personal mini rank must follow the top-three podium and use a real rank');
+          assert(royal.includes("ownRank.classList.contains('hidden')") &&
+            royal.includes('observer.observe(ownRank') &&
+            royal.includes("if(value&&value.textContent!==number)value.textContent=number;"),
+            'Mini rank must hide for guests and update with personal account changes');
+          assert(ranking.includes("supabaseClient.rpc('get_my_store_leaderboard_rank')"),
+            'Personal rank must originate from server RPC rather than client-side estimates');
+          assert(royalCss.includes('#leaderboardView #royalMiniMyRank.royal-mini-my-rank') &&
+            royalCss.includes('order:3!important') &&
+            royalCss.includes('@media(max-width:520px)'),
+            'Personal mini rank needs podium-adjacent ordering and mobile styling');
+
           assert(html.includes('id="headerNotificationBell"'),'Header bell is missing');
           assert(html.includes('data-account-action="notifications"'),
             'Header bell must open the existing notifications page');

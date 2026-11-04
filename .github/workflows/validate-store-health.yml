@@ -39,7 +39,7 @@ jobs:
           const premiumCss=read('topup-premium-illustrated.css');
           assert(html.includes('topup-premium-illustrated.css?v=wider-mobile-topup-20261104-1'),
             'Premium illustrated top-up stylesheet must be loaded after base wallet styling');
-          assert(html.includes('topup-step-wizard.js?v=clear-icons-20261104-1') &&
+          assert(html.includes('topup-step-wizard.js?v=shared-sender-review-20261104-1') &&
             stepWizard.includes('topup-illustration-amount.svg?v=clear-icons-20261104-1'),
             'Safari must fetch the revised top-up banner and icons, not cached older artwork');
           assert(html.includes('<span class="tp-step-bubble" aria-hidden="true"><svg') &&
@@ -105,6 +105,17 @@ jobs:
             'Full recharge experience must be cohesive, responsive and accessible');
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
+          assert(topupFlow.includes("if(/sender_phone_reserved/.test(t))") &&
+            !topupFlow.includes('رقم المحوّل مرتبط بحساب آخر في المتجر. استخدم رقمًا آخر'),
+            'A shared Libyana transfer payer must not display the old hard-blocking error');
+          assert(topupFlow.includes('shared_sender_receipt_not_verified') &&
+            stepWizard.includes('حتى لو مرتبط بحساب مختلف') &&
+            stepWizard.includes('مطابقة رسالة التحويل وموافقة الإدارة'),
+            'Shared source money transfer must require admin-verified incoming carrier SMS');
+          assert(html.includes('app.js?v=shared-sender-review-20261104-1') &&
+            html.includes('topup-step-wizard.js?v=shared-sender-review-20261104-1') &&
+            loader.includes("auto.src='auto-topup.js?v=shared-sender-review-20261104-1'"),
+            'Refresh both checkout scripts so Safari cannot keep the old rejection message');
           assert(topupFlow.includes("db.rpc('is_libyana_topup_intake_enabled')") &&
             !topupFlow.includes("db.rpc('is_my_auto_libyana_topup_ready')") &&
             !topupFlow.includes("if(!verified.data?.verified)") &&
@@ -118,15 +129,15 @@ jobs:
             html.includes('data-tp-step="2"><b>2</b><span>رقم المحوّل</span>'),
             'Unverified customers must see the payer field instead of mandatory OTP controls');
           assert(stepWizard.includes('tpTopupNoticeUnderstood') &&
-            stepWizard.includes('الرصيد يُضاف فقط بعد التأكد من وصول المبلغ وموافقة الإدارة.'),
+            stepWizard.includes('الرصيد يُضاف فقط بعد مطابقة رسالة التحويل وموافقة الإدارة.'),
             'Acknowledge the payment safety note with فهمت before manually reviewed transfer');
 
-          assert(loader.includes("auto.src='auto-topup.js?v=manual-without-otp-20261104-1'"),
+          assert(loader.includes("auto.src='auto-topup.js?v=shared-sender-review-20261104-1'"),
             'Live checkout must use the updated transfer source logic instead of cached auto-topup');
           assert(stepWizard.includes("id='tpTopupSenderNotice'") &&
             stepWizard.includes('tpTopupNoticeUnderstood') &&
             stepWizard.includes('فهمت') &&
-            stepWizard.includes('مش لازم توثّق رقم ليبيانا'),
+            stepWizard.includes('تقدر تشحن من رقم ليبيانا آخر بموافقة صاحبه'),
             'Phone step must display notice with a real فهمت acknowledgment button');
           assert(stepWizard.includes("const getSenderPhone=()=>") &&
             stepWizard.includes("getSenderPhone,reset") &&
@@ -179,7 +190,7 @@ jobs:
             stepWizard.includes('if(!button||button!==proceed||stage===3)return;'),
             'Removing duplicate copy must not affect three-step recharge navigation or secure checkout');
 
-          assert(html.includes('topup-step-wizard.js?v=clear-icons-20261104-1') &&
+          assert(html.includes('topup-step-wizard.js?v=shared-sender-review-20261104-1') &&
             html.includes('topup-step-wizard.css?v=manual-without-otp-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&
@@ -249,7 +260,7 @@ jobs:
           assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
             [100,200,400], 'Package range filter must hide 500 through 1000');
 
-          assert(html.includes('app.js?v=manual-without-otp-20261104-1') &&
+          assert(html.includes('app.js?v=shared-sender-review-20261104-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&

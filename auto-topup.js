@@ -80,7 +80,8 @@
     if(/verified_libyana_phone_required/.test(t))return 'لو ما وثّقت رقمك، اكتب رقم المحوّل في الخطوة الثانية للشحن بالمراجعة اليدوية.';
     if(/manual_topup_daily_limit/.test(t))return 'وصلت الحد اليومي لطلبات الشحن اليدوية. حاول غدوة أو تواصل مع الإدارة.';
     if(/invalid_sender_phone/.test(t))return 'رقم المحوّل غير صحيح. يجب أن يبدأ بـ 092 أو 094.';
-    if(/sender_phone_reserved/.test(t))return 'رقم المحوّل مرتبط بحساب آخر في المتجر. استخدم رقمًا آخر أو تواصل مع الإدارة.';
+    if(/sender_phone_reserved/.test(t))return 'هذا الرقم يحتاج مراجعة الإدارة قبل استخدامه في الشحن.';
+    if(/shared_sender_receipt_not_verified/.test(t))return 'الشحن من رقم تابع لحساب آخر ينتظر مطابقة رسالة تحويل حقيقية وموافقة الإدارة.';
     if(/sender_has_pending_request/.test(t))return 'فيه طلب شحن آخر بنفس رقم المحوّل والمبلغ. حاول بعد انتهائه أو تواصل مع الإدارة.';
     if(/ussd_daily_limit/.test(t))return 'طلبات كثيرة في وقت قصير؛ جرّب بعد شوية أو تواصل مع الإدارة.';
     if(/invalid_ussd_amount/.test(t))return 'اكتب مبلغًا صحيحًا بالدينار الليبي، ويجب أن يكون عددًا صحيحًا موجبًا.';
@@ -435,7 +436,7 @@
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
       panel.append(el('div','','رقم المحوّل: '+sender));
-      if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب أعلاه فقط. أي رقم مختلف يحتاج مراجعة جديدة قبل الاعتماد.'));
+      if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب فقط. إذا كان رقم شخص آخر، لازم موافقته ومطابقة تحويله قبل شحن محفظتك.'));
       panel.append(el('strong','ussd-code',codeFor(amount)));
       const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','فتح الاتصال وتحويل '+amount+' د.ل');
       dial.href='tel:'+codeFor(amount).replace('#','%23');

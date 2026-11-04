@@ -125,7 +125,6 @@
     scheduled=false;
     ensureHome();
     ensureWallet();
-    updateWalletNext();
     document.querySelectorAll('#robuxPurchaseScreen #purchaseForm,#rgpMm2Checkout form,#sabCheckout form,#pubgAccountCheckoutOverlay form').forEach(enhanceCheckout);
   }
   function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(refresh)}

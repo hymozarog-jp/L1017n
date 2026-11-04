@@ -823,3 +823,161 @@ body::before{
     animation:none!important;transition:none!important;
   }
 }
+
+
+/* Account and bottom navigation gentle sizing — 2026-11-04.
+   ~10-15% more room for text and icon tap targets; preserves 6 nav destinations. */
+#accountModern .account-group-title{
+  font-size:16px!important;
+  line-height:1.55!important;
+  margin:26px 8px 15px!important;
+}
+#accountModern .account-core-settings > button[data-account-action]{
+  min-height:80px!important;
+  padding:14px 16px!important;
+  gap:13px!important;
+}
+#accountModern .account-core-settings .account-row-icon{
+  flex:0 0 48px!important;
+  width:48px!important;
+  height:48px!important;
+  border-radius:14px!important;
+}
+#accountModern .account-core-settings .account-row-icon svg{
+  width:26px!important;height:26px!important;
+}
+#accountModern .account-core-settings .account-core-copy{
+  gap:5px!important;
+}
+#accountModern .account-core-settings .account-core-copy b{
+  font-size:16px!important;
+  line-height:1.5!important;
+}
+#accountModern .account-core-settings .account-core-copy small{
+  font-size:12.25px!important;
+  line-height:1.55!important;
+  color:#bbb1c9!important;
+}
+#accountModern .account-core-settings .account-row-arrow{
+  font-size:26px!important;
+}
+#accountModern .account-contact-options [data-account-action="help"],
+#accountModern .account-contact-options [data-account-action="faq"],
+#accountModern .account-contact-options .account-tiktok-link{
+  min-height:78px!important;
+  padding:13px 16px!important;
+  gap:13px!important;
+}
+#accountModern .account-contact-options .account-row-icon{
+  flex:0 0 47px!important;
+  width:47px!important;
+  height:47px!important;
+  border-radius:14px!important;
+}
+#accountModern .account-contact-options .account-row-icon svg{
+  width:25px!important;height:25px!important;
+}
+#accountModern .account-contact-options .account-contact-text b,
+#accountModern .account-contact-options .account-tiktok-link b{
+  font-size:16px!important;line-height:1.5!important;
+}
+#accountModern .account-contact-options .account-contact-text small,
+#accountModern .account-contact-options .account-tiktok-link small{
+  font-size:12.25px!important;line-height:1.5!important;
+}
+#accountModern .account-contact-options .account-row-arrow{
+  font-size:25px!important;
+}
+#accountModern .account-id-details strong{
+  font-size:clamp(22px,4.7vw,25px)!important;
+}
+#accountModern .account-id-details span{font-size:13.5px!important}
+#accountModern .account-id-stats span{font-size:12.5px!important}
+#accountModern .account-id-stats b{font-size:16px!important}
+#accountView #logoutBtn:not(.hidden){
+  min-height:54px!important;
+  padding:13px 24px!important;
+  font-size:16px!important;
+}
+/* Main mobile navigation from the original storefront. */
+@media(max-width:680px){
+  .mobile-nav:not(.hidden){
+    min-height:calc(80px + env(safe-area-inset-bottom))!important;
+    padding:10px 5px calc(10px + env(safe-area-inset-bottom))!important;
+    align-items:stretch!important;
+  }
+  .mobile-nav>button{
+    gap:6px!important;
+    padding:5px 2px!important;
+    min-width:0!important;
+    touch-action:manipulation!important;
+  }
+  .mobile-nav>button .nav-icon{
+    width:25px!important;height:25px!important;
+  }
+  .mobile-nav>button span{
+    font-size:clamp(10.5px,2.8vw,12px)!important;
+    font-weight:800!important;
+    line-height:1.5!important;
+    white-space:nowrap!important;
+  }
+  /* Live L1017n navigation is a separate element from .mobile-nav. */
+  body.l1017-live-ui #llBottomNav{
+    min-height:calc(80px + env(safe-area-inset-bottom))!important;
+    padding:10px 7px calc(10px + env(safe-area-inset-bottom))!important;
+    gap:1px!important;
+  }
+  body.l1017-live-ui #llBottomNav button{
+    min-width:0!important;
+    padding:1px 2px!important;
+    gap:6px!important;
+  }
+  body.l1017-live-ui #llBottomNav .ll-nav-icon{
+    width:46px!important;height:37px!important;
+    border-radius:13px!important;
+  }
+  body.l1017-live-ui #llBottomNav button svg{
+    width:26px!important;height:26px!important;
+  }
+  body.l1017-live-ui #llBottomNav button small{
+    font-size:clamp(10.5px,2.75vw,12px)!important;
+    line-height:1.35!important;
+    font-weight:850!important;
+    white-space:nowrap!important;
+  }
+  #accountView{padding-bottom:135px!important}
+}
+@media(max-width:600px){
+  #accountModern .account-core-settings > button[data-account-action]{
+    min-height:78px!important;
+    padding:13px 13px!important;
+    gap:12px!important;
+  }
+  #accountModern .account-core-settings .account-row-icon{
+    flex-basis:46px!important;width:46px!important;height:46px!important;
+  }
+  #accountModern .account-core-settings .account-core-copy b{font-size:15.5px!important}
+  #accountModern .account-core-settings .account-core-copy small{font-size:12px!important}
+  #accountModern .account-contact-options [data-account-action="help"],
+  #accountModern .account-contact-options [data-account-action="faq"],
+  #accountModern .account-contact-options .account-tiktok-link{
+    min-height:76px!important;padding:12px 13px!important;gap:12px!important;
+  }
+  #accountModern .account-contact-options .account-row-icon{
+    flex-basis:45px!important;width:45px!important;height:45px!important;
+  }
+  #accountModern .account-contact-options .account-contact-text b,
+  #accountModern .account-contact-options .account-tiktok-link b{
+    font-size:15.5px!important;
+  }
+}
+@media(max-width:365px){
+  #accountModern .account-core-settings .account-core-copy b,
+  #accountModern .account-contact-options .account-contact-text b{font-size:15px!important}
+  body.l1017-live-ui #llBottomNav .ll-nav-icon{width:40px!important;height:35px!important}
+  body.l1017-live-ui #llBottomNav button svg{width:24px!important;height:24px!important}
+  body.l1017-live-ui #llBottomNav button small{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #llBottomNav .ll-nav-icon,.mobile-nav .nav-icon{transition:none!important}
+}

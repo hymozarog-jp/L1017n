@@ -195,3 +195,64 @@
 @media(prefers-reduced-motion:reduce){
  #notificationsPage *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Verified account-event messages stay distinct from pending order activity. */
+#notificationsPage .np-event{border-color:#494153;background:linear-gradient(140deg,#241e2e,#16151e)}
+#notificationsPage .np-event-credit{border-color:#326951;background:linear-gradient(130deg,#203b30,#151e1b)}
+#notificationsPage .np-event-credit .np-activity-icon{
+  border-color:#478966;background:#294735;color:#a3f4c4;
+}
+#notificationsPage .np-event-delivered{border-color:#397057;background:linear-gradient(130deg,#243e35,#141d1b)}
+#notificationsPage .np-event-delivered .np-activity-icon{
+  border-color:#4b936d;background:#2d513e;color:#aff7cb;
+}
+#notificationsPage .np-event-accepted{border-color:#69528a;background:linear-gradient(130deg,#30233e,#17151f)}
+#notificationsPage .np-event-accepted .np-activity-icon{
+  border-color:#9974c2;background:#44305e;color:#e2c5ff;
+}
+#notificationsPage .np-event-body{color:#d2cbd9!important;font-size:11px!important;line-height:1.7!important}
+#notificationsPage .np-event-date{color:#9f98ad!important;font-size:10px!important}
+#notificationsPage .np-event-credit .np-status.done,
+#notificationsPage .np-event-delivered .np-status.done{color:#acf4c8;background:#244533;border-color:#478968}
+#notificationsPage .np-event-accepted .np-status.done{color:#e9d1ff;background:#39284b;border-color:#795c9a}
+.np-live-toast{
+  position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));
+  z-index:2147483000;
+  width:min(420px,calc(100vw - 30px));
+  display:flex;align-items:flex-start;gap:12px;
+  padding:15px 16px;
+  border:1px solid #8e6db1;border-radius:19px;
+  background:linear-gradient(125deg,#30223f,#17131f);
+  box-shadow:0 16px 48px #000b,inset 0 1px #ffffff15;
+  color:#f8f3ff;direction:rtl;
+  font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translate(-50%,18px);
+  transition:opacity .25s ease,visibility .25s ease,transform .25s ease;
+}
+.np-live-toast.visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.np-live-toast.type-credit,.np-live-toast.type-delivered{
+  border-color:#48916b;background:linear-gradient(125deg,#203d31,#121e19);
+}
+.np-live-toast .np-live-toast-icon{
+  width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;
+  background:#725298;border:1px solid #a787cb;border-radius:12px;
+  color:#fff;font-size:21px;font-weight:900;line-height:1;
+}
+.np-live-toast.type-credit .np-live-toast-icon,
+.np-live-toast.type-delivered .np-live-toast-icon{
+  background:#327451;border-color:#5aa677;
+}
+.np-live-toast .np-live-toast-copy{
+  min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px;
+}
+.np-live-toast .np-live-toast-copy strong{font-size:13px;font-weight:850;line-height:1.55}
+.np-live-toast .np-live-toast-copy small{font-size:11px;color:#cec6d6;line-height:1.7}
+@media(max-width:420px){
+ .np-live-toast{bottom:calc(80px + env(safe-area-inset-bottom));padding:12px;border-radius:16px}
+ #notificationsPage .np-event .np-activity-copy strong{font-size:11px}
+ #notificationsPage .np-event .np-activity-copy small{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .np-live-toast{transition:none!important}
+}

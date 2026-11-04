@@ -49,8 +49,11 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=avatar-left-20261104-2'),
-            'Updated header layout must bypass cached CSS');
+          assert(html.includes('header-notification-bell.css?v=compact-cluster-20261104-1'),
+            'Compact header layout must bypass cached CSS');
+          assert(bellCss.includes('justify-content:flex-start!important;') &&
+            bellCss.includes('column-gap:2px!important;'),
+            'Mobile avatar, bell and wallet must have tight spacing');
           assert(!bellCss.includes('notification-badge'),
             'No fake unread badge is allowed');
           assert(html.includes('data-account-action="history"'),'My Account history entry is missing');

@@ -36,6 +36,27 @@ jobs:
           const history=read('account-history.js');
           const bellCss=read('header-notification-bell.css');
           const notices=read('notifications-page.js');
+          const tapJs=read('ui-motion.js'),tapCss=read('ui-motion.css');
+          assert(html.includes('ui-motion.css?v=global-taps-20261104-1') &&
+            html.includes('ui-motion.js?v=global-taps-20261104-1'),
+            'Click motion assets must be loaded with a fresh cache version');
+          assert(tapJs.includes("document.addEventListener('pointerdown'") &&
+            tapJs.includes("document.addEventListener('click'") &&
+            tapJs.includes('target.animate(['),
+            'Shared click reactions must cover touch and keyboard activation');
+          for(const action of ["'button'","'a[href]'","'[data-ll-game]'","'.orders-modern-card'"]){
+            assert(tapJs.includes(action),'Tap motions need interaction category '+action);
+          }
+          assert(tapJs.includes("prefers-reduced-motion: reduce") &&
+            tapCss.includes('prefers-reduced-motion:reduce'),
+            'Global motion system must respect reduced-motion preferences');
+          assert(!tapJs.includes('preventDefault(') && !tapJs.includes('stopPropagation('),
+            'Tap animations must not interfere with checkout and navigation actions');
+          assert(tapCss.includes('l1017-tap-glow') &&
+            tapCss.includes('l1017TapBounce') &&
+            tapCss.includes('pointer-events:none!important'),
+            'Press feedback must be visible and never block taps');
+
           const royal=read('leaderboard-royal.js');
           const royalCss=read('leaderboard-royal.css');
           const ranking=read('google-leaderboard.js');

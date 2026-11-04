@@ -322,7 +322,7 @@
 </div></div><div class="wallet-carousel-dots"><span class="active"></span><span></span></div><a class="wallet-madar-logo-credit" href="https://commons.wikimedia.org/wiki/File:Almadar_Aljadid_Logo.png" target="_blank" rel="noopener noreferrer">شعار المدار الجديد: ILibya10 · CC BY-SA 4.0 · مقتطع للبطاقة</a><div class="wallet-actions" aria-label="خيارات المحفظة"><button type="button" class="wallet-action" id="walletActionTopup"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b>شحن</b></button><button type="button" class="wallet-action" id="walletActionTransfer"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14l-4-4M21 7l-4 4"/><path d="M17 17H3l4 4M3 17l4-4"/></svg></span><b>تحويل</b></button><button type="button" class="wallet-action" id="walletActionSend" aria-haspopup="dialog" aria-controls="walletSendSheet"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></span><b>إرسال</b></button><button type="button" class="wallet-action" id="walletActionPrimary" aria-pressed="false" aria-label="تعيين المحفظة المعروضة كأساسية" title="الأساسية للمحفظة المعروضة"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><b>اجعلها أساسية</b></button></div><div class="wallet-recent-head"><h3>آخر المعاملات</h3><div class="wallet-filter-tabs"><button type="button" class="active" data-wallet-filter="all">الكل</button><button type="button" data-wallet-filter="approved">إيداع</button><button type="button" data-wallet-filter="pending">معلق</button><button type="button" data-wallet-filter="rejected">مرفوض</button></div></div></div><div class="wallet-layout"><div class="panel balance-panel"><div class="balance-top"><span>الرصيد الحالي</span><span class="balance-icon">◈</span></div><div class="balance-amount"><strong id="balanceAmount">0.00</strong><span>د.ل</span></div><div class="balance-line"></div><div class="balance-foot"><span>الحساب</span><b id="walletUserState"><i></i> غير مسجل</b></div></div><div id="topupForm" class="panel topup-form" aria-label="شحن المحفظة من ليبيانا">
   <nav class="tp-progress" aria-label="خطوات الشحن">
     <button type="button" data-tp-step="1" aria-current="step"><b>1</b><span>المبلغ</span></button>
-    <i aria-hidden="true"></i><button type="button" data-tp-step="2"><b>2</b><span>رقم الهاتف</span></button>
+    <i aria-hidden="true"></i><button type="button" data-tp-step="2"><b>2</b><span>رقم المحوّل</span></button>
     <i aria-hidden="true"></i><button type="button" data-tp-step="3"><b>3</b><span>مراجعة</span></button>
   </nav>
   <section class="tp-providers" aria-label="طريقة الشحن">
@@ -347,7 +347,7 @@
     </div>
   </section>
   <section class="tp-panel tp-phone-panel">
-    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">⌕</span> رقم الهاتف</h3></div>
+    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">⌕</span> رقم المحوّل</h3></div>
     <div class="tp-number-row"><span id="topupVerifiedNumber" dir="ltr" aria-live="polite">جاري التحقق…</span><span id="topupPhoneState" class="tp-phone-state">فحص التوثيق</span></div>
   </section>
   <button id="topupProceed" type="button" class="tp-proceed">متابعة <span aria-hidden="true">←</span></button>
@@ -542,7 +542,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=external-libyana-sender-20261104-1';
+      var s=document.createElement('script');s.src='app.js?v=manual-without-otp-20261104-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -964,6 +964,6 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="header-notification-bell.css?v=unread-bell-20261104-1">
 <link rel="stylesheet" href="ui-motion.css?v=global-taps-20261104-1">
 <script src="ui-motion.js?v=global-taps-20261104-1" defer></script>
-<link rel="stylesheet" href="topup-step-wizard.css?v=external-libyana-sender-20261104-1">
-<script src="topup-step-wizard.js?v=external-libyana-sender-20261104-1" defer></script>
+<link rel="stylesheet" href="topup-step-wizard.css?v=manual-without-otp-20261104-1">
+<script src="topup-step-wizard.js?v=manual-without-otp-20261104-1" defer></script>
 </body></html>

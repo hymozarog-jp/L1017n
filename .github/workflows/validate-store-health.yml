@@ -38,12 +38,28 @@ jobs:
           const stepWizard=read('topup-step-wizard.js');
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
-          assert(loader.includes("auto.src='auto-topup.js?v=external-libyana-sender-20261104-1'"),
+          assert(topupFlow.includes("db.rpc('is_libyana_topup_intake_enabled')") &&
+            !topupFlow.includes("db.rpc('is_my_auto_libyana_topup_ready')") &&
+            !topupFlow.includes("if(!verified.data?.verified)") &&
+            topupFlow.includes("const otherSender=!phone||sender!==phone;"),
+            'Customers may request manual Libyana top-up without OTP, but must use an actual sender');
+          assert(topupFlow.includes("db.auth.getUser()") &&
+            topupFlow.includes("if(auth.error||!auth.data?.user)"),
+            'Customers must remain authenticated for all top-up requests');
+          assert(stepWizard.includes("senderInput.setAttribute('aria-required',String(!hasVerifiedPhone))") &&
+            stepCss.includes('.tp-phone-panel.tp-no-verified .tp-number-row') &&
+            html.includes('data-tp-step="2"><b>2</b><span>رقم المحوّل</span>'),
+            'Unverified customers must see the payer field instead of mandatory OTP controls');
+          assert(stepWizard.includes('tpTopupNoticeUnderstood') &&
+            stepWizard.includes('الرصيد يُضاف فقط بعد التأكد من وصول المبلغ وموافقة الإدارة.'),
+            'Acknowledge the payment safety note with فهمت before manually reviewed transfer');
+
+          assert(loader.includes("auto.src='auto-topup.js?v=manual-without-otp-20261104-1'"),
             'Live checkout must use the updated transfer source logic instead of cached auto-topup');
           assert(stepWizard.includes("id='tpTopupSenderNotice'") &&
             stepWizard.includes('tpTopupNoticeUnderstood') &&
             stepWizard.includes('فهمت') &&
-            stepWizard.includes('غير رقمك الموثّق'),
+            stepWizard.includes('مش لازم توثّق رقم ليبيانا'),
             'Phone step must display notice with a real فهمت acknowledgment button');
           assert(stepWizard.includes("const getSenderPhone=()=>") &&
             stepWizard.includes("getSenderPhone,reset") &&
@@ -96,8 +112,8 @@ jobs:
             stepWizard.includes('if(!button||button!==proceed||stage===3)return;'),
             'Removing duplicate copy must not affect three-step recharge navigation or secure checkout');
 
-          assert(html.includes('topup-step-wizard.js?v=external-libyana-sender-20261104-1') &&
-            html.includes('topup-step-wizard.css?v=external-libyana-sender-20261104-1'),
+          assert(html.includes('topup-step-wizard.js?v=manual-without-otp-20261104-1') &&
+            html.includes('topup-step-wizard.css?v=manual-without-otp-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&
             html.includes('id="topupVerifiedNumber"') &&
@@ -110,9 +126,10 @@ jobs:
             'Only first two steps may intercept Continue; final checkout must use original safe handler');
           assert(stepWizard.includes('if(!isValidAmount())') &&
             stepWizard.includes('setStage(2)') &&
-            stepWizard.includes('if(!statusIsVerified())') &&
-            stepWizard.includes('setStage(3)'),
-            'Top-up must validate amount and verified Libyana number before review');
+            stepWizard.includes('if(!getSenderPhone())') &&
+            stepWizard.includes('setStage(3)') &&
+            !stepWizard.includes('الحساب يحتاج رقم ليبيانا موثّق للتعرّف عليك.'),
+            'Top-up must validate the payer phone, but never block an unverified account phone');
           assert(stepWizard.includes('tp-wizard-review') &&
             stepWizard.includes('tp-wizard-back') &&
             stepWizard.includes("window.renderTopupPhoneStatus?.()"),
@@ -165,7 +182,7 @@ jobs:
           assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
             [100,200,400], 'Package range filter must hide 500 through 1000');
 
-          assert(html.includes('app.js?v=external-libyana-sender-20261104-1') &&
+          assert(html.includes('app.js?v=manual-without-otp-20261104-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&

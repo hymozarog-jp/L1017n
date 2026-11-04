@@ -234,3 +234,14 @@
 @media(prefers-reduced-motion:reduce){
  .tp-wizard-notice-card{animation:none!important}
 }
+
+
+/* When account phone is not OTP-verified, hide the obsolete verification-only
+   status panel. The required Libyana payer input remains fully visible. */
+#topupDedicatedPage .tp-phone-panel.tp-no-verified .tp-number-row,
+#topupDedicatedPage .tp-phone-panel.tp-no-verified .tp-wizard-phone-actions{
+  display:none!important;
+}
+#topupDedicatedPage .tp-phone-panel.tp-no-verified .tp-wizard-sender{
+  padding-top:0;
+}

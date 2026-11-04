@@ -77,7 +77,8 @@
   function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
-    if(/verified_libyana_phone_required/.test(t))return 'حسابك يحتاج رقم ليبيانا موثّق، لكن التحويل يقدر يكون من رقم آخر.';
+    if(/verified_libyana_phone_required/.test(t))return 'لو ما وثّقت رقمك، اكتب رقم المحوّل في الخطوة الثانية للشحن بالمراجعة اليدوية.';
+    if(/manual_topup_daily_limit/.test(t))return 'وصلت الحد اليومي لطلبات الشحن اليدوية. حاول غدوة أو تواصل مع الإدارة.';
     if(/invalid_sender_phone/.test(t))return 'رقم المحوّل غير صحيح. يجب أن يبدأ بـ 092 أو 094.';
     if(/sender_phone_reserved/.test(t))return 'رقم المحوّل مرتبط بحساب آخر في المتجر. استخدم رقمًا آخر أو تواصل مع الإدارة.';
     if(/sender_has_pending_request/.test(t))return 'فيه طلب شحن آخر بنفس رقم المحوّل والمبلغ. حاول بعد انتهائه أو تواصل مع الإدارة.';
@@ -376,45 +377,38 @@
       show('warning','مبلغ غير صحيح','أدخل مبلغًا صحيحًا بالدينار الليبي. تأكد أن المبلغ يتوافق مع شروط خدمة تحويل ليبيانا.');
       return;
     }
-    show('','جاري تجهيز كود التحويل…','نتأكد أولًا من رقم ليبيانا الموثّق، ونجهز رقم متابعة حتى يتعرف البوت على العملية.');
+    show('','جاري تجهيز كود التحويل…','نجهّز طلبك للتأكد من وصول تحويل ليبيانا ومراجعة الإدارة.');
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db){show('warning','تعذر الاتصال بالمتجر','حدّث الصفحة وحاول مرة ثانية.');return}
     try{
       const [auth,verified,readiness]=await Promise.all([
         db.auth.getUser(),
         db.functions.invoke('l1017n-resala-otp',{body:{action:'status'}}),
-        db.rpc('is_my_auto_libyana_topup_ready')
+        db.rpc('is_libyana_topup_intake_enabled')
       ]);
       if(run!==generation)return;
       if(auth.error||!auth.data?.user){
         show('warning','لازم تسجّل الدخول أولًا','ارجع لحسابك وسجّل الدخول قبل شحن المحفظة.');return;
       }
-      if(verified.error||!verified.data?.configured)throw Error('otp_unavailable');
-      if(!verified.data?.verified){
-        const parent=show('warning','لازم توثّق رقمك أولًا','افتح حسابي ووثّق رقم الهاتف برسالة SMS. ما تحولش رصيد قبل التوثيق.');
-        const btn=el('button','btn btn-primary','توثيق رقم الهاتف');
-        btn.type='button';btn.onclick=async()=>{if(typeof switchView==='function')switchView('account');if(typeof window.openPersonalDetails==='function')await window.openPersonalDetails({focusPhone:true});};
-        parent?.append(btn);
-        return;
-      }
-      const phone=String(verified.data?.phone||'');
-      if(!/^09[24][0-9]{7}$/.test(phone)){
-        show('warning','الكود هذا لليبيانا فقط','رقمك الموثّق ليس رقم ليبيانا (092 أو 094). لا تستخدم هذا الكود من شبكة المدار.');return;
-      }
+      // OTP is optional for manually reviewed top-ups. Never interpret a failed
+      // OTP-status lookup as a verified phone or as proof of payment.
+      const maybePhone=verified.error||verified.data?.verified!==true
+        ?'':String(verified.data?.phone||'');
+      const phone=/^09[24][0-9]{7}$/.test(maybePhone)?maybePhone:'';
       if(readiness.error)throw readiness.error;
       if(readiness.data!==true){
-        show('warning','خدمة استقبال طلبات الشحن غير متاحة حاليًا','لا تحوّل أي رصيد قبل ما يرجع النظام يشتغل. التأكد من التوثيق أو إعدادات الإدارة مطلوب.');
+        show('warning','خدمة استقبال طلبات الشحن غير متاحة حاليًا','ما تحوّلش رصيد قبل ما ترجع خدمة المطابقة والمراجعة تشتغل.');
         return;
       }
-      // The signed-in customer must remain verified, but the person sending
-      // the Libyana balance can use a different declared sender phone.
+      // The account must be signed in. An OTP-verified sender uses the original
+      // path; other senders and unverified accounts use manual admin review.
       const senderPicker=window.L1017nTopupWizard?.getSenderPhone;
       const sender=typeof senderPicker==='function'?senderPicker():phone;
       if(!/^09[24][0-9]{7}$/.test(sender)){
         show('warning','رقم المحوّل غير صحيح','اكتب رقم ليبيانا يبدأ بـ 092 أو 094 في خطوة رقم الهاتف.');
         return;
       }
-      const otherSender=sender!==phone;
+      const otherSender=!phone||sender!==phone;
       const intentCall=otherSender
         ?db.rpc('create_ussd_topup_intent_for_sender',{p_amount:amount,p_sender_phone:sender})
         :db.rpc('create_ussd_topup_intent',{p_amount:amount});

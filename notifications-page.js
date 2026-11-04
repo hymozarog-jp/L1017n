@@ -29,6 +29,39 @@
   if(row.kind==='topup')return 'شحن المحفظة'+(row.method==='libyana'?' · ليبيانا':['madar','almadar'].includes(row.method)?' · المدار':'');
   return String(row.product_name||'طلب شراء');
  }
+ function moneyText(row){
+  const n=Number(row.kind==='topup'?row.amount:row.total_amount);
+  return Number.isFinite(n)&&n>=0?n.toFixed(2)+' د.ل':'';
+ }
+ function messagesFor(row){
+  const product=label(row),amount=moneyText(row);
+  if(row.kind==='topup'){
+   if(row.status!=='approved')return [];
+   return [{kind:'credit',title:'تم تعبئة الرصيد بنجاح',body:amount?
+    'تم اعتماد الشحن وإضافة '+amount+' إلى محفظتك.':'تم اعتماد شحن محفظتك بنجاح.',badge:'تم الشحن'}];
+  }
+  if(row.status==='completed')return [
+   {kind:'delivered',title:'تم تسليم طلبك بنجاح',body:'اكتمل تسليم طلب '+product+'.',badge:'تم التسليم'},
+   {kind:'accepted',title:'تم قبول طلب الشراء',body:'تم قبول طلب '+product+' وتجهيزه للتسليم.',badge:'تم القبول'}
+  ];
+  if(['approved','processing','fulfilling','in_progress','in_processing'].includes(row.status)){
+   return [{kind:'accepted',title:'تم قبول طلب الشراء',body:'تم قبول طلب '+product+' وهو قيد التجهيز.',badge:'تم القبول'}];
+  }
+  return [];
+ }
+ function messageHtml(row,message){
+  const icon=message.kind==='credit'
+   ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v13m0 0-5-5m5 5 5-5"/><path d="M4 19h16"/></svg>'
+   :message.kind==='delivered'
+    ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/><circle cx="12" cy="12" r="10"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/><path d="M4 6h6"/></svg>';
+  return '<article class="np-activity-item np-event np-event-'+message.kind+'">'+
+   '<span class="np-activity-icon" aria-hidden="true">'+icon+'</span>'+
+   '<div class="np-activity-copy"><strong>'+safe(message.title)+'</strong>'+
+   '<small class="np-event-body">'+safe(message.body)+'</small>'+
+   '<small class="np-event-date">تاريخ الطلب: '+safe(dateTime(row.created_at))+'</small></div>'+
+   '<span class="np-status done">'+safe(message.badge)+'</span></article>';
+ }
  function itemHtml(row){
   const [status,kind]=statusOf(row);
   const val=Number(row.kind==='topup'?row.amount:row.total_amount);
@@ -58,7 +91,13 @@
   }
   status.dataset.mode=state.errors.length?'error':'ready';
   status.textContent=state.errors.length?'تعذر تحميل بعض العمليات. اضغط تحديث للمحاولة مرة ثانية.':'';
-  if(rows.length){list.innerHTML=rows.map(itemHtml).join('');return;}
+  if(rows.length){
+   list.innerHTML=rows.flatMap(row=>{
+    const messages=messagesFor(row);
+    return messages.length?messages.map(msg=>messageHtml(row,msg)):[itemHtml(row)];
+   }).join('');
+   return;
+  }
   list.innerHTML='<div class="np-empty">'+
    '<div class="np-empty-art" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div>'+
    '<strong>لا توجد عمليات في هذا القسم</strong>'+

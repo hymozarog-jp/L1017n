@@ -1,0 +1,420 @@
+/* L1017n Midnight — visual-only design system, 2026-11-04.
+   Payment, order status, account permission checks and product data are untouched.
+   Intentional: brand artwork, warning/danger states and unavailable labels keep
+   their semantic colors for usability. */
+:root{
+  color-scheme:dark;
+  --bg:#060709;--panel:#111216;--panel2:#191a20;--line:#33363e;
+  --text:#f6f7f9;--muted:#a5a9b2;
+  --surface:#111216;--surface-2:#191a20;--surface-elevated:#202127;
+  --border-color:#363840;
+  --green:#e9ecf3;--green2:#c7cbd5;--purple:#d5d8e1;
+  --l1017-black:#060709;
+  --l1017-charcoal:#111216;
+  --l1017-raised:#1a1c22;
+  --l1017-line:#363942;
+  --l1017-silver:#e7eaf0;
+  --l1017-danger:#ff6977;
+}
+html{background:#060709!important;color-scheme:dark}
+body,body.l1017-live-ui{
+  background:radial-gradient(ellipse 110% 38% at 50% -14%,#24262c 0%,transparent 72%),#060709!important;
+  color:#f6f7f9!important;
+}
+body::before{background:radial-gradient(ellipse 85% 50% at 50% 0%,#b2bbc711,transparent 77%)!important}
+body::after{pointer-events:none!important}
+:is(#storeView,#walletView,#ordersView,#accountView,#offersView,#referralsView,#rankingView,#adminView,#subscriptionsView){
+  color:#f3f4f7!important;
+  background-color:#07080b!important;
+}
+#accountView:has(#accountModern:not(.hidden)){background:#07080b!important}
+/* Shell and menus */
+.topbar,body.l1017-live-ui .topbar,#llLanding .ph-topbar{
+  background:rgba(9,10,13,.97)!important;
+  border-bottom:1px solid #393b43!important;
+  box-shadow:0 15px 34px #0009!important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.topbar .brand b,.topbar .google-welcome strong{color:#fff!important;text-shadow:none!important}
+.topbar .brand small,.topbar .google-welcome-label{color:#afb3be!important}
+.topbar .google-profile-button,#googleProfileButton{
+  border-color:#aeb4c3!important;
+  background:#1a1b21!important;
+  box-shadow:0 0 0 3px #ffffff0e,0 5px 17px #0005!important;
+}
+.topbar #customerWalletChip,.topbar .account-wallet-group #customerWalletChip{
+  border:1px solid #60636d!important;
+  background:linear-gradient(125deg,#202126,#111216)!important;
+  box-shadow:inset 0 1px #ffffff12,0 6px 18px #0004!important;
+}
+.topbar #customerTopupShortcut,.topbar .account-wallet-group #customerTopupShortcut{
+  background:linear-gradient(145deg,#424650,#24262e)!important;
+  color:#fff!important;
+  box-shadow:0 3px 12px #0006!important;
+}
+.topbar #accountBtn,.ph-header-menu,.topbar .desktop-nav .nav-link,
+#llLanding .ph-header-menu,.topbar .ph-header-menu{
+  background:#181a20!important;
+  border-color:#444852!important;
+  color:#eff0f5!important;
+  box-shadow:inset 0 1px #ffffff0b!important;
+}
+.topbar .desktop-nav .nav-link.active{
+  background:#30323a!important;
+  border-color:#777a84!important;
+  color:#fff!important;
+}
+.mobile-nav,.mobile-bottom-nav,.bottom-nav,#llBottomNav,.gb-bottom-nav{
+  background:rgba(11,12,15,.97)!important;
+  border-color:#44464f!important;
+  box-shadow:0 -12px 33px #0008!important;
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+}
+.mobile-nav button,.bottom-nav button,.mobile-bottom-nav button{
+  background:transparent!important;
+  color:#b5b8c3!important;
+}
+.mobile-nav button.active,.mobile-nav button[aria-current="page"],
+.mobile-bottom-nav button.active,.bottom-nav button.active{
+  color:#fff!important;
+  background:#26282f!important;
+}
+/* Page titles and general surfaces */
+.section-head h1,.section-head h2,.section-head h3,
+#accountView h2,#ordersView h2,#walletView h2{color:#fafbff!important}
+.section-head p,.muted,.form-note{color:#a4a8b4!important}
+:is(.panel,.card,.box,.section-card,.admin-dashboard){
+  border-color:#393b45!important;
+}
+#accountView .account-panel,
+#ordersView .orders-premium-board,
+#ordersView .orders-modern-card,
+#ordersView .orders-track-panel,
+#ordersView .orders-view-dialog[open],
+#accountModern .account-id-card,
+#accountModern .account-balance-summary,
+#accountModern .account-settings-list,
+#accountModern .account-settings-detail,
+#accountModern .account-contact-options,
+#l1017nFaqPage,.l1017-ref-compact-missions,
+#referralsView #l1017Referrals .l1017-ref-compact-missions{
+  background:linear-gradient(145deg,#191a1f,#101115 74%)!important;
+  border-color:#3b3d46!important;
+  box-shadow:inset 0 1px #ffffff08,0 12px 30px #0005!important;
+}
+#accountModern .account-id-card{
+  background:radial-gradient(ellipse at 5% 4%,#74798533,transparent 58%),linear-gradient(130deg,#2a2c33,#111216 83%)!important;
+  border:1px solid #646772!important;
+}
+#accountModern .account-id-card:before{color:#ffffff07!important}
+#accountModern .account-id-details span,
+#accountModern .account-id-details small{color:#ccd0dc!important}
+#accountModern .account-id-avatar{border-color:#c1c4cd!important;background:#34363f!important}
+#accountModern .account-settings-list>button,
+#accountModern .account-contact-options>button{
+  border-bottom-color:#363942!important;
+  color:#e9ebef!important;
+}
+#accountModern .account-settings-list .account-row-icon{
+  background:linear-gradient(145deg,#32343c,#202127)!important;
+  color:#e2e5ed!important;
+  border-color:#575963!important;
+}
+#accountModern .account-core-settings>button:hover,
+#accountModern .account-contact-options>button:hover{
+  background:#ffffff0b!important;
+}
+#accountView #signedInProfile{
+  background:#191a1f!important;
+  border-color:#454750!important;
+}
+#accountView #accountPhoneGate{
+  background:#16181d!important;
+  border-color:#42454c!important;
+}
+#accountView .account-avatar{
+  background:linear-gradient(140deg,#d4d7de,#9096a1)!important;
+  color:#13151a!important;
+}
+#personalDetailsPage.premium-personal-profile{
+  background:radial-gradient(ellipse 95% 40% at 50% -10%,#35384155,transparent 85%),#08090d!important;
+}
+#personalDetailsPage.premium-personal-profile .personal-page-user{
+  background:radial-gradient(ellipse at 15% 0%,#70737f4d,transparent 64%),linear-gradient(130deg,#24262e,#121319)!important;
+  border-color:#656873!important;
+  box-shadow:0 15px 34px #0008,inset 0 1px #ffffff13!important;
+}
+#personalDetailsPage.premium-personal-profile .personal-page-avatar{
+  background:linear-gradient(130deg,#464953,#24262c)!important;
+  border-color:#b1b3c0!important;
+  color:#fff!important;
+  box-shadow:0 0 0 5px #ffffff0b,0 8px 22px #0007!important;
+}
+/* Game catalog: dark surfaces, keep artwork color and unavailable state */
+#storeView .ph-hero,#storeView .ph-slide{
+  background:radial-gradient(ellipse 110% 110% at 80% 4%,#343844aa,transparent 75%),linear-gradient(120deg,#17191f,#0c0e13 80%)!important;
+  border-color:#51545f!important;
+  box-shadow:0 18px 38px #0008!important;
+}
+#storeView .ph-hero::before{opacity:.22!important}
+#storeView .ph-slide h1 span,#storeView .ph-slide h2 span,
+#storeView .ph-hero h1 span{color:#f6f7fa!important;text-shadow:0 2px 12px #0007!important}
+#storeView .game-tile,
+#storeView .game-tile-btn,
+#storeView .ph-news-card,
+#storeView .gbqa-action{
+  background:linear-gradient(145deg,#1b1d23,#0e1014)!important;
+  border-color:#4c4e58!important;
+  box-shadow:0 9px 23px #0005!important;
+}
+#storeView .game-tile-art{
+  background-color:#16171b!important;
+}
+#storeView .game-tile-info{background:#15161b!important}
+#storeView .game-tile-info strong{color:#fff!important}
+#robloxGamePage,
+#robloxGamePage.rgp-mm2-page,#robloxGamePage.rgp-brainrot-page,
+#pubgCategoryPage,#l1017nFaqPage{
+  background:radial-gradient(ellipse at 62% -8%,#303239 0,transparent 64%),#08090c!important;
+  color:#f7f7fa!important;
+}
+#robloxGamePage .rgp-top,#robloxGamePage.rgp-inner-page .rgp-top{
+  background:#101216f2!important;
+  border-color:#43464e!important;
+}
+#robloxGamePage .rgp-package,
+#robloxGamePage .rgp-card,
+#pubgCategoryPage .pubg-item,
+#l1017nFaqPage .faq-card,
+#storeView #l1017nFaqInline,
+#referralsView #l1017Referrals .l1017-ref-compact-row,
+.sab-item-card{
+  background:linear-gradient(135deg,#202127,#111217)!important;
+  border-color:#4a4b54!important;
+  box-shadow:inset 0 1px #ffffff0a,0 7px 19px #0004!important;
+}
+#robloxGamePage .rgp-package.rgp-soldout{
+  background:#171217!important;
+  border-color:#693f49!important;
+}
+#robloxGamePage .mm2-item-art,
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art{
+  background:radial-gradient(ellipse at 50% 35%,#343741,#181a20 70%,#101116)!important;
+  border-color:#42434a!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-head{
+  background:linear-gradient(120deg,#22242b,#121318)!important;
+  border-color:#50525c!important;
+}
+#storeView #l1017nFaqInline .l1017-inline-faq-item{
+  background:#1c1d22!important;border-color:#41434c!important;
+}
+#l1017nFaqPage .faq-hero,
+#l1017nFaqPage .faq-support{background:#17191e!important;border-color:#41444c!important}
+/* Wallet page: neutral cards, retain carrier brand marks so users can distinguish. */
+#walletView,#walletView .wallet-actions,
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card,
+#walletView .primary-wallet-card,
+#walletView .wallet-transactions,
+#walletView .wallet-history,
+#walletView .wallet-showcase{
+  background:radial-gradient(ellipse 85% 75% at 10% 0%,#45475147,transparent 69%),linear-gradient(140deg,#1f2026,#101115 80%)!important;
+  border-color:#51535e!important;
+}
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+  box-shadow:0 17px 37px #0009,inset 0 1px #ffffff14!important;
+}
+#walletView .wallet-hero-balance strong,
+#walletView .madar-wallet-balance strong{
+  color:#fff!important;
+}
+#walletView .wallet-carousel-dots span.active{
+  background:#e1e3e8!important;
+}
+/* Referrals, missions and checkout */
+#referralsView #l1017Referrals,
+#referralsView #l1017Referrals .l1017-ref-link-row,
+#referralsView #l1017Referrals .l1017-mission-tabs,
+#referralsView #l1017Referrals .l1017-ref-code-card{
+  background:#15161b!important;
+  border-color:#41434a!important;
+}
+#referralsView #l1017Referrals .l1017-mission-tabs button.is-active{
+  background:linear-gradient(125deg,#4a4c54,#282a31)!important;
+  border-color:#9295a0!important;
+}
+#referralsView #l1017Referrals .l1017-mission-tabs button[data-l1017-mission-tab].is-active{
+  background:linear-gradient(125deg,#4a4c54,#292b31)!important;
+  border-color:#8b8e99!important;
+}
+#rgpMm2Checkout .mm2-checkout-box,
+#robuxPurchaseScreen,
+#robuxModal .robux-store-box,
+#sabCheckout .sab-dialog,
+#ordersView #ordersList .orders-view-dialog[open]{
+  background:linear-gradient(135deg,#202127,#0f1014)!important;
+  border-color:#4b4e56!important;
+  color:#f5f6f9!important;
+}
+/* Consistent controls: unified shape, typography, hover and press animations.
+   Do NOT flatten product tiles or round icon-only navigation to huge pills. */
+:is(.btn,.auth-google-button,.ph-shop-button,.ph-slide-button,
+    .robux-checkout-next,.sab-buy,.rgp-back,.gb-package-back,
+    #topupProceed,#l1017CopyRefLink,#l1017ShareRef,
+    .l1017-mission-claim-btn,.faq-filter,.faq-back,
+    #accountView .account-wallet-link,
+    #walletView .wallet-candy-topup,
+    #referralsView #l1017Referrals .l1017-mission-tabs button){
+  border-radius:14px!important;
+  font-family:'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent;
+}
+:is(.btn,.ph-shop-button,.ph-slide-button,.robux-checkout-next,
+    .sab-buy,.rgp-back,.gb-package-back,#topupProceed,
+    #accountView .account-wallet-link){
+  min-height:44px!important;
+  border:1px solid #787b85!important;
+  background:linear-gradient(135deg,#373941,#22242b)!important;
+  color:#fafbff!important;
+  box-shadow:inset 0 1px #ffffff15,0 5px 14px #0005!important;
+}
+:is(.btn,.auth-google-button,.ph-shop-button,.ph-slide-button,
+    .robux-checkout-next,.sab-buy,.rgp-back,.gb-package-back,
+    #topupProceed,#l1017CopyRefLink,#l1017ShareRef,
+    .l1017-mission-claim-btn,.faq-filter,.faq-back,
+    #walletView .wallet-action,#walletView .wallet-candy-topup,
+    #storeView .gbqa-action,
+    #referralsView #l1017Referrals .l1017-mission-tabs button,
+    .topbar button,.mobile-nav button,
+    #accountModern .account-settings-list>button,
+    #accountModern .account-contact-options>button){
+  transition:transform .18s cubic-bezier(.22,.7,.25,1),
+    border-color .18s ease,background-color .18s ease,
+    filter .18s ease,box-shadow .18s ease!important;
+}
+:is(.btn,.auth-google-button,.ph-shop-button,.ph-slide-button,
+    .robux-checkout-next,.sab-buy,.rgp-back,.gb-package-back,
+    #topupProceed,#l1017CopyRefLink,#l1017ShareRef,
+    .l1017-mission-claim-btn,.faq-filter,.faq-back,
+    #walletView .wallet-action,#walletView .wallet-candy-topup,
+    #storeView .gbqa-action):not(:disabled):hover{
+  filter:brightness(1.16)!important;
+  border-color:#bfc2cb!important;
+  box-shadow:inset 0 1px #ffffff25,0 7px 19px #0007!important;
+}
+:is(.btn,.auth-google-button,.ph-shop-button,.ph-slide-button,
+    .robux-checkout-next,.sab-buy,.rgp-back,.gb-package-back,
+    #topupProceed,#l1017CopyRefLink,#l1017ShareRef,
+    .l1017-mission-claim-btn,.faq-filter,.faq-back,
+    #walletView .wallet-action,#walletView .wallet-candy-topup,
+    #storeView .gbqa-action,
+    .topbar button,.mobile-nav button,
+    #referralsView #l1017Referrals .l1017-mission-tabs button,
+    #accountModern .account-settings-list>button):not(:disabled):active{
+  transform:scale(.965)!important;
+  filter:brightness(1.24)!important;
+}
+:is(button,a,[role="button"],input,select,textarea):focus-visible{
+  outline:2px solid #e1e4ee!important;
+  outline-offset:3px!important;
+}
+button:disabled,[aria-disabled="true"]{
+  cursor:not-allowed!important;
+  filter:saturate(.55);
+}
+#googleSignInBtn,.auth-google-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(140deg,#e9eaf0,#cfd2da)!important;
+  color:#17191e!important;
+  border:1px solid #fff!important;
+  box-shadow:0 8px 24px #0006!important;
+}
+#googleSignInBtn .auth-google-label{color:#16181d!important}
+#googleSignInBtn .auth-google-letter{
+  background:#fff!important;
+  color:#3b404a!important;
+  border-radius:9px!important;
+}
+#accountView .auth-mode-switch button.active{
+  background:#d4d6df!important;
+  border-color:#fff!important;
+  color:#17191e!important;
+}
+#accountView .auth-input-wrap,#accountView input:not([type="checkbox"]),
+#accountView select,#accountView textarea,
+#walletView input,#walletView select,
+#referralsView input{
+  background:#17181d!important;
+  color:#f8f9fb!important;
+  border-color:#555862!important;
+}
+#accountView input::placeholder,#walletView input::placeholder,
+#referralsView input::placeholder{color:#969aa6!important}
+/* Logout must be clearly dangerous, and never shown to anonymous visitors. */
+#accountView #logoutBtn:not(.hidden){
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-height:49px!important;
+  padding:12px 22px!important;
+  border:1px solid #ff6576!important;
+  border-radius:15px!important;
+  background:linear-gradient(132deg,#a52235,#751a29)!important;
+  color:#fff!important;
+  font-weight:900!important;
+  box-shadow:0 8px 23px #ab142d52,inset 0 1px #ff9fab31!important;
+}
+#accountView #logoutBtn:not(.hidden):hover{
+  background:linear-gradient(132deg,#bd3045,#8e1e32)!important;
+  border-color:#ff9ba5!important;
+  box-shadow:0 9px 26px #b3183166!important;
+}
+#accountView #logoutBtn:not(.hidden):active{transform:scale(.96)!important}
+#accountView #logoutBtn.hidden{display:none!important}
+/* Clean, readable re-entry hint. Never displays the last user's email
+   before authentication — important for shared phones and browser privacy. */
+#accountView .auth-returning-tip{
+  margin:12px 0 0!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:9px!important;
+  padding:11px 12px!important;
+  background:#1d1f25!important;
+  border:1px solid #464952!important;
+  border-radius:13px!important;
+  color:#c4c7d1!important;
+  font-size:12px!important;
+  line-height:1.8!important;
+}
+#accountView .auth-returning-tip svg{
+  width:19px;height:19px;
+  flex:0 0 19px;
+  margin-top:2px;
+  color:#a5e1be;
+  stroke:currentColor;fill:none;
+}
+/* Accessibility and fluid small screens */
+@media(max-width:600px){
+  .topbar,.topbar button,.mobile-nav button{touch-action:manipulation}
+  #storeView .ph-hero,#storeView .ph-slide{border-radius:19px!important}
+  #accountModern .account-id-card{border-radius:21px!important}
+  #walletView .wallet-carousel>.wallet-hero,
+  #walletView .wallet-carousel>.madar-wallet-card{border-radius:21px!important}
+  #referralsView #l1017Referrals .l1017-mission-tabs button{
+    border-radius:11px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  :is(button,.btn,a,[role="button"]){animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

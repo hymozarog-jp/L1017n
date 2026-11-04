@@ -44,12 +44,45 @@
   if(prize)prize.insertAdjacentElement('beforebegin',stats);
   else page.appendChild(stats);
   const set=(id,text)=>{const n=stats.querySelector('[data-royal-stat="'+id+'"]');if(n&&n.textContent!==text)n.textContent=text};
+  // Compact "your rank" summary beneath the top three. Reuse the personal
+  // rank already fetched from get_my_store_leaderboard_rank; never guess a place.
+  const ownRank=document.getElementById('lbMyRank');
+  function showCompactRank(podium){
+   let mini=host.querySelector('#royalMiniMyRank');
+   const number=ownRank?.querySelector('.lb-self-position strong')?.textContent?.trim();
+   if(!ownRank||ownRank.classList.contains('hidden')||!number){
+    mini?.remove();
+    return;
+   }
+   if(!mini){
+    mini=document.createElement('aside');
+    mini.id='royalMiniMyRank';
+    mini.className='royal-mini-my-rank';
+    mini.dir='rtl';
+    mini.setAttribute('role','status');
+    mini.setAttribute('aria-live','polite');
+    mini.innerHTML='<span class="royal-mini-rank-icon" aria-hidden="true">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+
+      '<path d="M8 4h8v4a4 4 0 0 1-8 0Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg></span>'+
+      '<span class="royal-mini-rank-copy"><strong>ترتيبك الحالي</strong>'+
+      '<small>بين متسوقي المتجر</small></span>'+
+      '<strong class="royal-mini-rank-number"></strong>';
+    podium.insertAdjacentElement('afterend',mini);
+   }
+   // A dash is preserved if the real personal-rank endpoint has no rank.
+   const value=mini.querySelector('.royal-mini-rank-number');
+   if(value&&value.textContent!==number)value.textContent=number;
+   const info=mini.querySelector('.royal-mini-rank-copy small');
+   const caption=number==='—'?'لم يتحدد ترتيبك بعد':'بين متسوقي المتجر';
+   if(info&&info.textContent!==caption)info.textContent=caption;
+  }
   function decorate(){
    const podium=host.querySelector('.lb-podium');
    if(!podium){
     set('ranked','—');set('total','—');set('members','—');
     return;
    }
+   showCompactRank(podium);
    const cards=[...podium.querySelectorAll('.lb-podium-card:not(.lb-empty)')];
    let sum=0;
    for(const card of cards){
@@ -78,6 +111,9 @@
   }
   const observer=new MutationObserver(schedule);
   observer.observe(host,{childList:true});
+  // The personal rank loads asynchronously; reflect later login, logout,
+  // rank recalculation and visibility changes in the mini summary.
+  if(ownRank)observer.observe(ownRank,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
   schedule();
   document.getElementById('l1017RankRefresh')?.addEventListener('click',schedule);
   document.getElementById('refreshLeaderboard')?.addEventListener('click',schedule);

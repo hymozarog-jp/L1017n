@@ -403,3 +403,83 @@
 }
 /* Guests do not see an empty personal-rank heading. */
 #leaderboardView:has(#lbMyRank.hidden) .l1017-rank-mini-heading{display:none!important}
+
+
+/* Personal position summary immediately below the three-place podium.
+   This is read-only and uses the same verified personal position as #lbMyRank. */
+#leaderboardView #royalMiniMyRank.royal-mini-my-rank{
+  order:3!important;
+  width:min(420px,calc(100% - 28px))!important;
+  max-width:420px!important;
+  min-height:69px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  margin:0 auto 18px!important;
+  padding:12px 16px!important;
+  border:1px solid #b48af4a6!important;
+  border-radius:19px!important;
+  background:linear-gradient(120deg,#33244dcf,#1b1632ee)!important;
+  box-shadow:inset 0 1px #ffffff32,0 8px 23px #0006,0 0 17px #a15aff14!important;
+  color:#f8eeff!important;
+  direction:rtl!important;
+  overflow:hidden!important;
+}
+#leaderboardView .royal-mini-rank-icon{
+  flex:0 0 40px;
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  border:1px solid #bd9aff88;
+  border-radius:13px;
+  background:#6b489955;color:#edd0ff;
+}
+#leaderboardView .royal-mini-rank-icon svg{width:23px;height:23px}
+#leaderboardView .royal-mini-rank-copy{
+  display:flex;flex:1;flex-direction:column;gap:3px;
+  min-width:0;text-align:right;
+}
+#leaderboardView .royal-mini-rank-copy strong{
+  font-size:14px;font-weight:850;line-height:1.5;color:#f5eaff;
+}
+#leaderboardView .royal-mini-rank-copy small{
+  font-size:11px;line-height:1.4;color:#c3b0db;
+}
+#leaderboardView .royal-mini-rank-number{
+  flex:0 0 auto;
+  min-width:66px;
+  padding:6px 10px;
+  border:1px solid #c7a0ff88;
+  border-radius:13px;
+  background:linear-gradient(140deg,#6d43a7,#382057);
+  color:#fef8ff;
+  text-align:center;
+  direction:ltr;
+  font-variant-numeric:tabular-nums;
+  font-size:clamp(19px,5vw,27px);
+  font-weight:900;
+  line-height:1.25;
+  text-shadow:0 2px 10px #9b70ed77;
+}
+/* Keep the existing detailed privacy/settings card immediately underneath. */
+#leaderboardView .l1017-rank-mini-heading{order:4!important}
+@media(max-width:520px){
+ #leaderboardView #royalMiniMyRank.royal-mini-my-rank{
+   width:min(385px,calc(100% - 12px))!important;
+   min-height:60px!important;
+   gap:9px!important;
+   padding:10px 12px!important;
+   margin-bottom:13px!important;
+   border-radius:16px!important;
+ }
+ #leaderboardView .royal-mini-rank-icon{width:34px;height:34px;flex-basis:34px;border-radius:11px}
+ #leaderboardView .royal-mini-rank-icon svg{width:20px;height:20px}
+ #leaderboardView .royal-mini-rank-copy strong{font-size:12.5px}
+ #leaderboardView .royal-mini-rank-copy small{font-size:10px}
+ #leaderboardView .royal-mini-rank-number{font-size:20px;min-width:55px;padding:5px 9px}
+}
+@media(prefers-reduced-motion:no-preference){
+ #leaderboardView #royalMiniMyRank.royal-mini-my-rank{animation:royalReveal .45s ease both}
+}
+@media(prefers-reduced-motion:reduce){
+ #leaderboardView #royalMiniMyRank.royal-mini-my-rank{animation:none!important}
+}

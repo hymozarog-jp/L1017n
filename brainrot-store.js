@@ -10,9 +10,7 @@
   const OFFICIAL_FALLBACK = "game-covers/official/mobile/brainrot.webp?v=official-art-20261102";
   const ART_FALLBACK = "game-covers/roblox.svg";
   const ITEMS = [
-    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },
-    { key:"steal-los-secret", name:"لاسيكرت", latin:"LA SECRET", number:"02", image:"game-covers/la-secret.png" },
-    { key:"steal-los-spooky", name:"سبوكي اند بمكي", latin:"SPOOKY AND PUMPKY", number:"03", image:"game-covers/spooky-and-pumpky.png" }
+    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" }
   ];
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;
@@ -185,7 +183,7 @@ function getClient(){
     const section=document.createElement("section");
     section.className="sab-inner";
     // Open directly to the items for sale: omit the original-game link and oversized hero.
-    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>03 عناصر</small></div>'
+    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>01 عنصر</small></div>'
       +'<div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
     if(typeof window.setRobloxInnerHeader==="function"){

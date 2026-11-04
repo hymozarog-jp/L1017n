@@ -49,8 +49,13 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=explicit-avatar-bell-wallet-20261104-1'),
-            'Explicit header order must bypass cached CSS');
+          assert(html.includes('header-notification-bell.css?v=pinned-left-20261104-1'),
+            'Physical left-edge header fix must bypass cached CSS');
+          assert(bellCss.includes('position:absolute!important;') &&
+            bellCss.includes('left:8px!important;') &&
+            bellCss.includes('right:auto!important;') &&
+            bellCss.includes('padding-left:clamp(198px,56vw,234px)!important;'),
+            'Signed-in header controls must actually sit against the left edge on phones');
           const cluster=html.slice(html.indexOf('id="headerAccountCluster"'),html.indexOf('</div>',html.indexOf('id="headerAccountCluster"')));
           assert(cluster.indexOf('id="googleProfileButton"')<cluster.indexOf('id="headerNotificationBell"') &&
             cluster.indexOf('id="headerNotificationBell"')<cluster.indexOf('class="account-wallet-group"'),

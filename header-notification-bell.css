@@ -214,3 +214,46 @@ body.l1017-live-ui .topbar #headerAccountCluster{
     left:6px!important;
   }
 }
+
+/* Circular notification button with a clear outer ring.
+   Overrides legacy square corners while preserving icon animation and header placement. */
+.topbar #headerAccountCluster > #headerNotificationBell,
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+  width:40px!important;
+  height:40px!important;
+  flex:0 0 40px!important;
+  min-width:40px!important;
+  min-height:40px!important;
+  border-radius:50%!important;
+  border:2px solid #b995ff!important;
+  background:rgba(77,55,122,.26)!important;
+  box-shadow:0 0 0 3px rgba(185,149,255,.16),inset 0 1px rgba(255,255,255,.12),0 5px 14px rgba(0,0,0,.33)!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell svg{
+  width:19px!important;
+  height:19px!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:hover{
+  border-color:#d8c2ff!important;
+  background:rgba(93,63,148,.35)!important;
+  box-shadow:0 0 0 4px rgba(216,194,255,.19),inset 0 1px rgba(255,255,255,.16)!important;
+}
+@media(max-width:430px){
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+    min-width:36px!important;
+    min-height:36px!important;
+    border-radius:50%!important;
+  }
+}
+@media(max-width:350px){
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+    width:34px!important;
+    height:34px!important;
+    flex:0 0 34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+  }
+}

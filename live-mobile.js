@@ -190,7 +190,7 @@
     renderCatalog();
   }
   function updateNavigation(view) {
-    const which = view === "store" ? "home" : view;
+    const which = (view === "store" || view === "offers") ? "home" : view;
     q("#llBottomNav")?.querySelectorAll("[data-ll-nav]").forEach(button => {
       const active = button.dataset.llNav === which;
       button.classList.toggle("active", active);
@@ -246,7 +246,6 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
-      ["offers", "العروض", "gift"],
       ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
       ["orders", "طلباتي", "orders"],

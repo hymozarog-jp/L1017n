@@ -140,6 +140,103 @@
    console.warn('[notifications] Could not read customer order activity',e);
   }
  }
+ // In-app status messages: compare successive server snapshots while the store is open.
+ // First snapshot is a baseline, not a notification; only genuine changes trigger popups.
+ let observedUser='',observed=new Map(),watchBusy=false;
+ let toastQueue=[],toastBusy=false,toastTimer=0;
+ function showNextToast(){
+  if(toastBusy||!toastQueue.length)return;
+  const next=toastQueue.shift();
+  if(!next||next.userId!==observedUser){showNextToast();return;}
+  toastBusy=true;
+  let node=document.getElementById('l1017StatusToast');
+  if(!node){
+   node=document.createElement('div');
+   node.id='l1017StatusToast';
+   node.className='np-live-toast';
+   node.setAttribute('role','status');
+   node.setAttribute('aria-live','polite');
+   document.body.appendChild(node);
+  }
+  node.className='np-live-toast type-'+next.message.kind;
+  node.innerHTML='<span class="np-live-toast-icon" aria-hidden="true">✓</span>'+
+   '<span class="np-live-toast-copy"><strong>'+safe(next.message.title)+'</strong>'+
+   '<small>'+safe(next.message.body)+'</small></span>';
+  window.requestAnimationFrame(()=>node.classList.add('visible'));
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{
+   node.classList.remove('visible');
+   toastTimer=setTimeout(()=>{toastBusy=false;showNextToast()},350);
+  },5200);
+ }
+ function resetObserved(){
+  observedUser='';observed=new Map();toastQueue=[];
+  clearTimeout(toastTimer);toastBusy=false;
+  document.getElementById('l1017StatusToast')?.remove();
+ }
+ async function watchOrderStatuses(){
+  if(watchBusy||document.visibilityState==='hidden')return;
+  const client=typeof supabaseClient!=='undefined'?supabaseClient:null;
+  if(!client)return;
+  watchBusy=true;
+  try{
+   const {data:auth,error:authError}=await client.auth.getUser();
+   if(authError)return;
+   const userId=auth?.user?.id||'';
+   if(!userId){resetObserved();return;}
+   const [topups,purchases]=await Promise.all([
+    client.from('topup_requests').select('id,amount,method,status,created_at')
+     .eq('user_id',userId).order('created_at',{ascending:false}).limit(30),
+    client.from('purchase_orders').select('id,product_name,total_amount,status,created_at')
+     .eq('user_id',userId).order('created_at',{ascending:false}).limit(30)
+   ]);
+   // Do not announce or advance baselines if either source failed.
+   if(topups.error||purchases.error)return;
+   const all=[
+    ...(topups.data||[]).map(x=>({...x,kind:'topup'})),
+    ...(purchases.data||[]).map(x=>({...x,kind:'purchase'}))
+   ].sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0));
+   const next=new Map();
+   const updates=[];
+   const accepted=new Set(['approved','processing','fulfilling','in_progress','in_processing','completed']);
+   for(const item of all){
+    const key=item.kind+':'+item.id;
+    const now=String(item.status||'');
+    next.set(key,now);
+    if(observedUser!==userId||!observed.has(key))continue;
+    const was=observed.get(key);
+    if(was===now)continue;
+    const messages=messagesFor(item);
+    if(item.kind==='topup'&&now==='approved'&&was!=='approved'){
+     if(messages[0])updates.push({message:messages[0],userId});
+    }else if(item.kind==='purchase'&&now==='completed'&&was!=='completed'){
+     const delivered=messages.find(x=>x.kind==='delivered');
+     if(delivered)updates.push({message:delivered,userId});
+    }else if(item.kind==='purchase'&&accepted.has(now)&&!accepted.has(was)){
+     const approved=messages.find(x=>x.kind==='accepted');
+     if(approved)updates.push({message:approved,userId});
+    }
+   }
+   if(observedUser!==userId){toastQueue=[];observedUser=userId;}
+   observed=next;
+   if(page&&!state.loading){
+    state.rows=all.slice(0,12);state.errors=[];
+    render();
+   }
+   // Avoid flooding the screen if many old records were updated together.
+   toastQueue.push(...updates.slice(0,3));
+   showNextToast();
+  }catch(e){
+   console.warn('[notifications] Status polling failed',e);
+  }finally{watchBusy=false;}
+ }
+ // Browser tab only: this is not background push delivery when the site is closed.
+ setInterval(()=>{void watchOrderStatuses()},30000);
+ window.addEventListener('focus',()=>{void watchOrderStatuses()});
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')void watchOrderStatuses();
+ });
+ setTimeout(()=>{void watchOrderStatuses()},1500);
  function remove(){
   if(!page)return;
   state.serial++;

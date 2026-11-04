@@ -119,7 +119,7 @@
     page.querySelector('#npActivityList').replaceChildren();return;
    }
    const id=auth.user.id;
-   clearUnreadForUser(id);
+   syncNoticeUser(id);
    const [topups,purchases]=await Promise.all([
     client.from('topup_requests').select('id,amount,method,status,created_at')
      .eq('user_id',id).order('created_at',{ascending:false}).limit(12),
@@ -134,6 +134,8 @@
     ...(topups.error?[]:(topups.data||[])).map(x=>({...x,kind:'topup'})),
     ...(purchases.error?[]:(purchases.data||[])).map(x=>({...x,kind:'purchase'}))
    ].sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0)).slice(0,12);
+   // Only mark alerts read after we successfully show both sources.
+   if(!topups.error&&!purchases.error)clearUnreadForUser(id);
    state.loading=false;render();
   }catch(e){
    if(serial!==state.serial)return;

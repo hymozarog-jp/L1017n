@@ -46,8 +46,8 @@ jobs:
           assert(notices.includes("[data-account-action=\"notifications\"]"),
             'Notification menu and bell must use the existing dialog handler');
           const noticesCss=read('notifications-page.css');
-          assert(html.includes('notifications-page.js?v=activity-center-20261104-1') &&
-            html.includes('notifications-page.css?v=activity-center-20261104-1'),
+          assert(html.includes('notifications-page.js?v=verified-status-messages-20261104-1') &&
+            html.includes('notifications-page.css?v=verified-status-messages-20261104-1'),
             'Updated notifications activity screen assets must bypass cached versions');
           for(const selector of ['npActivityList','data-np-filter','np-refresh','np-orders','np-history']){
             assert(notices.includes(selector),'Notification activity control missing: '+selector);
@@ -63,6 +63,30 @@ jobs:
           assert(noticesCss.includes('@media(max-width:420px)') &&
             noticesCss.includes('prefers-reduced-motion:reduce'),
             'Notification center must support narrow screens and reduced motion');
+          const messagesSrc=notices.slice(notices.indexOf(' function moneyText('),notices.indexOf(' function itemHtml('));
+          assert(messagesSrc.startsWith(' function moneyText('),'Verified event generator is missing');
+          const messagesForTest=new Function('label',messagesSrc+';return messagesFor;')
+            (row=>row.product_name||'طلب شراء');
+          assert.equal(messagesForTest({kind:'topup',status:'pending',amount:50}).length,0,
+            'Pending top-up must never claim the balance was credited');
+          assert.equal(messagesForTest({kind:'topup',status:'approved',amount:50})[0].kind,'credit',
+            'Approved top-up must produce a wallet credit message');
+          assert.equal(messagesForTest({kind:'purchase',status:'paid_pending_fulfillment'}).length,0,
+            'A merely paid order must not claim the store accepted delivery');
+          assert.equal(messagesForTest({kind:'purchase',status:'approved',product_name:'MM2'})[0].kind,'accepted',
+            'Approved purchase needs an acceptance message');
+          const delivered=messagesForTest({kind:'purchase',status:'completed',product_name:'MM2'});
+          assert.deepEqual(delivered.map(x=>x.kind),['delivered','accepted'],
+            'Completed purchase must retain acceptance and show delivered message');
+          assert(notices.includes('watchOrderStatuses') && notices.includes('if(was===now)continue;') &&
+            notices.includes('observedUser!==userId||!observed.has(key)'),
+            'Live messages must come from genuine status changes and skip baseline history');
+          assert(notices.includes(".eq('user_id',userId)") && notices.includes('setInterval(()=>{void watchOrderStatuses()},30000)'),
+            'In-app notification checks must be user-scoped and run while the store is open');
+          assert(noticesCss.includes('.np-live-toast') && noticesCss.includes('.np-event-credit') &&
+            noticesCss.includes('.np-event-delivered') && noticesCss.includes('.np-event-accepted'),
+            'Verified messages need visible branded styles');
+
           assert(bellCss.includes('prefers-reduced-motion:reduce'),
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),

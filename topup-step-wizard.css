@@ -5,6 +5,11 @@
 #topupDedicatedPage #topupForm[data-tp-wizard-step] .tp-steps{
   display:none!important;
 }
+/* The previous big green three-step guide duplicated the actual screen flow
+   and pushed the selected amount below the fold on small iPhones. */
+#topupDedicatedPage #topupForm[data-tp-wizard-step] #gbWalletGuide{
+  display:none!important;
+}
 #topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-phone-panel,
 #topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-selected,
 #topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-review,

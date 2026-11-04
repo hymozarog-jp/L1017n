@@ -50,6 +50,17 @@ jobs:
             'History page must display before awaiting authentication');
           assert(history.includes('تعذّر التحقق من حسابك'),
             'Authentication failure must display an error instead of closing silently');
+          const historyCss=read('account-history.css');
+          for(const id of ['l1017HistoryAllCount','l1017HistoryTopupTabCount',
+            'l1017HistoryPurchaseTabCount','l1017HistoryItems']){
+            assert(history.includes(id),'Premium history control missing: '+id);
+          }
+          assert(history.includes('l1017-history-hero'),'History overview card must render');
+          assert(history.includes('l1017-history-empty'),'Empty history needs a useful empty state');
+          assert(historyCss.includes('@media(max-width:430px)'),
+            'History design must fit mobile phones');
+          assert(html.includes('account-history.css?v=premium-dashboard-20261104-1'),
+            'The latest history stylesheet must load');
           assert(legacy.includes(String.fromCharCode(36,36)+"('[data-view]').forEach"),
             'Navigation must iterate all [data-view] elements (querySelectorAll), not one Element');
           const primary=read('wallet-primary-toggle.js'),topup=read('auto-topup.js');

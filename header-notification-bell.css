@@ -51,9 +51,14 @@
   50%{transform:rotate(-9deg)}
   75%{transform:rotate(4deg)}
 }
-/* Keep the bell immediately next to the avatar in the actual live header. */
-body.l1017-live-ui .topbar #headerNotificationBell{
+/* RTL header: account avatar is the leftmost control, bell immediately to its right. */
+.topbar #googleProfileButton:not(.hidden),
+body.l1017-live-ui .topbar #googleProfileButton:not(.hidden){
   order:10!important;
+  margin:0!important;
+}
+body.l1017-live-ui .topbar #headerNotificationBell{
+  order:9!important;
   flex:0 0 39px!important;
   width:39px!important;
   height:39px!important;

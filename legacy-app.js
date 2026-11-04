@@ -968,6 +968,7 @@ document.addEventListener('click',async e=>{if(e.target.closest('[data-show-topu
 // Local session metadata is used for immediate presentation only. All protected
 // reads, payments and mutations still run with server-authenticated Supabase RLS.
 function showKnownSessionQuickly(user){
+ window.L1017nNotifications?.syncUser(user||null);
  renderGoogleHeaderAvatar(user);
  const modern=$('#accountModern');
  if(modern){

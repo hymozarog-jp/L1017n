@@ -119,6 +119,7 @@
     page.querySelector('#npActivityList').replaceChildren();return;
    }
    const id=auth.user.id;
+   clearUnreadForUser(id);
    const [topups,purchases]=await Promise.all([
     client.from('topup_requests').select('id,amount,method,status,created_at')
      .eq('user_id',id).order('created_at',{ascending:false}).limit(12),
@@ -140,9 +141,62 @@
    console.warn('[notifications] Could not read customer order activity',e);
   }
  }
- // In-app status messages: compare successive server snapshots while the store is open.
- // First snapshot is a baseline, not a notification; only genuine changes trigger popups.
- let observedUser='',observed=new Map(),watchBusy=false;
+ // In-app status messages: compare real server snapshots while the store is open.
+ // Persist a minimal status baseline per signed-in user, so an update noticed on
+ // the next visit can still earn a badge. The first snapshot never fakes alerts.
+ const NOTICE_STORE_PREFIX='l1017-notice-badge-v1:';
+ let observedUser='',observed=new Map(),watchBusy=false,unreadEventKeys=[];
+ function badgeCount(){return unreadEventKeys.length}
+ function paintUnreadBadge(){
+  const bell=document.getElementById('headerNotificationBell');
+  const badge=document.getElementById('headerNotificationCount');
+  const count=observedUser?badgeCount():0;
+  if(badge){
+   badge.hidden=count===0;
+   badge.textContent=count?String(Math.min(count,9))+(count>9?'+':''):'';
+  }
+  if(bell){
+   const name=count?'الإشعارات والتنبيهات، '+count+' جديدة':'الإشعارات والتنبيهات';
+   if(bell.getAttribute('aria-label')!==name)bell.setAttribute('aria-label',name);
+   bell.title=name;
+  }
+ }
+ function storeNoticeState(){
+  if(!observedUser)return;
+  try{
+   localStorage.setItem(NOTICE_STORE_PREFIX+observedUser,JSON.stringify({
+    seen:[...observed.entries()].slice(0,80),
+    unread:unreadEventKeys.slice(-50)
+   }));
+  }catch(_){/* Private browsing or disabled storage: in-memory works. */}
+ }
+ function syncNoticeUser(userId){
+  if(!userId)return;
+  if(observedUser===userId){paintUnreadBadge();return}
+  observedUser=userId;observed=new Map();unreadEventKeys=[];toastQueue=[];
+  try{
+   const state=JSON.parse(localStorage.getItem(NOTICE_STORE_PREFIX+userId)||'null');
+   if(Array.isArray(state?.seen)){
+    observed=new Map(state.seen.filter(x=>Array.isArray(x)&&x.length===2&&
+      typeof x[0]==='string'&&typeof x[1]==='string').slice(0,80));
+   }
+   if(Array.isArray(state?.unread)){
+    unreadEventKeys=[...new Set(state.unread.filter(x=>typeof x==='string'&&x.length<180))].slice(-50);
+   }
+  }catch(_){/* Corrupt/blocked local storage should never stop the store. */}
+  paintUnreadBadge();
+ }
+ function addUnreadEvent(key){
+  if(!key||unreadEventKeys.includes(key))return;
+  unreadEventKeys.push(key);
+  unreadEventKeys=unreadEventKeys.slice(-50);
+ }
+ function clearUnreadForUser(userId){
+  if(!userId)return;
+  syncNoticeUser(userId);
+  if(unreadEventKeys.length){unreadEventKeys=[];storeNoticeState()}
+  paintUnreadBadge();
+ }
  let toastQueue=[],toastBusy=false,toastTimer=0;
  function showNextToast(){
   if(toastBusy||!toastQueue.length)return;
@@ -170,7 +224,8 @@
   },5200);
  }
  function resetObserved(){
-  observedUser='';observed=new Map();toastQueue=[];
+  observedUser='';observed=new Map();unreadEventKeys=[];toastQueue=[];
+  paintUnreadBadge();
   clearTimeout(toastTimer);toastBusy=false;
   document.getElementById('l1017StatusToast')?.remove();
  }
@@ -184,6 +239,7 @@
    if(authError)return;
    const userId=auth?.user?.id||'';
    if(!userId){resetObserved();return;}
+   syncNoticeUser(userId);
    const [topups,purchases]=await Promise.all([
     client.from('topup_requests').select('id,amount,method,status,created_at')
      .eq('user_id',userId).order('created_at',{ascending:false}).limit(30),
@@ -191,7 +247,7 @@
      .eq('user_id',userId).order('created_at',{ascending:false}).limit(30)
    ]);
    // Do not announce or advance baselines if either source failed.
-   if(topups.error||purchases.error)return;
+   if(topups.error||purchases.error||observedUser!==userId)return;
    const all=[
     ...(topups.data||[]).map(x=>({...x,kind:'topup'})),
     ...(purchases.data||[]).map(x=>({...x,kind:'purchase'}))
@@ -208,17 +264,20 @@
     if(was===now)continue;
     const messages=messagesFor(item);
     if(item.kind==='topup'&&now==='approved'&&was!=='approved'){
-     if(messages[0])updates.push({message:messages[0],userId});
+     if(messages[0])updates.push({message:messages[0],userId,eventKey:key+':credit'});
     }else if(item.kind==='purchase'&&now==='completed'&&was!=='completed'){
      const delivered=messages.find(x=>x.kind==='delivered');
-     if(delivered)updates.push({message:delivered,userId});
+     if(delivered)updates.push({message:delivered,userId,eventKey:key+':delivered'});
     }else if(item.kind==='purchase'&&accepted.has(now)&&!accepted.has(was)){
      const approved=messages.find(x=>x.kind==='accepted');
-     if(approved)updates.push({message:approved,userId});
+     if(approved)updates.push({message:approved,userId,eventKey:key+':accepted'});
     }
    }
-   if(observedUser!==userId){toastQueue=[];observedUser=userId;}
    observed=next;
+   if(page)clearUnreadForUser(userId);
+   else updates.forEach(item=>addUnreadEvent(item.eventKey));
+   storeNoticeState();
+   paintUnreadBadge();
    if(page&&!state.loading){
     state.rows=all.slice(0,12);state.errors=[];
     render();
@@ -237,6 +296,12 @@
   if(document.visibilityState==='visible')void watchOrderStatuses();
  });
  setTimeout(()=>{void watchOrderStatuses()},1500);
+ // This is a presentation-only count, scoped to the currently logged-in user.
+ // The verified order queries above remain the sole source of new events.
+ window.L1017nNotifications={syncUser(user){
+  if(user?.id)syncNoticeUser(user.id);
+  else resetObserved();
+ }};
  function remove(){
   if(!page)return;
   state.serial++;

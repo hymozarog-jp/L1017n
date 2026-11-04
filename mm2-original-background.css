@@ -32,6 +32,8 @@
 #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-deathshard"]),
 #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art:has(img[src*="mm2-elderwood-blade"]){
   height:clamp(146px,23vw,190px)!important;
+  aspect-ratio:1/1!important;
+  max-height:190px!important;
   position:relative!important;
   overflow:hidden!important;
   display:flex!important;
@@ -45,15 +47,15 @@
 #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-deathshard"],
 #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-elderwood-blade"]{
   display:block!important;
-  width:90%!important;
-  height:90%!important;
+  width:94%!important;
+  height:94%!important;
   max-width:none!important;
   max-height:none!important;
   flex:0 0 auto!important;
   object-fit:contain!important;
   object-position:center!important;
   mix-blend-mode:screen!important;
-  transform:scale(1.75)!important;
+  transform:none!important; /* Fit entire sword inside its square; no cropping */
   transform-origin:50% 50%!important;
   background:transparent!important;
   border:0!important;
@@ -82,11 +84,40 @@
   }
   #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-deathshard"],
   #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img[src*="mm2-elderwood-blade"]{
-    transform:scale(1.55)!important;
+    transform:none!important; /* iPhone view: complete swords, not cut edges */
   }
 }
 @media(prefers-reduced-motion:reduce){
   #robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package .mm2-item-art img{
     transition:none!important;
   }
+}
+
+/* Consistent card layout: long weapon names no longer push prices out of line.
+   A single-line name reserves the same two-line height as Elderwood Blade. */
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-deathshard"]),
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-elderwood-blade"]){
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  height:100%!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-deathshard"]) .mm2-item-art,
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-elderwood-blade"]) .mm2-item-art{
+  width:100%!important;
+  flex:0 0 auto!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-deathshard"])>strong,
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-elderwood-blade"])>strong{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  min-height:3em!important;
+  line-height:1.5!important;
+  text-wrap:balance!important;
+}
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-deathshard"]) .mm2-price,
+#robloxGamePage.rgp-mm2-page .rgp-mm2-subcategory .rgp-package:has(img[src*="mm2-elderwood-blade"]) .mm2-price{
+  margin-top:auto!important;
+  padding-top:8px!important;
 }

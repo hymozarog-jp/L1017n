@@ -115,6 +115,9 @@
     const section=byId('offersView');
     if(!section||section.dataset.offersBound)return;
     section.dataset.offersBound='1';
+    // The offers section lives on Home now; fetch on its first paint as well
+    // as when the store's product list finishes loading.
+    if(!section.classList.contains('hidden'))void render();
     section.addEventListener('click',event=>{
       const retry=event.target.closest('[data-offers-retry]');
       if(retry){void render();return}

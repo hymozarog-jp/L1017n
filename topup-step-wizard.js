@@ -17,6 +17,23 @@
  const page=()=>document.getElementById('topupDedicatedPage');
  const statusIsVerified=()=>phoneStatus?.classList.contains('is-verified')&&/^09[24][0-9]{7}$/.test(phone.textContent.trim());
  const isValidAmount=()=>Number.isSafeInteger(Number(amount.value))&&amount.value.trim()!==''&&Number(amount.value)>=1&&Number(amount.value)<=10000;
+ // Decorative illustrations are intentionally separate SVG assets so the
+ // three-stage form remains fast, accessible, and independent of payments.
+ const stageArt=document.createElement('div');
+ stageArt.className='tp-stage-art';
+ stageArt.setAttribute('aria-hidden','true');
+ const stageImage=document.createElement('img');
+ stageImage.alt='';
+ stageImage.decoding='async';
+ stageImage.loading='eager';
+ stageImage.width=420;stageImage.height=205;
+ stageArt.appendChild(stageImage);
+ progress.insertAdjacentElement('afterend',stageArt);
+ const stageImages={
+  1:'topup-illustration-amount.svg?v=premium-wallet-20261104-1',
+  2:'topup-illustration-sender.svg?v=premium-wallet-20261104-1',
+  3:'topup-illustration-review.svg?v=premium-wallet-20261104-1'
+ };
  const selected=document.createElement('div');
  selected.className='tp-wizard-selected';
  selected.innerHTML='<span>المبلغ</span><strong id="tpWizardSelectedAmount" dir="ltr">—</strong>';
@@ -101,6 +118,10 @@
  function setStage(next,scroll=true){
   stage=next;
   form.dataset.tpWizardStep=String(stage);
+  stageArt.dataset.step=String(stage);
+  if(!stageImage.getAttribute('src')||!stageImage.getAttribute('src').includes(stageImages[stage])){
+   stageImage.src=stageImages[stage];
+  }
   warning('');
   updateDisplay();
   progress.querySelectorAll('[data-tp-step]').forEach(button=>{

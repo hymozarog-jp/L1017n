@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="205" viewBox="0 0 420 205" fill="none" role="img" aria-label="رسم هاتفين بينهما تحويل رصيد ليبيانا">
+<defs>
+<radialGradient id="fog"><stop stop-color="#8556ec" stop-opacity=".33"/><stop offset="1" stop-color="#8556ec" stop-opacity="0"/></radialGradient>
+<linearGradient id="screen" x1="114" y1="20" x2="164" y2="164"><stop stop-color="#493170"/><stop offset="1" stop-color="#1b183c"/></linearGradient>
+<linearGradient id="screen2" x1="261" y1="51" x2="322" y2="152"><stop stop-color="#263c49"/><stop offset="1" stop-color="#12213a"/></linearGradient>
+<linearGradient id="arrow" x1="198" y1="69" x2="280" y2="132"><stop stop-color="#abfbc1"/><stop offset="1" stop-color="#24bc8b"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff1a4"/><stop offset=".6" stop-color="#ebbc50"/><stop offset="1" stop-color="#ab6f23"/></linearGradient>
+</defs>
+<ellipse cx="209" cy="114" rx="170" ry="85" fill="url(#fog)"/>
+<ellipse cx="136" cy="184" rx="70" ry="7" fill="#a16afe" fill-opacity=".22"/><ellipse cx="299" cy="184" rx="64" ry="7" fill="#79f4b8" fill-opacity=".19"/>
+<circle cx="76" cy="43" r="3" fill="#ab9cfa"/><circle cx="348" cy="80" r="3" fill="#a0f3b8"/>
+<g transform="rotate(-10 136 100)">
+<rect x="92" y="25" width="86" height="149" rx="18" fill="#16132e" stroke="#b89bf2" stroke-width="4"/>
+<rect x="100" y="34" width="70" height="132" rx="13" fill="url(#screen)"/>
+<rect x="118" y="34" width="35" height="6" rx="3" fill="#10122c"/>
+<path d="M116 89c3-23 39-23 42 0m-9-16-2 19m-28-10 28 10" stroke="#d9bfff" stroke-width="4" stroke-linecap="round"/>
+<path d="M119 114h37" stroke="#af96e5" stroke-width="3" stroke-linecap="round"/>
+<path d="M126 123h25" stroke="#af96e5" stroke-opacity=".7" stroke-width="2.3" stroke-linecap="round"/>
+</g>
+<g transform="rotate(10 295 101)">
+<rect x="253" y="29" width="87" height="147" rx="18" fill="#12192e" stroke="#8cf3ba" stroke-width="3"/>
+<rect x="261" y="38" width="71" height="130" rx="12" fill="url(#screen2)"/>
+<rect x="280" y="39" width="32" height="5" rx="2.5" fill="#10192e"/>
+<path d="M279 99h35v30h-35V99Zm0 0v-8c0-17 35-17 35 0v8" stroke="#9afaad" stroke-width="3.6" stroke-linejoin="round"/>
+<path d="m286 114 7 7 12-13" stroke="#a2faca" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M182 112c27-40 47-44 65-26" stroke="url(#arrow)" stroke-width="9" stroke-linecap="round"/>
+<path d="m230 71 22 15-19 19" stroke="url(#arrow)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="210" cy="54" rx="20" ry="12" fill="#98642e"/>
+<ellipse cx="210" cy="49" rx="20" ry="12" fill="#f2ce65" stroke="#fff3ba" stroke-width="2"/>
+<path d="M205 47h10m-5-5v13" stroke="#98642e" stroke-width="2.4" stroke-linecap="round"/>
+<path d="m194 29 3 6 7 3-7 3-3 6-4-6-7-3 7-3Z" fill="#e7bafb"/>
+</svg>

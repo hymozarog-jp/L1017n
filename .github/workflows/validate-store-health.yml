@@ -40,6 +40,16 @@ jobs:
           assert(history.includes(".eq('user_id',id)"),'History must scope both reads to the signed-in user');
           assert(history.includes(".from('topup_requests')") && history.includes(".from('purchase_orders')"),
             'History must read both top-up and purchase orders');
+          assert(history.includes("document.addEventListener('click',event=>"),
+            'History entry needs a delegated click handler independent of account render');
+          assert(history.includes("  },true);"),
+            'History entry needs an early capture listener');
+          const historyOpen=history.slice(history.indexOf('  function open(){'),
+            history.indexOf('  // Bind the action directly'));
+          assert(historyOpen.indexOf('const page=ensurePage();') < historyOpen.indexOf('void refresh();'),
+            'History page must display before awaiting authentication');
+          assert(history.includes('تعذّر التحقق من حسابك'),
+            'Authentication failure must display an error instead of closing silently');
           assert(legacy.includes(String.fromCharCode(36,36)+"('[data-view]').forEach"),
             'Navigation must iterate all [data-view] elements (querySelectorAll), not one Element');
           const primary=read('wallet-primary-toggle.js'),topup=read('auto-topup.js');

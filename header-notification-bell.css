@@ -257,3 +257,78 @@ body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:hover
     min-height:34px!important;
   }
 }
+
+/* Slightly larger notification bell and a little breathing room.
+   Keep physical left anchoring and the LTR avatar → bell → balance order. */
+body.l1017-live-ui .topbar #headerAccountCluster{
+  gap:6px!important;
+  column-gap:6px!important;
+}
+.topbar #headerAccountCluster > #headerNotificationBell,
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  min-height:42px!important;
+  flex:0 0 42px!important;
+  border-radius:50%!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell svg{
+  width:22px!important;
+  height:22px!important;
+}
+@media(max-width:900px){
+  body.l1017-live-ui .topbar #headerAccountCluster{
+    gap:5px!important;
+    column-gap:5px!important;
+  }
+  body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)){
+    padding-left:clamp(275px,49vw,288px)!important;
+  }
+  body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)):not(:has(#customerWalletChip:not(.hidden))){
+    padding-left:102px!important;
+  }
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    flex:0 0 40px!important;
+  }
+}
+@media(max-width:430px){
+  body.l1017-live-ui .topbar #headerAccountCluster{
+    gap:5px!important;
+    column-gap:5px!important;
+  }
+  body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)):has(#customerWalletChip:not(.hidden)){
+    padding-left:clamp(208px,60vw,248px)!important;
+  }
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    min-height:38px!important;
+    flex:0 0 38px!important;
+  }
+}
+@media(max-width:350px){
+  body.l1017-live-ui .topbar #headerAccountCluster{
+    gap:4px!important;
+    column-gap:4px!important;
+  }
+  body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)):has(#customerWalletChip:not(.hidden)){
+    padding-left:208px!important;
+  }
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    min-height:36px!important;
+    flex:0 0 36px!important;
+  }
+  body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell svg{
+    width:20px!important;
+    height:20px!important;
+  }
+}

@@ -49,8 +49,16 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=circle-outline-20261104-1'),
-            'Circular bell stylesheet must bypass cached CSS');
+          assert(html.includes('header-notification-bell.css?v=larger-spaced-bell-20261104-1'),
+            'Larger circular bell stylesheet must bypass cached CSS');
+          assert(bellCss.includes('width:42px!important;') &&
+            bellCss.includes('height:42px!important;') &&
+            bellCss.includes('width:22px!important;') &&
+            bellCss.includes('height:22px!important;'),
+            'Bell button and icon need a modest size increase');
+          assert(bellCss.includes('column-gap:5px!important;') &&
+            bellCss.includes('padding-left:clamp(208px,60vw,248px)!important;'),
+            'Mobile controls need a little extra space without losing left alignment');
           assert(bellCss.includes('border:2px solid #b995ff!important;') &&
             bellCss.includes('border-radius:50%!important;') &&
             bellCss.includes('0 0 0 3px rgba(185,149,255,.16)'),

@@ -117,3 +117,59 @@ body.l1017-live-ui .topbar #headerNotificationBell{
     column-gap:2px!important;
   }
 }
+
+
+/* Structural order lock: the header cluster is LTR regardless of the Arabic page.
+   Left -> right: profile photo, notifications bell, wallet balance. */
+.topbar #headerAccountCluster{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  direction:ltr!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  column-gap:4px!important;
+  padding:0!important;
+  margin:0!important;
+  order:99!important;
+  flex:0 0 auto!important;
+  min-width:0!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > #googleProfileButton,
+body.l1017-live-ui .topbar #headerAccountCluster > #googleProfileButton:not(.hidden){
+  order:0!important;
+  margin:0!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+  order:1!important;
+  margin:0!important;
+}
+body.l1017-live-ui .topbar #headerAccountCluster > .account-wallet-group,
+body.l1017-live-ui .topbar #headerAccountCluster > .account-wallet-group:has(#customerWalletChip){
+  order:2!important;
+  direction:rtl!important;
+  padding:0!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+}
+/* A single compact group stays pinned at the left edge even if other
+   legacy header controls have auto margins or their own display order. */
+body.l1017-live-ui .topbar #headerAccountCluster{
+  margin-inline-start:auto!important;
+}
+@media(max-width:900px){
+  body.l1017-live-ui .topbar #headerAccountCluster{
+    gap:3px!important;
+    column-gap:3px!important;
+  }
+}
+@media(max-width:430px){
+  body.l1017-live-ui .topbar #headerAccountCluster{
+    gap:2px!important;
+    column-gap:2px!important;
+  }
+  body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+    width:clamp(116px,34vw,144px)!important;
+    max-width:144px!important;
+  }
+}

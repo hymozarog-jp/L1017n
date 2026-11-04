@@ -49,8 +49,16 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=compact-cluster-20261104-1'),
-            'Compact header layout must bypass cached CSS');
+          assert(html.includes('header-notification-bell.css?v=explicit-avatar-bell-wallet-20261104-1'),
+            'Explicit header order must bypass cached CSS');
+          const cluster=html.slice(html.indexOf('id="headerAccountCluster"'),html.indexOf('</div>',html.indexOf('id="headerAccountCluster"')));
+          assert(cluster.indexOf('id="googleProfileButton"')<cluster.indexOf('id="headerNotificationBell"') &&
+            cluster.indexOf('id="headerNotificationBell"')<cluster.indexOf('class="account-wallet-group"'),
+            'Header cluster must contain avatar then bell then wallet in explicit DOM order');
+          assert(bellCss.includes('direction:ltr!important;') &&
+            bellCss.includes('order:0!important;') && bellCss.includes('order:1!important;') &&
+            bellCss.includes('order:2!important;'),
+            'Header cluster must preserve left-to-right order across RTL breakpoints');
           assert(bellCss.includes('justify-content:flex-start!important;') &&
             bellCss.includes('column-gap:2px!important;'),
             'Mobile avatar, bell and wallet must have tight spacing');

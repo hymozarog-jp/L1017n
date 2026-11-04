@@ -335,6 +335,10 @@ body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell svg{
 
 
 /* Unread badge: visible ONLY for server-confirmed new status notifications. */
+.topbar #headerNotificationBell,
+body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell{
+  overflow:visible!important;
+}
 .topbar #headerNotificationBell .header-notification-count{
   position:absolute!important;
   top:-8px!important;

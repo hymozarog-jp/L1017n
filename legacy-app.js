@@ -18,7 +18,7 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;',
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
 
 async function currentUser(){const {data:{user}}=await supabaseClient.auth.getUser();return user}
-async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data){robuxAvailable=Number(inventoryResult.data.robux_available)||0;robuxUnlimited=inventoryResult.data.robux_unlimited===true;}renderProducts()}
+async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data){robuxAvailable=Number(inventoryResult.data.robux_available)||0;robuxUnlimited=inventoryResult.data.robux_unlimited===true;}renderProducts();if(window.L1017nOffers)void window.L1017nOffers.render()}
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[

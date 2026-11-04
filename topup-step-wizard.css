@@ -157,3 +157,80 @@
 #topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-wizard-review{
   margin:4px 0!important;
 }
+
+
+/* External Libyana sender option on step 2 */
+#topupDedicatedPage .tp-wizard-sender{
+  display:grid;gap:8px;
+  padding:12px 0 0;
+}
+#topupDedicatedPage .tp-wizard-sender label{
+  color:#f6eeff;font-size:14px;font-weight:850;
+}
+#topupDedicatedPage #tpTopupSender{
+  display:block;width:100%;height:55px;
+  border:1px solid #8773bf!important;
+  border-radius:13px!important;
+  padding:10px 15px!important;
+  color:#fff!important;
+  background:#11172e!important;
+  font:800 18px system-ui,sans-serif!important;
+  text-align:left;
+  direction:ltr;
+}
+#topupDedicatedPage #tpTopupSender::placeholder{color:#9c9db8;opacity:1}
+#topupDedicatedPage #tpTopupSender:focus-visible{
+  outline:2px solid #b990ff!important;outline-offset:2px!important;
+}
+#topupDedicatedPage .tp-wizard-sender small{
+  color:#bdb5d3;font-size:11px;line-height:1.7;
+}
+.tp-wizard-notice-layer{
+  position:fixed;inset:0;z-index:2147483300;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(18px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));
+  background:rgba(4,6,17,.85);backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.tp-wizard-notice-card{
+  width:min(100%,380px);
+  display:flex;align-items:center;flex-direction:column;gap:13px;
+  border:1px solid #9472de;
+  border-radius:25px;
+  padding:24px 20px 21px;
+  background:linear-gradient(160deg,#2e2354,#11152e);
+  color:#fff;text-align:center;
+  box-shadow:0 24px 65px #000b,inset 0 1px #ffffff24;
+}
+.tp-wizard-notice-symbol{
+  display:grid;place-items:center;width:52px;height:52px;
+  border-radius:16px;background:#8051d94f;border:1px solid #b799ff;
+  color:#e3ccff;font-size:30px;font-weight:900;
+}
+.tp-wizard-notice-card h3{
+  margin:0;font-size:23px;font-weight:900;color:#f9f3ff;
+}
+.tp-wizard-notice-card p{
+  margin:0;color:#d8d2ea;line-height:1.9;font-size:14px;
+}
+.tp-wizard-notice-card #tpTopupNoticeUnderstood{
+  margin-top:3px;width:100%;min-height:51px;
+  padding:12px;border:0;border-radius:14px;
+  background:linear-gradient(120deg,#a162f1,#7333dc);
+  box-shadow:0 7px 21px #9055e443;
+  color:#fff;font:900 17px 'IBM Plex Sans Arabic',system-ui,sans-serif;
+  cursor:pointer;
+}
+.tp-wizard-notice-card #tpTopupNoticeUnderstood:focus-visible{
+  outline:3px solid #fff;outline-offset:3px;
+}
+@media(prefers-reduced-motion:no-preference){
+ .tp-wizard-notice-card{animation:tpSenderNoticeIn .25s ease-out both}
+ @keyframes tpSenderNoticeIn{
+  from{transform:translateY(15px) scale(.96);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .tp-wizard-notice-card{animation:none!important}
+}

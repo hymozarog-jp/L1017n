@@ -35,6 +35,49 @@ jobs:
           const html=read('index.html'),legacy=read('legacy-app.js');
           const history=read('account-history.js');
           const loader=read('app.js');
+          const stepWizard=read('topup-step-wizard.js');
+          const stepCss=read('topup-step-wizard.css');
+          const topupFlow=read('auto-topup.js');
+          assert(html.includes('topup-step-wizard.js?v=topup-sequential-20261104-1') &&
+            html.includes('topup-step-wizard.css?v=topup-sequential-20261104-1'),
+            'Sequential top-up wizard assets must load after the original checkout');
+          assert(html.includes('id="topupProceed"') &&
+            html.includes('id="topupVerifiedNumber"') &&
+            html.includes('id="topupPhoneState"') &&
+            html.includes('data-tp-step="3"'),
+            'Wallet top-up must preserve existing inputs and three step indicators');
+          assert(stepWizard.includes("document.addEventListener('click',async function(event)") &&
+            stepWizard.includes("event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();") &&
+            stepWizard.includes("if(!button||button!==proceed||stage===3)return;"),
+            'Only first two steps may intercept Continue; final checkout must use original safe handler');
+          assert(stepWizard.includes('if(!isValidAmount())') &&
+            stepWizard.includes('setStage(2)') &&
+            stepWizard.includes('if(!statusIsVerified())') &&
+            stepWizard.includes('setStage(3)'),
+            'Top-up must validate amount and verified Libyana number before review');
+          assert(stepWizard.includes('tp-wizard-review') &&
+            stepWizard.includes('tp-wizard-back') &&
+            stepWizard.includes("window.renderTopupPhoneStatus?.()"),
+            'Top-up wizard must include review, previous-step control and current phone confirmation');
+          assert(stepWizard.includes("const hasTransfer=!!instructions.querySelector('.auto-topup-transfer')") &&
+            stepWizard.includes("instructions.querySelector('.auto-topup-transfer')?'true':'false'"),
+            'Prepared USSD request must not be replaced with a fresh unsent wizard');
+          assert(!stepWizard.includes("create_ussd_topup_intent") &&
+            !stepWizard.includes("db.rpc('create_ussd_topup_intent'"),
+            'Step navigation must never create a payment intent');
+          assert(topupFlow.includes("db.rpc('create_ussd_topup_intent',{p_amount:amount})") &&
+            topupFlow.includes("document.getElementById('topupProceed')?.addEventListener('click'"),
+            'Original verified server payment initiation must remain the only checkout path');
+          assert(stepCss.includes('#gbWalletGuide') &&
+            stepCss.includes('data-tp-wizard-step="1"') &&
+            stepCss.includes('data-tp-wizard-step="2"') &&
+            stepCss.includes('data-tp-wizard-step="3"') &&
+            stepCss.includes('display:none!important'),
+            'Only the active top-up step should appear, without the redundant old guide');
+          assert(stepCss.includes('prefers-reduced-motion:reduce') &&
+            stepCss.includes('@media(max-width:390px)'),
+            'Wallet wizard needs reduced motion support and iPhone layout');
+
           // User-hidden ready-made packs 500,600,...,1000 must not reappear.
           assert(loader.includes('&robux-packs-500-1000-removed=20261104-1'),
             'Updated Robux preset list needs fresh legacy JS in every browser');

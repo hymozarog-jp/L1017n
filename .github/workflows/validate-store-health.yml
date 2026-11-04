@@ -34,6 +34,30 @@ jobs:
           const read=p=>fs.readFileSync(p,'utf8');
           const html=read('index.html'),legacy=read('legacy-app.js');
           const history=read('account-history.js');
+          const loader=read('app.js');
+          assert(html.includes('app.js?v=fast-auth-20261104-1') &&
+            loader.includes('&fast-auth=20261104-1'),
+            'Fast-auth bootstrap must bypass stale app and legacy script caches');
+          assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&
+            html.includes('rel="preconnect" href="https://cmtxsjlehjworqypbxjz.supabase.co"'),
+            'Auth dependencies must be connected early');
+          assert(legacy.includes('let currentUserInFlight=null;') &&
+            legacy.includes('if(currentUserInFlight)return currentUserInFlight;') &&
+            legacy.includes('supabaseClient.auth.getUser().then('),
+            'Parallel account checks must share server-validated user lookups');
+          assert(legacy.includes("function showKnownSessionQuickly(user)") &&
+            legacy.includes("showKnownSessionQuickly(session?.user||null)") &&
+            legacy.includes("renderGoogleHeaderAvatar(user)") &&
+            legacy.includes("currentUserInFlight=null;"),
+            'Account identity must render immediately from session metadata on auth events');
+          assert(legacy.includes("renderCustomerHeaderWallet(session?.user||null)") &&
+            legacy.includes('let customerHeaderWalletQuery=null;') &&
+            legacy.includes('pending=Promise.resolve(supabaseClient.from('),
+            'Header balance must load immediately with a single shared user-scoped request');
+          assert(legacy.includes("eq('user_id',user.id).maybeSingle()") &&
+            legacy.includes('auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}'),
+            'Fast account loading must preserve protected wallet queries and persistent auth');
+
           const bellCss=read('header-notification-bell.css');
           const notices=read('notifications-page.js');
           const tapJs=read('ui-motion.js'),tapCss=read('ui-motion.css');

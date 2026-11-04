@@ -1,0 +1,61 @@
+/* L1017n tactile motion system — lightweight press feedback throughout the store.
+   Uses the independent CSS scale property to avoid overriding existing transforms. */
+:root{--l1017-press-purple:#c49aff;--l1017-press-time:260ms}
+body.l1017-live-ui :where(
+  button:not(:disabled),
+  a[href],
+  summary,
+  [role="button"]:not([aria-disabled="true"]),
+  [data-ll-game],[data-ll-buy],[data-ll-nav],
+  [data-view],[data-account-action],[data-order-filter],
+  .orders-modern-card
+):active{
+  scale:.97;
+  filter:brightness(1.09);
+}
+/* This small glow follows the actual press without becoming a click blocker. */
+.l1017-tap-glow{
+  position:fixed;
+  z-index:2147483200;
+  width:76px;height:76px;
+  border-radius:50%;
+  pointer-events:none!important;
+  user-select:none;
+  -webkit-user-select:none;
+  background:radial-gradient(circle,#e7d9ff70 0%,#bb85f54a 36%,#9476ff00 75%);
+  transform:translate(-50%,-50%) scale(.35);
+  opacity:0;
+  animation:l1017TapGlow 460ms cubic-bezier(.14,.5,.3,1) both;
+  contain:paint;
+}
+@keyframes l1017TapGlow{
+  0%{opacity:.82;transform:translate(-50%,-50%) scale(.35)}
+  56%{opacity:.48;transform:translate(-50%,-50%) scale(1.3)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.3)}
+}
+@keyframes l1017TapBounce{
+  0%{scale:1}
+  34%{scale:.955}
+  69%{scale:1.022}
+  100%{scale:1}
+}
+/* Only browsers lacking Web Animations need this fallback class. */
+.l1017-tap-bounce-fallback{
+  animation:l1017TapBounce var(--l1017-press-time) cubic-bezier(.22,.68,.29,1) both;
+}
+/* Subtle response for real selection controls, regardless of category. */
+body.l1017-live-ui :where(
+  input[type="checkbox"],input[type="radio"]
+):active{
+  scale:1.08;
+}
+/* Avoid triggering expensive paints/animations for users who request no motion. */
+@media(prefers-reduced-motion:reduce){
+  body.l1017-live-ui :where(
+    button,a,summary,[role="button"],[data-ll-game],
+    [data-ll-buy],[data-view],[data-account-action],
+    .orders-modern-card,input[type="checkbox"],input[type="radio"]
+  ):active{scale:1!important;filter:none!important}
+  .l1017-tap-glow{display:none!important;animation:none!important}
+  .l1017-tap-bounce-fallback{animation:none!important}
+}

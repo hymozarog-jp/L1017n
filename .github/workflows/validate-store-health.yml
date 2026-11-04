@@ -33,6 +33,13 @@ jobs:
           const fs=require('node:fs'),assert=require('node:assert/strict');
           const read=p=>fs.readFileSync(p,'utf8');
           const html=read('index.html'),legacy=read('legacy-app.js');
+          const history=read('account-history.js');
+          assert(html.includes('data-account-action="history"'),'My Account history entry is missing');
+          assert(html.includes('account-history.js?v='),'History viewer is not loaded');
+          assert(legacy.includes("action==='history'"),'History entry must open the viewer');
+          assert(history.includes(".eq('user_id',id)"),'History must scope both reads to the signed-in user');
+          assert(history.includes(".from('topup_requests')") && history.includes(".from('purchase_orders')"),
+            'History must read both top-up and purchase orders');
           assert(legacy.includes(String.fromCharCode(36,36)+"('[data-view]').forEach"),
             'Navigation must iterate all [data-view] elements (querySelectorAll), not one Element');
           const primary=read('wallet-primary-toggle.js'),topup=read('auto-topup.js');

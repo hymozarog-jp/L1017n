@@ -34,6 +34,9 @@
 #robloxGamePage .sab-glow{position:absolute;width:130px;height:75px;background:#20a5b247;border-radius:50%;filter:blur(25px)}
 #robloxGamePage .sab-item-card:nth-child(2) .sab-symbol{background:linear-gradient(135deg,#a45fd5,#53298e);border-color:#d3a7f4}
 #robloxGamePage .sab-item-card:nth-child(3) .sab-symbol{background:linear-gradient(135deg,#ed9265,#9a393d);border-color:#f9b487}
+#robloxGamePage .sab-character-emoji{position:relative;z-index:2;display:grid;place-items:center;width:92px;height:92px;border-radius:25px;background:radial-gradient(circle at 35% 25%,#ffd77b4a,#813c2b45 55%,#282042);box-shadow:0 12px 35px #080b1b99,inset 0 0 0 1px #efb96655;font-size:60px;line-height:1;filter:drop-shadow(0 5px 8px #0006)}
+#robloxGamePage .sab-item-card:has(.sab-character-emoji){border-color:#bb8850;background:linear-gradient(145deg,#372616,#16131d)}
+#robloxGamePage .sab-item-card:has(.sab-character-emoji) .sab-glow{background:#d68c454f}
 #robloxGamePage .sab-card-label{font:800 10px system-ui,sans-serif;letter-spacing:1px;color:#87a7bb;direction:ltr;text-align:right}
 #robloxGamePage .sab-item-card h3{font-size:20px;font-weight:900;margin:6px 0 15px;color:#fff}
 #robloxGamePage .sab-card-footer{margin-top:auto;padding-top:13px;border-top:1px solid #ffffff18;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}

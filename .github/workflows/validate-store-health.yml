@@ -39,8 +39,8 @@ jobs:
           const royal=read('leaderboard-royal.js');
           const royalCss=read('leaderboard-royal.css');
           const ranking=read('google-leaderboard.js');
-          assert(html.includes('leaderboard-royal.js?v=my-mini-rank-20261104-1') &&
-            html.includes('leaderboard-royal.css?v=my-mini-rank-20261104-1'),
+          assert(html.includes('leaderboard-royal.js?v=only-compact-rank-20261104-1') &&
+            html.includes('leaderboard-royal.css?v=only-compact-rank-20261104-1'),
             'Compact personal rank assets must have a fresh cache version');
           assert(royal.includes("podium.insertAdjacentElement('afterend',mini)") &&
             royal.includes("ownRank?.querySelector('.lb-self-position strong')"),
@@ -55,6 +55,15 @@ jobs:
             royalCss.includes('order:3!important') &&
             royalCss.includes('@media(max-width:520px)'),
             'Personal mini rank needs podium-adjacent ordering and mobile styling');
+          assert(royalCss.includes('#leaderboardView #lbMyRank,') &&
+            royalCss.includes('#leaderboardView .l1017-rank-mini-heading{') &&
+            royalCss.includes('display:none!important;'),
+            'Old full-size personal ranking and duplicate heading must be hidden');
+          assert(royal.includes('royal-mini-rank-settings') &&
+            royal.includes("document.querySelector('[data-account-action=\"ranking-privacy\"]')?.click()"),
+            'Compact card must retain an accessible route to ranking privacy');
+          assert(html.includes('data-account-action="ranking-privacy"'),
+            'Existing privacy settings entry must remain available');
 
           assert(html.includes('id="headerNotificationBell"'),'Header bell is missing');
           assert(html.includes('data-account-action="notifications"'),

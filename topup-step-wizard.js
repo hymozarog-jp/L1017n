@@ -42,6 +42,9 @@
  alert.id='tpWizardAlert';alert.className='tp-wizard-alert';alert.setAttribute('role','alert');
  alert.hidden=true;
  proceed.insertAdjacentElement('beforebegin',alert);
+ const previous=document.createElement('button');
+ previous.type='button';previous.className='tp-wizard-back';previous.textContent='رجوع للخطوة السابقة ←';
+ proceed.insertAdjacentElement('beforebegin',previous);
  let stage=1,phoneCheck=null;
  const move=(node)=>{if(node&&page())node.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches?'auto':'smooth',block:'start'});};
  const money=()=>isValidAmount()?Number(amount.value).toFixed(2)+' د.ل':'—';
@@ -124,6 +127,9 @@
    }finally{button.disabled=false;}
   }
  },true);
+ previous.addEventListener('click',()=>{
+  if(stage>1&&!instructions.querySelector('.auto-topup-transfer'))setStage(stage-1);
+ });
  phoneActions.querySelector('.tp-wizard-recheck').addEventListener('click',async()=>{
   const button=phoneActions.querySelector('.tp-wizard-recheck');
   button.disabled=true;

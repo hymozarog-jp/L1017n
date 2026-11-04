@@ -374,3 +374,69 @@
  #topupDedicatedPage .tp-stage-art,
  #topupDedicatedPage .tp-stage-art img{animation:none!important;transition:none!important}
 }
+
+
+/* Wider mobile recharge screen.
+   Keep the same three payment steps; remove excess nested side padding so
+   amounts, illustrations and action buttons actually fill the iPhone screen. */
+#topupDedicatedPage{
+  padding-right:9px!important;
+  padding-left:9px!important;
+}
+#topupDedicatedPage .tp-dedicated-heading,
+#topupDedicatedPage .tp-clean-header,
+#topupDedicatedPage #topupForm{
+  width:100%!important;
+  max-width:680px!important;
+}
+#topupDedicatedPage .tp-clean-header{
+  padding-right:3px!important;
+  padding-left:3px!important;
+}
+#topupDedicatedPage .tp-dedicated-heading{
+  margin-bottom:4px!important;
+}
+#topupDedicatedPage #topupForm{
+  gap:10px!important;
+}
+#topupDedicatedPage #topupForm .tp-panel{
+  padding:15px 13px!important;
+}
+#topupDedicatedPage #topupForm .tp-wizard-review{
+  padding:15px 13px!important;
+}
+#topupDedicatedPage #topupForm .tp-progress{
+  padding-right:2px!important;
+  padding-left:2px!important;
+}
+@media(max-width:430px){
+  #topupDedicatedPage{
+    padding-right:6px!important;
+    padding-left:6px!important;
+  }
+  #topupDedicatedPage .tp-clean-header{
+    margin-bottom:7px!important;
+  }
+  #topupDedicatedPage .tp-stage-art{
+    height:151px!important;
+    border-radius:19px!important;
+  }
+  #topupDedicatedPage #topupForm .tp-panel{
+    padding:13px 11px!important;
+    border-radius:18px!important;
+  }
+  #topupDedicatedPage #topupForm .tp-wizard-review{
+    padding:14px 11px!important;
+  }
+  #topupDedicatedPage #topupForm .quick-amounts{
+    gap:7px!important;
+  }
+  #topupDedicatedPage #topupForm .quick-amounts button{
+    min-height:76px!important;
+  }
+}
+@media(max-width:360px){
+  #topupDedicatedPage #topupForm .tp-progress button{
+    flex-basis:62px!important;
+  }
+}

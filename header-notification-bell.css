@@ -89,3 +89,31 @@ body.l1017-live-ui .topbar #headerNotificationBell{
   .topbar #headerNotificationBell svg{animation:none!important;transform:none!important}
   .topbar #headerNotificationBell{transition:none!important}
 }
+
+/* Keep the wallet, bell and avatar as one close visual cluster on mobile.
+   RTL flex order (from right to left): wallet 8 → bell 9 → avatar 10. */
+@media(max-width:900px){
+  body.l1017-live-ui .topbar:has(#googleProfileButton:not(.hidden)):has(#headerNotificationBell:not(.hidden)){
+    justify-content:flex-start!important;
+    gap:3px!important;
+    column-gap:3px!important;
+  }
+  body.l1017-live-ui .topbar:has(#googleProfileButton:not(.hidden)) .account-wallet-group{
+    margin:0!important;
+    padding:0!important;
+  }
+  body.l1017-live-ui .topbar #headerNotificationBell:not(.hidden){
+    order:9!important;
+    margin:0!important;
+  }
+  body.l1017-live-ui .topbar #googleProfileButton:not(.hidden){
+    order:10!important;
+    margin:0!important;
+  }
+}
+@media(max-width:430px){
+  body.l1017-live-ui .topbar:has(#googleProfileButton:not(.hidden)):has(#headerNotificationBell:not(.hidden)){
+    gap:2px!important;
+    column-gap:2px!important;
+  }
+}

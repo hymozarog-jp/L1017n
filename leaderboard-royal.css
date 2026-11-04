@@ -516,3 +516,85 @@
 @media(prefers-reduced-motion:reduce){
  #leaderboardView .royal-mini-rank-settings{transition:none!important}
 }
+
+
+/* Clear color key for leaderboard rank: gold #1, silver-blue #2, bronze #3.
+   Purely decorative; values and order still come from the existing server ranks. */
+#leaderboardView .royal-intro::after{
+  content:"";
+  display:block;
+  width:min(240px,70%);
+  height:7px;
+  margin:15px auto 0;
+  border-radius:999px;
+  background:linear-gradient(90deg,
+    #ffcf60 0%,#f4ba44 32%,transparent 32%,transparent 35%,
+    #a8d7ff 35%,#78aafb 65%,transparent 65%,transparent 68%,
+    #ffbc94 68%,#e98882 100%);
+  box-shadow:0 0 18px #b07aff53;
+}
+#leaderboardView .lb-podium-card.lb-first,
+#leaderboardView .lb-podium-card.lb-second,
+#leaderboardView .lb-podium-card.lb-third{
+  border-top:7px solid var(--tone)!important;
+}
+/* Explicit rank colors are easier to recognize than a generic purple edge. */
+#leaderboardView .lb-podium-card.lb-first{
+  border-top-color:#ffd469!important;
+  box-shadow:inset 0 2px 0 #fff5bd4a,0 0 23px #ffbf5b69,0 20px 28px #0009!important;
+}
+#leaderboardView .lb-podium-card.lb-second{
+  border-top-color:#a8d7ff!important;
+  box-shadow:inset 0 2px 0 #e0f3ff39,0 0 23px #72aefa65,0 20px 28px #0009!important;
+}
+#leaderboardView .lb-podium-card.lb-third{
+  border-top-color:#ffb594!important;
+  box-shadow:inset 0 2px 0 #ffddcf37,0 0 23px #e88f8962,0 20px 28px #0009!important;
+}
+/* Make the real comparison-to-leader progress line visible even on phones. */
+#leaderboardView .lb-money-rail{
+  height:13px!important;
+  border:1px solid #c4a8eb9a!important;
+  border-radius:999px!important;
+  background:#0c0b20!important;
+  box-shadow:inset 0 2px 5px #000a,0 0 0 1px #ffffff12!important;
+  overflow:hidden!important;
+}
+#leaderboardView .lb-money-fill{
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#7742ef,#c174ff,#ecc5ff)!important;
+  box-shadow:0 0 12px #b67cffc4!important;
+}
+#leaderboardView .lb-first .lb-money-fill{
+  background:linear-gradient(90deg,#dc8526,#ffcd54,#fff3a4)!important;
+  box-shadow:0 0 12px #ffd36cd9!important;
+}
+#leaderboardView .lb-second .lb-money-fill{
+  background:linear-gradient(90deg,#487cec,#8fc6ff,#dcf2ff)!important;
+  box-shadow:0 0 12px #8cc9ffe0!important;
+}
+#leaderboardView .lb-third .lb-money-fill{
+  background:linear-gradient(90deg,#c26981,#f49f9a,#ffd5a7)!important;
+  box-shadow:0 0 12px #ffb29ed4!important;
+}
+/* The remaining participants retain a smaller purple identifying stripe. */
+#leaderboardView .lb-other-row{
+  border-inline-start:5px solid #bb84ff!important;
+}
+#leaderboardView .lb-other-row .lb-money-rail{
+  height:11px!important;
+}
+#leaderboardView .lb-other-row .lb-money-fill{
+  background:linear-gradient(90deg,#8045ee,#bd77ff,#ebc4ff)!important;
+}
+#leaderboardView #royalMiniMyRank.royal-mini-my-rank{
+  border-top:4px solid #bb8cff!important;
+}
+@media(max-width:520px){
+  #leaderboardView .royal-intro::after{height:6px;margin-top:10px;width:min(205px,72%)}
+  #leaderboardView .lb-podium-card.lb-first,
+  #leaderboardView .lb-podium-card.lb-second,
+  #leaderboardView .lb-podium-card.lb-third{border-top-width:6px!important}
+  #leaderboardView .lb-money-rail{height:12px!important}
+  #leaderboardView .lb-other-row .lb-money-rail{height:10px!important}
+}

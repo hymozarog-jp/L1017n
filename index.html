@@ -333,13 +333,10 @@
       <div class="tp-provider-card is-disabled" aria-label="التحويل البنكي غير متاح حاليًا"><span class="tp-provider-logo tp-bank-logo">▥</span><strong>المصرف</strong><small>قريبًا</small></div>
     </div>
   </section>
-  <div class="tp-steps" aria-label="خطوات شحن المحفظة">
-    <span><b>1</b> اختار المبلغ</span><span><b>2</b> تأكد من رقمك</span><span><b>3</b> اضغط «متابعة»</span>
-  </div>
   <section class="tp-panel tp-amount-panel">
-    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">◇</span> قيمة الشحن</h3><span>بالدينار الليبي</span></div>
+    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">◇</span> المبلغ</h3><span>د.ل</span></div>
     <label for="topupAmount" class="tp-visually-hidden">قيمة الشحن بالدينار</label>
-    <input id="topupAmount" type="number" min="1" step="1" placeholder="اكتب القيمة بالدينار" inputmode="numeric" required aria-describedby="tpAmountHint">
+    <input id="topupAmount" type="number" min="1" step="1" placeholder="اكتب القيمة بالدينار" inputmode="numeric" required>
     <div class="quick-amounts" aria-label="مبالغ الشحن السريعة">
       <button type="button" data-amount="1">1</button>
       <button type="button" data-amount="5">5</button>
@@ -348,12 +345,10 @@
       <button type="button" data-amount="30">30</button>
       <button type="button" data-amount="50">50</button>
     </div>
-    <p id="tpAmountHint" class="tp-small-note">اختار المبلغ بالدينار الليبي.</p>
   </section>
   <section class="tp-panel tp-phone-panel">
     <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">⌕</span> رقم الهاتف</h3></div>
     <div class="tp-number-row"><span id="topupVerifiedNumber" dir="ltr" aria-live="polite">جاري التحقق…</span><span id="topupPhoneState" class="tp-phone-state">فحص التوثيق</span></div>
-    <p class="tp-small-note">حوّل من رقم ليبيانا الموثّق فقط.</p>
   </section>
   <button id="topupProceed" type="button" class="tp-proceed">متابعة <span aria-hidden="true">←</span></button>
   <div class="transfer-instructions" id="transferInstructions" aria-live="polite">اختار المبلغ واضغط متابعة لعرض كود التحويل.</div>
@@ -624,8 +619,7 @@ function openDedicatedTopup(e){
   var heading=document.createElement('div');heading.className='tp-dedicated-heading';heading.append(title,back);
   var hero=document.createElement('div');hero.className='tp-clean-header';
   var heroCopy=document.createElement('div');heroCopy.className='tp-clean-copy';
-  var subtitle=document.createElement('p');subtitle.textContent='أكمل الخطوات التالية';
-  heroCopy.append(title,subtitle);hero.appendChild(heroCopy);
+  heroCopy.appendChild(title);hero.appendChild(heroCopy);
   page.append(heading,hero,form);document.body.appendChild(page);
   var walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
   var topupLogo=page.querySelector('.tp-libyana-logo');
@@ -946,7 +940,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="home-compact.css?v=2-hide-header-promos">
 <link rel="stylesheet" href="leaderboard-royal.css?v=rank-colors-line-20261104-1">
 <script src="notifications-page.js?v=unread-bell-20261104-1"></script>
-<script src="customer-journey.js?v=pro-vector-art-20261103-1" defer></script>
+<script src="customer-journey.js?v=no-duplicate-topup-guide-20261104-1" defer></script>
 <script src="leaderboard-royal.js?v=only-compact-rank-20261104-1" defer></script>
 <link rel="stylesheet" href="homepage-game-covers.css?v=tall-cover-185-yellow-1">
 <link rel="stylesheet" href="roblox-category-pages.css?v=roblox-3-methods-20261102-1">
@@ -968,6 +962,6 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="header-notification-bell.css?v=unread-bell-20261104-1">
 <link rel="stylesheet" href="ui-motion.css?v=global-taps-20261104-1">
 <script src="ui-motion.js?v=global-taps-20261104-1" defer></script>
-<link rel="stylesheet" href="topup-step-wizard.css?v=topup-short-copy-20261104-1">
-<script src="topup-step-wizard.js?v=topup-short-copy-20261104-1" defer></script>
+<link rel="stylesheet" href="topup-step-wizard.css?v=topup-minimal-20261104-1">
+<script src="topup-step-wizard.js?v=topup-minimal-20261104-1" defer></script>
 </body></html>

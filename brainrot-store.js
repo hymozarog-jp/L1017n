@@ -11,7 +11,7 @@
   const ART_FALLBACK = "game-covers/roblox.svg";
   const ITEMS = [
     { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },
-    { key:"steal-dragon", name:"دراقون", latin:"DRAGON", number:"02", emoji:"🐉" }
+    { key:"steal-dragon", name:"دراقون", latin:"DRAGON", number:"02", image:"game-covers/dragon-card.webp?v=uploaded-dragon-20261105-1" }
   ];
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;

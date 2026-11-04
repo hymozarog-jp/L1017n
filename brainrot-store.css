@@ -37,6 +37,10 @@
 #robloxGamePage .sab-character-emoji{position:relative;z-index:2;display:grid;place-items:center;width:92px;height:92px;border-radius:25px;background:radial-gradient(circle at 35% 25%,#ffd77b4a,#813c2b45 55%,#282042);box-shadow:0 12px 35px #080b1b99,inset 0 0 0 1px #efb96655;font-size:60px;line-height:1;filter:drop-shadow(0 5px 8px #0006)}
 #robloxGamePage .sab-item-card:has(.sab-character-emoji){border-color:#bb8850;background:linear-gradient(145deg,#372616,#16131d)}
 #robloxGamePage .sab-item-card:has(.sab-character-emoji) .sab-glow{background:#d68c454f}
+#robloxGamePage .sab-item-card:has(img[src*="dragon-card.webp"]){border-color:#c69346;background:linear-gradient(145deg,#362112,#16121d)}
+#robloxGamePage .sab-item-card:has(img[src*="dragon-card.webp"]) .sab-glow{background:#eda14755}
+#robloxGamePage .sab-card-art img[src*="dragon-card.webp"]{width:100%;height:170px;object-fit:cover;object-position:center;border-radius:13px;box-shadow:0 12px 28px #0008;filter:drop-shadow(0 0 7px #eea23750)}
+@media(max-width:720px){#robloxGamePage .sab-card-art img[src*="dragon-card.webp"]{height:145px}}
 #robloxGamePage .sab-card-label{font:800 10px system-ui,sans-serif;letter-spacing:1px;color:#87a7bb;direction:ltr;text-align:right}
 #robloxGamePage .sab-item-card h3{font-size:20px;font-weight:900;margin:6px 0 15px;color:#fff}
 #robloxGamePage .sab-card-footer{margin-top:auto;padding-top:13px;border-top:1px solid #ffffff18;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}

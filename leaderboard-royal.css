@@ -483,3 +483,36 @@
 @media(prefers-reduced-motion:reduce){
  #leaderboardView #royalMiniMyRank.royal-mini-my-rank{animation:none!important}
 }
+
+/* The screenshot showed two personal rank cards. Keep the compact card only.
+   Retain #lbMyRank in the DOM for the authenticated RPC and privacy sync. */
+#leaderboardView #lbMyRank,
+#leaderboardView .l1017-rank-mini-heading{
+  display:none!important;
+}
+#leaderboardView .royal-mini-rank-settings{
+  flex:0 0 34px;
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  padding:0;
+  color:#e5d1f8;
+  background:#63448466;
+  border:1px solid #b088e38c;
+  border-radius:11px;
+  cursor:pointer;
+  transition:background .16s,transform .16s;
+}
+#leaderboardView .royal-mini-rank-settings:hover{background:#8358ae91}
+#leaderboardView .royal-mini-rank-settings:active{transform:scale(.95)}
+#leaderboardView .royal-mini-rank-settings:focus-visible{
+  outline:2px solid #f2dcff;outline-offset:3px
+}
+#leaderboardView .royal-mini-rank-settings svg{width:17px;height:17px}
+@media(max-width:520px){
+  #leaderboardView #royalMiniMyRank.royal-mini-my-rank{gap:7px!important;padding-inline:9px!important}
+  #leaderboardView .royal-mini-rank-settings{width:31px;height:31px;flex-basis:31px;border-radius:10px}
+  #leaderboardView .royal-mini-rank-settings svg{width:16px;height:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ #leaderboardView .royal-mini-rank-settings{transition:none!important}
+}

@@ -66,7 +66,12 @@
       '<path d="M8 4h8v4a4 4 0 0 1-8 0Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg></span>'+
       '<span class="royal-mini-rank-copy"><strong>ترتيبك الحالي</strong>'+
       '<small>بين متسوقي المتجر</small></span>'+
-      '<strong class="royal-mini-rank-number"></strong>';
+      '<strong class="royal-mini-rank-number"></strong>'+
+      '<button type="button" class="royal-mini-rank-settings" title="خصوصية التصنيف" aria-label="إعدادات خصوصية التصنيف">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.3 1-1.6 2.8-1.6-.6a8 8 0 0 1-1.7 1l-.3 1.7h-3.2l-.3-1.7a8 8 0 0 1-1.7-1l-1.6.6-1.6-2.8 1.3-1a8 8 0 0 1 0-2l-1.3-1 1.6-2.8 1.6.6a8 8 0 0 1 1.7-1L12.4 7h3.2l.3 1.7a8 8 0 0 1 1.7 1l1.6-.6 1.6 2.8-1.3 1a8 8 0 0 1 0 2Z" transform="translate(-2 -1)"/></svg></button>';
+    mini.querySelector('.royal-mini-rank-settings').addEventListener('click',()=>{
+      document.querySelector('[data-account-action="ranking-privacy"]')?.click();
+    });
     podium.insertAdjacentElement('afterend',mini);
    }
    // A dash is preserved if the real personal-rank endpoint has no rank.

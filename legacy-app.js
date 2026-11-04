@@ -994,7 +994,7 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
  if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='SIGNED_OUT'||event==='USER_UPDATED'){
    // Immediately paint account identity from the current session rather than
    // waiting for several network requests to finish.
-   currentUserInFlight=null;
+   if(event!=='INITIAL_SESSION')currentUserInFlight=null;
    showKnownSessionQuickly(session?.user||null);
    void renderCustomerHeaderWallet(session?.user||null)
      .catch(err=>console.warn('[auth/header-wallet]',err));

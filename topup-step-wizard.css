@@ -130,3 +130,15 @@
 #topupDedicatedPage .tp-wizard-back:active{scale:.97}
 #topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-back,
 #topupDedicatedPage #topupForm[data-tp-wizard-ready="true"] .tp-wizard-back{display:none!important}
+
+
+/* Compact top-up copy: the progress labels already explain each stage. */
+#topupDedicatedPage .tp-clean-copy p{
+  display:none!important;
+}
+#topupDedicatedPage .tp-wizard-review-head{
+  padding-bottom:10px!important;
+}
+#topupDedicatedPage .tp-wizard-safety{
+  line-height:1.65!important;
+}

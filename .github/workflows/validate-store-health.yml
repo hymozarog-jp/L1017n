@@ -38,8 +38,8 @@ jobs:
           const stepWizard=read('topup-step-wizard.js');
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
-          assert(html.includes('topup-step-wizard.js?v=topup-sequential-20261104-1') &&
-            html.includes('topup-step-wizard.css?v=topup-sequential-20261104-1'),
+          assert(html.includes('topup-step-wizard.js?v=topup-short-copy-20261104-1') &&
+            html.includes('topup-step-wizard.css?v=topup-short-copy-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&
             html.includes('id="topupVerifiedNumber"') &&
@@ -77,6 +77,18 @@ jobs:
           assert(stepCss.includes('prefers-reduced-motion:reduce') &&
             stepCss.includes('@media(max-width:390px)'),
             'Wallet wizard needs reduced motion support and iPhone layout');
+          assert(stepWizard.includes("const titles={1:'متابعة',2:'متابعة',3:'تجهيز التحويل'}") &&
+            stepWizard.includes("previous.textContent='رجوع ←'") &&
+            stepWizard.includes('التحويل يتم من هاتفك فقط، ويُضاف الرصيد بعد التحقق والموافقة.'),
+            'Wizard buttons and essential payment advice must remain short and truthful');
+          assert(!stepWizard.includes('راجع المبلغ ورقم ليبيانا قبل تجهيز كود التحويل.') &&
+            !html.includes('المبالغ الكبيرة قد تحتاج مراجعة قبل إضافة الرصيد.') &&
+            !html.includes('لازم التحويل يكون من نفس رقم ليبيانا الموثّق'),
+            'Redundant text must be removed from amount, phone, and review stages');
+          assert(stepCss.includes('#topupDedicatedPage .tp-clean-copy p{') &&
+            stepCss.includes('display:none!important;'),
+            'Remove repeated wizard subtitle beneath the main heading');
+
 
           // User-hidden ready-made packs 500,600,...,1000 must not reappear.
           assert(loader.includes('&robux-packs-500-1000-removed=20261104-1'),

@@ -19,31 +19,31 @@
  const isValidAmount=()=>Number.isSafeInteger(Number(amount.value))&&amount.value.trim()!==''&&Number(amount.value)>=1&&Number(amount.value)<=10000;
  const selected=document.createElement('div');
  selected.className='tp-wizard-selected';
- selected.innerHTML='<span>المبلغ الذي اخترته</span><strong id="tpWizardSelectedAmount" dir="ltr">—</strong>';
+ selected.innerHTML='<span>المبلغ</span><strong id="tpWizardSelectedAmount" dir="ltr">—</strong>';
  progress.insertAdjacentElement('afterend',selected);
  const phoneActions=document.createElement('div');
  phoneActions.className='tp-wizard-phone-actions';
- phoneActions.innerHTML='<button type="button" class="tp-wizard-recheck">تحديث حالة التوثيق</button>'+
-  '<button type="button" class="tp-wizard-verify">توثيق رقم الهاتف</button>';
+ phoneActions.innerHTML='<button type="button" class="tp-wizard-recheck">تحديث</button>'+
+  '<button type="button" class="tp-wizard-verify">توثيق الهاتف</button>';
  phonePanel.appendChild(phoneActions);
  const review=document.createElement('section');
  review.className='tp-wizard-review';
  review.setAttribute('aria-labelledby','tpWizardReviewTitle');
  review.innerHTML='<div class="tp-wizard-review-head">'+
   '<span class="tp-wizard-review-icon" aria-hidden="true">✓</span>'+
-  '<div><h3 id="tpWizardReviewTitle">مراجعة طلب الشحن</h3>'+
-  '<p>راجع المبلغ ورقم ليبيانا قبل تجهيز كود التحويل.</p></div></div>'+
+  '<div><h3 id="tpWizardReviewTitle">مراجعة الشحن</h3>'+
+  '</div></div>'+
   '<div class="tp-wizard-review-line"><span>طريقة الشحن</span><strong>ليبيانا</strong></div>'+
   '<div class="tp-wizard-review-line"><span>المبلغ</span><strong id="tpWizardReviewAmount" dir="ltr">—</strong></div>'+
   '<div class="tp-wizard-review-line"><span>الرقم الموثّق</span><strong id="tpWizardReviewPhone" dir="ltr">—</strong></div>'+
-  '<p class="tp-wizard-safety">تجهيز الطلب لا يخصم الرصيد من الهاتف. بعد ظهور الكود، أنت اللي تختار تنفيذ التحويل، ويُضاف رصيد المحفظة فقط بعد التحقق والموافقة.</p>';
+  '<p class="tp-wizard-safety">التحويل يتم من هاتفك فقط، ويُضاف الرصيد بعد التحقق والموافقة.</p>';
  proceed.insertAdjacentElement('beforebegin',review);
  const alert=document.createElement('p');
  alert.id='tpWizardAlert';alert.className='tp-wizard-alert';alert.setAttribute('role','alert');
  alert.hidden=true;
  proceed.insertAdjacentElement('beforebegin',alert);
  const previous=document.createElement('button');
- previous.type='button';previous.className='tp-wizard-back';previous.textContent='رجوع للخطوة السابقة ←';
+ previous.type='button';previous.className='tp-wizard-back';previous.textContent='رجوع ←';
  proceed.insertAdjacentElement('beforebegin',previous);
  let stage=1,phoneCheck=null;
  const move=(node)=>{if(node&&page())node.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches?'auto':'smooth',block:'start'});};
@@ -69,7 +69,7 @@
    if(number===stage)button.setAttribute('aria-current','step');
    else button.removeAttribute('aria-current');
   });
-  const titles={1:'متابعة إلى رقم الهاتف',2:'متابعة إلى المراجعة',3:'تجهيز كود التحويل'};
+  const titles={1:'متابعة',2:'متابعة',3:'تجهيز التحويل'};
   proceed.innerHTML=titles[stage]+' <span aria-hidden="true">←</span>';
   proceed.setAttribute('aria-label',titles[stage]);
   if(stage===2){
@@ -77,8 +77,7 @@
    phoneCheck=Promise.resolve(check).catch(()=>{});
   }
   const hero=page()?.querySelector('.tp-clean-copy p');
-  if(hero)hero.textContent=stage===1?'الخطوة الأولى: اختار مبلغ الشحن':stage===2?
-   'الخطوة الثانية: تأكد من رقم ليبيانا الموثّق':'الخطوة الثالثة: راجع تفاصيل الشحن';
+  if(hero)hero.textContent='';
   if(scroll)move(progress);
  }
  function initPage(){
@@ -106,7 +105,7 @@
   event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
   if(stage===1){
    if(!isValidAmount()){
-    warning('اختار مبلغًا صحيحًا من 1 إلى 10000 دينار قبل المتابعة.');
+    warning('اختار مبلغًا صحيحًا من 1 إلى 10000 د.ل.');
     amount.focus({preventScroll:true});move(form.querySelector('.tp-amount-panel'));return;
    }
    setStage(2);return;
@@ -120,7 +119,7 @@
     }
     if(!page()||stage!==2)return;
     if(!statusIsVerified()){
-     warning('لازم يكون عندك رقم ليبيانا موثّق. اضغط «توثيق رقم الهاتف» أو حدّث الحالة.');
+     warning('لازم رقم ليبيانا موثّق. اضغط «توثيق الهاتف».');
      return;
     }
     setStage(3);

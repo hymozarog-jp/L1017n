@@ -48,7 +48,7 @@ jobs:
             assert(fs.existsSync(art),'Missing original top-up illustration: '+art);
             const drawing=read(art);
             assert(drawing.includes('<svg') && drawing.includes('<defs>') &&
-              drawing.includes('</svg>') && drawing.includes('gradient'),
+              drawing.includes('</svg>') && drawing.includes('Gradient'),
               'Top-up artwork must be a complete illustrated SVG: '+art);
           }
           assert(stepWizard.includes("stageArt.className='tp-stage-art'") &&

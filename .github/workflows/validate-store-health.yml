@@ -39,7 +39,15 @@ jobs:
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
           const customerJourney=read('customer-journey.js');
-          assert(html.includes('customer-journey.js?v=no-duplicate-topup-guide-20261104-1'),
+          assert(!customerJourney.includes("updateWalletNext("),
+            'Removed old wallet helper must never be invoked after its deletion');
+          assert(customerJourney.includes('function refresh(){') &&
+            customerJourney.includes('ensureWallet();') &&
+            customerJourney.includes("document.getElementById('gbWalletGuide')?.remove();"),
+            'Customer journey refresh must continue safely without the obsolete guide');
+          assert(html.includes('customer-journey.js?v=fix-wallet-guide-reference-20261104-1'),
+            'Safari must fetch updated customer journey code rather than cached broken script');
+          assert(html.includes('customer-journey.js?v=fix-wallet-guide-reference-20261104-1'),
             'Old top-up helper must be loaded with an updated cache version');
           assert(!customerJourney.includes("guide.innerHTML='<strong>شحن المحفظة في 3 خطوات</strong>'") &&
             customerJourney.includes("document.getElementById('gbWalletGuide')?.remove();"),

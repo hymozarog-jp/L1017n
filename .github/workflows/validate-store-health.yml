@@ -129,7 +129,7 @@ jobs:
             html.includes('data-tp-step="2"><b>2</b><span>رقم المحوّل</span>'),
             'Unverified customers must see the payer field instead of mandatory OTP controls');
           assert(stepWizard.includes('tpTopupNoticeUnderstood') &&
-            stepWizard.includes('الرصيد يُضاف فقط بعد التأكد من وصول المبلغ وموافقة الإدارة.'),
+            stepWizard.includes('الرصيد يُضاف فقط بعد مطابقة رسالة التحويل وموافقة الإدارة.'),
             'Acknowledge the payment safety note with فهمت before manually reviewed transfer');
 
           assert(loader.includes("auto.src='auto-topup.js?v=shared-sender-review-20261104-1'"),

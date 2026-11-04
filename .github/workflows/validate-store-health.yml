@@ -112,9 +112,9 @@ jobs:
             stepWizard.includes('حتى لو مرتبط بحساب مختلف') &&
             stepWizard.includes('مطابقة رسالة التحويل وموافقة الإدارة'),
             'Shared source money transfer must require admin-verified incoming carrier SMS');
-          assert(html.includes('app.js?v=shared-sender-review-20261104-1') &&
+          assert(html.includes('app.js?v=dial-code-telegram-20261105-1') &&
             html.includes('topup-step-wizard.js?v=shared-sender-review-20261104-1') &&
-            loader.includes("auto.src='auto-topup.js?v=shared-sender-review-20261104-1'"),
+            loader.includes("auto.src='auto-topup.js?v=dial-code-telegram-20261105-1'"),
             'Refresh both checkout scripts so Safari cannot keep the old rejection message');
           assert(topupFlow.includes("db.rpc('is_libyana_topup_intake_enabled')") &&
             !topupFlow.includes("db.rpc('is_my_auto_libyana_topup_ready')") &&
@@ -132,7 +132,7 @@ jobs:
             stepWizard.includes('الرصيد يُضاف فقط بعد مطابقة رسالة التحويل وموافقة الإدارة.'),
             'Acknowledge the payment safety note with فهمت before manually reviewed transfer');
 
-          assert(loader.includes("auto.src='auto-topup.js?v=shared-sender-review-20261104-1'"),
+          assert(loader.includes("auto.src='auto-topup.js?v=dial-code-telegram-20261105-1'"),
             'Live checkout must use the updated transfer source logic instead of cached auto-topup');
           assert(stepWizard.includes("id='tpTopupSenderNotice'") &&
             stepWizard.includes('tpTopupNoticeUnderstood') &&
@@ -260,7 +260,7 @@ jobs:
           assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
             [100,200,400], 'Package range filter must hide 500 through 1000');
 
-          assert(html.includes('app.js?v=shared-sender-review-20261104-1') &&
+          assert(html.includes('app.js?v=dial-code-telegram-20261105-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&
@@ -556,10 +556,15 @@ jobs:
           assert(legacy.includes('.select(\'balance,madar_balance\')'),'Header balance must follow carrier');
           assert(topup.includes('get_my_ussd_topup_status'),'Wallet top-ups require backend verification');
           assert(!topup.includes("rpc('sms_auto_credit_receipt'"),'Client cannot credit itself');
-          assert(topup.includes('notifyAdminForReview(intent.request_id)'),
-            'Every Libyana topup request must notify the store owner');
-          assert(topup.includes("db.functions.invoke('l1017n-topup-notify'"),
-            'Topup notifications must use authenticated server function');
+          assert(topup.includes('notifyAdminForReview(intent.request_id)') &&
+            topup.includes("code.addEventListener('click',onDialCode)") &&
+            topup.includes("dial.addEventListener('click',onDialCode)") &&
+            topup.includes("body:{request_id:key,action:'dial_opened'}"),
+            'Only pressing a Libyana USSD dial code must request the owner alert');
+          const notifyEdge=read('supabase/functions/l1017n-topup-notify/index.ts');
+          assert(notifyEdge.includes('body.action!=="dial_opened"') &&
+            notifyEdge.includes('telegram_notification_claimed_at'),
+            'USSD notifications must be authenticated, click-triggered and deduplicated');
           for(const file of ['legacy-app.js','instant-code.js','pubg-premium.js',
             'brainrot-store.js','store-menu.js']){
             assert(read(file).includes('l1017n-purchase-notify'),

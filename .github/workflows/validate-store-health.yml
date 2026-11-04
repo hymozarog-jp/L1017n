@@ -45,6 +45,24 @@ jobs:
             'Header bell must follow signed-in user state');
           assert(notices.includes("[data-account-action=\"notifications\"]"),
             'Notification menu and bell must use the existing dialog handler');
+          const noticesCss=read('notifications-page.css');
+          assert(html.includes('notifications-page.js?v=activity-center-20261104-1') &&
+            html.includes('notifications-page.css?v=activity-center-20261104-1'),
+            'Updated notifications activity screen assets must bypass cached versions');
+          for(const selector of ['npActivityList','data-np-filter','np-refresh','np-orders','np-history']){
+            assert(notices.includes(selector),'Notification activity control missing: '+selector);
+          }
+          assert(notices.includes(".from('topup_requests')") &&
+            notices.includes(".from('purchase_orders')") && notices.includes(".eq('user_id',id)"),
+            'Notifications must show real user-scoped records, never fabricated alerts');
+          assert(notices.includes('history.pushState(') && notices.includes("window.addEventListener('popstate'"),
+            'Notification dialog must preserve back navigation');
+          assert(!notices.includes('Notification.requestPermission') &&
+            !notices.includes('unread_count'),
+            'Notification page must not fake unread badges or request push permissions');
+          assert(noticesCss.includes('@media(max-width:420px)') &&
+            noticesCss.includes('prefers-reduced-motion:reduce'),
+            'Notification center must support narrow screens and reduced motion');
           assert(bellCss.includes('prefers-reduced-motion:reduce'),
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),

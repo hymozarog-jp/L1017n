@@ -51,38 +51,17 @@
         '<header class="l1017-history-top">'+
           '<button type="button" class="l1017-history-back" aria-label="العودة إلى حسابي">'+
             '<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>'+
-          '<div class="l1017-history-heading"><span>حسابي / نشاط الحساب</span><h2>سجل الشحن والمدفوعات</h2></div>'+
+          '<h2>سجل الشحن والمدفوعات</h2>'+
           '<button type="button" class="l1017-history-refresh" aria-label="تحديث السجل" title="تحديث السجل">'+
-            '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 9a7 7 0 0 1 12-2l2 5M4 12l2 5a7 7 0 0 0 12-2"/></svg></button>'+
+            '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 9a7 7 0 0 0 12-2l2 5M4 12l2 5a7 7 0 0 1 12-2"/></svg></button>'+
         '</header>'+
-        '<section class="l1017-history-hero" aria-label="نظرة عامة على حسابك">'+
-          '<div class="l1017-history-hero-art" aria-hidden="true"><span></span><span></span><span></span></div>'+
-          '<div class="l1017-history-hero-top"><span class="l1017-history-eyebrow"><i></i> سجل المعاملات</span>'+
-            '<span class="l1017-history-hero-brand">L1017n <b>•</b> WALLET</span></div>'+
-          '<h3>كل حركاتك،<br><span>في مكان واحد.</span></h3>'+
-          '<p>راجع شحن محفظتك ومشترياتك وحالة كل عملية بسهولة.</p>'+
-          '<div class="l1017-history-hero-bottom">'+
-            '<span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> خاص بحسابك فقط</span>'+
-            '<span>دينار ليبي <b>LYD</b></span>'+
-          '</div>'+
-        '</section>'+
-        '<div class="l1017-history-stats" aria-label="ملخص العمليات المعروضة">'+
-          '<div class="l1017-history-stat-card topup"><div class="l1017-history-stat-icon" aria-hidden="true">'+
-            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v3h16v-3"/></svg></div>'+
-            '<small>عمليات الشحن المعروضة</small><strong id="l1017HistoryTopupCount">—</strong></div>'+
-          '<div class="l1017-history-stat-card purchase"><div class="l1017-history-stat-icon" aria-hidden="true">'+
-            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2l2 11h12l2-8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg></div>'+
-            '<small>طلبات الشراء المعروضة</small><strong id="l1017HistoryPurchaseCount">—</strong></div>'+
-        '</div>'+
-        '<div class="l1017-history-section-title"><div><span class="l1017-history-section-dot"></span><h3>آخر المعاملات</h3></div><small>الأحدث أولًا</small></div>'+
         '<div class="l1017-history-tabs" role="tablist" aria-label="تصفية العمليات">'+
           '<button type="button" role="tab" aria-selected="true" aria-controls="l1017HistoryItems" data-history-filter="all">الكل <span id="l1017HistoryAllCount">—</span></button>'+
           '<button type="button" role="tab" aria-selected="false" aria-controls="l1017HistoryItems" data-history-filter="topup">الشحن <span id="l1017HistoryTopupTabCount">—</span></button>'+
           '<button type="button" role="tab" aria-selected="false" aria-controls="l1017HistoryItems" data-history-filter="purchase">المشتريات <span id="l1017HistoryPurchaseTabCount">—</span></button>'+
         '</div>'+
         '<p class="l1017-history-state" role="status" aria-live="polite" id="l1017HistoryStatus" data-mode="loading">جاري تحميل السجل…</p>'+
-        '<div class="l1017-history-list" id="l1017HistoryItems" role="tabpanel" aria-label="المعاملات حسب الفلتر"></div>'+
-        '<p class="l1017-history-footnote"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg> يعرض أحدث 50 عملية من كل نوع. حالة الطلب لا تعني بالضرورة اكتمال الدفع أو التسليم.</p>'+
+        '<div class="l1017-history-list" id="l1017HistoryItems" role="list" aria-label="المعاملات حسب الفلتر"></div>'+
       '</div>';
     document.body.appendChild(page);
     page.querySelector('.l1017-history-back').addEventListener('click',close);
@@ -100,31 +79,31 @@
     document.body.classList.remove('l1017-history-open');
     document.querySelector('[data-account-action="history"]')?.focus({preventScroll:true});
   }
+  function amountDisplay(item){
+    // Only settled wallet credits and recorded paid orders receive a signed amount.
+    // A pending or rejected request must not look like a completed transfer.
+    if(item.kind==='topup')return item.status==='approved'?['credit','+']:['neutral',''];
+    if(item.status==='refunded')return ['credit','+'];
+    if(['paid_pending_fulfillment','approved','processing','fulfilling','completed','in_processing','in_progress'].includes(item.status))
+      return ['debit','−'];
+    return ['neutral',''];
+  }
   function itemHtml(item){
     const [status,statusClass]=stateOf(item);
+    const [direction,sign]=amountDisplay(item);
     const title=labelFor(item);
     const amount=money(item.kind==='topup'?item.amount:item.total_amount);
     const date=dateTime(item.created_at);
-    const id=String(item.id||'');
-    const note=item.admin_note?'<div class="l1017-history-note"><b>ملاحظة الإدارة</b><p>'+safe(item.admin_note)+'</p></div>':'';
-    const ref=item.kind==='topup'&&item.transfer_reference?
-      '<div><span>رقم التحويل</span><b dir="ltr">'+safe(item.transfer_reference)+'</b></div>':'';
     const icon=item.kind==='topup'
-      ?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13m0 0-5-5m5 5 5-5"/><path d="M4 18v3h16v-3"/></svg>'
-      :'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h2l2 11h12l2-8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>';
-    return '<details class="l1017-history-item '+safe(item.kind)+' status-'+statusClass+'">'+
-      '<summary><span class="l1017-history-mark" aria-hidden="true">'+icon+'</span>'+
-        '<span class="l1017-history-main"><span class="l1017-history-kind">'+(item.kind==='topup'?'طلب شحن':'طلب شراء')+'</span>'+
-          '<strong>'+safe(title)+'</strong><small>'+safe(date)+'</small></span>'+
-        '<span class="l1017-history-side"><b dir="ltr">'+safe(amount)+' <small>د.ل</small></b>'+
-          '<em class="l1017-history-badge '+statusClass+'">'+safe(status)+'</em></span>'+
-        '<svg class="l1017-history-chevron" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'+
-      '</summary><div class="l1017-history-detail">'+
-        '<div class="l1017-history-detail-heading"><span>تفاصيل المعاملة</span><small>معلومات الطلب</small></div>'+
-        '<div><span>نوع العملية</span><b>'+(item.kind==='topup'?'شحن محفظة':'طلب شراء')+'</b></div>'+
-        '<div><span>حالة العملية</span><b>'+safe(status)+'</b></div>'+
-        '<div><span>رقم الطلب</span><b dir="ltr" class="l1017-history-id">'+safe(id)+'</b></div>'+
-        ref+note+'</div></details>';
+      ?'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v13m0 0-5-5m5 5 5-5"/><path d="M4 19v2h16v-2"/></svg>'
+      :'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h2l2 11h12l2-8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>';
+    return '<article class="l1017-history-item '+safe(item.kind)+'" role="listitem">'+
+        '<span class="l1017-history-mark" aria-hidden="true">'+icon+'</span>'+
+        '<span class="l1017-history-main"><strong>'+safe(title)+'</strong><small>'+safe(date)+'</small></span>'+
+        '<span class="l1017-history-side">'+
+          '<b class="l1017-history-amount '+direction+'" dir="ltr">'+sign+safe(amount)+' <small>د.ل</small></b>'+
+          '<span class="l1017-history-badge '+statusClass+'">'+safe(status)+'</span>'+
+        '</span></article>';
   }
   function render(){
     const page=document.getElementById(pageId);
@@ -134,8 +113,6 @@
     });
     const topupCount=state.errors.includes('topup')?'—':String(state.topups.length);
     const purchaseCount=state.errors.includes('purchase')?'—':String(state.purchases.length);
-    page.querySelector('#l1017HistoryTopupCount').textContent=topupCount;
-    page.querySelector('#l1017HistoryPurchaseCount').textContent=purchaseCount;
     page.querySelector('#l1017HistoryTopupTabCount').textContent=topupCount;
     page.querySelector('#l1017HistoryPurchaseTabCount').textContent=purchaseCount;
     page.querySelector('#l1017HistoryAllCount').textContent=state.errors.length?'—':String(state.topups.length+state.purchases.length);
@@ -143,17 +120,16 @@
     const all=[...state.topups.map(x=>({...x,kind:'topup'})),...state.purchases.map(x=>({...x,kind:'purchase'}))]
       .sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0));
     const rows=all.filter(x=>state.filter==='all'||x.kind===state.filter);
-    const emptyIcon='<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>';
     const emptyTitle=state.filter==='topup'?'لا توجد طلبات شحن':state.filter==='purchase'?'لا توجد مشتريات':'سجلك فارغ حاليًا';
     list.innerHTML=rows.length?rows.map(itemHtml).join(''):
-      state.errors.length?'':'<div class="l1017-history-empty"><div class="l1017-history-empty-graphic">'+emptyIcon+'</div><strong>'+emptyTitle+'</strong><p>أي عملية جديدة تنفذها بتظهر هنا بعد تسجيلها في حسابك.</p></div>';
+      state.errors.length?'':'<p class="l1017-history-empty">'+emptyTitle+'</p>';
     if(state.errors.length){
       const single=state.errors.length===1?(state.errors[0]==='topup'?'سجل الشحن':'سجل المدفوعات'):'السجل';
       status.textContent='تعذر تحميل '+single+' بالكامل. اضغط تحديث للمحاولة مرة ثانية.';
       status.dataset.mode='error';
     }else{
       status.dataset.mode='ready';
-      status.textContent=rows.length?'اضغط على العملية لعرض تفاصيلها.':'';
+      status.textContent='';
     }
   }
   async function refresh(){
@@ -172,8 +148,6 @@
         // Keep the screen open instead of silently doing nothing.
         state.topups=[];state.purchases=[];state.errors=[];
         page.querySelector('#l1017HistoryItems').replaceChildren();
-        page.querySelector('#l1017HistoryTopupCount').textContent='—';
-        page.querySelector('#l1017HistoryPurchaseCount').textContent='—';
         status.dataset.mode='error';
         status.textContent='تعذّر التحقق من حسابك. سجّل دخولك ثم اضغط تحديث، أو ارجع إلى حسابي.';
         return;
@@ -211,8 +185,6 @@
     state.filter='all';
     state.topups=[];state.purchases=[];state.errors=[];
     page.querySelector('#l1017HistoryItems').replaceChildren();
-    page.querySelector('#l1017HistoryTopupCount').textContent='—';
-    page.querySelector('#l1017HistoryPurchaseCount').textContent='—';
     page.querySelector('#l1017HistoryStatus').textContent='جاري تحميل السجل…';
     page.querySelector('#l1017HistoryStatus').dataset.mode='loading';
     page.querySelector('#l1017HistoryAllCount').textContent='—';

@@ -49,8 +49,15 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=pinned-left-20261104-1'),
-            'Physical left-edge header fix must bypass cached CSS');
+          assert(html.includes('header-notification-bell.css?v=circle-outline-20261104-1'),
+            'Circular bell stylesheet must bypass cached CSS');
+          assert(bellCss.includes('border:2px solid #b995ff!important;') &&
+            bellCss.includes('border-radius:50%!important;') &&
+            bellCss.includes('0 0 0 3px rgba(185,149,255,.16)'),
+            'Notification bell needs a clear circular outside ring');
+          assert(bellCss.includes('height:36px!important;') &&
+            bellCss.includes('width:36px!important;'),
+            'Circular bell must remain square on iPhone layouts');
           assert(bellCss.includes('position:absolute!important;') &&
             bellCss.includes('left:8px!important;') &&
             bellCss.includes('right:auto!important;') &&

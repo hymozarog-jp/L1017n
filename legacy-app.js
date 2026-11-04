@@ -17,7 +17,19 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
 
-async function currentUser(){const {data:{user}}=await supabaseClient.auth.getUser();return user}
+// Coalesce simultaneous server-validated user lookups on page load. This cache
+// lasts only while a request is in flight; it never replaces authorization or RLS.
+let currentUserInFlight=null;
+async function currentUser(){
+ if(currentUserInFlight)return currentUserInFlight;
+ const pending=supabaseClient.auth.getUser().then(({data,error})=>{
+   if(error)return null;
+   return data?.user||null;
+ });
+ currentUserInFlight=pending;
+ try{return await pending}
+ finally{if(currentUserInFlight===pending)currentUserInFlight=null}
+}
 async function loadProducts(){const [productResult,inventoryResult]=await Promise.all([supabaseClient.from('products').select('*').eq('active',true).order('sort_order'),supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()]);if(productResult.error){toast('تعذر تحميل المنتجات');return}products=productResult.data||[];if(!inventoryResult.error&&inventoryResult.data){robuxAvailable=Number(inventoryResult.data.robux_available)||0;robuxUnlimited=inventoryResult.data.robux_unlimited===true;}renderProducts();if(window.L1017nOffers)void window.L1017nOffers.render()}
 function renderProducts(){
  const g=$('#productGrid');if(!g)return;
@@ -939,7 +951,40 @@ $('#authForm').addEventListener('submit',async e=>{
 
 $('#logoutBtn').addEventListener('click',async()=>{await supabaseClient.auth.signOut();await renderAccount();await renderWallet();await renderCustomerHeaderWallet(null);await renderLeaderboardProfile();toast('تم تسجيل الخروج')});
 document.addEventListener('click',async e=>{if(e.target.closest('[data-show-topup-code]')){showTopupCode=true;instructions();return}const copyBtn=e.target.closest('[data-copy-ussd]');if(copyBtn){const code=copyBtn.dataset.copyUssd;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(code);toast('تم نسخ كود التحويل. افتح تطبيق الهاتف والصقه ثم اضغط اتصال.')}else{window.prompt('انسخ كود التحويل وافتح تطبيق الهاتف:',code)}}catch(err){window.prompt('انسخ كود التحويل وافتح تطبيق الهاتف:',code)}return}if(e.target.closest('.home-charge')||e.target.closest('#walletActionTopup')){e.preventDefault();openTopupModal();return}const nav=e.target.closest('[data-view]');if(nav){e.preventDefault();switchView(nav.dataset.view);return}const amt=e.target.closest('[data-amount]');if(amt){$('#topupAmount').value=amt.dataset.amount;instructions();return}const gameCategory=e.target.closest('[data-game-category]');if(gameCategory){toast('قسم فورت نايت قريباً.');return}const product=e.target.closest('[data-product]');if(product){openRobuxPackages();return}if(e.target.closest('[data-close-packages]')){closeRobuxPackages();return}const pkg=e.target.closest('[data-robux]');if(pkg){const modal=document.getElementById('robuxModal');if(modal){modal.querySelectorAll('.robux-package').forEach(b=>{b.classList.toggle('selected',b===pkg);const mark=b.querySelector('.robux-plus');if(mark)mark.innerHTML=b===pkg?uiIcon('check'):'＋'});const box=modal.querySelector('#purchaseBox');box.style.display='none';let bar=modal.querySelector('.robux-checkout-bar');if(!bar){bar=document.createElement('div');bar.className='robux-checkout-bar';bar.innerHTML='<div class="robux-checkout-info"><small class="robux-checkout-name"></small><strong class="robux-checkout-price"></strong></div><button type="button" class="robux-checkout-next">متابعة <span>←</span></button>';modal.appendChild(bar);bar.querySelector('button').addEventListener('click',async(ev)=>{ev.preventDefault();ev.stopPropagation();const selected=modal.querySelector('.robux-package.selected');if(!selected)return;const box=modal.querySelector('#purchaseBox');if(!box)return;box.style.display='block';bar.classList.remove('visible');await selectPackage(selected.dataset.robux);if(box.querySelector('#purchaseForm')){let screen=document.getElementById('robuxPurchaseScreen');if(screen)screen.remove();screen=document.createElement('section');screen.id='robuxPurchaseScreen';screen.setAttribute('dir','rtl');screen.innerHTML='<button type="button" class="robux-purchase-back" aria-label="رجوع">→ رجوع للباقات</button><h2>إكمال طلب روبلوكس</h2>';screen.appendChild(box);document.body.appendChild(screen);screen.querySelector('.robux-purchase-back').onclick=()=>{const home=modal.querySelector('.robux-store-box');if(home)home.appendChild(box);box.style.display='none';screen.remove();bar.classList.add('visible')};screen.querySelector('#robloxUsername')?.focus({preventScroll:true})}else{toast('تعذر فتح تفاصيل الطلب. حاول تحديث الصفحة.')}})}bar.querySelector('.robux-checkout-name').textContent=pkg.querySelector('strong')?.textContent||'';bar.querySelector('.robux-checkout-price').textContent=pkg.querySelector('small:not(.stock-label)')?.textContent||'';bar.classList.add('visible');const oldArrow=modal.querySelector('.robux-scroll-arrow');if(oldArrow)oldArrow.remove()}return}});
+// Local session metadata is used for immediate presentation only. All protected
+// reads, payments and mutations still run with server-authenticated Supabase RLS.
+function showKnownSessionQuickly(user){
+ renderGoogleHeaderAvatar(user);
+ const modern=$('#accountModern');
+ if(modern){
+  modern.classList.toggle('hidden',!user);
+  if(user){
+   const meta=user.user_metadata||{};
+   const display=String(meta.full_name||meta.name||meta.given_name||user.email?.split('@')[0]||'مستخدم');
+   const name=$('#accountModernName'),email=$('#accountModernEmail');
+   if(name)name.textContent=display;
+   if(email)email.textContent=user.email||'';
+   paintGoldAccountIdentity(user,display);
+  }
+ }
+ const greeting=$('#homeGreetingName');
+ if(greeting)greeting.textContent=user?
+  (user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'بك'):'بك';
+ if(!RECOVERY_LINK){
+  $('#authForm')?.classList.toggle('hidden',!!user);
+  $('#googleSignInBtn')?.classList.toggle('hidden',!!user);
+  $('#logoutBtn')?.classList.toggle('hidden',!user);
+ }
+}
 supabaseClient.auth.onAuthStateChange((event,session)=>{
+ if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='SIGNED_OUT'||event==='USER_UPDATED'){
+   // Immediately paint account identity from the current session rather than
+   // waiting for several network requests to finish.
+   currentUserInFlight=null;
+   showKnownSessionQuickly(session?.user||null);
+   void renderCustomerHeaderWallet(session?.user||null)
+     .catch(err=>console.warn('[auth/header-wallet]',err));
+ }
  if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='SIGNED_OUT'){
    setTimeout(()=>{
      void renderAccount();

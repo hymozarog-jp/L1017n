@@ -35,7 +35,24 @@ jobs:
           const html=read('index.html'),legacy=read('legacy-app.js');
           const history=read('account-history.js');
           const loader=read('app.js');
-          assert(html.includes('app.js?v=unread-bell-20261104-1') &&
+          // User-hidden ready-made packs 500,600,...,1000 must not reappear.
+          assert(loader.includes('&robux-packs-500-1000-removed=20261104-1'),
+            'Updated Robux preset list needs fresh legacy JS in every browser');
+          const picks=legacy.match(/\+\[([0-9,]+)\]\.map\(q=>'<button class="rqc-amount-chip"/);
+          assert(picks,'Robux quick-pick list must be present');
+          assert.deepEqual(picks[1].split(',').map(Number),[100,200,400],
+            'Only 100, 200 and 400 Robux may remain in quick picks');
+          const catalogMarker="Number(p.amount)>=100 && Number(p.amount)<500 && Number(p.amount)%100===0 && Number(p.amount)!==300";
+          assert(legacy.includes(catalogMarker),
+            'Ready-made Robux catalog must exclude 500 through 1000');
+          assert(legacy.includes("String(p.product_key||'').startsWith('robux-promo-')"),
+            'The existing special 300 Robux promotional offer must remain');
+          const isPreset=amount=>Number.isInteger(amount) && amount>=100 && amount<500 &&
+            amount%100===0 && amount!==300;
+          assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
+            [100,200,400], 'Package range filter must hide 500 through 1000');
+
+          assert(html.includes('app.js?v=robux-catalog-under-500-20261104-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&

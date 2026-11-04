@@ -132,20 +132,28 @@
     page.querySelectorAll('[data-history-filter]').forEach(button=>{
       button.setAttribute('aria-selected',String(button.dataset.historyFilter===state.filter));
     });
-    page.querySelector('#l1017HistoryTopupCount').textContent=state.errors.includes('topup')?'—':String(state.topups.length);
-    page.querySelector('#l1017HistoryPurchaseCount').textContent=state.errors.includes('purchase')?'—':String(state.purchases.length);
+    const topupCount=state.errors.includes('topup')?'—':String(state.topups.length);
+    const purchaseCount=state.errors.includes('purchase')?'—':String(state.purchases.length);
+    page.querySelector('#l1017HistoryTopupCount').textContent=topupCount;
+    page.querySelector('#l1017HistoryPurchaseCount').textContent=purchaseCount;
+    page.querySelector('#l1017HistoryTopupTabCount').textContent=topupCount;
+    page.querySelector('#l1017HistoryPurchaseTabCount').textContent=purchaseCount;
+    page.querySelector('#l1017HistoryAllCount').textContent=state.errors.length?'—':String(state.topups.length+state.purchases.length);
     const list=page.querySelector('#l1017HistoryItems'),status=page.querySelector('#l1017HistoryStatus');
     const all=[...state.topups.map(x=>({...x,kind:'topup'})),...state.purchases.map(x=>({...x,kind:'purchase'}))]
       .sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0));
     const rows=all.filter(x=>state.filter==='all'||x.kind===state.filter);
-    list.innerHTML=rows.map(itemHtml).join('');
+    const emptyIcon='<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>';
+    const emptyTitle=state.filter==='topup'?'لا توجد طلبات شحن':state.filter==='purchase'?'لا توجد مشتريات':'سجلك فارغ حاليًا';
+    list.innerHTML=rows.length?rows.map(itemHtml).join(''):
+      state.errors.length?'':'<div class="l1017-history-empty"><div class="l1017-history-empty-graphic">'+emptyIcon+'</div><strong>'+emptyTitle+'</strong><p>أي عملية جديدة تنفذها بتظهر هنا بعد تسجيلها في حسابك.</p></div>';
     if(state.errors.length){
       const single=state.errors.length===1?(state.errors[0]==='topup'?'سجل الشحن':'سجل المدفوعات'):'السجل';
       status.textContent='تعذر تحميل '+single+' بالكامل. اضغط تحديث للمحاولة مرة ثانية.';
       status.dataset.mode='error';
     }else{
       status.dataset.mode='ready';
-      status.textContent=rows.length?'اضغط على أي عملية لعرض تفاصيلها.':'لا توجد عمليات مسجلة في هذا القسم حتى الآن.';
+      status.textContent=rows.length?'اضغط على العملية لعرض تفاصيلها.':'';
     }
   }
   async function refresh(){
@@ -206,6 +214,10 @@
     page.querySelector('#l1017HistoryTopupCount').textContent='—';
     page.querySelector('#l1017HistoryPurchaseCount').textContent='—';
     page.querySelector('#l1017HistoryStatus').textContent='جاري تحميل السجل…';
+    page.querySelector('#l1017HistoryStatus').dataset.mode='loading';
+    page.querySelector('#l1017HistoryAllCount').textContent='—';
+    page.querySelector('#l1017HistoryTopupTabCount').textContent='—';
+    page.querySelector('#l1017HistoryPurchaseTabCount').textContent='—';
     page.querySelector('.l1017-history-back').focus({preventScroll:true});
     page.scrollTop=0;
     const client=typeof supabaseClient!=='undefined'?supabaseClient:null;

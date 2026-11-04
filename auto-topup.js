@@ -32,7 +32,7 @@
     '#topupForm .auto-topup-status.warning{border-color:#e1b66287;background:#5b411f29;color:#f4dba6}',
     '#topupForm .auto-topup-status.ok{border-color:#27a96590;background:#195f3a28;color:#c0f5cb}',
     '#topupForm .auto-topup-transfer{display:grid;gap:11px;margin:14px 0}',
-    '#topupForm .auto-topup-transfer .ussd-code{padding:17px;text-align:center;direction:ltr;border:1px solid #75a8846b;border-radius:12px;background:#11231c;color:#fff;font-size:20px;letter-spacing:.3px;overflow-wrap:anywhere;user-select:all}',
+    '#topupForm .auto-topup-transfer .ussd-code{padding:17px;text-align:center;direction:ltr;border:1px solid #75a8846b;border-radius:12px;background:#11231c;color:#fff;font-size:20px;letter-spacing:.3px;overflow-wrap:anywhere;user-select:all;display:block;text-decoration:none}',
     '#topupForm .auto-topup-transfer .btn{display:flex;justify-content:center;align-items:center;min-height:48px;text-align:center}',
     '#topupForm .auto-topup-transfer button{cursor:pointer}',
     '#topupForm .auto-topup-note{font-size:12px;color:#bdc9c1;line-height:1.85;margin:6px 0}',
@@ -184,7 +184,7 @@
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db)return;
     adminNotificationInFlight.add(key);
-    void db.functions.invoke('l1017n-topup-notify',{body:{request_id:key}})
+    void db.functions.invoke('l1017n-topup-notify',{body:{request_id:key,action:'dial_opened'}})
       .then(({data,error})=>{
         if(!error&&data?.ok){
           adminNotified.add(key);
@@ -242,8 +242,7 @@
     root.querySelector('.tpv-refresh').addEventListener('click',()=>refreshRequest(id));
     document.body.appendChild(root);
     document.body.classList.add('tpv-open');
-    // This sends the review choices; it does not credit any wallet.
-    notifyAdminForReview(id);
+    // This view only checks status; it must not trigger a new Telegram alert.
     root.querySelector('.tpv-title')?.focus({preventScroll:true});
     currentRequest=String(id);
     currentAmount=Number(amount);
@@ -260,6 +259,8 @@
     if(!h.hidden && elapsed<4000)return;
     if(currentRequest && String(currentRequest)!==h.id)return;
     h.shown=true;saveDialHandoff();
+    // Retry the click-originated notification when returning from the dialer.
+    notifyAdminForReview(h.id);
     showVerifier(h.id,h.amount);
     clearDialHandoff();
   }
@@ -418,9 +419,7 @@
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
       currentRequest=intent.request_id;currentAmount=amount;
-      // Notify admin about every newly created or reused USSD request.
-      // This notification is not payment evidence and never credits the wallet.
-      notifyAdminForReview(intent.request_id);
+      // Preparing the USSD request does not notify Telegram; opening the dial code does.
       if(intent.state==='matched'){
         show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ، وطلبك بانتظار قرار الإدارة. لا تحوّل المبلغ مرة ثانية.');
         const current=host();
@@ -431,17 +430,27 @@
         return;
       }
       const area=show('ok','تم تجهيز طلب شحن '+amount+' د.ل',
-        'بعد تأكيد التحويل من ليبيانا، نرسل تفاصيل الطلب للمسؤول على تيليجرام للمراجعة. لا يُضاف الرصيد إلا بعد موافقته.');
+        'عند فتح كود الاتصال يصلك إشعار للإدارة عن محاولة التحويل، لكن الرصيد لا يُضاف إلا بعد التأكد من وصول المبلغ وموافقتك.');
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
       panel.append(el('div','','رقم المحوّل: '+sender));
       if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب فقط. إذا كان رقم شخص آخر، لازم موافقته ومطابقة تحويله قبل شحن محفظتك.'));
-      panel.append(el('strong','ussd-code',codeFor(amount)));
+      const dialHref='tel:'+codeFor(amount).replace('#','%23');
+      const onDialCode=()=>{
+        armDialHandoff(intent.request_id,amount);
+        notifyAdminForReview(intent.request_id);
+        watch(intent.request_id);
+      };
+      const code=el('a','ussd-code',codeFor(amount));
+      code.href=dialHref;
+      code.setAttribute('aria-label','اضغط كود ليبيانا لفتح الاتصال');
+      code.addEventListener('click',onDialCode);
+      panel.append(code);
       const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','فتح الاتصال وتحويل '+amount+' د.ل');
-      dial.href='tel:'+codeFor(amount).replace('#','%23');
+      dial.href=dialHref;
       dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا من رقم المحوّل المحدّد');
-      dial.addEventListener('click',()=>{armDialHandoff(intent.request_id,amount);watch(intent.request_id)});
+      dial.addEventListener('click',onDialCode);
       panel.append(dial);
       const copy=el('button','btn btn-soft full-width','نسخ كود USSD');
       copy.type='button';
@@ -461,7 +470,7 @@
         showVerifier(intent.request_id,amount);
       });
       panel.append(confirm);
-      const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. بعد تأكيد التحويل، اضغط «حوّلت الرصيد — متابعة التحقق».');
+      const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. فتح كود الاتصال ينبه الإدارة ببدء المحاولة، وليس بإتمام الدفع.');
       status.id='ussdTransferStatus';
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
       refresh.type='button';refresh.addEventListener('click',()=>{

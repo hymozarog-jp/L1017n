@@ -115,3 +115,13 @@
   animation:none!important
  }
 }
+
+#topupDedicatedPage .tp-wizard-back{
+  width:100%;min-height:44px;
+  color:#e7dbff;background:#1c203a;
+  border:1px solid #766ca5;border-radius:13px;
+  font:800 13px 'IBM Plex Sans Arabic',system-ui,sans-serif;
+}
+#topupDedicatedPage .tp-wizard-back:active{scale:.97}
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-back,
+#topupDedicatedPage #topupForm[data-tp-wizard-ready="true"] .tp-wizard-back{display:none!important}

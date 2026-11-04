@@ -1,0 +1,103 @@
+/* Dedicated, read-only top-up and payment history inside My Account. */
+#accountModern .account-core-settings .account-icon-history {
+  color:#8ecbff;
+  background:linear-gradient(145deg,#213d65,#172943);
+  border:1px solid #41658f;
+}
+body.l1017-history-open {overflow:hidden!important}
+.l1017-history-page {
+  display:none;position:fixed;inset:0;z-index:120010;
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  background:radial-gradient(ellipse at 50% -150px,#1b3158,#090f20 58%);
+  color:#f2f5ff;direction:rtl;
+  padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 50px);
+}
+.l1017-history-page.visible {display:block}
+.l1017-history-shell {width:min(100%,690px);margin:0 auto}
+.l1017-history-top {display:flex;align-items:center;gap:13px;margin:0 0 14px}
+.l1017-history-top>div {min-width:0;flex:1}
+.l1017-history-top>div>span {display:block;font-size:12px;color:#98abc9;margin-bottom:4px}
+.l1017-history-top h2 {margin:0;font-size:clamp(18px,4.8vw,25px);font-weight:830;line-height:1.4}
+.l1017-history-top button {
+  display:grid;place-items:center;flex:0 0 43px;width:43px;height:43px;
+  border:1px solid #2c4265;background:#13213a;color:#eff4ff;
+  border-radius:15px;cursor:pointer;
+}
+.l1017-history-page button:focus-visible,.l1017-history-page summary:focus-visible {
+  outline:3px solid #79b9ff;outline-offset:3px;
+}
+.l1017-history-intro {color:#acbdd8;font-size:13px;line-height:1.8;margin:0 0 21px}
+.l1017-history-stats {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:21px}
+.l1017-history-stats>div {
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  padding:16px 14px;border-radius:19px;border:1px solid #283c5a;
+  background:linear-gradient(130deg,#172a45,#101b31);
+}
+.l1017-history-stats small {font-size:12px;color:#adc1de;line-height:1.6}
+.l1017-history-stats strong {font-size:24px;color:#f7faff;font-variant-numeric:tabular-nums}
+.l1017-history-tabs {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;
+  padding:5px;border-radius:17px;background:#0f1b30;border:1px solid #253650;
+}
+.l1017-history-tabs button {
+  min-width:0;padding:11px 7px;border-radius:12px;border:0;
+  color:#9db0d0;background:transparent;font-size:13px;font-weight:750;cursor:pointer;
+}
+.l1017-history-tabs button[aria-selected="true"] {color:#fff;background:#2161ac;box-shadow:0 5px 15px #0b437448}
+.l1017-history-state {
+  padding:14px 7px;margin:9px 0 4px;text-align:center;font-size:12px;
+  color:#adbdd5;line-height:1.8;
+}
+.l1017-history-state[data-mode="error"] {color:#f0bf8d}
+.l1017-history-list {display:grid;gap:11px;margin:10px 0 20px}
+.l1017-history-item {
+  min-width:0;background:linear-gradient(155deg,#172541,#0d182c);
+  border:1px solid #2a3b5c;border-radius:20px;overflow:hidden;
+}
+.l1017-history-item summary {
+  cursor:pointer;display:flex;align-items:center;gap:11px;
+  min-width:0;padding:16px 13px;list-style:none;
+}
+.l1017-history-item summary::-webkit-details-marker {display:none}
+.l1017-history-mark {
+  width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+  flex:0 0 40px;font-size:23px;font-weight:800;color:#8ce1b1;
+  background:#123d39;border:1px solid #285a51;
+}
+.l1017-history-item.purchase .l1017-history-mark {background:#253351;color:#9ec7ff;border-color:#395178}
+.l1017-history-main {display:flex;flex:1;flex-direction:column;gap:7px;min-width:0;text-align:right}
+.l1017-history-main strong {font-size:13px;font-weight:770;line-height:1.5;overflow-wrap:anywhere}
+.l1017-history-main small {color:#8fa3c0;font-size:11px}
+.l1017-history-side {display:flex;flex:0 0 auto;max-width:40%;flex-direction:column;align-items:flex-end;gap:7px;text-align:left}
+.l1017-history-side>b {font-weight:850;font-size:15px;white-space:nowrap;color:#f5f9ff}
+.l1017-history-side>b small {font-size:10px;color:#91a5c4}
+.l1017-history-badge {
+  display:inline-block;max-width:100%;font-style:normal;font-size:10px;
+  font-weight:700;line-height:1.5;white-space:normal;text-align:center;
+  border-radius:20px;padding:4px 8px;border:1px solid transparent;
+}
+.l1017-history-badge.complete {color:#83eec1;border-color:#277a5b;background:#154935}
+.l1017-history-badge.pending {color:#f5d28e;border-color:#795e2c;background:#463515}
+.l1017-history-badge.rejected {color:#ffaaa9;border-color:#8d424e;background:#54262f}
+.l1017-history-chevron {flex:0 0 14px;color:#91a6c6;transition:transform .2s ease}
+.l1017-history-item[open] .l1017-history-chevron {transform:rotate(180deg)}
+.l1017-history-detail {border-top:1px solid #30445e;padding:15px;display:grid;gap:12px}
+.l1017-history-detail>div:not(.l1017-history-note) {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;font-size:12px;line-height:1.7}
+.l1017-history-detail span {color:#96aac6;flex:0 0 auto}
+.l1017-history-detail b {font-weight:700;text-align:left;min-width:0;overflow-wrap:anywhere}
+.l1017-history-id {word-break:break-all;direction:ltr;unicode-bidi:isolate}
+.l1017-history-note {border-radius:12px;padding:12px;background:#243352;color:#c9d7ec;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.l1017-history-note b {color:#fff}
+.l1017-history-footnote {text-align:center;color:#8294b2;font-size:11px;line-height:1.85;padding:5px 10px}
+@media(max-width:390px) {
+  .l1017-history-page {padding-inline:10px}
+  .l1017-history-stats>div {padding:12px 10px}
+  .l1017-history-stats small {font-size:11px}
+  .l1017-history-item summary {gap:7px;padding:13px 10px}
+  .l1017-history-mark {width:34px;height:34px;flex-basis:34px}
+  .l1017-history-main strong {font-size:12px}
+  .l1017-history-side>b {font-size:13px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .l1017-history-chevron {transition:none}
+}

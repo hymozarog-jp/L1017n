@@ -1116,6 +1116,7 @@ setTimeout(refreshAdminAccess,0);
  const btn=e.target.closest('[data-account-action]');if(!btn)return;
  const action=btn.dataset.accountAction;
  if(action==='personal'){openPersonalDetails();return}
+ else if(action==='history'){if(window.L1017nAccountHistory?.open)void window.L1017nAccountHistory.open();else toast('تعذر تحميل سجل الشحن والمدفوعات. حدّث الصفحة.');return}
  else if(action==='verify'){if(typeof window.openPhoneVerificationPage==='function')window.openPhoneVerificationPage();else openPersonalDetails({focusPhone:true});return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='help'){

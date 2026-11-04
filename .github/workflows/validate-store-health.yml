@@ -39,7 +39,7 @@ jobs:
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
           const customerJourney=read('customer-journey.js');
-          assert(!/\\bupdateWalletNext\\s*\\(/.test(customerJourney),
+          assert(!customerJourney.includes("updateWalletNext("),
             'Removed old wallet helper must never be invoked after its deletion');
           assert(customerJourney.includes('function refresh(){') &&
             customerJourney.includes('ensureWallet();') &&

@@ -29,6 +29,39 @@
   if(row.kind==='topup')return 'شحن المحفظة'+(row.method==='libyana'?' · ليبيانا':['madar','almadar'].includes(row.method)?' · المدار':'');
   return String(row.product_name||'طلب شراء');
  }
+ function moneyText(row){
+  const n=Number(row.kind==='topup'?row.amount:row.total_amount);
+  return Number.isFinite(n)&&n>=0?n.toFixed(2)+' د.ل':'';
+ }
+ function messagesFor(row){
+  const product=label(row),amount=moneyText(row);
+  if(row.kind==='topup'){
+   if(row.status!=='approved')return [];
+   return [{kind:'credit',title:'تم تعبئة الرصيد بنجاح',body:amount?
+    'تم اعتماد الشحن وإضافة '+amount+' إلى محفظتك.':'تم اعتماد شحن محفظتك بنجاح.',badge:'تم الشحن'}];
+  }
+  if(row.status==='completed')return [
+   {kind:'delivered',title:'تم تسليم طلبك بنجاح',body:'اكتمل تسليم طلب '+product+'.',badge:'تم التسليم'},
+   {kind:'accepted',title:'تم قبول طلب الشراء',body:'تم قبول طلب '+product+' وتجهيزه للتسليم.',badge:'تم القبول'}
+  ];
+  if(['approved','processing','fulfilling','in_progress','in_processing'].includes(row.status)){
+   return [{kind:'accepted',title:'تم قبول طلب الشراء',body:'تم قبول طلب '+product+' وهو قيد التجهيز.',badge:'تم القبول'}];
+  }
+  return [];
+ }
+ function messageHtml(row,message){
+  const icon=message.kind==='credit'
+   ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v13m0 0-5-5m5 5 5-5"/><path d="M4 19h16"/></svg>'
+   :message.kind==='delivered'
+    ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/><circle cx="12" cy="12" r="10"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/><path d="M4 6h6"/></svg>';
+  return '<article class="np-activity-item np-event np-event-'+message.kind+'">'+
+   '<span class="np-activity-icon" aria-hidden="true">'+icon+'</span>'+
+   '<div class="np-activity-copy"><strong>'+safe(message.title)+'</strong>'+
+   '<small class="np-event-body">'+safe(message.body)+'</small>'+
+   '<small class="np-event-date">تاريخ الطلب: '+safe(dateTime(row.created_at))+'</small></div>'+
+   '<span class="np-status done">'+safe(message.badge)+'</span></article>';
+ }
  function itemHtml(row){
   const [status,kind]=statusOf(row);
   const val=Number(row.kind==='topup'?row.amount:row.total_amount);
@@ -58,7 +91,13 @@
   }
   status.dataset.mode=state.errors.length?'error':'ready';
   status.textContent=state.errors.length?'تعذر تحميل بعض العمليات. اضغط تحديث للمحاولة مرة ثانية.':'';
-  if(rows.length){list.innerHTML=rows.map(itemHtml).join('');return;}
+  if(rows.length){
+   list.innerHTML=rows.flatMap(row=>{
+    const messages=messagesFor(row);
+    return messages.length?messages.map(msg=>messageHtml(row,msg)):[itemHtml(row)];
+   }).join('');
+   return;
+  }
   list.innerHTML='<div class="np-empty">'+
    '<div class="np-empty-art" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div>'+
    '<strong>لا توجد عمليات في هذا القسم</strong>'+
@@ -101,6 +140,103 @@
    console.warn('[notifications] Could not read customer order activity',e);
   }
  }
+ // In-app status messages: compare successive server snapshots while the store is open.
+ // First snapshot is a baseline, not a notification; only genuine changes trigger popups.
+ let observedUser='',observed=new Map(),watchBusy=false;
+ let toastQueue=[],toastBusy=false,toastTimer=0;
+ function showNextToast(){
+  if(toastBusy||!toastQueue.length)return;
+  const next=toastQueue.shift();
+  if(!next||next.userId!==observedUser){showNextToast();return;}
+  toastBusy=true;
+  let node=document.getElementById('l1017StatusToast');
+  if(!node){
+   node=document.createElement('div');
+   node.id='l1017StatusToast';
+   node.className='np-live-toast';
+   node.setAttribute('role','status');
+   node.setAttribute('aria-live','polite');
+   document.body.appendChild(node);
+  }
+  node.className='np-live-toast type-'+next.message.kind;
+  node.innerHTML='<span class="np-live-toast-icon" aria-hidden="true">✓</span>'+
+   '<span class="np-live-toast-copy"><strong>'+safe(next.message.title)+'</strong>'+
+   '<small>'+safe(next.message.body)+'</small></span>';
+  window.requestAnimationFrame(()=>node.classList.add('visible'));
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{
+   node.classList.remove('visible');
+   toastTimer=setTimeout(()=>{toastBusy=false;showNextToast()},350);
+  },5200);
+ }
+ function resetObserved(){
+  observedUser='';observed=new Map();toastQueue=[];
+  clearTimeout(toastTimer);toastBusy=false;
+  document.getElementById('l1017StatusToast')?.remove();
+ }
+ async function watchOrderStatuses(){
+  if(watchBusy||document.visibilityState==='hidden')return;
+  const client=typeof supabaseClient!=='undefined'?supabaseClient:null;
+  if(!client)return;
+  watchBusy=true;
+  try{
+   const {data:auth,error:authError}=await client.auth.getUser();
+   if(authError)return;
+   const userId=auth?.user?.id||'';
+   if(!userId){resetObserved();return;}
+   const [topups,purchases]=await Promise.all([
+    client.from('topup_requests').select('id,amount,method,status,created_at')
+     .eq('user_id',userId).order('created_at',{ascending:false}).limit(30),
+    client.from('purchase_orders').select('id,product_name,total_amount,status,created_at')
+     .eq('user_id',userId).order('created_at',{ascending:false}).limit(30)
+   ]);
+   // Do not announce or advance baselines if either source failed.
+   if(topups.error||purchases.error)return;
+   const all=[
+    ...(topups.data||[]).map(x=>({...x,kind:'topup'})),
+    ...(purchases.data||[]).map(x=>({...x,kind:'purchase'}))
+   ].sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0));
+   const next=new Map();
+   const updates=[];
+   const accepted=new Set(['approved','processing','fulfilling','in_progress','in_processing','completed']);
+   for(const item of all){
+    const key=item.kind+':'+item.id;
+    const now=String(item.status||'');
+    next.set(key,now);
+    if(observedUser!==userId||!observed.has(key))continue;
+    const was=observed.get(key);
+    if(was===now)continue;
+    const messages=messagesFor(item);
+    if(item.kind==='topup'&&now==='approved'&&was!=='approved'){
+     if(messages[0])updates.push({message:messages[0],userId});
+    }else if(item.kind==='purchase'&&now==='completed'&&was!=='completed'){
+     const delivered=messages.find(x=>x.kind==='delivered');
+     if(delivered)updates.push({message:delivered,userId});
+    }else if(item.kind==='purchase'&&accepted.has(now)&&!accepted.has(was)){
+     const approved=messages.find(x=>x.kind==='accepted');
+     if(approved)updates.push({message:approved,userId});
+    }
+   }
+   if(observedUser!==userId){toastQueue=[];observedUser=userId;}
+   observed=next;
+   if(page&&!state.loading){
+    state.rows=all.slice(0,12);state.errors=[];
+    render();
+   }
+   // Avoid flooding the screen if many old records were updated together.
+   toastQueue.push(...updates.slice(0,3));
+   showNextToast();
+  }catch(e){
+   console.warn('[notifications] Status polling failed',e);
+  }finally{watchBusy=false;}
+ }
+ // Browser tab only: this is not background push delivery when the site is closed.
+ setInterval(()=>{void watchOrderStatuses()},30000);
+ window.addEventListener('focus',()=>{void watchOrderStatuses()});
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')void watchOrderStatuses();
+ });
+ setTimeout(()=>{void watchOrderStatuses()},1500);
  function remove(){
   if(!page)return;
   state.serial++;

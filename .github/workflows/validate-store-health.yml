@@ -35,7 +35,7 @@ jobs:
           const html=read('index.html'),legacy=read('legacy-app.js');
           const history=read('account-history.js');
           const loader=read('app.js');
-          assert(html.includes('app.js?v=fast-auth-20261104-1') &&
+          assert(html.includes('app.js?v=unread-bell-20261104-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&
@@ -135,7 +135,7 @@ jobs:
           assert(notices.includes("[data-account-action=\"notifications\"]"),
             'Notification menu and bell must use the existing dialog handler');
           const noticesCss=read('notifications-page.css');
-          assert(html.includes('notifications-page.js?v=verified-status-messages-20261104-1') &&
+          assert(html.includes('notifications-page.js?v=unread-bell-20261104-1') &&
             html.includes('notifications-page.css?v=verified-status-messages-20261104-1'),
             'Updated notifications activity screen assets must bypass cached versions');
           for(const selector of ['npActivityList','data-np-filter','np-refresh','np-orders','np-history']){
@@ -176,11 +176,70 @@ jobs:
             noticesCss.includes('.np-event-delivered') && noticesCss.includes('.np-event-accepted'),
             'Verified messages need visible branded styles');
 
-          assert(bellCss.includes('prefers-reduced-motion:reduce'),
+          // Real per-account unread state: one red badge for one verified new event.
+          assert(html.includes('id="headerNotificationCount"') &&
+            html.includes('class="header-notification-count" hidden'),
+            'A hidden-by-default unread count must exist inside the header bell');
+          assert(bellCss.includes('.header-notification-count[hidden]') &&
+            bellCss.includes('background:linear-gradient(145deg,#ff5865,#e02037)!important;') &&
+            bellCss.includes('overflow:visible!important;'),
+            'Red count must stand out without clipping or showing when empty');
+          assert(legacy.includes('window.L1017nNotifications?.syncUser(user||null);'),
+            'Unread state must track current login and hide immediately on sign-out');
+          assert(notices.includes("eventKey:key+':credit'") &&
+            notices.includes("eventKey:key+':accepted'") &&
+            notices.includes("eventKey:key+':delivered'") &&
+            notices.includes("if(observedUser!==userId||!observed.has(key))continue;"),
+            'Unread count must come only from verified new credit, acceptance or delivery transitions');
+          assert(notices.includes("if(page)clearUnreadForUser(userId);") &&
+            notices.includes("if(!topups.error&&!purchases.error)clearUnreadForUser(id);"),
+            'Opening the activity center must mark successfully loaded alerts read');
+          assert(notices.includes(".eq('user_id',userId)") &&
+            notices.includes('NOTICE_STORE_PREFIX+userId'),
+            'Badge must be scoped to the signed-in customer');
+          const start=notices.indexOf(' const NOTICE_STORE_PREFIX=');
+          const end=notices.indexOf(' let toastQueue=[],',start);
+          assert(start>=0&&end>start,'Unread helper module must be testable');
+          const localMemory=new Map();
+          const testStorage={
+            getItem:key=>localMemory.get(key)||null,
+            setItem:(key,value)=>{localMemory.set(key,value)}
+          };
+          const bellAttrs=new Map();
+          const fakeBell={
+            getAttribute:key=>bellAttrs.get(key)||null,
+            setAttribute:(key,value)=>bellAttrs.set(key,value),
+            title:''
+          };
+          const fakeBadge={hidden:true,textContent:''};
+          const fakeDocument={
+            getElementById:key=>key==='headerNotificationBell'?fakeBell:
+              key==='headerNotificationCount'?fakeBadge:null
+          };
+          const badgeHelpers=new Function('localStorage','document',
+            notices.slice(start,end)+'\nlet toastQueue=[];\n'+
+            'return {syncNoticeUser,addUnreadEvent,clearUnreadForUser,storeNoticeState,paintUnreadBadge,badgeCount};'
+          )(testStorage,fakeDocument);
+          badgeHelpers.syncNoticeUser('account-A');
+          assert.equal(fakeBadge.hidden,true,'No unread alerts on an initial empty account');
+          badgeHelpers.addUnreadEvent('topup:real-credit:credit');
+          badgeHelpers.addUnreadEvent('topup:real-credit:credit');
+          badgeHelpers.paintUnreadBadge();
+          badgeHelpers.storeNoticeState();
+          assert.equal(fakeBadge.textContent,'1','One verified notification must show a red 1');
+          assert.equal(badgeHelpers.badgeCount(),1,'Repeat polling must not double-count the same event');
+          badgeHelpers.syncNoticeUser('account-B');
+          assert.equal(fakeBadge.hidden,true,'Unread count must not leak between accounts');
+          badgeHelpers.syncNoticeUser('account-A');
+          assert.equal(fakeBadge.textContent,'1','Unread count should survive a session reload');
+          badgeHelpers.clearUnreadForUser('account-A');
+          assert.equal(fakeBadge.hidden,true,'Opening notifications must remove the badge');
+          assert.equal(fakeBadge.textContent,'','Empty badge must not display a number');
+                    assert(bellCss.includes('prefers-reduced-motion:reduce'),
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert(html.includes('header-notification-bell.css?v=larger-spaced-bell-20261104-1'),
+          assert(html.includes('header-notification-bell.css?v=unread-bell-20261104-1'),
             'Larger circular bell stylesheet must bypass cached CSS');
           assert(bellCss.includes('width:42px!important;') &&
             bellCss.includes('height:42px!important;') &&

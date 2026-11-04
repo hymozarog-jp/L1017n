@@ -26,6 +26,44 @@
  phoneActions.innerHTML='<button type="button" class="tp-wizard-recheck">تحديث</button>'+
   '<button type="button" class="tp-wizard-verify">توثيق الهاتف</button>';
  phonePanel.appendChild(phoneActions);
+ const senderField=document.createElement('div');
+ senderField.className='tp-wizard-sender';
+ senderField.innerHTML='<label for="tpTopupSender">رقم المحوّل (ليبيانا)</label>'+
+  '<input id="tpTopupSender" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="09xxxxxxxx" dir="ltr">'+
+  '<small>إذا بتحوّل من رقمك الموثّق، اترك الخانة فارغة.</small>';
+ phonePanel.appendChild(senderField);
+ const senderInput=senderField.querySelector('#tpTopupSender');
+ const normalizePhone=value=>{
+  let digits=String(value||'').replace(/[^0-9]/g,'');
+  if(digits.length===12&&digits.startsWith('218'))digits=digits.slice(3);
+  if(digits.length===9&&/^9[24]\d{7}$/.test(digits))digits='0'+digits;
+  return /^09[24]\d{7}$/.test(digits)?digits:'';
+ };
+ const getSenderPhone=()=>{
+  const entered=senderInput.value.trim();
+  return entered?normalizePhone(entered):normalizePhone(phone.textContent);
+ };
+ let noticeSeen=false;
+ const senderNotice=document.createElement('div');
+ senderNotice.id='tpTopupSenderNotice';
+ senderNotice.className='tp-wizard-notice-layer';
+ senderNotice.setAttribute('role','dialog');
+ senderNotice.setAttribute('aria-modal','true');
+ senderNotice.setAttribute('aria-labelledby','tpTopupNoticeTitle');
+ senderNotice.setAttribute('aria-describedby','tpTopupNoticeText');
+ senderNotice.innerHTML='<section class="tp-wizard-notice-card" dir="rtl">'+
+   '<span class="tp-wizard-notice-symbol" aria-hidden="true">!</span>'+
+   '<h3 id="tpTopupNoticeTitle">ملاحظة مهمة</h3>'+
+   '<p id="tpTopupNoticeText">عادي تحوّل من رقم ليبيانا غير رقمك الموثّق. بس اكتب رقم المحوّل الصحيح عشان نطابق التحويل. الرصيد يُضاف بعد التحقق وموافقة الإدارة.</p>'+
+   '<button type="button" id="tpTopupNoticeUnderstood">فهمت</button></section>';
+ const understood=senderNotice.querySelector('#tpTopupNoticeUnderstood');
+ understood.addEventListener('click',()=>senderNotice.remove());
+ function openNotice(){
+  if(!page()||senderNotice.isConnected)return;
+  document.body.appendChild(senderNotice);
+  understood.focus({preventScroll:true});
+ }
+
  const review=document.createElement('section');
  review.className='tp-wizard-review';
  review.setAttribute('aria-labelledby','tpWizardReviewTitle');
@@ -35,8 +73,8 @@
   '</div></div>'+
   '<div class="tp-wizard-review-line"><span>طريقة الشحن</span><strong>ليبيانا</strong></div>'+
   '<div class="tp-wizard-review-line"><span>المبلغ</span><strong id="tpWizardReviewAmount" dir="ltr">—</strong></div>'+
-  '<div class="tp-wizard-review-line"><span>الرقم الموثّق</span><strong id="tpWizardReviewPhone" dir="ltr">—</strong></div>'+
-  '<p class="tp-wizard-safety">التحويل يتم من هاتفك فقط، ويُضاف الرصيد بعد التحقق والموافقة.</p>';
+  '<div class="tp-wizard-review-line"><span>رقم المحوّل</span><strong id="tpWizardReviewPhone" dir="ltr">—</strong></div>'+
+  '<p class="tp-wizard-safety">التحويل من رقم المحوّل الذي اخترته. الرصيد يُضاف بعد التحقق والموافقة.</p>';
  proceed.insertAdjacentElement('beforebegin',review);
  const alert=document.createElement('p');
  alert.id='tpWizardAlert';alert.className='tp-wizard-alert';alert.setAttribute('role','alert');
@@ -55,7 +93,7 @@
  function updateDisplay(){
   selected.querySelector('#tpWizardSelectedAmount').textContent=money();
   review.querySelector('#tpWizardReviewAmount').textContent=money();
-  review.querySelector('#tpWizardReviewPhone').textContent=statusIsVerified()?phone.textContent.trim():'غير موثّق';
+  review.querySelector('#tpWizardReviewPhone').textContent=getSenderPhone()||'رقم غير صحيح';
  }
  function setStage(next,scroll=true){
   stage=next;
@@ -75,6 +113,7 @@
   if(stage===2){
    const check=window.renderTopupPhoneStatus?.();
    phoneCheck=Promise.resolve(check).catch(()=>{});
+   if(!noticeSeen&&page()){noticeSeen=true;queueMicrotask(()=>{if(stage===2)openNotice()});}
   }
   const hero=page()?.querySelector('.tp-clean-copy p');
   if(hero)hero.textContent='';
@@ -85,6 +124,8 @@
   // Reopening an already prepared transfer should keep its real USSD code.
   const hasTransfer=!!instructions.querySelector('.auto-topup-transfer');
   form.dataset.tpWizardReady=hasTransfer?'true':'false';
+  noticeSeen=false;
+  senderNotice.remove();
   setStage(hasTransfer?3:1,false);
   window.scrollTo({top:0,behavior:'auto'});
  }
@@ -119,8 +160,12 @@
     }
     if(!page()||stage!==2)return;
     if(!statusIsVerified()){
-     warning('لازم رقم ليبيانا موثّق. اضغط «توثيق الهاتف».');
+     warning('الحساب يحتاج رقم ليبيانا موثّق للتعرّف عليك.');
      return;
+    }
+    if(!getSenderPhone()){
+     warning('اكتب رقم المحوّل الصحيح، ويبدأ بـ 092 أو 094.');
+     senderInput.focus({preventScroll:true});return;
     }
     setStage(3);
    }finally{button.disabled=false;}
@@ -143,6 +188,7 @@
  });
  // Actual changes to the selected amount invalidate the review.
  amount.addEventListener('input',()=>{updateDisplay();if(stage>1)setStage(1,false)});
+ senderInput.addEventListener('input',()=>{updateDisplay();if(stage===3)setStage(2,false)});
  const transferObserver=new MutationObserver(()=>{
   form.dataset.tpWizardReady=instructions.querySelector('.auto-topup-transfer')?'true':'false';
  });
@@ -158,5 +204,5 @@
  });
  pageObserver.observe(document.body,{childList:true});
  if(page())initPage();
- window.L1017nTopupWizard={getStep:()=>stage,reset:()=>setStage(1,false)};
+ window.L1017nTopupWizard={getStep:()=>stage,getSenderPhone,reset:()=>setStage(1,false)};
 })();

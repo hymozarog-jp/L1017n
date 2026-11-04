@@ -1,0 +1,86 @@
+/* Small, signed-in notifications shortcut beside the header profile photo.
+   No fake unread badge and no push-alert promises. */
+.topbar #headerNotificationBell{
+  display:grid!important;
+  place-items:center;
+  position:relative;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  padding:0;
+  margin:0;
+  border-radius:14px;
+  background:linear-gradient(145deg,#302444,#1b1827)!important;
+  color:#eadfff!important;
+  border:1px solid #8065a5!important;
+  box-shadow:inset 0 1px #ffffff15,0 5px 14px #0005!important;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.topbar #headerNotificationBell.hidden{display:none!important}
+.topbar #headerNotificationBell svg{
+  display:block;
+  width:21px;
+  height:21px;
+  pointer-events:none;
+  transform-origin:50% 16%;
+  animation:l1017-header-bell-ring 10s ease-in-out infinite;
+}
+.topbar #headerNotificationBell:hover{
+  background:linear-gradient(145deg,#44305e,#292039)!important;
+  border-color:#bd94f5!important;
+}
+.topbar #headerNotificationBell:active{transform:scale(.95)}
+.topbar #headerNotificationBell:focus-visible{
+  outline:3px solid #e6d7ff!important;
+  outline-offset:3px!important;
+}
+.topbar #headerNotificationBell:hover svg{
+  animation:l1017-header-bell-hover .65s ease-in-out 1;
+}
+@keyframes l1017-header-bell-ring{
+  0%,88%,97%,100%{transform:rotate(0)}
+  89%{transform:rotate(8deg)}
+  91%{transform:rotate(-8deg)}
+  93%{transform:rotate(5deg)}
+  95%{transform:rotate(-3deg)}
+}
+@keyframes l1017-header-bell-hover{
+  0%,100%{transform:rotate(0)}
+  25%{transform:rotate(9deg)}
+  50%{transform:rotate(-9deg)}
+  75%{transform:rotate(4deg)}
+}
+/* Keep the bell immediately next to the avatar in the actual live header. */
+body.l1017-live-ui .topbar #headerNotificationBell{
+  order:10!important;
+  flex:0 0 39px!important;
+  width:39px!important;
+  height:39px!important;
+  border-radius:13px!important;
+  margin:0!important;
+}
+@media(max-width:900px){
+  body.l1017-live-ui .topbar #headerNotificationBell{
+    flex-basis:37px!important;
+    width:37px!important;height:37px!important;
+  }
+  body.l1017-live-ui .topbar #headerNotificationBell svg{width:20px;height:20px}
+}
+@media(max-width:430px){
+  body.l1017-live-ui .topbar #headerNotificationBell{
+    flex:0 0 34px!important;
+    width:34px!important;height:36px!important;
+    border-radius:12px!important;
+  }
+  body.l1017-live-ui .topbar #headerNotificationBell svg{width:19px;height:19px}
+}
+@media(max-width:350px){
+  body.l1017-live-ui .topbar #headerNotificationBell{
+    flex-basis:32px!important;width:32px!important;height:34px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .topbar #headerNotificationBell svg{animation:none!important;transform:none!important}
+  .topbar #headerNotificationBell{transition:none!important}
+}

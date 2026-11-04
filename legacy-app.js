@@ -692,7 +692,9 @@ function approvedProfilePhoto(user){
 }
 function renderGoogleHeaderAvatar(user){
  const btn=$('#googleProfileButton'),img=$('#googleProfileImage'),fallback=$('#googleProfileFallback');
+ const bell=$('#headerNotificationBell');
  const welcome=$('#googleWelcome'),welcomeName=$('#googleWelcomeName');
+ if(bell)bell.classList.toggle('hidden',!user);
  if(!btn||!img||!fallback)return;
  if(!user){
    if(welcome)welcome.classList.add('hidden');

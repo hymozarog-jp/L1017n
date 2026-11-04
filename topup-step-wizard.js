@@ -30,7 +30,7 @@
  stageArt.appendChild(stageImage);
  progress.insertAdjacentElement('afterend',stageArt);
  const stageImages={
-  1:'topup-illustration-amount.svg?v=premium-wallet-20261104-1',
+  1:'topup-illustration-amount.svg?v=clear-icons-20261104-1',
   2:'topup-illustration-sender.svg?v=premium-wallet-20261104-1',
   3:'topup-illustration-review.svg?v=premium-wallet-20261104-1'
  };

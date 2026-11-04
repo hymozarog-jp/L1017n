@@ -37,8 +37,32 @@ jobs:
           const loader=read('app.js');
           const stepWizard=read('topup-step-wizard.js');
           const premiumCss=read('topup-premium-illustrated.css');
-          assert(html.includes('topup-premium-illustrated.css?v=purple-mint-art-20261104-1'),
+          assert(html.includes('topup-premium-illustrated.css?v=clear-icons-20261104-1'),
             'Premium illustrated top-up stylesheet must be loaded after base wallet styling');
+          assert(html.includes('topup-step-wizard.js?v=clear-icons-20261104-1') &&
+            stepWizard.includes('topup-illustration-amount.svg?v=clear-icons-20261104-1'),
+            'Safari must fetch the revised top-up banner and icons, not cached older artwork');
+          assert(html.includes('<span class="tp-step-bubble" aria-hidden="true"><svg') &&
+            html.includes('<ellipse cx="8" cy="7" rx="5.5" ry="2.5"/>') &&
+            !html.includes('<span class="tp-step-bubble" aria-hidden="true">◇</span> المبلغ'),
+            'The amount title must use a clear coin-stack SVG rather than an unclear diamond');
+          for(const asset of ['topup-clear-coin-stack.svg','topup-clear-coin.svg']){
+            assert(fs.existsSync(asset),'Missing clear amount icon: '+asset);
+            const icon=read(asset);
+            assert(icon.includes('<svg') && icon.includes('</svg>') &&
+              icon.includes('<ellipse') && icon.includes('Gradient'),
+              'Each new amount icon must be a complete, illustrated gold coin SVG');
+            assert(premiumCss.includes(asset),'Every clear icon must actually be loaded by amount cards');
+          }
+          assert(premiumCss.includes('button[data-amount="1"]::before') &&
+            premiumCss.includes('quick-amounts button[aria-pressed="true"]::before') &&
+            premiumCss.includes('.tp-step-bubble svg'),
+            'Individual amount tiles, selected tiles and amount heading must show crisp icons');
+          const bannerArt=read('topup-illustration-amount.svg');
+          assert(bannerArt.includes('Recognizable mint-green wallet') &&
+            bannerArt.includes('Large clearly identifiable closed padlock') &&
+            bannerArt.includes('<circle cx="308" cy="106" r="4"'),
+            'Banner wallet and phone symbols must be replaced by legible wallet and lock artwork');
           const artFiles=[
             'topup-illustration-amount.svg',
             'topup-illustration-sender.svg',

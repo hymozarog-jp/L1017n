@@ -38,6 +38,36 @@ jobs:
           const stepWizard=read('topup-step-wizard.js');
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
+          assert(loader.includes("auto.src='auto-topup.js?v=external-libyana-sender-20261104-1'"),
+            'Live checkout must use the updated transfer source logic instead of cached auto-topup');
+          assert(stepWizard.includes("id='tpTopupSenderNotice'") &&
+            stepWizard.includes('tpTopupNoticeUnderstood') &&
+            stepWizard.includes('فهمت') &&
+            stepWizard.includes('غير رقمك الموثّق'),
+            'Phone step must display notice with a real فهمت acknowledgment button');
+          assert(stepWizard.includes("const getSenderPhone=()=>") &&
+            stepWizard.includes("getSenderPhone,reset") &&
+            stepWizard.includes('if(!getSenderPhone())'),
+            'Customer may enter a valid alternate Libyana sender without replacing their verified account');
+          assert(stepWizard.includes("senderNotice.remove()") &&
+            stepWizard.includes("node.id==='topupDedicatedPage'"),
+            'Sender notice must close when the wallet recharge screen is dismissed');
+          assert(stepCss.includes('.tp-wizard-notice-layer') &&
+            stepCss.includes('#tpTopupNoticeUnderstood') &&
+            stepCss.includes('#tpTopupSender') &&
+            stepCss.includes('prefers-reduced-motion:reduce'),
+            'Sender notice and phone field must be mobile-ready and motion accessible');
+          assert(topupFlow.includes("db.rpc('create_ussd_topup_intent_for_sender',{p_amount:amount,p_sender_phone:sender})") &&
+            topupFlow.includes("sender!==phone") &&
+            topupFlow.includes("db.rpc('create_ussd_topup_intent',{p_amount:amount})"),
+            'Different sender must use its protected backend RPC, same sender must keep existing flow');
+          assert(topupFlow.includes('if(/sender_phone_reserved/.test(t))') &&
+            topupFlow.includes('if(/sender_has_pending_request/.test(t))') &&
+            topupFlow.includes("رقم المحوّل: '+sender"),
+            'Third-party source conflicts must be explained clearly and displayed during checkout');
+          assert(!stepWizard.includes("create_ussd_topup_intent"),
+            'Acknowledgment or step navigation must never create a payment request on its own');
+
           const customerJourney=read('customer-journey.js');
           assert(!customerJourney.includes("updateWalletNext("),
             'Removed old wallet helper must never be invoked after its deletion');
@@ -66,8 +96,8 @@ jobs:
             stepWizard.includes('if(!button||button!==proceed||stage===3)return;'),
             'Removing duplicate copy must not affect three-step recharge navigation or secure checkout');
 
-          assert(html.includes('topup-step-wizard.js?v=topup-minimal-20261104-1') &&
-            html.includes('topup-step-wizard.css?v=topup-minimal-20261104-1'),
+          assert(html.includes('topup-step-wizard.js?v=external-libyana-sender-20261104-1') &&
+            html.includes('topup-step-wizard.css?v=external-libyana-sender-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&
             html.includes('id="topupVerifiedNumber"') &&
@@ -107,7 +137,7 @@ jobs:
             'Wallet wizard needs reduced motion support and iPhone layout');
           assert(stepWizard.includes("const titles={1:'متابعة',2:'متابعة',3:'تجهيز التحويل'}") &&
             stepWizard.includes("previous.textContent='رجوع ←'") &&
-            stepWizard.includes('التحويل يتم من هاتفك فقط، ويُضاف الرصيد بعد التحقق والموافقة.'),
+            stepWizard.includes('التحويل من رقم المحوّل الذي اخترته. الرصيد يُضاف بعد التحقق والموافقة.'),
             'Wizard buttons and essential payment advice must remain short and truthful');
           assert(!stepWizard.includes('راجع المبلغ ورقم ليبيانا قبل تجهيز كود التحويل.') &&
             !html.includes('المبالغ الكبيرة قد تحتاج مراجعة قبل إضافة الرصيد.') &&
@@ -135,7 +165,7 @@ jobs:
           assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
             [100,200,400], 'Package range filter must hide 500 through 1000');
 
-          assert(html.includes('app.js?v=robux-catalog-under-500-20261104-1') &&
+          assert(html.includes('app.js?v=external-libyana-sender-20261104-1') &&
             loader.includes('&fast-auth=20261104-1'),
             'Fast-auth bootstrap must bypass stale app and legacy script caches');
           assert(html.includes('rel="preconnect" href="https://cdn.jsdelivr.net"') &&

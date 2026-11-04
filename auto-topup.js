@@ -77,7 +77,10 @@
   function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
-    if(/verified_libyana_phone_required/.test(t))return 'الشحن عبر هذا الكود يتطلب رقم ليبيانا 092 أو 094 موثّق برسالة SMS من حسابي.';
+    if(/verified_libyana_phone_required/.test(t))return 'حسابك يحتاج رقم ليبيانا موثّق، لكن التحويل يقدر يكون من رقم آخر.';
+    if(/invalid_sender_phone/.test(t))return 'رقم المحوّل غير صحيح. يجب أن يبدأ بـ 092 أو 094.';
+    if(/sender_phone_reserved/.test(t))return 'رقم المحوّل مرتبط بحساب آخر في المتجر. استخدم رقمًا آخر أو تواصل مع الإدارة.';
+    if(/sender_has_pending_request/.test(t))return 'فيه طلب شحن آخر بنفس رقم المحوّل والمبلغ. حاول بعد انتهائه أو تواصل مع الإدارة.';
     if(/ussd_daily_limit/.test(t))return 'طلبات كثيرة في وقت قصير؛ جرّب بعد شوية أو تواصل مع الإدارة.';
     if(/invalid_ussd_amount/.test(t))return 'اكتب مبلغًا صحيحًا بالدينار الليبي، ويجب أن يكون عددًا صحيحًا موجبًا.';
     return 'تعذر تجهيز طلب التحويل. لا تحوّل رصيدًا قبل ظهور رقم الطلب وكود الاتصال.';
@@ -403,7 +406,19 @@
         show('warning','خدمة استقبال طلبات الشحن غير متاحة حاليًا','لا تحوّل أي رصيد قبل ما يرجع النظام يشتغل. التأكد من التوثيق أو إعدادات الإدارة مطلوب.');
         return;
       }
-      const {data:intent,error:intentError}=await db.rpc('create_ussd_topup_intent',{p_amount:amount});
+      // The signed-in customer must remain verified, but the person sending
+      // the Libyana balance can use a different declared sender phone.
+      const senderPicker=window.L1017nTopupWizard?.getSenderPhone;
+      const sender=typeof senderPicker==='function'?senderPicker():phone;
+      if(!/^09[24][0-9]{7}$/.test(sender)){
+        show('warning','رقم المحوّل غير صحيح','اكتب رقم ليبيانا يبدأ بـ 092 أو 094 في خطوة رقم الهاتف.');
+        return;
+      }
+      const otherSender=sender!==phone;
+      const intentCall=otherSender
+        ?db.rpc('create_ussd_topup_intent_for_sender',{p_amount:amount,p_sender_phone:sender})
+        :db.rpc('create_ussd_topup_intent',{p_amount:amount});
+      const {data:intent,error:intentError}=await intentCall;
       if(run!==generation)return;
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
@@ -425,10 +440,12 @@
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
+      panel.append(el('div','','رقم المحوّل: '+sender));
+      if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب أعلاه فقط. أي رقم مختلف يحتاج مراجعة جديدة قبل الاعتماد.'));
       panel.append(el('strong','ussd-code',codeFor(amount)));
       const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','فتح الاتصال وتحويل '+amount+' د.ل');
       dial.href='tel:'+codeFor(amount).replace('#','%23');
-      dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا');
+      dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا من رقم المحوّل المحدّد');
       dial.addEventListener('click',()=>{armDialHandoff(intent.request_id,amount);watch(intent.request_id)});
       panel.append(dial);
       const copy=el('button','btn btn-soft full-width','نسخ كود USSD');

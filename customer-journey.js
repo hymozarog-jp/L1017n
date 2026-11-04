@@ -58,53 +58,11 @@
       else $('#productGrid')?.scrollIntoView({behavior:'smooth',block:'start'});
     });
   }
+  // The wallet now has a built-in three-step top-up wizard. The former
+  // large "شحن المحفظة في 3 خطوات" helper duplicated the entire flow.
+  // Remove leftover legacy guide elements, including on re-renders.
   function ensureWallet(){
-    const form=$('#topupForm');
-    if(!form||$('#gbWalletGuide'))return;
-    const guide=document.createElement('section');
-    guide.id='gbWalletGuide';
-    guide.setAttribute('aria-label','دليل تعبئة المحفظة');
-    guide.innerHTML='<strong>شحن المحفظة في 3 خطوات</strong>'+
-      '<div class="gbwg-steps">'
-      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 9c0-2 6-2 6 0s-6 1-6 4 6 3 6 1M12 5.5v13"/></svg>1 · اختار المبلغ</span>'
-      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-3 13h2"/><path d="m9 12 2 2 4-4"/></svg>2 · تأكد من رقم ليبيانا</span>'
-      +'<span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 8 4v6c0 5.5-4 8-8 10-4-2-8-4.5-8-10V6l8-4Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>3 · حوّل وتابع التحقق</span></div>'+
-      '<p class="gbwg-next" id="gbWalletNext" role="status" aria-live="polite">اختار المبلغ اللي تبيه من تحت.</p>'+
-      '<div class="gbwg-tools"><button type="button" class="gbwg-next-action" data-gbwg="proceed">متابعة الشحن</button><button type="button" data-gbwg="store">تصفح المتجر</button></div>';
-    form.prepend(guide);
-    guide.addEventListener('click',e=>{
-      const action=e.target.closest('[data-gbwg]')?.dataset.gbwg;
-      if(action==='store')navigate('store');
-      else if(action==='proceed'){
-        const amount=$('#topupAmount');
-        if(!Number.isSafeInteger(Number(amount?.value))||Number(amount?.value)<1){
-          amount?.focus();amount?.scrollIntoView({behavior:'smooth',block:'center'});return;
-        }
-        $('#topupProceed')?.click();$('#topupProceed')?.scrollIntoView({behavior:'smooth',block:'center'});
-      }
-    });
-    const amount=$('#topupAmount');
-    amount?.addEventListener('input',updateWalletNext,{passive:true});
-    updateWalletNext();
-  }
-  function updateWalletNext(){
-    const status=$('#gbWalletNext'),action=$('#gbWalletGuide [data-gbwg="proceed"]');
-    if(!status||!action)return;
-    const input=$('#topupAmount'),amount=Number(input?.value||0);
-    const verified=$('#topupPhoneState')?.classList.contains('is-verified');
-    let message,label;
-    if(!Number.isSafeInteger(amount)||amount<1||amount>10000){
-      message='اختار مبلغًا صحيحًا من الأزرار أو اكتبه بالدينار الليبي.';
-      label='اختار المبلغ أولاً';
-    }else if(!verified){
-      message='المبلغ '+format(amount)+' د.ل. تأكد أن رقم ليبيانا موثّق في حسابك قبل التحويل.';
-      label='متابعة والتحقق من الرقم';
-    }else{
-      message='المبلغ '+format(amount)+' د.ل ورقم ليبيانا موثّق. اضغط متابعة لعرض كود التحويل.';
-      label='عرض كود التحويل';
-    }
-    if(status.textContent!==message)status.textContent=message;
-    if(action.textContent!==label)action.textContent=label;
+    document.getElementById('gbWalletGuide')?.remove();
   }
   function priceOf(overlay){
     const container=overlay.closest('#robuxPurchaseScreen,#rgpMm2Checkout,#sabCheckout,#pubgAccountCheckoutOverlay')||overlay;

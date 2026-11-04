@@ -15,7 +15,7 @@ Deno.serve(async(req:Request)=>{
  const url=Deno.env.get("SUPABASE_URL")||"";
  const key=secretKey();
  if(!token||!/^[0-9]+$/.test(admin)||!webhook||!url||!key)return answer({error:"server_not_configured"},503);
- let body:{request_id?:string}={};
+ let body:{request_id?:string;action?:string}={};
  try{body=await req.json()}catch{return answer({error:"invalid_json"},400)}
  const id=body.request_id||"";
  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return answer({error:"invalid_request"},400);
@@ -26,12 +26,10 @@ Deno.serve(async(req:Request)=>{
  if(readError)return answer({error:"read_failed"},500);
  if(!r||r.user_id!==auth.user.id)return answer({error:"not_found"},404);
  if(r.status!=="pending")return answer({error:"already_reviewed"},409);
- // For Libyana USSD: the customer's intent is not evidence of a transfer.
- // The signed SMS receiver sends the actual review notification once it arrives,
- // with the receipt number, account name and one-time approval buttons.
- if(r.method==="libyana"&&String(r.transfer_reference||"").startsWith("ussd-intent:")){
-   return answer({ok:true,payment_pending:true,notice:"sent_after_sms_receipt"});
- }
+ // Trigger USSD intent alerts only from the authenticated dial-code click.
+ // A click is not proof of payment. Keep all wallet credit guards unchanged.
+ const isUssd=r.method==="libyana"&&String(r.transfer_reference||"").startsWith("ussd-intent:");
+ if(isUssd&&body.action!=="dial_opened")return answer({ok:true,payment_pending:true,notice:"click_dial_code_to_notify"});
  if(Date.now()-new Date(r.created_at).getTime()>60*60*1000)return answer({error:"request_too_old"},409);
  if(r.telegram_notified_at)return answer({ok:true,already_sent:true});
  const now=new Date().toISOString();
@@ -41,8 +39,10 @@ Deno.serve(async(req:Request)=>{
  try{
   const amount=Number(r.amount).toFixed(2);
   const provider=r.method==="libyana"?"ليبيانا":"المدار";
-  const note="⚠️ راجع وصول التحويل الحقيقي قبل القبول. إنشاء الطلب وحده ليس إثبات دفع.";
-  const msg="🔔 طلب شحن محفظة جديد\n\n💰 "+amount+" د.ل\n📱 "+provider+"\n☎️ رقم العميل: "+String(r.phone).slice(0,30)+"\n🆔 رقم الطلب: "+id+"\n\n"+note;
+  const note=isUssd
+    ? "⚠️ الزبون فتح كود الاتصال فقط. هذا ليس إثبات دفع من ليبيانا. تأكد من وصول المبلغ فعليًا قبل القبول."
+    : "⚠️ راجع وصول التحويل الحقيقي قبل القبول. إنشاء الطلب وحده ليس إثبات دفع.";
+  const msg=(isUssd?"📲 ضغط الزبون كود تحويل ليبيانا":"🔔 طلب شحن محفظة جديد")+"\n\n💰 "+amount+" د.ل\n📱 "+provider+"\n☎️ رقم المحوّل: "+String(r.phone).slice(0,30)+"\n🆔 رقم الطلب: "+id+"\n\n"+note;
   await api(token,"sendMessage",{chat_id:Number(admin),text:msg,reply_markup:{inline_keyboard:[[{text:"✅ قبول",callback_data:"wt:a:"+id},{text:"❌ رفض",callback_data:"wt:r:"+id}]]}});
   const {error:markError}=await db.from("topup_requests").update({telegram_notified_at:new Date().toISOString()}).eq("id",id);
   if(markError)console.error("Topup Telegram message sent but marking delivery failed");

@@ -142,3 +142,18 @@
 #topupDedicatedPage .tp-wizard-safety{
   line-height:1.65!important;
 }
+
+
+/* Remove the actual old helper and redundant fixed-provider card regardless
+   of whether an older customer-journey.js was retained by the browser. */
+#topupDedicatedPage #gbWalletGuide,
+#topupDedicatedPage .tp-steps,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-providers{
+  display:none!important;
+}
+/* Display only the single active amount / phone / review task on each screen. */
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-amount-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="2"] .tp-phone-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-wizard-review{
+  margin:4px 0!important;
+}

@@ -36,6 +36,39 @@ jobs:
           const history=read('account-history.js');
           const loader=read('app.js');
           const stepWizard=read('topup-step-wizard.js');
+          const premiumCss=read('topup-premium-illustrated.css');
+          assert(html.includes('topup-premium-illustrated.css?v=purple-mint-art-20261104-1'),
+            'Premium illustrated top-up stylesheet must be loaded after base wallet styling');
+          const artFiles=[
+            'topup-illustration-amount.svg',
+            'topup-illustration-sender.svg',
+            'topup-illustration-review.svg'
+          ];
+          for(const art of artFiles){
+            assert(fs.existsSync(art),'Missing original top-up illustration: '+art);
+            const drawing=read(art);
+            assert(drawing.includes('<svg') && drawing.includes('<defs>') &&
+              drawing.includes('</svg>') && drawing.includes('gradient'),
+              'Top-up artwork must be a complete illustrated SVG: '+art);
+          }
+          assert(stepWizard.includes("stageArt.className='tp-stage-art'") &&
+            stepWizard.includes("stageImage.alt=''") &&
+            stepWizard.includes("stageArt.setAttribute('aria-hidden','true')") &&
+            stepWizard.includes("stageArt.dataset.step=String(stage)"),
+            'All three stages must show accessible decorative art without affecting the inputs');
+          for(const file of artFiles){
+            assert(stepWizard.includes(file),'Illustration must be selected by stage: '+file);
+          }
+          assert(premiumCss.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important') &&
+            premiumCss.includes('.quick-amounts button[aria-pressed="true"]') &&
+            premiumCss.includes('#topupAmount:focus') &&
+            premiumCss.includes('.tp-wizard-notice-card #tpTopupNoticeUnderstood'),
+            'Amount cards, selected state, phone input and فهمت note should be visibly redesigned');
+          assert(premiumCss.includes('data-step="3"') &&
+            premiumCss.includes('prefers-reduced-motion:reduce') &&
+            premiumCss.includes('#topupForm .tp-wizard-review') &&
+            premiumCss.includes('#topupForm .tp-proceed'),
+            'Full recharge experience must be cohesive, responsive and accessible');
           const stepCss=read('topup-step-wizard.css');
           const topupFlow=read('auto-topup.js');
           assert(topupFlow.includes("db.rpc('is_libyana_topup_intake_enabled')") &&
@@ -112,7 +145,7 @@ jobs:
             stepWizard.includes('if(!button||button!==proceed||stage===3)return;'),
             'Removing duplicate copy must not affect three-step recharge navigation or secure checkout');
 
-          assert(html.includes('topup-step-wizard.js?v=manual-without-otp-20261104-1') &&
+          assert(html.includes('topup-step-wizard.js?v=purple-mint-art-20261104-1') &&
             html.includes('topup-step-wizard.css?v=manual-without-otp-20261104-1'),
             'Sequential top-up wizard assets must load after the original checkout');
           assert(html.includes('id="topupProceed"') &&

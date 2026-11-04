@@ -1,0 +1,117 @@
+/* L1017n — one focused wallet top-up step at a time, phone-first safety. */
+#topupDedicatedPage #topupForm[data-tp-wizard-step]{
+  gap:15px!important;
+}
+#topupDedicatedPage #topupForm[data-tp-wizard-step] .tp-steps{
+  display:none!important;
+}
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-phone-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-selected,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] .tp-wizard-review,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="1"] #transferInstructions,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="2"] .tp-providers,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="2"] .tp-amount-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="2"] .tp-wizard-review,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="2"] #transferInstructions,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-providers,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-amount-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-phone-panel,
+#topupDedicatedPage #topupForm[data-tp-wizard-step="3"] .tp-wizard-selected{
+  display:none!important;
+}
+#topupDedicatedPage #topupForm[data-tp-wizard-ready="true"] #topupProceed{
+  display:none!important;
+}
+#topupDedicatedPage #topupForm[data-tp-wizard-step] .tp-progress{
+  order:0;
+  margin:0 0 9px!important;
+  padding:10px 0 4px!important;
+}
+#topupDedicatedPage .tp-progress button:disabled{
+  cursor:default!important;
+  opacity:.52!important;
+}
+#topupDedicatedPage .tp-progress button.tp-wizard-done b{
+  color:#e8d1ff!important;border-color:#a88afa!important;
+  background:#393063!important;
+}
+#topupDedicatedPage .tp-wizard-selected{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:14px 16px;border:1px solid #8262bd84;border-radius:16px;
+  background:linear-gradient(115deg,#282044,#1a1b34);
+  color:#d3c9e7;font-size:13px;
+}
+#topupDedicatedPage .tp-wizard-selected strong{
+  color:#f5ecff;font:900 20px system-ui,sans-serif;white-space:nowrap;
+}
+#topupDedicatedPage .tp-wizard-phone-actions{
+  display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:2px;
+}
+#topupDedicatedPage .tp-wizard-phone-actions button{
+  flex:1 1 130px;min-height:43px;padding:8px 11px;
+  color:#eadbff;background:#33284d;border:1px solid #8466ba;border-radius:12px;
+  font:800 12px 'IBM Plex Sans Arabic',system-ui,sans-serif;
+}
+#topupDedicatedPage .tp-wizard-phone-actions .tp-wizard-verify{
+  color:#101e19;background:#a8e999;border-color:#c0f5b6;
+}
+#topupDedicatedPage .tp-wizard-phone-actions button:disabled{opacity:.6}
+#topupDedicatedPage .tp-wizard-review{
+  display:grid;gap:2px;
+  padding:17px 17px 14px;
+  border:1px solid #8670c6;border-radius:20px;
+  background:linear-gradient(135deg,#242144,#15172d 85%);
+  color:#f2ebff;box-shadow:inset 0 1px #ffffff17,0 9px 22px #0003;
+}
+#topupDedicatedPage .tp-wizard-review-head{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:4px 0 13px;margin-bottom:5px;border-bottom:1px solid #a38cc638;
+}
+#topupDedicatedPage .tp-wizard-review-icon{
+  flex:0 0 37px;width:37px;height:37px;
+  display:grid;place-items:center;
+  border-radius:13px;background:#503383;color:#e7cbff;
+  font-weight:900;font-size:23px;
+}
+#topupDedicatedPage .tp-wizard-review h3{
+  margin:0 0 3px;color:#fff;font-size:19px!important;font-weight:900;
+}
+#topupDedicatedPage .tp-wizard-review-head p{
+  color:#bab4d3;font-size:11px;line-height:1.7;margin:0;
+}
+#topupDedicatedPage .tp-wizard-review-line{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:49px;padding:9px 2px;border-bottom:1px solid #aca5d31f;
+  color:#ada8cf;font-size:13px;
+}
+#topupDedicatedPage .tp-wizard-review-line strong{
+  color:#faf8ff;font-size:16px;font-weight:850;text-align:left;
+}
+#topupDedicatedPage .tp-wizard-safety{
+  margin:13px 0 0;padding:13px;border:1px solid #43785b76;
+  border-radius:13px;background:#183b2b60;color:#b9e3c9;
+  line-height:1.8;font-size:11px;
+}
+#topupDedicatedPage #tpWizardAlert{
+  display:block;margin:0;padding:12px 14px;
+  background:#4a2826a3;border:1px solid #d9857f9c;
+  border-radius:12px;color:#ffd8d2;font-size:12px;line-height:1.7;
+}
+#topupDedicatedPage #tpWizardAlert[hidden]{display:none!important}
+#topupDedicatedPage #topupForm[data-tp-wizard-step] :is(.tp-panel,.tp-wizard-review,.tp-wizard-selected){
+  animation:tpWizardEnter .28s ease-out both;
+}
+@keyframes tpWizardEnter{
+  from{opacity:.45;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:390px){
+ #topupDedicatedPage .tp-wizard-review{padding:14px 12px}
+ #topupDedicatedPage .tp-wizard-review-line strong{font-size:14px}
+ #topupDedicatedPage .tp-wizard-phone-actions button{font-size:11px;padding-inline:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ #topupDedicatedPage #topupForm[data-tp-wizard-step] :is(.tp-panel,.tp-wizard-review,.tp-wizard-selected){
+  animation:none!important
+ }
+}

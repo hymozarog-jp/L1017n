@@ -59,7 +59,7 @@ jobs:
           assert(stepWizard.includes("id='tpTopupSenderNotice'") &&
             stepWizard.includes('tpTopupNoticeUnderstood') &&
             stepWizard.includes('فهمت') &&
-            stepWizard.includes('غير رقمك الموثّق'),
+            stepWizard.includes('مش لازم توثّق رقم ليبيانا'),
             'Phone step must display notice with a real فهمت acknowledgment button');
           assert(stepWizard.includes("const getSenderPhone=()=>") &&
             stepWizard.includes("getSenderPhone,reset") &&

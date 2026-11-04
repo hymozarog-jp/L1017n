@@ -30,7 +30,7 @@
  senderField.className='tp-wizard-sender';
  senderField.innerHTML='<label for="tpTopupSender">رقم المحوّل (ليبيانا)</label>'+
   '<input id="tpTopupSender" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="09xxxxxxxx" dir="ltr">'+
-  '<small>إذا بتحوّل من رقمك الموثّق، اترك الخانة فارغة.</small>';
+  '<small>اكتب رقم ليبيانا اللي بيحوّل. لو رقمك موثّق تقدر تتركه فارغًا.</small>';
  phonePanel.appendChild(senderField);
  const senderInput=senderField.querySelector('#tpTopupSender');
  const normalizePhone=value=>{
@@ -54,7 +54,7 @@
  senderNotice.innerHTML='<section class="tp-wizard-notice-card" dir="rtl">'+
    '<span class="tp-wizard-notice-symbol" aria-hidden="true">!</span>'+
    '<h3 id="tpTopupNoticeTitle">ملاحظة مهمة</h3>'+
-   '<p id="tpTopupNoticeText">عادي تحوّل من رقم ليبيانا غير رقمك الموثّق. بس اكتب رقم المحوّل الصحيح عشان نطابق التحويل. الرصيد يُضاف بعد التحقق وموافقة الإدارة.</p>'+
+   '<p id="tpTopupNoticeText">مش لازم توثّق رقم ليبيانا في حسابك عشان تقدم طلب شحن. اكتب رقم المحوّل الصحيح، والرصيد يُضاف فقط بعد التأكد من وصول المبلغ وموافقة الإدارة.</p>'+
    '<button type="button" id="tpTopupNoticeUnderstood">فهمت</button></section>';
  const understood=senderNotice.querySelector('#tpTopupNoticeUnderstood');
  understood.addEventListener('click',()=>senderNotice.remove());
@@ -93,6 +93,9 @@
  function updateDisplay(){
   selected.querySelector('#tpWizardSelectedAmount').textContent=money();
   review.querySelector('#tpWizardReviewAmount').textContent=money();
+  const hasVerifiedPhone=statusIsVerified();
+  phonePanel.classList.toggle('tp-no-verified',!hasVerifiedPhone);
+  senderInput.setAttribute('aria-required',String(!hasVerifiedPhone));
   review.querySelector('#tpWizardReviewPhone').textContent=getSenderPhone()||'رقم غير صحيح';
  }
  function setStage(next,scroll=true){
@@ -155,14 +158,10 @@
    button.disabled=true;
    try{
     if(phoneCheck)await phoneCheck;
-    if(!statusIsVerified()&&typeof window.renderTopupPhoneStatus==='function'){
-      await window.renderTopupPhoneStatus();
-    }
     if(!page()||stage!==2)return;
-    if(!statusIsVerified()){
-     warning('الحساب يحتاج رقم ليبيانا موثّق للتعرّف عليك.');
-     return;
-    }
+    updateDisplay();
+    // Logged-in customers may submit manually reviewed top-ups without OTP.
+    // Only the sender number is needed for independent SMS/admin matching.
     if(!getSenderPhone()){
      warning('اكتب رقم المحوّل الصحيح، ويبدأ بـ 092 أو 094.');
      senderInput.focus({preventScroll:true});return;

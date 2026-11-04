@@ -10,7 +10,8 @@
   const OFFICIAL_FALLBACK = "game-covers/official/mobile/brainrot.webp?v=official-art-20261102";
   const ART_FALLBACK = "game-covers/roblox.svg";
   const ITEMS = [
-    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" }
+    { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },
+    { key:"steal-dragon", name:"دراقون", latin:"DRAGON", number:"02", emoji:"🐉" }
   ];
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;
@@ -60,7 +61,9 @@ function getClient(){
     const available=!!(product&&product.active&&Number(product.price)>0);
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
-      +'<div class="sab-card-art"><img class="sab-character-image" src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async"><span class="sab-glow" aria-hidden="true"></span></div>'
+      +'<div class="sab-card-art">'+(item.emoji
+        ?'<span class="sab-character-emoji" role="img" aria-label="'+escapeHtml(item.name)+'">'+escapeHtml(item.emoji)+'</span>'
+        :'<img class="sab-character-image" src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async">')+'<span class="sab-glow" aria-hidden="true"></span></div>'
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
@@ -183,7 +186,7 @@ function getClient(){
     const section=document.createElement("section");
     section.className="sab-inner";
     // Open directly to the items for sale: omit the original-game link and oversized hero.
-    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>01 عنصر</small></div>'
+    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>'+String(ITEMS.length).padStart(2,"0")+' عناصر</small></div>'
       +'<div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
     if(typeof window.setRobloxInnerHeader==="function"){

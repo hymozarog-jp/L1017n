@@ -296,3 +296,21 @@ body .topbar .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[da
     display:none!important;
   }
 }
+
+/* Keep the authenticated wallet amount readable without "40..." truncation.
+   JS only scales the typography; this stylesheet never changes balances. */
+#customerWalletChip.gb-libyana-wallet-chip .gb-wallet-balance-content{
+  overflow:visible!important;
+}
+#customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  font-size:var(--l1017-header-balance-font-size,16px)!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  letter-spacing:-.2px!important;
+  font-feature-settings:"tnum" 1;
+}

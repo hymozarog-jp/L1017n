@@ -457,6 +457,7 @@
       <div class="account-settings-list account-core-settings">
         <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="change-phone" aria-label="تغيير رقم الهاتف بعد تأكيده برسالة SMS"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.4"/><path d="M12 8v7m-3.5-3.5L12 15l3.5-3.5"/></svg></span><span class="account-core-copy"><b>تغيير رقم الهاتف</b><small>إرسال رمز SMS للرقم الجديد</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="ranking-privacy" aria-label="خصوصية التصنيف وإظهار الاسم والصورة الشخصية"><span class="account-row-icon account-icon-ranking-privacy" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5.2-3.5 8.5-8 10-4.5-1.5-8-4.8-8-10V7l8-4Z"/><path d="M9 12.3l2.1 2.1 4.1-4.4"/></svg></span><span class="account-core-copy"><b>خصوصية التصنيف</b><small>إظهار أو إخفاء اسمك وصورتك وترتيبك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="history" aria-label="عرض سجل الشحن والمدفوعات"><span class="account-row-icon account-icon-history" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 13h5M7 16h3M16 13h2"/></svg></span><span class="account-core-copy"><b>سجل الشحن والمدفوعات</b><small>تابع شحن محفظتك ومشترياتك وحالة كل عملية</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="notifications"><span class="account-row-icon account-icon-notifications" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="account-core-copy"><b>الإشعارات والتنبيهات</b><small>متابعة حالة طلباتك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
@@ -542,7 +543,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=dial-code-telegram-20261105-1&orders-status-sync=20261105-1';
+      var s=document.createElement('script');s.src='app.js?v=dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -560,6 +561,7 @@
 <!-- Legacy duplicate Libyana phone form removed; accountPhoneGate and Resala OTP remain active. -->
 <script src="resala-otp.js?v=otp-four-minutes2"></script>
 <script src="phone-verification-page.js?v=unified-ui-icons-20261103-1"></script>
+<script src="phone-change-page.js?v=change-phone-verified-20261105-1" defer></script>
 <script src="purchase-phone.js?v=unified-ui-icons-20261103-1"></script>
 <script src="instant-code.js?v=clipboard-fix-20261103-1"></script>
 <script src="nav-bubble.js?v=account-recovery9"></script>
@@ -878,6 +880,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <script src="premium-home.js?v=invite-page-20261103-1" defer></script>
 <link rel="stylesheet" href="personal-phone.css?v=personal-phone12">
 <link rel="stylesheet" href="phone-verification-page.css?v=phone-otp4">
+<link rel="stylesheet" href="phone-change-page.css?v=change-phone-verified-20261105-1">
 <link rel="stylesheet" href="storefront-polish.css?v=navback-gameboxly2">
 <link rel="stylesheet" href="brainrot-store.css?v=dragon-photo-20261105-1">
 <link rel="stylesheet" href="pubg-premium.css?v=restore-safe-pubg1">

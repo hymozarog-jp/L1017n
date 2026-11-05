@@ -41,7 +41,7 @@ Deno.serve(async(request:Request)=>{
   const url=Deno.env.get("SUPABASE_URL")||"",role=serviceKey();
   if(!url||!role)return reply({error:"database_unavailable"},503,origin);
   const client=createClient(url,role,{auth:{persistSession:false,autoRefreshToken:false}});
-  const bearer=request.headers.get("authorization")?.match(/^Bearer\\s+(.+)$/i)?.[1]||"";
+  const bearer=request.headers.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1]||"";
   if(!bearer)return reply({error:"unauthorized"},401,origin);
   const {data:auth,error:authError}=await client.auth.getUser(bearer);
   if(authError||!auth.user?.id||auth.user.is_anonymous)return reply({error:"unauthorized"},401,origin);
@@ -86,7 +86,7 @@ Deno.serve(async(request:Request)=>{
     })}catch{return reply({error:"sms_gateway_unavailable"},502,origin)}
     if(sent.status!==201){console.error("Change-phone SMS failed",sent.status);return reply({error:"sms_gateway_unavailable"},502,origin)}
     let code:string;
-    try{const parsed=await sent.json();code=String(parsed.pin);if(!/^\\d{6}$/.test(code))throw Error("bad_pin")}
+    try{const parsed=await sent.json();code=String(parsed.pin);if(!/^\d{6}$/.test(code))throw Error("bad_pin")}
     catch{return reply({error:"sms_gateway_unavailable"},502,origin)}
     const hash=await otpHash(apiKey,auth.user.id,phone,code);
     const {data:saved,error:storeError}=await client.from("phone_change_requests")
@@ -97,7 +97,7 @@ Deno.serve(async(request:Request)=>{
     return reply({sent:true,pending_phone:"0"+phone,expires_in_seconds:300,retry_after_seconds:240},200,origin);
   }
   const code=String(body.code||"").trim();
-  if(!/^\\d{6}$/.test(code))return reply({error:"invalid_format"},400,origin);
+  if(!/^\d{6}$/.test(code))return reply({error:"invalid_format"},400,origin);
   const {data:pending,error:readError}=await client.from("phone_change_requests")
     .select("old_phone,new_phone").eq("user_id",auth.user.id).maybeSingle();
   if(readError)return reply({error:"database_unavailable"},503,origin);

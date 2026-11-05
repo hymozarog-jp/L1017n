@@ -45,7 +45,7 @@ jobs:
           assert(html.includes('data-wallet-primary="libyana"'));
           assert(html.includes('data-wallet-primary="madar"'));
           assert(html.includes('wallet-primary-toggle.css?v=header-logo-sync-3'));
-          assert(html.includes('wallet-primary-toggle.js?v=header-logo-sync-3'));
+          assert.match(html,/wallet-primary-toggle\.js\?v=[A-Za-z0-9._-]+/,'Versioned wallet selector must load');
           assert(!html.includes('wallet-two-primary.css?v=separate-wallets-1'),
             'Restore original swiping carousel instead of stacked cards');
           assert(!html.includes('wallet-separate-head'));

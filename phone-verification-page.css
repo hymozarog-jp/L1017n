@@ -91,3 +91,22 @@ body.phone-wizard-open{overflow:hidden!important}
 @keyframes pv-float{from{opacity:0;transform:translateY(13px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:380px){#phoneVerifyWizard{padding-inline:11px}#phoneVerifyWizard .pv-phone,#phoneVerifyWizard .pv-code{padding:18px 13px}#phoneVerifyWizard .pv-header{margin-bottom:24px}}
 @media(prefers-reduced-motion:reduce){#phoneVerifyWizard *,#phoneVerifyWizard *:before,#phoneVerifyWizard *:after{animation:none!important;transition:none!important}}
+
+/* Allow customers to release a phone that has not yet passed SMS verification. */
+#phoneVerifyWizard .pv-clear-phone{
+  display:block;
+  width:100%;
+  max-width:450px;
+  min-height:45px;
+  margin:15px auto 0;
+  padding:10px 15px;
+  border:1px solid #ad6a80;
+  border-radius:13px;
+  background:#342031;
+  color:#ffd0d9;
+  font:800 13px 'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;
+  cursor:pointer;
+}
+#phoneVerifyWizard .pv-clear-phone[hidden]{display:none!important}
+#phoneVerifyWizard .pv-clear-phone:disabled{opacity:.55;cursor:wait}
+#phoneVerifyWizard .pv-clear-phone:focus-visible{outline:2px solid #ffd0d9;outline-offset:3px}

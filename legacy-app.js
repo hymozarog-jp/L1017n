@@ -820,7 +820,11 @@ if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
  if(registered){
-   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">الرقم خاص بحسابك. لإثبات ملكيته، أكمل التأكيد برسالة SMS من هذه الصفحة.</p>';
+   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">رقمك موثّق برسالة SMS عند تأكيده. تقدر تغيّره بعد توثيق الرقم الجديد.</p><button type="button" class="btn btn-soft" data-change-account-phone>تغيير رقم الهاتف</button>';
+   phoneGate.querySelector('[data-change-account-phone]')?.addEventListener('click',()=>{
+     if(typeof window.openPhoneChangePage==='function')window.openPhoneChangePage();
+     else toast('خدمة تغيير رقم الهاتف غير متاحة. حدّث الصفحة.');
+   });
  }else{
    phoneGate.innerHTML='<h3>إضافة رقم الهاتف</h3><p>اكتب رقم ليبيانا أو المدار الخاص بك، بعدها بنرسل لك رمز SMS للتوثيق.</p><form id="accountPhoneForm"><label for="accountPhoneInput">رقم الهاتف</label><input id="accountPhoneInput" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="tel-national" required><button class="btn btn-primary" type="submit">حفظ الرقم</button></form><p id="accountPhoneError" role="status"></p>';
    const form=phoneGate.querySelector('#accountPhoneForm');
@@ -1195,6 +1199,7 @@ setTimeout(refreshAdminAccess,0);
  if(action==='personal'){openPersonalDetails();return}
  else if(action==='history'){if(window.L1017nAccountHistory?.open)void window.L1017nAccountHistory.open();else toast('تعذر تحميل سجل الشحن والمدفوعات. حدّث الصفحة.');return}
  else if(action==='verify'){if(typeof window.openPhoneVerificationPage==='function')window.openPhoneVerificationPage();else openPersonalDetails({focusPhone:true});return}
+ else if(action==='change-phone'){if(typeof window.openPhoneChangePage==='function')window.openPhoneChangePage();else toast('خدمة تغيير رقم الهاتف غير متاحة. حدّث الصفحة.');return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='help'){
    // Open the official WhatsApp chat directly instead of a local help panel.
@@ -1233,7 +1238,7 @@ async function openPersonalDetails(options={}){
    '<section class="personal-phone-section" id="personalPhoneSection" aria-label="توثيق رقم الهاتف">'+
     '<div class="personal-phone-heading"><div class="personal-phone-icon" aria-hidden="true">'+
      '<svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>'+
-    '</div><div class="personal-phone-heading-text"><strong>رقم الهاتف والتوثيق</strong><span>تأكيد ملكية الرقم برسالة SMS</span></div>'+
+    '</div><div class="personal-phone-heading-text"><strong>رقم الهاتف والتوثيق</strong><span>تأكيد الرقم وتغييره برسالة SMS</span></div>'+
     '<span id="personalPhoneBadge" class="personal-phone-badge" role="status" aria-live="polite">جاري التحقق</span></div>'+
     '<div id="personalPhoneSlot" class="personal-phone-slot"></div>'+
     '<div class="personal-phone-security"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>'+

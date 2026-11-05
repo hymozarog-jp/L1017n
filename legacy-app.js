@@ -664,14 +664,26 @@ function fitCustomerHeaderBalance(){
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
  const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
- let size=narrow?28:compact?32:34;
- const available=Math.max(20,content.clientWidth-2);
+ let size=narrow?29:compact?34:36;
+ const available=Math.max(20,content.clientWidth-4);
+ // scrollWidth is at least the full element width, even for a short balance.
+ // Measure the rendered TEXT itself so "5.000" stays large instead of
+ // shrinking to the minimum on every visit.
+ const range=document.createRange();
+ range.selectNodeContents(amount);
+ const textWidth=()=>range.getBoundingClientRect().width;
+ amount.style.setProperty('--l1017-header-balance-scale','1');
  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
- // Start with a large, bold amount; shrink only if long balances need it.
- while(size>12 && amount.scrollWidth>available){
+ while(size>19&&textWidth()>available){
   size-=.5;
   amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
  }
+ const width=textWidth();
+ if(width>available){
+  // Exceptionally large balances remain legible without ellipsis.
+  amount.style.setProperty('--l1017-header-balance-scale',String(Math.min(1,available/width)));
+ }
+ range.detach?.();
 }
 function queueCustomerHeaderBalanceFit(){
  if(headerBalanceFitQueued)return;

@@ -19,6 +19,7 @@
    card_submission_rate_limit:"وصلت لحد طلبات الكروت خلال الفترة الحالية. جرّب لاحقًا.",
    server_not_configured:"خدمة استقبال الكروت غير جاهزة حاليًا.",
    submission_failed:"تعذّر تسجيل طلب الكروت. حاول مرة ثانية.",
+   submission_saved_secure_store_failed:"سُجّل طلبك، لكن تعذّر تخزين الأرقام بأمان. أعد المحاولة بنفس الكروت.",
    submission_saved_notify_unavailable:"تم تسجيل الطلب، لكن تعذّر تأكيد إرسال التنبيه. لا تغلق الصفحة وحاول مرة ثانية.",
    submission_saved_notify_failed:"تم حفظ الطلب، لكن تعذّر وصول التنبيه إلى تيليجرام. جرّب إعادة الإرسال بدون تعديل الأرقام."
  };
@@ -82,38 +83,6 @@
    return cards;
  }
  function safeId(text){return String(text||"").replace(/[^a-zA-Z0-9-]/g,"").slice(0,36)}
- function shareText(){
-   if(!submittedCards||!requestId)return "";
-   const lines=submittedCards.map((c,i)=>(i+1)+") كرت "+c.amount+" د.ل\nرقم الكرت: "+c.code);
-   const total=submittedCards.reduce((n,c)=>n+c.amount,0);
-   return "🎟️ طلب شحن محفظة L1017n بكروت ليبيانا\n\n"
-     +"رقم الطلب: "+requestId+"\n"
-     +"عدد الكروت: "+submittedCards.length+"\n"
-     +"المجموع: "+total.toFixed(2)+" د.ل\n\n"
-     +lines.join("\n\n")
-     +"\n\nالطلب قيد المراجعة. يرجى التأكد من الكروت وقيمتها قبل قبول الطلب.";
- }
- async function share(){
-   if(!submittedCards)return;
-   const text=shareText();
-   if(typeof navigator.share==="function"){
-     try{
-       await navigator.share({title:"طلب شحن كروت L1017n",text});
-       setMessage("تم فتح المشاركة. تأكد أن الرسالة أُرسلت إلى محادثة مسؤول المتجر في تيليجرام.");
-       return;
-     }catch(err){
-       if(err?.name==="AbortError"){setMessage("أُلغيت المشاركة. الأرقام ما زالت عندك ويمكنك إعادة المشاركة.");return}
-     }
-   }
-   try{
-     await navigator.clipboard.writeText(text);
-     setMessage("نسخنا تفاصيل الكروت. افتح تيليجرام والصق الرسالة في المحادثة الخاصة بمسؤول المتجر ثم اضغط إرسال.");
-   }catch{
-     const preview=$(".ct-share-fallback");preview.hidden=false;preview.value=text;
-     preview.focus();preview.select();
-     setMessage("انسخ تفاصيل الكروت من المربع وأرسلها إلى مسؤول المتجر في تيليجرام.");
-   }
- }
  function setBusy(active){
    working=active;$(".ct-submit").disabled=active||!!submittedCards;
    $(".ct-add").disabled=active||!!submittedCards||$$(".ct-card").length>=maxCards;
@@ -139,22 +108,23 @@
        throw Object.assign(Error(errors[key]||"تعذّر إرسال الطلب. حاول ثانية."),{reason:key,saved:!!details.saved});
      }
      if(!data?.saved)throw Error("تعذّر تأكيد تسجيل الطلب. حاول ثانية.");
-     submittedCards=cards;
+     submittedCards=cards.map(c=>({amount:c.amount,code:''}));
      $(".ct-success-id").textContent=safeId(requestId);
      $(".ct-success-total").textContent=cards.reduce((n,c)=>n+c.amount,0).toFixed(2)+" د.ل";
      $(".ct-success-count").textContent=String(cards.length);
      $(".ct-entry").hidden=true;
      $(".ct-success").hidden=false;
-     $(".ct-current-step").textContent="الخطوة الأخيرة • إرسال الأرقام الكاملة";
-     setMessage(data.notified?"تم إرسال تنبيه للإدارة. شارك الآن أرقام الكروت كاملة بنفسك عبر تيليجرام.":"تم تسجيل الطلب. شارك الآن أرقام الكروت كاملة في تيليجرام.");
-     // Do not store raw codes in localStorage, URLs, or the server database.
+     $(".ct-current-step").textContent="تم إرسال الطلب للمراجعة";
+     $(".ct-card-code").forEach(input=>{input.value=""});
+     setMessage("تم تسجيل طلب الكروت بأمان. أرقامها محفوظة مشفّرة في لوحة مسؤول المتجر.");
+     // The backend has encrypted the submitted codes; wipe input values locally.
    }catch(e){
      setMessage((e.message||"تعذر إتمام الطلب.")+(e.saved?" لا تغيّر الكروت واضغط تسجيل الطلب مرة ثانية لإعادة المحاولة.":""),true);
    }finally{setBusy(false);update()}
  }
  function close(){
    if(working)return;
-   page?.classList.remove("visible");if(page)page.hidden=true;
+   page?.classList.remove("visible");if(page){page.remove();page=null}submittedCards=null;requestId="";requestSnapshot="";
    document.body.classList.remove("card-topup-open");
    if(focusBefore?.isConnected)focusBefore.focus({preventScroll:true});
  }
@@ -163,16 +133,14 @@
    page=document.createElement("section");page.id="cardTopupPage";page.hidden=true;page.dir="rtl";
    page.setAttribute("role","dialog");page.setAttribute("aria-modal","true");page.setAttribute("aria-labelledby","cardTopupTitle");
    page.innerHTML='<div class="ct-shell"><header class="ct-head"><button type="button" class="ct-back" aria-label="رجوع">›</button><span>L1017n WALLET</span><span class="ct-safe">مراجعة آمنة</span></header>'+
-   '<div class="ct-hero"><div class="ct-hero-art" aria-hidden="true"><svg viewBox="0 0 72 72" width="57" height="57" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="15" width="54" height="42" rx="8"/><path d="M9 28h54M17 45h17M48 42h6"/></svg></div><span class="ct-current-step">شحن المحفظة بطريقة جديدة</span><h1 id="cardTopupTitle">شحن المحفظة بالكروت</h1><p>أضف كرت ليبيانا أو أكثر واكتب مبلغ كل كرت. نرسل تنبيهًا للإدارة، وبعدها تشارك الأرقام الكاملة بنفسك عبر تيليجرام.</p></div>'+
+   '<div class="ct-hero"><div class="ct-hero-art" aria-hidden="true"><svg viewBox="0 0 72 72" width="57" height="57" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="15" width="54" height="42" rx="8"/><path d="M9 28h54M17 45h17M48 42h6"/></svg></div><span class="ct-current-step">شحن المحفظة بطريقة جديدة</span><h1 id="cardTopupTitle">شحن المحفظة بالكروت</h1><p>أضف كرت ليبيانا أو أكثر واكتب مبلغ كل كرت. نرسل تنبيهًا للإدارة ونحفظ الأرقام بصورة مشفّرة في لوحة مراجعة خاصة بالمسؤول.</p></div>'+
    '<section class="ct-entry"><form id="cardTopupForm"><div class="ct-list"></div><button type="button" class="ct-add"><span>＋</span> إضافة كرت جديد</button>'+
    '<div class="ct-summary"><div><small>عدد الكروت</small><strong class="ct-count">1</strong></div><div><small>مجموع المبالغ</small><strong class="ct-total">0.00 د.ل</strong></div></div>'+
    '<p class="ct-warning">مهم: كتابة رقم الكرت وقيمته ليست إثباتًا للشحن. لن يُضاف الرصيد حتى يراجع المسؤول الكروت ويتأكد من قيمتها وصلاحيتها ويعتمد الطلب.</p>'+
    '<button class="ct-submit" type="submit">تسجيل طلب الكروت</button></form></section>'+
    '<section class="ct-success" hidden><div class="ct-ok-icon" aria-hidden="true">✓</div><h2>تم تسجيل طلب الكروت</h2><p>رقم الطلب <strong class="ct-success-id" dir="ltr"></strong></p>'+
    '<div class="ct-success-summary"><span>الكروت: <b class="ct-success-count"></b></span><span>المبلغ: <b class="ct-success-total"></b></span></div>'+
-   '<p>وصل تنبيه بالقيمة وآخر 4 أرقام إلى الإدارة إن كانت الخدمة متاحة. لإكمال الطلب، اضغط مشاركة الكروت واختر محادثة مسؤول متجر L1017n في تيليجرام وأرسل له الأرقام الكاملة.</p>'+
-   '<button type="button" class="ct-share">مشاركة الكروت عبر تيليجرام</button>'+
-   '<textarea class="ct-share-fallback" hidden rows="7" readonly aria-label="تفاصيل الكروت للنسخ"></textarea>'+
+   '<p>أرقام الكروت محفوظة بصورة مشفّرة في لوحة الإدارة، ويتم عرضها فقط للمسؤول المعتمد بعد تسجيل الدخول. الرصيد ينتظر مراجعة المسؤول.</p>'+
    '<button type="button" class="ct-go-wallet">العودة إلى المحفظة</button></section>'+
    '<p class="ct-status" aria-live="polite" role="status"></p></div>';
    document.body.appendChild(page);
@@ -185,13 +153,12 @@
    $("#cardTopupForm").addEventListener("submit",submit);
    $(".ct-back").addEventListener("click",close);
    $(".ct-go-wallet").addEventListener("click",close);
-   $(".ct-share").addEventListener("click",share);
    page.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
    update();
  }
  function open(){
    focusBefore=document.activeElement;create();
-   // A completed request remains available for sharing until this page is closed.
+   // No raw voucher number persists after closing the submitted form.
    page.hidden=false;page.classList.add("visible");document.body.classList.add("card-topup-open");
    $(".ct-back").focus({preventScroll:true});
  }

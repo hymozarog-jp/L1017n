@@ -61,3 +61,25 @@
  #storeRecentPurchases .recent-purchase-live{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){#storeRecentPurchases *,#storeRecentPurchases *::before{animation:none!important;transition:none!important}}
+
+/* Purchase activity lives as an independent home section below FAQs. */
+#storeView > #storeRecentPurchases{
+  position:relative;
+  margin:38px auto 32px;
+  padding-top:25px;
+}
+#storeView > #storeRecentPurchases::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:3%;
+  left:3%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#7392c77d,transparent);
+}
+#storeView > #storeRecentPurchases .recent-purchase-shell{
+  box-shadow:0 20px 48px #03091859, inset 0 1px 0 #b2c7ff17;
+}
+@media(max-width:560px){
+ #storeView > #storeRecentPurchases{margin:28px auto 24px;padding-top:19px}
+}

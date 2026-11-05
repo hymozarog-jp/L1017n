@@ -493,3 +493,25 @@ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customer
   overflow:visible!important;
   white-space:nowrap!important;
 }
+
+/* Harmonized mobile wallet amount: balanced, fully visible digits. */
+body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  font-size:var(--l1017-header-balance-font-size,29px)!important;
+  font-weight:850!important;
+  letter-spacing:-.3px!important;
+  line-height:1.12!important;
+  text-shadow:0 1px 5px #0005!important;
+  text-align:center!important;
+}
+@media(max-width:430px){
+ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+   width:clamp(166px,46vw,186px)!important;
+   max-width:186px!important;
+ }
+}
+@media(max-width:350px){
+ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+   width:148px!important;
+   max-width:148px!important;
+ }
+}

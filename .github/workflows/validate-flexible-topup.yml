@@ -51,7 +51,7 @@ jobs:
           assert.match(js,/renderTopupPhoneStatus/);
           assert.match(js,/topupProceed/);
           assert.match(html,/topup-return\.css\?v=[A-Za-z0-9._-]+/,'Return animation stylesheet must be linked');
-          assert(js.includes("dial.addEventListener('click',()=>{armDialHandoff"),'Dialer handoff must be tracked');
+          assert(js.includes('armDialHandoff(intent.request_id,amount)')&&js.includes("dial.addEventListener('click',onDialCode)"),'Dialer handoff must be tracked');
           assert(js.includes("window.addEventListener('focus'"),'Handle native dialer return');
           assert(js.includes("document.addEventListener('visibilitychange'"),'Handle backgrounded browser');
           assert(js.includes("window.addEventListener('pageshow'"),'Handle mobile browser page restoration');

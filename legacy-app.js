@@ -820,7 +820,7 @@ if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
  if(registered){
-   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">إذا الرقم غير موثّق، تقدر تحذفه من قسم التوثيق وتضيف رقمًا آخر. أما الرقم الموثّق فتقدر تغيّره بعد توثيق الرقم الجديد.</p><button type="button" class="btn btn-soft" data-change-account-phone>تغيير رقم الهاتف</button>';
+   phoneGate.innerHTML='<strong class="profile-phone-label">رقم الهاتف المسجّل</strong><div class="profile-phone-inline"><span dir="ltr" class="profile-phone-number">0'+escapeHtml(registered)+'</span><button type="button" class="profile-phone-change" data-change-account-phone aria-label="تغيير رقم الهاتف وتأكيد الرقم الجديد برسالة SMS"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L9 17l-4 1 1-4z"/></svg><span>تغيير</span></button></div><p class="form-note">تغيير الرقم يتم بعد تأكيد الرقم الجديد برمز SMS، ورصيدك وطلباتك يبقوا محفوظين.</p>';
    phoneGate.querySelector('[data-change-account-phone]')?.addEventListener('click',()=>{
      if(typeof window.openPhoneChangePage==='function')window.openPhoneChangePage();
      else toast('خدمة تغيير رقم الهاتف غير متاحة. حدّث الصفحة.');

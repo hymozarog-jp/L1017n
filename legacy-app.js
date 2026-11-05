@@ -648,6 +648,42 @@ if(RECOVERY_LINK){
 
 let customerHeaderWalletSeq=0;
 let customerHeaderWalletQuery=null;
+let headerBalanceFitBound=false;
+let headerBalanceFitQueued=false;
+let headerBalanceFitObserver=null;
+// Resize only the displayed text; never change the balance from Supabase.
+function fitCustomerHeaderBalance(){
+ const amount=document.getElementById('customerHeaderBalance');
+ const content=amount?.parentElement;
+ if(!amount||!content||!content.clientWidth)return;
+ const compact=window.matchMedia?.('(max-width:430px)').matches===true;
+ let size=compact?17:19;
+ const available=Math.max(20,content.clientWidth-2);
+ amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
+ while(size>9 && amount.scrollWidth>available){
+  size-=1;
+  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
+ }
+}
+function queueCustomerHeaderBalanceFit(){
+ if(headerBalanceFitQueued)return;
+ headerBalanceFitQueued=true;
+ requestAnimationFrame(()=>{
+  headerBalanceFitQueued=false;
+  fitCustomerHeaderBalance();
+ });
+}
+function bindCustomerHeaderBalanceFit(){
+ if(headerBalanceFitBound)return;
+ headerBalanceFitBound=true;
+ window.addEventListener('resize',queueCustomerHeaderBalanceFit,{passive:true});
+ const content=document.querySelector('#customerWalletChip .gb-wallet-balance-content');
+ if(content&&typeof ResizeObserver==='function'){
+  headerBalanceFitObserver=new ResizeObserver(queueCustomerHeaderBalanceFit);
+  headerBalanceFitObserver.observe(content);
+ }
+ if(document.fonts?.ready)document.fonts.ready.then(queueCustomerHeaderBalanceFit).catch(()=>{});
+}
 async function renderCustomerHeaderWallet(user){
  const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
  if(!chip||!amount)return;
@@ -681,6 +717,7 @@ async function renderCustomerHeaderWallet(user){
  }
  if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
+ bindCustomerHeaderBalanceFit();
  amount.textContent='…';
  // The auth event and the detailed account renderer can request this balance
  // together; share their in-flight query instead of fetching it twice.
@@ -701,6 +738,7 @@ async function renderCustomerHeaderWallet(user){
  const shownBalance=Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(3);
   amount.textContent=error?'—':shownBalance;
   amount.setAttribute('aria-label',error?'تعذر عرض رصيد المحفظة':shownBalance+' دينار ليبي');
+  queueCustomerHeaderBalanceFit();
 }
 // Trust only Google avatar hosts or the signed-in user's own uploaded Supabase image.
 function approvedProfilePhoto(user){

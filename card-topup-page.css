@@ -1,0 +1,58 @@
+/* Multi-card Libyana recharge — independent mobile sheet */
+body.card-topup-open{overflow:hidden!important}
+#cardTopupPage{position:fixed;inset:0;z-index:2147481000;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:calc(14px + env(safe-area-inset-top)) 16px calc(42px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 70% -12%,#40568166,transparent 52%),#080f1e;color:#f4f6ff;direction:rtl;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif}
+#cardTopupPage.visible{display:block}
+#cardTopupPage *{box-sizing:border-box}
+#cardTopupPage .ct-shell{max-width:530px;margin:0 auto}
+#cardTopupPage .ct-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;color:#bac8e1;font-weight:750;font-size:13px}
+#cardTopupPage .ct-head>span:first-of-type{flex:1}
+#cardTopupPage .ct-back{display:grid;place-items:center;width:44px;height:44px;background:#1a2944;border:1px solid #40557a;border-radius:14px;color:#fff;font-size:29px;cursor:pointer}
+#cardTopupPage .ct-safe{color:#a9f6d1;padding:7px 10px;border-radius:99px;background:#18493866;border:1px solid #34876b66;font-size:10px}
+#cardTopupPage .ct-hero{text-align:center;margin:10px 0 23px}
+#cardTopupPage .ct-hero-art{display:grid;place-items:center;width:85px;height:85px;border-radius:25px;margin:0 auto 12px;color:#c9e9ff;background:linear-gradient(145deg,#38579b,#214572);box-shadow:0 12px 40px #335ba567}
+#cardTopupPage .ct-current-step{display:inline-block;border:1px solid #6474ad77;background:#445da333;color:#c1d3ff;border-radius:99px;padding:6px 12px;font-size:10px;font-weight:800}
+#cardTopupPage h1{color:#fff;font-weight:900;font-size:clamp(23px,5.5vw,30px);line-height:1.5;margin:10px 0 7px}
+#cardTopupPage .ct-hero p{max-width:420px;color:#aabbd9;font-size:12px;line-height:1.9;margin:0 auto}
+#cardTopupPage .ct-list{display:grid;gap:13px}
+#cardTopupPage .ct-card{border:1px solid #465b81;border-radius:19px;background:linear-gradient(145deg,#1a2a45,#131d34);padding:16px;box-shadow:0 12px 25px #0003}
+#cardTopupPage .ct-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 14px;font-weight:850;color:#f1f5ff;font-size:13px}
+#cardTopupPage .ct-remove-card{background:#47242b;color:#ffb9b6;border:1px solid #904f5780;border-radius:9px;padding:6px 11px;font:750 11px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#cardTopupPage label{display:block;color:#dce7f9;font-weight:750;font-size:12px;margin-top:11px}
+#cardTopupPage .ct-card-code,#cardTopupPage .ct-card-amount{width:100%;display:block;min-height:52px;padding:12px 13px;margin-top:8px;border:1px solid #52658c;border-radius:12px;background:#0c1529;color:#fff;font:750 19px Arial,sans-serif;text-align:left;direction:ltr;outline:0}
+#cardTopupPage input::placeholder{color:#7889ab;font:500 15px 'IBM Plex Sans Arabic',Tahoma,sans-serif;text-align:right}
+#cardTopupPage input:focus{border-color:#b69dff;box-shadow:0 0 0 3px #9e85ec2e}
+#cardTopupPage .ct-code-visibility{text-align:left;margin-top:4px}
+#cardTopupPage .ct-reveal{border:0;background:none;color:#b9c8ff;padding:5px 0;font:750 11px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#cardTopupPage .ct-amount-input{position:relative}
+#cardTopupPage .ct-amount-input input{padding-right:56px}
+#cardTopupPage .ct-amount-input span{position:absolute;right:15px;top:50%;transform:translateY(-36%);color:#b7c5e5;font-size:14px;font-weight:800}
+#cardTopupPage .ct-add{width:100%;min-height:50px;margin:15px 0 0;border:1px dashed #83a1d0;border-radius:13px;background:#172b455c;color:#cee6ff;font:800 13px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#cardTopupPage .ct-add span{font-size:18px;margin-inline-end:6px}
+#cardTopupPage .ct-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:17px 0 10px}
+#cardTopupPage .ct-summary>div{background:#172640;border:1px solid #365276;border-radius:14px;padding:15px 13px;display:grid;gap:7px}
+#cardTopupPage .ct-summary small{color:#a5b9db;font-size:11px}
+#cardTopupPage .ct-summary strong{color:#fff;font-size:18px;font-weight:850;direction:ltr;text-align:right}
+#cardTopupPage .ct-warning{background:#3c301d99;border:1px solid #a47e397a;color:#f4d4a0;font-size:11px;line-height:1.95;padding:12px 14px;border-radius:12px;margin:15px 0}
+#cardTopupPage .ct-submit,#cardTopupPage .ct-share{width:100%;min-height:55px;background:linear-gradient(115deg,#806ce9,#526bdb);border:0;border-radius:14px;color:#fff;font:850 14px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer;box-shadow:0 9px 24px #6657dc44}
+#cardTopupPage button:disabled{opacity:.54;cursor:not-allowed}
+#cardTopupPage button:focus-visible{outline:3px solid #ccc4ff;outline-offset:3px}
+#cardTopupPage .ct-status{color:#bbf4d7;font-size:12px;line-height:1.8;text-align:center;min-height:22px;margin:14px 0}
+#cardTopupPage .ct-status[data-error="true"]{color:#ffb8af}
+#cardTopupPage .ct-success{text-align:center;padding:24px 17px;background:linear-gradient(155deg,#153837,#11263a);border:1px solid #3e7f77;border-radius:21px}
+#cardTopupPage .ct-success[hidden],#cardTopupPage .ct-entry[hidden]{display:none!important}
+#cardTopupPage .ct-ok-icon{display:grid;place-items:center;width:66px;height:66px;margin:0 auto 11px;border-radius:50%;background:#258e75;color:white;font-size:36px}
+#cardTopupPage .ct-success h2{color:#c6fbea;font-size:22px;margin:12px 0}
+#cardTopupPage .ct-success p{font-size:12px;line-height:2;color:#b8d5d6;margin:14px 0}
+#cardTopupPage .ct-success-id{font:850 12px Arial,sans-serif;overflow-wrap:anywhere;color:#fff}
+#cardTopupPage .ct-success-summary{display:flex;justify-content:center;gap:24px;margin:15px 0;background:#142e37;border-radius:13px;padding:13px;color:#e5f3ff;font-size:13px}
+#cardTopupPage .ct-go-wallet{display:block;width:100%;min-height:44px;margin-top:12px;border:1px solid #526b7b;border-radius:12px;background:#162b3d;color:#d1e6f1;font:800 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#cardTopupPage .ct-share-fallback{display:block;width:100%;background:#0c1e2b;border:1px solid #50726d;border-radius:12px;padding:12px;color:#f4fbff;font:12px monospace;direction:rtl;margin-top:12px}
+#cardTopupPage .ct-share-fallback[hidden]{display:none!important}
+#walletView .wallet-card-topup-entry{width:calc(100% - 16px);max-width:680px;margin:6px 8px 16px;display:flex;gap:13px;align-items:center;text-align:right;min-height:60px;padding:11px 16px;border:1px solid #6376a688;border-radius:17px;background:linear-gradient(115deg,#25345b,#132640);color:#eff4ff;font:800 13px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#walletView .wallet-card-topup-entry .ct-wallet-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;background:#6c74bf45;border:1px solid #b1b1ff4a;border-radius:12px;color:#d3d6ff}
+#walletView .wallet-card-topup-entry small{display:block;margin-top:3px;color:#abbdd9;font-size:10px;font-weight:600}
+#walletView .wallet-card-topup-entry .ct-wallet-arrow{margin-inline-start:auto;color:#b6d3e8;font-size:21px}
+#topupDedicatedPage #topupDedicatedCardEntry{padding:11px 14px;border:1px solid #728fb48a;border-radius:12px;background:#21364b;color:#ecf4ff;font:800 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#topupDedicatedPage .tp-dedicated-heading{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+@media(max-width:380px){#cardTopupPage{padding-inline:10px}#cardTopupPage .ct-card{padding:14px 12px}}
+@media(prefers-reduced-motion:reduce){#cardTopupPage *,#cardTopupPage *::before,#cardTopupPage *::after{animation:none!important;transition:none!important}}

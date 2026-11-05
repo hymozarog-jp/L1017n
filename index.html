@@ -565,7 +565,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-picture-pill=20261106-1&wallet-pill-big-number=20261106-1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1';
+      var s=document.createElement('script');s.src='app.js?v=dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-picture-pill=20261106-1&wallet-restore-previous-style=20261106-1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -1001,6 +1001,6 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="topup-step-wizard.css?v=manual-without-otp-20261104-1">
 <link rel="stylesheet" href="topup-premium-illustrated.css?v=wider-mobile-topup-20261104-1">
 <!-- Wallet screenshot reference: intentionally loaded last over old header styles -->
-<link rel="stylesheet" href="wallet-reference-chip.css?v=glossy-5000-reference-20261106-2">
+<link rel="stylesheet" href="wallet-reference-chip.css?v=restore-ref-dark-magenta-20261106-1">
 <script src="topup-step-wizard.js?v=shared-sender-review-20261104-1" defer></script>
 </body></html>

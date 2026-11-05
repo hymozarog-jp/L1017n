@@ -1,0 +1,34 @@
+/* L1017n audited and encrypted prepaid voucher admin screen */
+#accountModern #accountCardAdminButton[hidden]{display:none!important}
+body.card-admin-open{overflow:hidden!important}
+#cardTopupAdminPage{position:fixed;inset:0;z-index:2147483000;display:none;overflow-y:auto;padding:calc(17px + env(safe-area-inset-top)) 14px calc(45px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 85% -15%,#334d8357,transparent 65%),#080e1d;color:#ecf5ff;direction:rtl;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif}
+#cardTopupAdminPage.visible{display:block}
+#cardTopupAdminPage *{box-sizing:border-box}
+#cardTopupAdminPage .ca-shell{max-width:620px;margin:0 auto}
+#cardTopupAdminPage .ca-head{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:#b8c8e0}
+#cardTopupAdminPage .ca-head>span:first-of-type{flex:1}
+#cardTopupAdminPage button{font-family:inherit;cursor:pointer}
+#cardTopupAdminPage .ca-back{min-height:43px;border-radius:12px;border:1px solid #485c83;background:#172643;color:#f4f9ff;padding:8px 15px}
+#cardTopupAdminPage .ca-lock{font-size:10px;color:#a8ebce;background:#1c4b3a44;border:1px solid #36755d;border-radius:99px;padding:7px 9px}
+#cardTopupAdminPage h1{font-size:27px;margin:29px 0 10px;color:#fff}
+#cardTopupAdminPage .ca-intro{font-size:12px;line-height:2;color:#acc0dd;max-width:510px}
+#cardTopupAdminPage .ca-refresh{min-height:43px;padding:9px 15px;border-radius:12px;border:1px solid #8c9de4;color:#e9ebff;background:#273a6a;margin:14px 0}
+#cardTopupAdminPage .ca-list{display:grid;gap:13px}
+#cardTopupAdminPage .ca-request{padding:17px;border:1px solid #3a5076;border-radius:18px;background:linear-gradient(140deg,#17243d,#111c32);box-shadow:0 14px 35px #02061366}
+#cardTopupAdminPage .ca-request-head{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+#cardTopupAdminPage .ca-request-head strong{font-weight:850;color:#fff;font-size:15px}
+#cardTopupAdminPage .ca-status{font-size:11px;padding:5px 11px;border-radius:99px;background:#293b5e;color:#dbe3fa}
+#cardTopupAdminPage .ca-status.approved{background:#174938;color:#b5f6d3}
+#cardTopupAdminPage .ca-status.rejected{background:#4c2630;color:#ffc6c3}
+#cardTopupAdminPage .ca-meta{font-size:12px;color:#a2bcdf;line-height:1.9;margin:13px 0}
+#cardTopupAdminPage .ca-masked{background:#0d182a;padding:12px;border-radius:12px;display:grid;gap:8px;color:#d2deee;font-size:12px;line-height:1.7}
+#cardTopupAdminPage .ca-reveal{display:block;min-height:43px;margin:13px 0 0;padding:9px 17px;border:1px solid #6f77c1;border-radius:12px;background:linear-gradient(115deg,#4c559a,#353b83);color:#fff;font-weight:800;font-size:12px}
+#cardTopupAdminPage .ca-reveal:disabled{opacity:.55;cursor:not-allowed}
+#cardTopupAdminPage .ca-revealed{border:1px solid #8ca68c;border-radius:14px;background:#1b3329;margin-top:12px;padding:13px;display:grid;gap:12px}
+#cardTopupAdminPage .ca-revealed[hidden]{display:none!important}
+#cardTopupAdminPage .ca-secret-line{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+#cardTopupAdminPage .ca-secret-line small{font-size:11px;color:#c0d8ca}
+#cardTopupAdminPage .ca-secret-line b{font:800 17px Arial,sans-serif;color:#fff;overflow-wrap:anywhere;unicode-bidi:isolate;letter-spacing:.04em}
+#cardTopupAdminPage .ca-message{font-size:12px;color:#b9ead2;line-height:1.85;margin:20px 0;text-align:center}
+#cardTopupAdminPage .ca-message[data-error="true"]{color:#ffb5af}
+@media(max-width:370px){#cardTopupAdminPage .ca-request{padding:13px}#cardTopupAdminPage .ca-request-head strong{font-size:13px}}

@@ -657,11 +657,13 @@ function fitCustomerHeaderBalance(){
  const content=amount?.parentElement;
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
- let size=compact?17:19;
+ const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
+ let size=narrow?23:compact?24:26;
  const available=Math.max(20,content.clientWidth-2);
  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
- while(size>9 && amount.scrollWidth>available){
-  size-=1;
+ // Start with a large, bold amount; shrink only if long balances need it.
+ while(size>12 && amount.scrollWidth>available){
+  size-=.5;
   amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
  }
 }

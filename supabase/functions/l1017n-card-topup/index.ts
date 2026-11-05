@@ -2,7 +2,7 @@
  * Authenticated Libyana prepaid-card top-up submissions.
  * Card numbers are never stored, logged or returned to the browser:
  * only HMAC fingerprints and last-four digits are retained by PostgreSQL.
- * Raw card numbers go solely to the private Telegram store admin.
+ * Only masked card numbers are forwarded to the private Telegram administrator.
  * A claim is NEVER credited automatically. Admin must redeem/verify first.
  */
 import { createClient } from "npm:@supabase/supabase-js@2.75.0";
@@ -103,7 +103,7 @@ Deno.serve(async(request:Request)=>{
   .select("id").maybeSingle();
  if(claimError)return reply({error:"submission_saved_notify_unavailable",saved:true,request_id:id},503,origin);
  if(!claimed)return reply({ok:true,saved:true,notification_pending:true,request_id:id},200,origin);
- const lines=cards.map((c,i)=>String(i+1)+") كرت "+c.amount.toFixed(2)+" د.ل\n🔐 رقم الكرت: "+c.code);
+ const lines=cards.map((c,i)=>String(i+1)+") كرت "+c.amount.toFixed(2)+" د.ل\n🔐 آخر 4 أرقام: ••••"+c.last4);
  const msg="🎟️ طلب شحن محفظة بكروت ليبيانا\n\n"
    +"🧾 الطلب: "+id+"\n"
    +"👤 الحساب: "+String(user.email||"مستخدم").slice(0,100)+"\n"
@@ -111,7 +111,7 @@ Deno.serve(async(request:Request)=>{
    +"🧮 عدد الكروت: "+cards.length+"\n"
    +"💰 الإجمالي المطلوب: "+total.toFixed(2)+" د.ل\n\n"
    +lines.join("\n\n")
-   +"\n\n⚠️ المبالغ كتبها العميل. افحص كل كرت واستخدمه وتأكد من قيمته وصلاحيته قبل الضغط على «قبول». لا يتم شحن المحفظة قبل اعتمادك.";
+   +"\n\n⚠️ المبالغ كتبها العميل. تنبيه فقط: الأرقام الكاملة يرسلها العميل بنفسه عبر تيليجرام. لا تقبل الطلب حتى تستلم جميع الكروت وتتحقق من قيمتها وتستخدمها.";
  try{
   const tg=await fetch("https://api.telegram.org/bot"+tgToken+"/sendMessage",{
    method:"POST",headers:{"content-type":"application/json"},

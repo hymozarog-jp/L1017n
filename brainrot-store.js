@@ -58,7 +58,9 @@ function getClient(){
     return Number.isFinite(amount)&&amount>0?amount.toFixed(2)+" د.ل":"السعر قريبًا";
   }
   function productCard(item,product){
-    const available=!!(product&&product.active&&Number(product.price)>0);
+    const limitedStock=product?.product_key==="steal-garama";
+    const remaining=Number(product?.stock_quantity);
+    const available=!!(product&&product.active&&Number(product.price)>0&&(!limitedStock||(Number.isInteger(remaining)&&remaining>0)));
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
       +'<div class="sab-card-art">'+(item.emoji
@@ -66,6 +68,7 @@ function getClient(){
         :'<img class="sab-character-image" src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async">')+'<span class="sab-glow" aria-hidden="true"></span></div>'
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
+      +(limitedStock?'<span class="sab-stock-badge '+(available?'in-stock':'out-of-stock')+'">'+(available?'المتوفر: '+remaining:'نفدت الكمية')+'</span>':'')
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
       +(available?'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">فتح القائمة</button>'
         :'<span class="sab-unavailable">غير متوفر</span>')
@@ -80,7 +83,8 @@ function getClient(){
     target.querySelectorAll("[data-steal-buy]").forEach(b=>{
       b.addEventListener("click",()=>{
         const product=map.get(b.dataset.stealBuy);
-        if(product&&Number(product.price)>0&&product.active) openCheckout(product);
+        if(product&&Number(product.price)>0&&product.active&&
+           (product.product_key!=="steal-garama"||(Number.isInteger(Number(product.stock_quantity))&&Number(product.stock_quantity)>0))) openCheckout(product);
       });
     });
   }
@@ -92,7 +96,7 @@ function getClient(){
       renderItems(section,[]);
       return;
     }
-    const result=await client.from("products").select("id,product_key,name,game,price,active").eq("game","steal-a-brainrot").order("sort_order");
+    const result=await client.from("products").select("id,product_key,name,game,price,active,stock_quantity").eq("game","steal-a-brainrot").order("sort_order");
     if(!section.isConnected)return;
     if(result.error){
       renderItems(section,[]);

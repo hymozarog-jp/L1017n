@@ -85,7 +85,7 @@ function walletTransactionRows(list){
   const statusDetail=state==='approved'?'تم اعتماد الشحن وإضافة الرصيد':state==='rejected'?'مرفوض':'بانتظار مراجعة الإدارة';
   const statusShort=state==='approved'?'مكتمل':state==='rejected'?'مرفوض':'معلّق';
   const step=state==='approved'?'done':state==='rejected'?'stopped':'current';
-  const carrier=x.method==='libyana'?'ليبيانا':'المدار';
+  const carrier=String(x.transfer_reference||'').startsWith('card-batch:')?'بالكروت':x.method==='libyana'?'ليبيانا':'المدار';
   const provider=x.method==='libyana'?'libyana':'madar';
   const value=Number(x.amount),amount=Number.isFinite(value)?value.toFixed(2):'—';
   const date=new Date(x.created_at),shownDate=Number.isNaN(date.getTime())?'غير متوفر':date.toLocaleString('ar-LY',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -166,7 +166,7 @@ async function renderOrders(){
      return {src:'game-covers/order-robux-premium.webp',name:'روبلوكس',style:'orders-icon-robux'};
    return null;
  };
- const label=x=>x.kind==='topup'?'شحن '+(x.method==='libyana'?'ليبيانا':'المدار الجديد'):(x.product_name||'طلب شراء');
+ const label=x=>x.kind==='topup'?(String(x.transfer_reference||'').startsWith('card-batch:')?'شحن بالكروت':'شحن '+(x.method==='libyana'?'ليبيانا':'المدار الجديد')):(x.product_name||'طلب شراء');
  const date=x=>new Date(x.created_at).toLocaleDateString('en-GB',{timeZone:'Africa/Tripoli'});
  const orderTime=x=>new Date(x.created_at).toLocaleTimeString('ar-LY',{timeZone:'Africa/Tripoli',hour:'2-digit',minute:'2-digit'});
  const stageFor=x=>{

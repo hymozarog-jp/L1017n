@@ -664,7 +664,7 @@ function fitCustomerHeaderBalance(){
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
  const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
- let size=narrow?27:compact?30:35;
+ let size=narrow?24:compact?26:29;
  const available=Math.max(20,content.clientWidth-4);
  // scrollWidth is at least the full element width, even for a short balance.
  // Measure the rendered TEXT itself so "5.000" stays large instead of

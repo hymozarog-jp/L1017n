@@ -40,7 +40,9 @@ async function invoke(action,code){
  }
  return data||{};
 }
-function toggleClear(show){const button=$('.pv-clear-phone');if(button){button.hidden=!show;button.disabled=busy}}
+function toggleClear(show){
+ for(const el of [$(".pv-clear-phone"),$(".pv-save-phone")])if(el){el.hidden=!show;el.disabled=busy}
+}
 function verified(){
  locked=true;stop();step("done");toggleClear(false);status("");
  $(".pv-verified-number").textContent="0"+saved;
@@ -48,7 +50,7 @@ function verified(){
    void window.L1017nPersonalPremium.refreshFromServer();
 }
 function setBusy(on){
- busy=on;$(".pv-check").disabled=on;$(".pv-number").disabled=on||!!saved;
+ busy=on;$(".pv-check").disabled=on;$(".pv-number").disabled=on;toggleClear(!!saved&&!locked);
  progress(Math.max(0,Math.ceil((until-Date.now())/1000)));
 }
 function applyState(data){
@@ -74,16 +76,50 @@ async function load(seq){
   toggleClear(false);
   $(".pv-number").value=saved?"0"+saved:"";
   $(".pv-number").readOnly=!!saved;
-  $(".pv-hint").textContent=saved?"هذا رقمك المحفوظ في حسابك. لتغييره افتح «حسابي ← تغيير رقم الهاتف» وأكد الرقم الجديد برمز SMS.":"أدخل رقم ليبيانا أو المدار اللي تملكه. سيُربط بحسابك عند الحفظ.";
+  $(".pv-hint").textContent=saved?"جاري فحص حالة توثيق الرقم…":"أدخل رقم ليبيانا أو المدار اللي تملكه. سيُربط بحسابك عند الحفظ.";
   if(!saved){step("phone");progress(0);status("");return}
   const state=await invoke("status");
   if(seq!==opened)return;
   if(state.verified){applyState(state);return}
+  $(".pv-number").readOnly=false;
+  $(".pv-hint").textContent="رقمك غير موثّق. تقدر تعدّله هنا، ثم اضغط «حفظ الرقم الجديد» قبل إرسال رمز SMS.";
   toggleClear(true);
   if(state.configured===false){status(ERR.not_configured,true);return}
   applyState(state);
   status(state.code_pending?"أدخل رمز SMS الذي وصلك.":state.retry_after_seconds?"انتظر انتهاء العدّاد قبل رمز جديد.":"");
  }catch(e){if(seq===opened)status(e.message||"تعذر تحميل الرقم.",true)}
+}
+async function saveChangedNumber(){
+ if(!saved||locked||busy)return;
+ const v=normalize($(".pv-number").value);
+ if(!v){status("اكتب رقمًا ليبيًا صحيحًا يبدأ بـ09 (10 أرقام).",true);$(".pv-number").focus();return}
+ if(v===saved){status("هذا نفس رقمك المحفوظ. إذا تحب تغيّره اكتب الرقم الجديد.",true);return}
+ setBusy(true);status("جاري حفظ الرقم الجديد…");
+ try{
+  const {data,error}=await client().rpc("replace_my_unverified_phone",{p_phone:v});
+  if(error){
+   const message=String(error.message||"");
+   if(message.includes("phone_already_verified"))throw Error("رقمك موثّق بالفعل. لازم تستخدم تغيير الرقم برسالة SMS.");
+   if(message.includes("phone_already_registered")||message.includes("duplicate key"))throw Error("هذا الرقم مستخدم في حساب آخر. اكتب رقمًا ثانيًا.");
+   throw Error("تعذر تغيير الرقم. حاول مرة ثانية.");
+  }
+  if(data!==v)throw Error("ما تأكد تغيير الرقم. حدّث الصفحة وحاول مجددًا.");
+  saved=v;
+  $(".pv-number").value="0"+v;
+  $(".pv-number").readOnly=false;
+  $(".pv-code-input").value="";
+  step("phone");
+  try{
+   const state=await invoke("status");
+   progress(Math.min(240,Math.max(0,Number(state.retry_after_seconds)||0)));
+  }catch(_){progress(0)}
+  status("تم تغيير الرقم بنجاح. أرسل رمز التحقق للرقم الجديد عندما ينتهي العدّاد.");
+  if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
+  if(typeof renderWallet==="function")void Promise.resolve(renderWallet()).catch(()=>{});
+  if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
+   void Promise.resolve(window.L1017nPersonalPremium.refreshFromServer()).catch(()=>{});
+ }catch(e){status(e.message||"تعذر تغيير الرقم.",true)}
+ finally{setBusy(false)}
 }
 async function clearSavedNumber(){
  if(!saved||busy||locked)return;
@@ -111,7 +147,7 @@ async function send(){
  if(busy||locked||Date.now()<until)return;
  const v=normalize($(".pv-number").value);
  if(!v){step("phone");status("اكتب رقمًا ليبيًا صحيحًا يبدأ بـ09 (10 أرقام).",true);$(".pv-number").focus();return}
- if(saved&&saved!==v){status("الرقم لا يطابق رقم حسابك.",true);return}
+ if(saved&&saved!==v){status("احفظ الرقم الجديد أولًا بالزر الموجود تحت خانة الهاتف.",true);return}
  setBusy(true);status("جاري إرسال رمز التحقق…");
  try{
   if(!saved){
@@ -156,9 +192,9 @@ function create(){
  +'<div class="pv-body"><div class="pv-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="35" height="35" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18h3"/></svg></div>'
  +'<p class="pv-phase">الخطوة الأولى • إدخال الهاتف</p><h1 class="pv-heading" id="phoneWizardHeading">توثيق رقم الهاتف</h1>'
  +'<p class="pv-lead">ثبّت ملكية رقمك برسالة SMS لحماية حسابك وطلبات الشراء.</p>'
- +'<div class="pv-phone"><label for="pvWizardNumber">اكتب رقم تلفونك</label><div class="pv-input-row"><span dir="ltr">+218</span><input class="pv-number" id="pvWizardNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15"/></div><p class="pv-hint">اكتب رقم ليبيانا أو المدار الذي تملكه.</p><button type="button" class="pv-action pv-send">إرسال رمز التحقق</button></div>'
- +'<div class="pv-code" hidden><p class="pv-sent">تم طلب إرسال رمز إلى <b class="pv-code-number" dir="ltr"></b></p><form class="pv-verify"><label for="pvWizardCode">رمز التحقق من SMS</label><input id="pvWizardCode" class="pv-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required dir="ltr"/><button class="pv-action pv-check" type="submit">تأكيد الرمز</button></form><p class="pv-code-tip">الرمز صالح 5 دقائق. لا تشاركه مع أي شخص.</p><button type="button" class="pv-resend" disabled>إعادة إرسال الرمز بعد 04:00</button></div>'
- +'<div class="pv-done" hidden><span class="pv-done-icon" aria-hidden="true"><svg class="l1017-icon"><use href="#l1017-icon-check-circle"></use></svg></span><h3>تم توثيق رقمك</h3><p>الرقم <b class="pv-verified-number" dir="ltr"></b> موثّق بنجاح.</p><button type="button" class="pv-action pv-finish">العودة إلى حسابي</button></div>'
+ +'<div class="pv-phone"><label for="pvWizardNumber">اكتب رقم تلفونك</label><div class="pv-input-row"><span dir="ltr">+218</span><input class="pv-number" id="pvWizardNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15"/></div><p class="pv-hint">اكتب رقم ليبيانا أو المدار الذي تملكه.</p><button type="button" class="pv-save-phone" hidden>حفظ الرقم الجديد</button><button type="button" class="pv-action pv-send">إرسال رمز التحقق</button></div>'
+ +'<div class="pv-code" hidden><p class="pv-sent">تم طلب إرسال رمز إلى <b class="pv-code-number" dir="ltr"></b></p><form class="pv-verify"><label for="pvWizardCode">رمز التحقق من SMS</label><input id="pvWizardCode" class="pv-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required dir="ltr"/><button class="pv-action pv-check" type="submit">تأكيد الرمز</button></form><p class="pv-code-tip">الرمز صالح 5 دقائق. لا تشاركه مع أي شخص.</p><button type="button" class="pv-resend" disabled>إعادة إرسال الرمز بعد 04:00</button><button type="button" class="pv-change-from-code">تغيير رقم الهاتف</button></div>'
+ +'<div class="pv-done" hidden><span class="pv-done-icon" aria-hidden="true"><svg class="l1017-icon"><use href="#l1017-icon-check-circle"></use></svg></span><h3>تم توثيق رقمك</h3><p>الرقم <b class="pv-verified-number" dir="ltr"></b> موثّق بنجاح.</p><button type="button" class="pv-action pv-finish">العودة إلى حسابي</button><button type="button" class="pv-done-change">تغيير رقم الهاتف</button></div>'
  +'<div class="pv-wait"><div class="pv-wait-row"><span>إعادة إرسال الرمز</span><strong class="pv-time" dir="ltr">04:00</strong></div><div class="pv-bar"><i class="pv-bar-fill"></i></div><small>إذا لم تصلك الرسالة، يمكنك طلب رمز آخر بعد انتهاء العدّاد.</small></div>'
  +'<button type="button" class="pv-clear-phone" hidden>حذف الرقم غير الموثّق</button>'
   +'<p class="pv-status" role="status" aria-live="polite"></p><p class="pv-security">رمز التحقق خاص بك. لن نطلب كلمة المرور أو رمز SMS في المحادثة.</p>'
@@ -168,6 +204,17 @@ function create(){
  $(".pv-finish").addEventListener("click",close);
  $(".pv-send").addEventListener("click",send);
  $(".pv-clear-phone").addEventListener("click",clearSavedNumber);
+ $(".pv-save-phone").addEventListener("click",saveChangedNumber);
+ $(".pv-change-from-code").addEventListener("click",()=>{
+  if(locked)return;
+  step("phone");status("عدّل الرقم ثم اضغط «حفظ الرقم الجديد» قبل إرسال رمز SMS.");
+  $(".pv-number").readOnly=false;$(".pv-number").focus();
+ });
+ $(".pv-done-change").addEventListener("click",()=>{
+  close();
+  if(typeof window.openPhoneChangePage==="function")window.openPhoneChangePage();
+  else window.alert("صفحة تغيير الرقم غير جاهزة. حدّث الموقع وحاول مرة ثانية.");
+ });
  $(".pv-resend").addEventListener("click",send);
  $(".pv-verify").addEventListener("submit",verify);
  panel.addEventListener("keydown",e=>{if(e.key==="Escape")close()});

@@ -664,7 +664,7 @@ function fitCustomerHeaderBalance(){
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
  const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
- let size=narrow?29:compact?34:36;
+ let size=narrow?24:compact?26:29;
  const available=Math.max(20,content.clientWidth-4);
  // scrollWidth is at least the full element width, even for a short balance.
  // Measure the rendered TEXT itself so "5.000" stays large instead of
@@ -674,7 +674,7 @@ function fitCustomerHeaderBalance(){
  const textWidth=()=>range.getBoundingClientRect().width;
  amount.style.setProperty('--l1017-header-balance-scale','1');
  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
- while(size>19&&textWidth()>available){
+ while(size>16&&textWidth()>available){
   size-=.5;
   amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
  }

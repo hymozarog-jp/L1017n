@@ -9,11 +9,13 @@
   // Product-specific cutout PNG artwork: no black screenshot background.
   var mm2DeathshardImage='game-covers/mm2-deathshard.png?v=local-cutout1';
   var mm2ElderwoodBladeImage='game-covers/mm2-elderwood-blade.png?v=local-cutout1';
+  var mm2NightbladeImage='game-covers/mm2-nightblade.svg?v=nightblade-20261105-1';
   function mm2Artwork(product){
     var key=String(product&&product.product_key||'');
     if(key==='mm2-minty-gun')return mm2MintyImage;
     if(key==='mm2-deathshard')return mm2DeathshardImage;
     if(key==='mm2-elderwood-blade')return mm2ElderwoodBladeImage;
+    if(key==='mm2-nightblade')return mm2NightbladeImage;
     return '';
   }
 var styleId='robloxGamePageStyles';
@@ -216,12 +218,13 @@ var styleId='robloxGamePageStyles';
         var art=image
           ? '<span class="mm2-item-art"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+image+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
-        var available=x.active===true;
+        var priced=Number(x.price)>0;
+        var available=x.active===true&&priced;
         return '<button class="rgp-package'+(available?'':' rgp-soldout')+'" type="button"'+
           (available?' data-mm2-id="'+escapeHtml(x.id)+'"':' disabled aria-disabled="true"')+'>'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
-          '<span class="mm2-price">'+Number(x.price||0).toFixed(2)+' د.ل</span>'+
-          '<small class="mm2-delivery">'+(available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">فتح القائمة ←</span>':'')+'</button>';
+          '<span class="mm2-price">'+(priced?Number(x.price).toFixed(2)+' د.ل':'السعر قريبًا')+'</span>'+
+          '<small class="mm2-delivery">'+(!priced?'بانتظار تحديد السعر':available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">فتح القائمة ←</span>':'')+'</button>';
       }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;

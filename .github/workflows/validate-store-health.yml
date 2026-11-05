@@ -464,7 +464,7 @@ jobs:
             'Bell animation needs reduced-motion support');
           assert(bellCss.includes('order:9!important;') && bellCss.includes('order:10!important;'),
             'Bell and avatar must have adjacent RTL order, avatar on far left');
-          assert.match(html,/header-notification-bell\\.css\\?v=[A-Za-z0-9._-]+/,
+          assert.match(html,/header-notification-bell\.css\?v=[A-Za-z0-9._-]+/,
             'Circular bell and wallet balance stylesheet must use a versioned URL');
           assert(bellCss.includes('width:42px!important;') &&
             bellCss.includes('height:42px!important;') &&

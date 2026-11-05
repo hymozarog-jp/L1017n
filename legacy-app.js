@@ -839,6 +839,9 @@ const modern=$('#accountModern');if(modern){modern.classList.toggle('hidden',!us
  if(typeof window.renderResalaOtp==='function'){
   try{await window.renderResalaOtp(user)}catch(err){console.warn('[account/phone] Optional SMS widget failed:',err)}
  }
+ if(typeof window.L1017nCardTopupAdmin?.sync==='function'){
+   void Promise.resolve(window.L1017nCardTopupAdmin.sync(user)).catch(()=>{});
+ }
 }
 let accountRenderInProgress=null;
 async function renderAccount(){

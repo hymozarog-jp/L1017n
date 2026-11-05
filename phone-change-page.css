@@ -1,0 +1,42 @@
+/* L1017n secure customer phone replacement; mobile-first. */
+body.phone-change-open{overflow:hidden!important}
+#phoneChangeWizard{position:fixed;inset:0;z-index:2147482500;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 18px) 15px calc(env(safe-area-inset-bottom) + 36px);background:radial-gradient(ellipse at 50% -20%,#3c478250,#070d1b 58%),#070b16;color:#f3f6ff;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;direction:rtl}
+#phoneChangeWizard.visible{display:block}
+#phoneChangeWizard *,#phoneChangeWizard *::before,#phoneChangeWizard *::after{box-sizing:border-box}
+#phoneChangeWizard .pc-shell{width:min(100%,470px);margin:0 auto;padding:0 2px}
+#phoneChangeWizard .pc-header{display:flex;align-items:center;gap:12px;color:#c7d5ef;font-size:13px;margin-bottom:32px}
+#phoneChangeWizard .pc-header b{flex:1}
+#phoneChangeWizard .pc-back{display:grid;place-items:center;flex:0 0 43px;height:43px;border-radius:13px;background:#1b2844;border:1px solid #354b73;font-size:30px;line-height:1;color:#fff;cursor:pointer}
+#phoneChangeWizard .pc-hero{text-align:center;margin:0 0 24px}
+#phoneChangeWizard .pc-hero-icon{display:grid;place-items:center;width:74px;height:74px;border-radius:23px;margin:0 auto 14px;background:linear-gradient(135deg,#8971e9,#4e75b7);box-shadow:0 14px 33px #5946e453;font-size:34px;color:white}
+#phoneChangeWizard .pc-hero h2{font-size:clamp(24px,5.3vw,30px);line-height:1.5;font-weight:900;margin:9px 0;color:#fff}
+#phoneChangeWizard .pc-hero p{font-size:12px;line-height:2;color:#afc2e1;max-width:356px;margin:0 auto}
+#phoneChangeWizard .pc-current-panel{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;margin-bottom:13px;background:#17213a;border:1px solid #3b4c75;border-radius:17px;color:#bbcae3;font-size:12px}
+#phoneChangeWizard .pc-current-panel strong{color:#fff;font:800 17px Arial,sans-serif;unicode-bidi:isolate}
+#phoneChangeWizard .pc-entry,#phoneChangeWizard .pc-code,#phoneChangeWizard .pc-done{padding:22px 18px;background:linear-gradient(148deg,#16233d,#0e182d);border:1px solid #3e5182;border-radius:21px;box-shadow:0 16px 40px #02061466}
+#phoneChangeWizard .pc-entry[hidden],#phoneChangeWizard .pc-code[hidden],#phoneChangeWizard .pc-done[hidden]{display:none!important}
+#phoneChangeWizard label{display:block;color:#e6edff;font-weight:800;font-size:13px;margin-bottom:11px}
+#phoneChangeWizard .pc-input-row{display:flex;align-items:center;direction:ltr;gap:8px;border-radius:13px;border:1px solid #53689b;background:#0b1427;padding:0 13px;min-height:59px}
+#phoneChangeWizard .pc-input-row span{font:800 15px Arial,sans-serif;color:#b4c3e9}
+#phoneChangeWizard input{border:0;outline:0;background:transparent;color:#fff;font:800 20px Arial,sans-serif;direction:ltr;width:100%;min-width:0;min-height:56px}
+#phoneChangeWizard input::placeholder{color:#7788aa}
+#phoneChangeWizard input:focus-visible{outline:2px solid #afa1ff;outline-offset:2px;border-radius:7px}
+#phoneChangeWizard .pc-entry p,#phoneChangeWizard .pc-code>p{color:#aebdde;font-size:12px;line-height:1.9;margin:12px 0 17px}
+#phoneChangeWizard .pc-primary{width:100%;min-height:51px;padding:11px;border:0;border-radius:13px;background:linear-gradient(110deg,#9378f6,#6266d9);color:#fff;font:850 14px 'IBM Plex Sans Arabic',Tahoma,sans-serif;box-shadow:0 7px 22px #5041d647;cursor:pointer}
+#phoneChangeWizard button:disabled{opacity:.58;cursor:not-allowed}
+#phoneChangeWizard button:focus-visible{outline:3px solid #d4c6ff;outline-offset:3px}
+#phoneChangeWizard .pc-code{text-align:center}
+#phoneChangeWizard .pc-code>p strong,#phoneChangeWizard .pc-done-number{color:#fff;font:800 14px Arial,sans-serif}
+#phoneChangeWizard .pc-code input{height:63px;padding:12px;text-align:center;letter-spacing:.23em;margin:0 0 15px;border:1px solid #6172a4;border-radius:14px;background:#0b142a;font-size:27px}
+#phoneChangeWizard .pc-resend-box{display:flex;justify-content:space-between;align-items:center;gap:9px;border-radius:12px;margin:18px 0 11px;padding:12px 14px;background:#111d34;color:#bccaea;font-size:12px}
+#phoneChangeWizard .pc-resend-box b{color:#fff;font:850 17px Arial,sans-serif}
+#phoneChangeWizard .pc-resend{min-height:40px;padding:9px 16px;border:1px solid #4c5d8c;border-radius:11px;background:#25345a;color:#d5dafa;font:750 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
+#phoneChangeWizard .pc-status{min-height:25px;margin:16px 4px 0;color:#b5f2ce;font-size:12px;line-height:1.9;text-align:center}
+#phoneChangeWizard .pc-status[data-error="true"]{color:#ffc0b9}
+#phoneChangeWizard .pc-done{text-align:center;border-color:#399876;background:linear-gradient(150deg,#144334,#10282f)}
+#phoneChangeWizard .pc-done>span{display:grid;place-items:center;width:65px;height:65px;margin:0 auto 14px;border-radius:50%;background:#269870;font-size:34px;color:#fff}
+#phoneChangeWizard .pc-done h3{font-size:22px;margin:9px 0 13px;color:#bfffdc}
+#phoneChangeWizard .pc-done p{font-size:13px;line-height:1.9;color:#d7efe7;margin:0 0 21px}
+#accountPhoneGate [data-change-account-phone]{display:block;margin-top:10px;min-height:41px}
+@media(max-width:360px){#phoneChangeWizard{padding-inline:10px}#phoneChangeWizard .pc-entry,#phoneChangeWizard .pc-code{padding:19px 13px}}
+@media(prefers-reduced-motion:reduce){#phoneChangeWizard *,#phoneChangeWizard *::before,#phoneChangeWizard *::after{animation:none!important;transition:none!important}}

@@ -148,7 +148,7 @@ window.renderResalaOtp=async function(user){
    function tick(){
      if(!box.isConnected){stopResendTicker();return}
      const remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
-     send.disabled=remaining>0;
+     send.disabled=remaining>0||state.configured===false;
      send.textContent=remaining>0?"رمز جديد بعد "+String(Math.floor(remaining/60)).padStart(2,"0")+":"+String(remaining%60).padStart(2,"0")
        :"إعادة إرسال الرمز";
      if(remaining===0)stopResendTicker();
@@ -172,7 +172,7 @@ window.renderResalaOtp=async function(user){
      catch(_){}
    }
   }
-  finally{if(!resendTicker)send.disabled=false}
+  finally{if(!resendTicker)send.disabled=state.configured===false}
  });
  form.addEventListener("submit",async function(event){
   event.preventDefault();

@@ -98,3 +98,24 @@
 #robloxGamePage .sab-card-label{overflow-wrap:anywhere;line-height:1.5}
 #robloxGamePage .sab-item-card h3{line-height:1.5}
 @media(max-width:720px){#robloxGamePage .sab-card-art{min-height:135px}#robloxGamePage .sab-card-art .sab-character-image{height:145px}}
+
+/* Inactive Brainrot items retain their artwork and price, but cannot be purchased. */
+#robloxGamePage .sab-item-card.sab-pending{
+  border-color:#72585f;
+  background:linear-gradient(145deg,#241d28,#161722);
+}
+#robloxGamePage .sab-item-card.sab-pending .sab-character-image{
+  opacity:.76;
+}
+#robloxGamePage .sab-item-card.sab-pending .sab-unavailable{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border:1px solid #e18b9b80;
+  border-radius:11px;
+  background:#b6405830;
+  color:#ffc7d1;
+  font-weight:900;
+  white-space:nowrap;
+}

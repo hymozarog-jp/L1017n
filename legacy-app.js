@@ -742,7 +742,7 @@ async function renderCustomerHeaderWallet(user){
  // another signed-in user's balance from remaining on screen after a switch.
  const balanceContext=user.id+':'+carrier;
  if(chip.dataset.balanceContext!==balanceContext ||
-    !/^\\d+(?:\\.\\d{1,3})?$/.test(String(amount.textContent).trim())){
+    !/^\d+(?:\.\d{1,3})?$/.test(String(amount.textContent).trim())){
    amount.textContent='…';
  }
  chip.dataset.balanceContext=balanceContext;

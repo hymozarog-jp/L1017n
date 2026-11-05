@@ -58,8 +58,8 @@ jobs:
             'Selecting a primary wallet must automatically deactivate the other');
           assert(primary.includes('const madar=value?.madar===true&&!libyana'),
             'Old dual-primary saved preferences should be normalized');
-          assert(primary.includes('button.textContent=active?"✓ الأساسية":"اجعلها أساسية"'),
-            'Active and inactive states must have distinguishable labels');
+          assert(primary.includes("button.innerHTML=active?")&&primary.includes("اجعلها أساسية")&&primary.includes(" الأساسية"),
+            'Active and inactive states must have distinguishable labels and icon');
           assert(primary.includes('identity?"l1017n-primary-wallets-v1:"'),
             'Primary status should be stored per signed-in user');
           assert(primary.includes('window.localStorage.setItem(storageKey(),JSON.stringify(selected))'));

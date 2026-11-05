@@ -658,7 +658,7 @@ function fitCustomerHeaderBalance(){
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
  const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
- let size=narrow?23:compact?24:26;
+ let size=narrow?28:compact?32:34;
  const available=Math.max(20,content.clientWidth-2);
  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
  // Start with a large, bold amount; shrink only if long balances need it.

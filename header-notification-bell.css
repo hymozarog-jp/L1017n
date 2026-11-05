@@ -443,3 +443,41 @@ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customer
     padding-left:240px!important;
   }
 }
+
+/* Bigger balance numerals requested: prioritize the amount without clipping the carrier logo. */
+body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  font-size:var(--l1017-header-balance-font-size,34px)!important;
+  font-weight:950!important;
+  letter-spacing:-.9px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  line-height:1!important;
+  text-shadow:0 1px 2px #0007,0 0 12px #cfb4ff44!important;
+}
+@media(max-width:900px){
+ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+   width:clamp(180px,46vw,205px)!important;
+   max-width:205px!important;
+   grid-template-columns:27px minmax(0,1fr) 27px!important;
+   gap:3px!important;
+ }
+}
+@media(max-width:430px){
+ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+   width:clamp(174px,49vw,194px)!important;
+   max-width:194px!important;
+   grid-template-columns:27px minmax(0,1fr) 27px!important;
+ }
+ body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)):has(#customerWalletChip:not(.hidden)){
+   padding-left:clamp(263px,74vw,300px)!important;
+ }
+}
+@media(max-width:350px){
+ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip{
+   width:152px!important;
+   max-width:152px!important;
+   grid-template-columns:25px minmax(0,1fr) 25px!important;
+ }
+ body.l1017-live-ui .topbar:has(#headerAccountCluster #googleProfileButton:not(.hidden)):has(#customerWalletChip:not(.hidden)){
+   padding-left:240px!important;
+ }
+}

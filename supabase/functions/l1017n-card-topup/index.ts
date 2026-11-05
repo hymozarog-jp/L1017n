@@ -1,7 +1,7 @@
 /**
  * Authenticated Libyana prepaid-card top-up submissions.
- * Card numbers are never stored, logged or returned to the browser:
- * only HMAC fingerprints and last-four digits are retained by PostgreSQL.
+ * Voucher numbers are AES-GCM encrypted at rest. Only an existing verified
+ * store administrator may decrypt them in a protected, audited screen.
  * Only masked card numbers are forwarded to the private Telegram administrator.
  * A claim is NEVER credited automatically. Admin must redeem/verify first.
  */
@@ -23,6 +23,17 @@ async function fingerprint(secret:string,code:string):Promise<string>{
  const key=await crypto.subtle.importKey("raw",enc.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
  const bytes=await crypto.subtle.sign("HMAC",key,enc.encode("L1017n-card-v1:"+code));
  return Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,"0")).join("");
+}
+const cardEncoder=new TextEncoder();
+async function cardEncryptionKey(secret:string):Promise<CryptoKey>{
+ const derived=await crypto.subtle.digest("SHA-256",cardEncoder.encode("L1017n:card-voucher:AES256-GCM:v1:"+secret));
+ return crypto.subtle.importKey("raw",derived,{name:"AES-GCM"},false,["encrypt"]);
+}
+function cardB64(bytes:Uint8Array):string{return btoa(Array.from(bytes,c=>String.fromCharCode(c)).join(""))}
+async function encryptCardCode(key:CryptoKey,code:string):Promise<{nonce:string;cipher:string}>{
+ const iv=crypto.getRandomValues(new Uint8Array(12));
+ const cipher=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,cardEncoder.encode(code));
+ return {nonce:cardB64(iv),cipher:cardB64(new Uint8Array(cipher))};
 }
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 type Card={code:string,amount:number,hash:string,last4:string};
@@ -87,6 +98,18 @@ Deno.serve(async(request:Request)=>{
   return reply({error:reason},reason==="card_submission_rate_limit"?429:400,origin);
  }
  if(saved!==id)return reply({error:"submission_failed"},500,origin);
+ // Encrypt before persistence. The client is not given a decrypt key.
+ try{
+  const encKey=await cardEncryptionKey(key);
+  const secrets=await Promise.all(cards.map(async c=>({hash:c.hash,...await encryptCardCode(encKey,c.code)})));
+  const {error:attachError}=await db.rpc("attach_encrypted_card_codes",{
+    p_request_id:id,p_user:user.id,p_secrets:secrets
+  });
+  if(attachError)throw Error("secure_storage");
+ }catch{
+  console.error("[card-topup] Encrypted card data persistence failed");
+  return reply({error:"submission_saved_secure_store_failed",saved:true,request_id:id},503,origin);
+ }
  const {data:row,error:readError}=await db.from("topup_requests")
   .select("id,amount,phone,status,telegram_notified_at,telegram_notification_claimed_at")
   .eq("id",id).eq("user_id",user.id).maybeSingle();

@@ -85,7 +85,7 @@
      frag.appendChild(item);
    });
    list.replaceChildren(frag);
-   count.textContent=entries.length?entries.length+" عملية معروضة":"آخر المشتريات";
+   count.textContent=entries.length?entries.length+" عملية حديثة":"آخر المشتريات";
    more.hidden=entries.length<=nameLimit;
    more.textContent=expanded?"عرض آخر 6 مشتريات":"عرض المزيد من المشتريات";
    more.setAttribute("aria-expanded",String(expanded));
@@ -178,13 +178,11 @@
          const update={
            user_id:user.id,
            nickname:data?.nickname||"متسوق"+user.id.replace(/-/g,"").slice(0,12),
+           public_visible:data?.public_visible??false,
+           share_google_profile:data?.share_google_profile??false,
            show_in_purchase_feed:next,
            updated_at:new Date().toISOString()
          };
-         if(!data){
-           update.public_visible=false;
-           update.share_google_profile=false;
-         }
          const {error:saveError}=await db.from("leaderboard_profiles").upsert(update,{onConflict:"user_id"});
          if(saveError)throw saveError;
          saved=next;

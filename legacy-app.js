@@ -1009,6 +1009,21 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
  }
  // TOKEN_REFRESHED does not change the visible account or wallet data.
 });
+// Keep the customer's order statuses synchronized with Telegram admin decisions.
+// The "all" filter intentionally includes rejected orders; only their status changes.
+let orderStatusRefreshBusy=false;
+async function refreshVisibleOrderStatuses(){
+ const page=$('#ordersView'),root=$('#ordersList');
+ if(document.visibilityState==='hidden'||!page||page.classList.contains('hidden')||
+    !root||orderStatusRefreshBusy||root.querySelector('.orders-view-dialog[open]'))return;
+ orderStatusRefreshBusy=true;
+ try{await renderOrders()}catch(err){console.warn('[orders/live-status]',err)}
+ finally{orderStatusRefreshBusy=false}
+}
+window.addEventListener('focus',()=>{void refreshVisibleOrderStatuses()});
+window.addEventListener('pageshow',()=>{void refreshVisibleOrderStatuses()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshVisibleOrderStatuses()});
+setInterval(()=>{void refreshVisibleOrderStatuses()},15000);
 $('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}switchView('wallet')});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');

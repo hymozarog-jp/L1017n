@@ -1,0 +1,63 @@
+/* L1017n recent purchase wall: genuine orders, customer-controlled identity */
+#storeRecentPurchases{width:100%;max-width:1120px;margin:26px auto 28px;padding:0 10px;color:#eaf1ff;direction:rtl;font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;box-sizing:border-box}
+#storeRecentPurchases *,#storeRecentPurchases *::before,#storeRecentPurchases *::after{box-sizing:border-box}
+#storeRecentPurchases .recent-purchase-shell{position:relative;overflow:hidden;border:1px solid #34435f;border-radius:23px;padding:20px 16px 17px;background:radial-gradient(circle at 98% -10%,#5a4caf29,transparent 43%),linear-gradient(155deg,#101a2e,#0d1425 76%);box-shadow:0 18px 44px #02061233}
+#storeRecentPurchases .recent-purchase-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;margin-bottom:16px}
+#storeRecentPurchases .recent-purchase-heading{min-width:0;display:grid;gap:5px}
+#storeRecentPurchases .recent-purchase-eyebrow{color:#a9a6ff;letter-spacing:.14em;font:800 10px Arial,sans-serif}
+#storeRecentPurchases h2{font-weight:900;color:#fff;line-height:1.35;font-size:clamp(20px,4.5vw,26px);margin:0}
+#storeRecentPurchases .recent-purchase-heading p{font-size:11px;color:#9eb1d0;line-height:1.8;margin:1px 0 0}
+#storeRecentPurchases .recent-purchase-tools{display:flex;gap:9px;align-items:center}
+#storeRecentPurchases .recent-purchase-live{display:inline-flex;align-items:center;gap:7px;color:#a9ebca;border:1px solid #386d60;background:#19392c80;padding:7px 11px;border-radius:99px;font:800 10px Arial,sans-serif;letter-spacing:.05em}
+#storeRecentPurchases .recent-purchase-live:before{content:"";width:7px;height:7px;display:inline-block;border-radius:50%;background:#48dda4;box-shadow:0 0 0 4px #48dda42b;animation:l1017-purchase-dot 2.6s ease-in-out infinite}
+#storeRecentPurchases .recent-purchase-refresh{width:36px;height:36px;display:grid;place-items:center;padding:0;background:#1d2c4b;border:1px solid #42567e;border-radius:12px;color:#caddf6;cursor:pointer}
+#storeRecentPurchases .recent-purchase-refresh svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#storeRecentPurchases .recent-purchase-refresh:disabled{opacity:.56;cursor:wait}
+#storeRecentPurchases .recent-purchase-list{display:grid;gap:10px;min-height:63px}
+#storeRecentPurchases .recent-purchase-card{display:flex;align-items:center;gap:12px;min-height:86px;padding:12px 14px;border:1px solid #2d405e;border-radius:16px;background:linear-gradient(110deg,#17243c,#111b30);min-width:0}
+#storeRecentPurchases .recent-purchase-new{animation:l1017-purchase-appear .65s ease-out both}
+#storeRecentPurchases .recent-purchase-art{width:56px;height:56px;flex:0 0 56px;display:grid;place-items:center;border:1px solid #3b4c76;background:#202b49;border-radius:16px;overflow:hidden;color:#a3a8fa;font-size:30px}
+#storeRecentPurchases .recent-purchase-art-robux{background:linear-gradient(135deg,#293759,#161e33)}
+#storeRecentPurchases .recent-purchase-art-mm2{background:linear-gradient(135deg,#43355f,#212038)}
+#storeRecentPurchases .recent-purchase-art-brainrot{background:linear-gradient(135deg,#423321,#1d1b29)}
+#storeRecentPurchases .recent-purchase-art img{width:100%;height:100%;object-fit:contain;padding:6px}
+#storeRecentPurchases .recent-purchase-main{min-width:0;flex:1;display:grid;gap:7px}
+#storeRecentPurchases .recent-purchase-product{font-weight:850;font-size:14px;color:#f4f6ff;line-height:1.65;overflow-wrap:anywhere}
+#storeRecentPurchases .recent-purchase-secondary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;color:#a6b9d2;font-size:11px;line-height:1.4}
+#storeRecentPurchases .recent-purchase-buyer{display:inline-flex;align-items:center;gap:7px;font-size:11px;overflow-wrap:anywhere;max-width:100%}
+#storeRecentPurchases .recent-purchase-buyer-icon{font-size:8px;color:#7b95c2}
+#storeRecentPurchases .recent-purchase-time{color:#859bb9;white-space:nowrap}
+#storeRecentPurchases .recent-purchase-side{min-width:90px;align-self:center;text-align:left;display:grid;justify-items:end;gap:6px}
+#storeRecentPurchases .recent-purchase-price{font:850 17px Arial,sans-serif;color:#b1ffc9;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+#storeRecentPurchases .recent-purchase-price small{font:750 10px 'IBM Plex Sans Arabic',Tahoma,sans-serif;color:#a9d6bd}
+#storeRecentPurchases .recent-purchase-status{padding:4px 9px;border:1px solid #56836f;border-radius:99px;font-size:10px;color:#a0e9c7;background:#1c48357d;white-space:nowrap}
+#storeRecentPurchases .recent-purchase-status.is-progress{background:#4d3c214d;border-color:#947b43;color:#eed399}
+#storeRecentPurchases .recent-purchase-empty{margin:6px 0;padding:28px 14px;text-align:center;color:#a8bcda;font-size:12px;line-height:1.9}
+#storeRecentPurchases .recent-purchase-bottom{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 2px 0}
+#storeRecentPurchases .recent-purchase-bottom>span{color:#859bb9;font-size:10px}
+#storeRecentPurchases .recent-purchase-bottom>span.has-error{color:#e6ad96}
+#storeRecentPurchases #recentPurchaseMore{border:1px solid #6776a0;background:#223153a3;border-radius:11px;padding:9px 15px;font:800 11px 'IBM Plex Sans Arabic',Tahoma,sans-serif;color:#d7e1fc;cursor:pointer}
+#storeRecentPurchases #recentPurchaseMore[hidden]{display:none!important}
+#storeRecentPurchases .recent-purchase-disclaimer{font-size:10px;line-height:1.8;color:#7689a9;margin:12px 2px 0;text-align:right}
+#accountModern #accountPurchasePrivacyButton .account-row-icon{background:#24355b;color:#b7c3ff}
+#accountSettingsDetail .recent-purchase-privacy-label{display:flex;align-items:center;gap:12px;padding:13px 12px;background:#111d33;border-radius:13px;border:1px solid #506081;font-size:12px;font-weight:750;color:#eef2ff;cursor:pointer}
+#accountSettingsDetail .recent-purchase-privacy-label input{width:20px;height:20px;accent-color:#9d91ff;flex-shrink:0;cursor:pointer}
+#accountSettingsDetail .recent-purchase-privacy-note{font-size:11px;color:#afbfda;line-height:1.8}
+#accountSettingsDetail .recent-purchase-privacy-status{color:#acdfb8;font-size:11px}
+#accountSettingsDetail .recent-purchase-privacy-status[data-error="true"]{color:#ffc3b8}
+@keyframes l1017-purchase-dot{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes l1017-purchase-appear{from{opacity:.35;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:560px){
+ #storeRecentPurchases{padding:0 6px;margin:20px auto 26px}
+ #storeRecentPurchases .recent-purchase-shell{padding:16px 11px 15px;border-radius:18px}
+ #storeRecentPurchases .recent-purchase-card{padding:10px;gap:9px;min-height:78px}
+ #storeRecentPurchases .recent-purchase-art{flex-basis:46px;width:46px;height:46px;border-radius:13px}
+ #storeRecentPurchases .recent-purchase-product{font-size:12px}
+ #storeRecentPurchases .recent-purchase-secondary{font-size:10px;gap:5px 8px}
+ #storeRecentPurchases .recent-purchase-buyer{font-size:10px}
+ #storeRecentPurchases .recent-purchase-side{min-width:76px}
+ #storeRecentPurchases .recent-purchase-price{font-size:15px}
+ #storeRecentPurchases .recent-purchase-status{font-size:9px;padding:4px 7px}
+ #storeRecentPurchases .recent-purchase-live{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){#storeRecentPurchases *,#storeRecentPurchases *::before{animation:none!important;transition:none!important}}

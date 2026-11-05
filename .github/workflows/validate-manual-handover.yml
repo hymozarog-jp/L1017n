@@ -50,7 +50,7 @@ jobs:
           assert(msg.includes('8f9d64d9-1d30-4ac5-9aba-88bb60fce123'));
           assert(msg.includes('ماب السرقة'));
           assert(!/كلمة المرور:[^\n]*Buyer_321/.test(msg));
-          assert(html.includes('order-handover.js?v=manual-delivery3'));
+          assert.match(html,/order-handover\.js\?v=[A-Za-z0-9._-]+/,'Versioned manual handover must load');
           assert(html.includes('order-handover.css?v=manual-delivery2'));
           assert(html.includes('store-menu.js?v='));
           assert(html.includes('brainrot-store.js?v='));

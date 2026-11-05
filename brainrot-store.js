@@ -68,7 +68,7 @@ function getClient(){
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
       +(available?'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">فتح القائمة</button>'
-        :'<span class="sab-unavailable">قريبًا</span>')
+        :'<span class="sab-unavailable">غير متوفر</span>')
       +'</div></article>';
   }
   function renderItems(section, catalog){
@@ -76,7 +76,7 @@ function getClient(){
     const target=section.querySelector("#sabCatalog");
     if(!target)return;
     target.innerHTML='<div class="sab-products-grid">'+ITEMS.map(item=>productCard(item,map.get(item.key))).join("")+'</div>'
-      +'<p class="sab-info">التسليم داخل ماب السرقة يحتاج تواصلًا بعد الدفع. الباقات غير المسعّرة لا يمكن شراؤها حاليًا.</p>';
+      +'<p class="sab-info">المنتجات التي تحمل علامة «غير متوفر» لا يمكن طلبها حاليًا. عند توفر المنتج، التسليم داخل ماب السرقة يحتاج التواصل بعد الدفع.</p>';
     target.querySelectorAll("[data-steal-buy]").forEach(b=>{
       b.addEventListener("click",()=>{
         const product=map.get(b.dataset.stealBuy);
@@ -92,7 +92,7 @@ function getClient(){
       renderItems(section,[]);
       return;
     }
-    const result=await client.from("products").select("id,product_key,name,game,price,active").eq("game","steal-a-brainrot").eq("active",true).order("sort_order");
+    const result=await client.from("products").select("id,product_key,name,game,price,active").eq("game","steal-a-brainrot").order("sort_order");
     if(!section.isConnected)return;
     if(result.error){
       renderItems(section,[]);
@@ -186,7 +186,7 @@ function getClient(){
     const section=document.createElement("section");
     section.className="sab-inner";
     // Open directly to the items for sale: omit the original-game link and oversized hero.
-    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>الشخصيات المتوفرة</h2></div><small>'+String(ITEMS.length).padStart(2,"0")+' عناصر</small></div>'
+    section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>شخصيات ماب السرقة</h2></div><small>'+String(ITEMS.length).padStart(2,"0")+' عناصر</small></div>'
       +'<div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
     if(typeof window.setRobloxInnerHeader==="function"){

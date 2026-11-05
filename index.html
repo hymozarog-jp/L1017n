@@ -455,6 +455,7 @@
       </section>
       <h3 class="account-group-title">الحساب</h3>
       <div class="account-settings-list account-core-settings">
+        <button type="button" id="accountCardAdminButton" hidden aria-label="مراجعة كروت شحن المحفظة من حساب المسؤول"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18m-13 5h6"/></svg></span><span class="account-core-copy"><b>مراجعة كروت المحفظة</b><small>أرقام مشفّرة · للمسؤول المعتمد فقط</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="change-phone" aria-label="تغيير رقم الهاتف بعد تأكيده برسالة SMS"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.4"/><path d="M12 8v7m-3.5-3.5L12 15l3.5-3.5"/></svg></span><span class="account-core-copy"><b>تغيير رقم الهاتف</b><small>إرسال رمز SMS للرقم الجديد</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
@@ -562,7 +563,8 @@
 <script src="resala-otp.js?v=remove-unverified-phone-20261105-1"></script>
 <script src="phone-verification-page.js?v=edit-number-inline-20261105-1"></script>
 <script src="phone-change-page.js?v=change-phone-verified-20261105-1" defer></script>
-<script src="card-topup-page.js?v=libyana-cards-20261105-1" defer></script>
+<script src="card-topup-page.js?v=encrypted-admin-recharge-20261105-2" defer></script>
+<script src="card-topup-admin.js?v=audited-private-view-20261105-1" defer></script>
 <script src="purchase-phone.js?v=unified-ui-icons-20261103-1"></script>
 <script src="instant-code.js?v=clipboard-fix-20261103-1"></script>
 <script src="nav-bubble.js?v=account-recovery9"></script>
@@ -886,6 +888,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="phone-verification-page.css?v=edit-number-inline-20261105-1">
 <link rel="stylesheet" href="phone-change-page.css?v=change-phone-verified-20261105-1">
 <link rel="stylesheet" href="card-topup-page.css?v=libyana-cards-20261105-1">
+<link rel="stylesheet" href="card-topup-admin.css?v=audited-private-view-20261105-1">
 <link rel="stylesheet" href="storefront-polish.css?v=navback-gameboxly2">
 <link rel="stylesheet" href="brainrot-store.css?v=dragon-garama-unavailable-20261105-1">
 <link rel="stylesheet" href="pubg-premium.css?v=restore-safe-pubg1">

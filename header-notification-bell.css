@@ -481,3 +481,15 @@ body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customer
    padding-left:240px!important;
  }
 }
+
+/* True text-width fitting: keep short wallet balances visibly large on iPhone. */
+body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+  font-size:var(--l1017-header-balance-font-size,36px)!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  transform:scaleX(var(--l1017-header-balance-scale,1))!important;
+  transform-origin:50% 50%!important;
+  text-overflow:clip!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+}

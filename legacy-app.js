@@ -820,7 +820,7 @@ if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
  if(registered){
-   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">رقمك موثّق برسالة SMS عند تأكيده. تقدر تغيّره بعد توثيق الرقم الجديد.</p><button type="button" class="btn btn-soft" data-change-account-phone>تغيير رقم الهاتف</button>';
+   phoneGate.innerHTML='<strong>رقم الهاتف المسجّل</strong> <span dir="ltr">0'+escapeHtml(registered)+'</span><p class="form-note">إذا الرقم غير موثّق، تقدر تحذفه من قسم التوثيق وتضيف رقمًا آخر. أما الرقم الموثّق فتقدر تغيّره بعد توثيق الرقم الجديد.</p><button type="button" class="btn btn-soft" data-change-account-phone>تغيير رقم الهاتف</button>';
    phoneGate.querySelector('[data-change-account-phone]')?.addEventListener('click',()=>{
      if(typeof window.openPhoneChangePage==='function')window.openPhoneChangePage();
      else toast('خدمة تغيير رقم الهاتف غير متاحة. حدّث الصفحة.');

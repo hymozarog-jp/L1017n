@@ -110,3 +110,37 @@ body.phone-wizard-open{overflow:hidden!important}
 #phoneVerifyWizard .pv-clear-phone[hidden]{display:none!important}
 #phoneVerifyWizard .pv-clear-phone:disabled{opacity:.55;cursor:wait}
 #phoneVerifyWizard .pv-clear-phone:focus-visible{outline:2px solid #ffd0d9;outline-offset:3px}
+
+/* Inline number correction in the SMS verification wizard. */
+#phoneVerifyWizard .pv-save-phone{
+  display:block;
+  width:100%;
+  min-height:46px;
+  padding:10px 14px;
+  margin:0 0 12px;
+  border:1px solid #8e86ed;
+  border-radius:13px;
+  background:linear-gradient(120deg,#35295b,#283761);
+  color:#e8dcff;
+  font:800 13px 'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;
+  cursor:pointer;
+}
+#phoneVerifyWizard .pv-save-phone[hidden]{display:none!important}
+#phoneVerifyWizard .pv-save-phone:disabled{opacity:.55;cursor:wait}
+#phoneVerifyWizard .pv-change-from-code,
+#phoneVerifyWizard .pv-done-change{
+  display:block;
+  width:100%;
+  min-height:45px;
+  margin:13px 0 0;
+  padding:10px 14px;
+  border:1px solid #7d8fbd;
+  border-radius:12px;
+  background:#27345d;
+  color:#eff0ff;
+  font:800 13px 'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;
+  cursor:pointer;
+}
+#phoneVerifyWizard .pv-save-phone:focus-visible,
+#phoneVerifyWizard .pv-change-from-code:focus-visible,
+#phoneVerifyWizard .pv-done-change:focus-visible{outline:3px solid #e4dcff;outline-offset:3px}

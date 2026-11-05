@@ -735,10 +735,17 @@ async function renderCustomerHeaderWallet(user){
    topup.setAttribute('aria-label',isMadar?'شحن المدار غير متاح حاليًا':'شحن محفظة ليبيانا');
    topup.title=isMadar?'شحن المدار قريبًا':'شحن محفظة ليبيانا';
  }
- if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
+ if(!user){chip.classList.add('hidden');chip.removeAttribute('data-balance-context');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
  bindCustomerHeaderBalanceFit();
- amount.textContent='…';
+ // Keep the current number visible during periodic refresh, while preventing
+ // another signed-in user's balance from remaining on screen after a switch.
+ const balanceContext=user.id+':'+carrier;
+ if(chip.dataset.balanceContext!==balanceContext ||
+    !/^\\d+(?:\\.\\d{1,3})?$/.test(String(amount.textContent).trim())){
+   amount.textContent='…';
+ }
+ chip.dataset.balanceContext=balanceContext;
  // The auth event and the detailed account renderer can request this balance
  // together; share their in-flight query instead of fetching it twice.
  const queryKey=user.id+':'+carrier;

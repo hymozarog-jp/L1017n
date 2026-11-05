@@ -40,8 +40,9 @@ async function invoke(action,code){
  }
  return data||{};
 }
+function toggleClear(show){const button=$('.pv-clear-phone');if(button){button.hidden=!show;button.disabled=busy}}
 function verified(){
- locked=true;stop();step("done");status("");
+ locked=true;stop();step("done");toggleClear(false);status("");
  $(".pv-verified-number").textContent="0"+saved;
  if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
    void window.L1017nPersonalPremium.refreshFromServer();
@@ -70,16 +71,41 @@ async function load(seq){
   if(seq!==opened)return;
   if(error)throw Error("تعذر تحميل الرقم.");
   saved=normalize(data?.libyana_phone||"");
+  toggleClear(false);
   $(".pv-number").value=saved?"0"+saved:"";
   $(".pv-number").readOnly=!!saved;
   $(".pv-hint").textContent=saved?"هذا رقمك المحفوظ في حسابك. لتغييره افتح «حسابي ← تغيير رقم الهاتف» وأكد الرقم الجديد برمز SMS.":"أدخل رقم ليبيانا أو المدار اللي تملكه. سيُربط بحسابك عند الحفظ.";
   if(!saved){step("phone");progress(0);status("");return}
   const state=await invoke("status");
   if(seq!==opened)return;
+  if(state.verified){applyState(state);return}
+  toggleClear(true);
   if(state.configured===false){status(ERR.not_configured,true);return}
   applyState(state);
   status(state.code_pending?"أدخل رمز SMS الذي وصلك.":state.retry_after_seconds?"انتظر انتهاء العدّاد قبل رمز جديد.":"");
  }catch(e){if(seq===opened)status(e.message||"تعذر تحميل الرقم.",true)}
+}
+async function clearSavedNumber(){
+ if(!saved||busy||locked)return;
+ if(!window.confirm("هل تريد حذف رقمك غير الموثّق؟ يمكنك إضافة رقم آخر بعد الحذف."))return;
+ busy=true;toggleClear(true);status("جاري حذف الرقم غير الموثّق…");
+ try{
+  const {data,error}=await client().rpc("clear_my_unverified_phone");
+  if(error){
+   if(String(error.message||"").includes("phone_already_verified"))throw Error("هذا الرقم موثّق بالفعل. استخدم خيار تغيير الرقم لحمايته.");
+   throw Error("تعذر حذف الرقم، حاول مجددًا.");
+  }
+  if(data!==true)throw Error("الرقم غير موجود أو تم حذفه. حدّث الصفحة.");
+  stop();saved="";locked=false;busy=false;
+  step("phone");$(".pv-number").value="";$(".pv-number").readOnly=false;
+  $(".pv-code-input").value="";$(".pv-hint").textContent="اكتب رقمًا جديدًا تملكه، ثم وثّقه برسالة SMS.";
+  toggleClear(false);progress(0);
+  status("تم حذف الرقم غير الموثّق. تقدر تضيف رقمًا ثانيًا.");
+  if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
+  if(typeof renderWallet==="function")void Promise.resolve(renderWallet()).catch(()=>{});
+  if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
+   void Promise.resolve(window.L1017nPersonalPremium.refreshFromServer()).catch(()=>{});
+ }catch(e){busy=false;toggleClear(!!saved&&!locked);status(e.message||"تعذر حذف الرقم.",true)}
 }
 async function send(){
  if(busy||locked||Date.now()<until)return;
@@ -134,12 +160,14 @@ function create(){
  +'<div class="pv-code" hidden><p class="pv-sent">تم طلب إرسال رمز إلى <b class="pv-code-number" dir="ltr"></b></p><form class="pv-verify"><label for="pvWizardCode">رمز التحقق من SMS</label><input id="pvWizardCode" class="pv-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required dir="ltr"/><button class="pv-action pv-check" type="submit">تأكيد الرمز</button></form><p class="pv-code-tip">الرمز صالح 5 دقائق. لا تشاركه مع أي شخص.</p><button type="button" class="pv-resend" disabled>إعادة إرسال الرمز بعد 04:00</button></div>'
  +'<div class="pv-done" hidden><span class="pv-done-icon" aria-hidden="true"><svg class="l1017-icon"><use href="#l1017-icon-check-circle"></use></svg></span><h3>تم توثيق رقمك</h3><p>الرقم <b class="pv-verified-number" dir="ltr"></b> موثّق بنجاح.</p><button type="button" class="pv-action pv-finish">العودة إلى حسابي</button></div>'
  +'<div class="pv-wait"><div class="pv-wait-row"><span>إعادة إرسال الرمز</span><strong class="pv-time" dir="ltr">04:00</strong></div><div class="pv-bar"><i class="pv-bar-fill"></i></div><small>إذا لم تصلك الرسالة، يمكنك طلب رمز آخر بعد انتهاء العدّاد.</small></div>'
- +'<p class="pv-status" role="status" aria-live="polite"></p><p class="pv-security">رمز التحقق خاص بك. لن نطلب كلمة المرور أو رمز SMS في المحادثة.</p>'
+ +'<button type="button" class="pv-clear-phone" hidden>حذف الرقم غير الموثّق</button>'
+  +'<p class="pv-status" role="status" aria-live="polite"></p><p class="pv-security">رمز التحقق خاص بك. لن نطلب كلمة المرور أو رمز SMS في المحادثة.</p>'
  +'</div></div>';
  document.body.appendChild(panel);
  $(".pv-back").addEventListener("click",close);
  $(".pv-finish").addEventListener("click",close);
  $(".pv-send").addEventListener("click",send);
+ $(".pv-clear-phone").addEventListener("click",clearSavedNumber);
  $(".pv-resend").addEventListener("click",send);
  $(".pv-verify").addEventListener("submit",verify);
  panel.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
@@ -147,7 +175,7 @@ function create(){
 function open(){
  focusBefore=document.activeElement;create();stop();until=0;saved="";locked=false;busy=false;
  const seq=++opened;panel.hidden=false;panel.classList.add("visible");document.body.classList.add("phone-wizard-open");
- step("phone");$(".pv-number").readOnly=false;$(".pv-number").value="";$(".pv-code-input").value="";
+ step("phone");toggleClear(false);$(".pv-number").readOnly=false;$(".pv-number").value="";$(".pv-code-input").value="";
  progress(0);status("جاري فحص حالة الرقم…");$(".pv-back").focus({preventScroll:true});
  void load(seq);
 }

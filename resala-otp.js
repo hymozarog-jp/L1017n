@@ -44,6 +44,10 @@ css.textContent=[
  "#resalaVerifyBox button:disabled{opacity:.55;cursor:wait}",
  "#resalaVerifyBox .resala-status{min-height:22px;color:#ffddac;margin:10px 0 0;line-height:1.7}",
  "#resalaVerifyBox .resala-done-note{margin-bottom:0;color:#c1d6dc}",
+ "#resalaVerifyBox .resala-clear-box{margin:17px 0 0;padding:14px 0 0;border-top:1px solid #42547180}",
+ "#resalaVerifyBox .resala-clear-box button{min-height:41px;width:100%;border:1px solid #a65b718c;background:#342032;color:#ffc5cf;font-size:12px}",
+ "#resalaVerifyBox .resala-clear-box button:focus-visible{outline:2px solid #ffc5cf;outline-offset:2px}",
+ "#resalaVerifyBox .resala-clear-box p{margin:7px 0 0;font-size:11px;line-height:1.7;color:#b4c3db}",
  "#personalDetailsPage #resalaVerifyBox{margin:4px 0 0;border:0;border-top:1px solid #314464;border-radius:0 0 18px 18px;background:transparent;padding:19px 16px 18px}",
  "#personalDetailsPage #resalaVerifyBox .resala-ok{margin-top:3px}"
 ].join("\n");
@@ -79,7 +83,7 @@ window.renderResalaOtp=async function(user){
   if(old)old.remove();
   return;
  }
- if(!state.configured){clear();badge(null);return}
+ if(!state.configured&&!state.phone){clear();badge(null);return}
  badge(state);
  if(gate.classList.contains("hidden")){clear();return}
  let box=document.getElementById("resalaVerifyBox");
@@ -107,9 +111,35 @@ window.renderResalaOtp=async function(user){
   '<form class="resala-code-form" hidden><label for="resalaOtpCode">رمز التحقق</label><div class="resala-row">'+
   '<input id="resalaOtpCode" class="resala-code" type="text" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>'+
   '<button type="submit">تأكيد الرمز</button></div></form>'+
-  '<p class="resala-status" role="status" aria-live="polite"></p>';
+  '<p class="resala-status" role="status" aria-live="polite"></p>'+
+  '<div class="resala-clear-box"><button type="button" class="resala-clear-phone">حذف الرقم غير الموثّق</button><p>إذا الرقم غلط أو ما وصلك الرمز، تقدر تحذفه وتضيف رقمًا ثانيًا.</p></div>';
  box.querySelector("b").textContent=phone;
  const send=box.querySelector(".resala-send"),form=box.querySelector(".resala-code-form"),field=box.querySelector(".resala-code"),status=box.querySelector(".resala-status");
+ const clearPhone=box.querySelector(".resala-clear-phone");
+ clearPhone?.addEventListener("click",async()=>{
+  if(!window.confirm("تحب تحذف الرقم غير الموثّق من حسابك؟ تقدر تضيف رقمًا آخر بعد الحذف."))return;
+  clearPhone.disabled=true;
+  status.textContent="جاري حذف الرقم غير الموثّق…";
+  try{
+   const {data,error}=await supabaseClient.rpc("clear_my_unverified_phone");
+   if(error){
+    if(String(error.message||"").includes("phone_already_verified"))throw Error("الرقم موثّق بالفعل. لحمايته استخدم خيار تغيير رقم الهاتف.");
+    throw Error("تعذر حذف الرقم. تأكد من اتصالك وحاول مرة ثانية.");
+   }
+   if(data!==true)throw Error("ما في رقم غير موثّق لحذفه. حدّث الصفحة.");
+   lastSentFor="";
+   stopResendTicker();
+   if(typeof renderAccount==="function")await renderAccount();
+   else await window.renderResalaOtp(user);
+   if(typeof renderWallet==="function")void Promise.resolve(renderWallet()).catch(()=>{});
+   if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
+    void Promise.resolve(window.L1017nPersonalPremium.refreshFromServer()).catch(()=>{});
+  }catch(error){
+   status.textContent=error.message||"تعذر حذف الرقم.";
+   clearPhone.disabled=false;
+  }
+ });
+ if(state.configured===false){send.disabled=true;status.textContent="إرسال SMS غير متاح الآن، لكن تقدر تحذف الرقم غير الموثّق."}
  const key=user.id+":"+phone;
  if(lastSentFor===key||state.code_pending){form.hidden=false;send.textContent="إعادة إرسال الرمز"}
  function applyCooldown(seconds){

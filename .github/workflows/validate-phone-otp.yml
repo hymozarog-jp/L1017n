@@ -37,9 +37,9 @@ jobs:
           const app=fs.readFileSync('app.js','utf8');
           const oldOtp=fs.readFileSync('resala-otp.js','utf8');
           const css=fs.readFileSync('phone-verification-page.css','utf8');
-          assert(html.includes('phone-verification-page.js?v=profile-glow2'));
-          assert(html.includes('phone-verification-page.css?v=phone-otp4'));
-          assert(html.includes('resala-otp.js?v=otp-four-minutes2'));
+          assert.match(html,/phone-verification-page\.js\?v=[A-Za-z0-9._-]+/,'Versioned phone wizard must load');
+          assert.match(html,/phone-verification-page\.css\?v=[A-Za-z0-9._-]+/,'Versioned phone wizard styles must load');
+          assert.match(html,/resala-otp\.js\?v=[A-Za-z0-9._-]+/,'Versioned Resala OTP must load');
           assert.match(html,/app\.js\?v=[A-Za-z0-9._-]+/,'Versioned site app loader must be present');
           assert(app.includes('legacy-app.js?v='));
           assert(old.includes('window.openPhoneVerificationPage()'));

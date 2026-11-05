@@ -119,3 +119,13 @@
   font-weight:900;
   white-space:nowrap;
 }
+
+/* Live quantity for the four Garama units. */
+#robloxGamePage .sab-item-card .sab-stock-badge{
+ display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;
+ padding:6px 11px;margin-top:9px;border-radius:999px;border:1px solid #58ae7b77;
+ background:#164f354d;color:#a5f1c2;font-size:11px;font-weight:800;
+}
+#robloxGamePage .sab-item-card .sab-stock-badge.out-of-stock{
+ background:#7b4a2540;border-color:#d2a05b88;color:#efce9b;
+}

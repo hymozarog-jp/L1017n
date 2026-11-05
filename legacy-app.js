@@ -721,7 +721,7 @@ async function renderCustomerHeaderWallet(user){
  chip.dataset.walletCarrier=carrier;
  chip.setAttribute('aria-label','محفظة '+(isMadar?'المدار':'ليبيانا')+' ورصيدها');
  if(label)label.textContent=isMadar?'رصيد المدار':'رصيد ليبيانا';
- if(fallback)fallback.textContent=isMadar?'مد':'لي';
+ if(fallback)fallback.textContent=isMadar?'مد':'Li';
  if(logo){
    if(!logo.dataset.brandFallbackBound){
      logo.dataset.brandFallbackBound='1';
@@ -735,17 +735,10 @@ async function renderCustomerHeaderWallet(user){
    topup.setAttribute('aria-label',isMadar?'شحن المدار غير متاح حاليًا':'شحن محفظة ليبيانا');
    topup.title=isMadar?'شحن المدار قريبًا':'شحن محفظة ليبيانا';
  }
- if(!user){chip.classList.add('hidden');chip.removeAttribute('data-balance-context');customerHeaderWalletQuery=null;return}
+ if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
  bindCustomerHeaderBalanceFit();
- // Keep the current number visible during periodic refresh, while preventing
- // another signed-in user's balance from remaining on screen after a switch.
- const balanceContext=user.id+':'+carrier;
- if(chip.dataset.balanceContext!==balanceContext ||
-    !/^\d+(?:\.\d{1,3})?$/.test(String(amount.textContent).trim())){
-   amount.textContent='…';
- }
- chip.dataset.balanceContext=balanceContext;
+ amount.textContent='…';
  // The auth event and the detailed account renderer can request this balance
  // together; share their in-flight query instead of fetching it twice.
  const queryKey=user.id+':'+carrier;
@@ -764,32 +757,9 @@ async function renderCustomerHeaderWallet(user){
  const {data,error}=result;
  const shownBalance=Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(3);
   amount.textContent=error?'—':shownBalance;
-  amount.title=error?'تعذر قراءة الرصيد':shownBalance+' دينار ليبي';
   amount.setAttribute('aria-label',error?'تعذر عرض رصيد المحفظة':shownBalance+' دينار ليبي');
   queueCustomerHeaderBalanceFit();
 }
-// Keep the screenshot-style numeric counter synchronized with real wallet data.
-// Re-fetch under the current authenticated session; no local or fake balances.
-let headerWalletRefreshInFlight=false;
-async function refreshHeaderWalletFromSession(){
-  if(headerWalletRefreshInFlight||document.hidden)return;
-  const chip=document.getElementById('customerWalletChip');
-  if(!chip||chip.classList.contains('hidden'))return;
-  headerWalletRefreshInFlight=true;
-  try{
-    const session=await supabaseClient.auth.getSession();
-    const account=session.data?.session?.user;
-    if(account)await renderCustomerHeaderWallet(account);
-    else await renderCustomerHeaderWallet(null);
-  }catch(err){console.warn('[header-wallet] Balance refresh unavailable',err?.message||'unknown')}
-  finally{headerWalletRefreshInFlight=false}
-}
-window.addEventListener('focus',()=>{void refreshHeaderWalletFromSession()});
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible')void refreshHeaderWalletFromSession();
-});
-setInterval(()=>{void refreshHeaderWalletFromSession()},30000);
-
 // Trust only Google avatar hosts or the signed-in user's own uploaded Supabase image.
 function approvedProfilePhoto(user){
  if(!user)return '';

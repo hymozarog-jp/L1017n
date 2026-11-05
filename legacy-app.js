@@ -45,6 +45,12 @@ function renderProducts(){
   if(key==='mm2'){if(typeof window.openMm2StoreCategory==='function')window.openMm2StoreCategory();else toast('قسم MM2 غير جاهز حاليًا.');return;}
   if(key==='steal-a-brainrot'){if(typeof window.openBrainrotStoreCategory==='function')window.openBrainrotStoreCategory();else toast('قسم ماب السرقة غير جاهز حاليًا.');return;}
  }));
+ // The landing splash may now close: the real game catalog is rendered.
+ // This is display-only and does not affect authentication or checkout.
+ if(!window.L1017nStorefrontReady){
+  window.L1017nStorefrontReady=true;
+  window.dispatchEvent(new Event('l1017n:storefront-ready'));
+ }
 }
 /* Non-Roblox digital items use the atomic wallet-to-code delivery checkout. */
 function showGameProductPreview(key){

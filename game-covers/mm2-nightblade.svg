@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" role="img" aria-labelledby="title">
+<title id="title">Nightblade - dark curved fantasy knife illustration</title>
+<defs>
+ <linearGradient id="blade" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#747887"/><stop offset=".24" stop-color="#20232d"/><stop offset=".55" stop-color="#090c14"/><stop offset=".83" stop-color="#484d5d"/><stop offset="1" stop-color="#05060d"/></linearGradient>
+ <linearGradient id="guard" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#a3a6b8"/><stop offset=".4" stop-color="#292a39"/><stop offset="1" stop-color="#050611"/></linearGradient>
+ <linearGradient id="handle" x1="0" x2="1"><stop stop-color="#171822"/><stop offset=".55" stop-color="#4b4c5e"/><stop offset="1" stop-color="#070710"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<g transform="translate(16 -5) rotate(-5 180 150)">
+ <path d="M48 21C54 71 87 86 132 110C186 139 193 181 230 188C245 192 267 184 285 183C268 203 249 214 221 213C172 213 151 177 117 149C78 120 23 94 48 21Z" fill="#673aab" opacity=".55" filter="url(#glow)"/>
+ <path d="M48 21C58 65 88 84 127 106C181 138 199 175 233 182C249 185 267 180 283 182C269 202 254 209 231 208C184 208 156 180 118 148C80 116 27 91 48 21Z" fill="url(#blade)" stroke="#05060b" stroke-width="6" stroke-linejoin="round"/>
+ <path d="M48 28C66 78 100 91 133 115C175 142 198 187 246 193" fill="none" stroke="#b4b8c7" stroke-opacity=".65" stroke-width="4" stroke-linecap="round"/>
+ <path d="M59 51C72 87 110 112 135 131C163 152 181 182 201 187" fill="none" stroke="#05050a" stroke-width="8" stroke-linecap="round" opacity=".9"/>
+ <path d="M231 197C222 181 208 175 192 172C211 163 228 172 237 179C239 155 252 147 267 146C256 159 256 169 260 180C276 170 289 176 299 186C281 190 269 202 268 218C248 215 237 205 231 197Z" fill="url(#guard)" stroke="#07060e" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M237 190C248 182 258 182 264 194M252 159L252 177M277 187L265 195" fill="none" stroke="#afb0bc" stroke-width="3" opacity=".85"/>
+ <path d="M262 212L307 263" stroke="#05050a" stroke-width="19" stroke-linecap="round"/>
+ <path d="M262 212L307 263" stroke="url(#handle)" stroke-width="13" stroke-linecap="round"/>
+ <path d="M271 219l-8 9m18 1l-8 9m18 1l-8 9" stroke="#9797ad" stroke-width="3" opacity=".7"/>
+ <path d="M305 261L324 288L310 268Z" fill="#0c0c15" stroke="#9194a5" stroke-width="2"/>
+</g>
+</svg>

@@ -72,7 +72,7 @@ async function load(seq){
   saved=normalize(data?.libyana_phone||"");
   $(".pv-number").value=saved?"0"+saved:"";
   $(".pv-number").readOnly=!!saved;
-  $(".pv-hint").textContent=saved?"هذا رقمك المحفوظ في حسابك. تغييره يحتاج التواصل مع المتجر.":"أدخل رقم ليبيانا أو المدار اللي تملكه. سيُربط بحسابك عند الحفظ.";
+  $(".pv-hint").textContent=saved?"هذا رقمك المحفوظ في حسابك. لتغييره افتح «حسابي ← تغيير رقم الهاتف» وأكد الرقم الجديد برمز SMS.":"أدخل رقم ليبيانا أو المدار اللي تملكه. سيُربط بحسابك عند الحفظ.";
   if(!saved){step("phone");progress(0);status("");return}
   const state=await invoke("status");
   if(seq!==opened)return;

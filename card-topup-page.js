@@ -115,7 +115,7 @@
      $(".ct-entry").hidden=true;
      $(".ct-success").hidden=false;
      $(".ct-current-step").textContent="تم إرسال الطلب للمراجعة";
-     $(".ct-card-code").forEach(input=>{input.value=""});
+     $$(".ct-card-code").forEach(input=>{input.value=""});
      setMessage("تم تسجيل طلب الكروت بأمان. أرقامها محفوظة مشفّرة في لوحة مسؤول المتجر.");
      // The backend has encrypted the submitted codes; wipe input values locally.
    }catch(e){

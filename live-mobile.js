@@ -72,7 +72,7 @@
       +'<span class="ll-game-section-art"><img src="'+esc(section.image)+'" alt="" loading="eager" decoding="async">'
       +'<span class="ll-game-section-tag">'+esc(section.tag)+'</span></span>'
       +'<span class="ll-game-section-details"><strong>'+esc(section.title)+'</strong>'
-      +'<small>'+esc(section.subtitle)+'</small></span></button></article>';
+      +'<small>'+esc(section.key==='roblox'&&typeof robuxAvailable!=='undefined'&&typeof robuxUnlimited!=='undefined'&&!robuxUnlimited&&robuxAvailable<1?'غير متوفر':section.subtitle)+'</small></span></button></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");

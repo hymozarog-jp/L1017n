@@ -172,21 +172,33 @@ async function renderOwnRank(){
 window.loadLeaderboard=async function(){
   const host=document.getElementById('leaderboardList');
   if(!host)return;
-  host.replaceChildren(node('p','lb-empty-message','جاري تحميل الترتيب…'));
-  // Personal summary is private to the logged-in shopper.
-  renderOwnRank().catch(err=>console.warn('Could not show personal rank',err));
+  const friendsMode=document.getElementById('leaderboardView')?.dataset.rankMode==='friends';
+  host.replaceChildren(node('p','lb-empty-message',friendsMode?'جاري تحميل ترتيب الأصدقاء…':'جاري تحميل الترتيب…'));
+  // The personal card contains a public/global rank, never present it as
+  // though it was the user's position among their friends.
+  if(friendsMode){
+    document.getElementById('lbMyRank')?.classList.add('hidden');
+  }else{
+    renderOwnRank().catch(err=>console.warn('Could not show personal rank',err));
+  }
   try{
-    const result=await supabaseClient.rpc('get_store_leaderboard_with_google');
+    const result=await supabaseClient.rpc(friendsMode?'get_store_friends_leaderboard':'get_store_leaderboard_with_google');
     if(result.error)throw result.error;
     const data=Array.isArray(result.data)?result.data:[];
+    // Ignore a delayed previous-tab result so it cannot replace the open tab.
+    if((document.getElementById('leaderboardView')?.dataset.rankMode==='friends')!==friendsMode)return;
+    if(friendsMode&&!data.length){
+      host.replaceChildren(node('p','lb-empty-message','ما عندك أصدقاء ظاهرين في التصنيف بعد. شارك كود الصداقة واقبلوا الطلبات، وفعّلوا الظهور في التصنيف.'));
+      return;
+    }
     const topValue=Math.max(0,Number(data[0]?.points)||0);
     const shell=node('div','lb-results');
     const podium=node('div','lb-podium');
     [2,1,3].forEach(rank=>podium.appendChild(makePodiumCard(data.find(item=>Number(item.rank)===rank),rank,topValue)));
     shell.appendChild(podium);
     const header=node('div','lb-section-label');
-    const label=iconLabel('h2','','list',' باقي المتصدرين');
-    const count=node('small','',''+data.length+' مشارك في التصنيف');
+    const label=iconLabel('h2','','list',friendsMode?' باقي الأصدقاء':' باقي المتصدرين');
+    const count=node('small','',friendsMode?(data.length+' صديق في التصنيف'):(data.length+' مشارك في التصنيف'));
     header.append(label,count);
     shell.appendChild(header);
     const remaining=data.filter(item=>Number(item.rank)>3);
@@ -197,10 +209,14 @@ window.loadLeaderboard=async function(){
     }else{
       shell.appendChild(node('p','lb-empty-message',data.length?'المراكز التالية تظهر مع زيادة المتسوقين المشاركين.':'ما فيش مشاركين في التصنيف حتى الآن.'));
     }
+    if((document.getElementById('leaderboardView')?.dataset.rankMode==='friends')!==friendsMode)return;
     host.replaceChildren(shell);
   }catch(err){
-    console.warn('Cannot load public ranking',err);
-    host.replaceChildren(node('p','lb-empty-message','تعذر تحميل التصنيف حالياً. حاول تحديث الصفحة.'));
+    console.warn('Cannot load ranking',err);
+    if((document.getElementById('leaderboardView')?.dataset.rankMode==='friends')!==friendsMode)return;
+    host.replaceChildren(node('p','lb-empty-message',friendsMode?
+      'تعذر تحميل ترتيب الأصدقاء. سجّل دخولك أو حاول تحديث الصفحة.':
+      'تعذر تحميل التصنيف حالياً. حاول تحديث الصفحة.'));
   }
 };
 

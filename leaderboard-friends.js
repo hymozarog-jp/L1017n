@@ -66,8 +66,10 @@
     list.setAttribute('aria-live','polite');
     panel.append(head,guest,codeBox,form,feedback,list);
 
-    toolbar.insertAdjacentElement('afterend',tabs);
-    tabs.insertAdjacentElement('afterend',panel);
+    // The two categories replace the old centered GAMEBOX LY / LEADERBOARD
+    // heading, instead of appearing on an extra row below the toolbar.
+    toolbar.appendChild(tabs);
+    toolbar.insertAdjacentElement('afterend',panel);
 
     let activeCode='';
     let seq=0;

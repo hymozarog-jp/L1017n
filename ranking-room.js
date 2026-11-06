@@ -8,8 +8,6 @@
     var toolbar=document.createElement('div');
     toolbar.className='l1017-rank-toolbar';
     toolbar.innerHTML=
-      '<button type="button" class="l1017-rank-back" id="l1017RankBack" aria-label="الرجوع إلى الصفحة السابقة">'+
-      '<svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg> رجوع</button>'+
 
       '<button type="button" class="l1017-rank-refresh" id="l1017RankRefresh" aria-label="تحديث التصنيف">'+
       '<svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5 9a8 8 0 0 1 13-3l2 6M4 12l2 6a8 8 0 0 0 13-3"/></svg></button>';
@@ -46,7 +44,6 @@
       else if(typeof window.switchView==='function')window.switchView(target);
       else page.classList.add('hidden');
     }
-    toolbar.querySelector('#l1017RankBack').addEventListener('click',navigateBack);
     toolbar.querySelector('#l1017RankRefresh').addEventListener('click',function(){
       var original=document.getElementById('refreshLeaderboard');
       if(original)original.click();

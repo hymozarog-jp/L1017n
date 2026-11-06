@@ -1126,7 +1126,14 @@ async function loadLeaderboard(){
 }
 
 async function renderLeaderboardProfile(){
-  if(typeof window.renderLeaderboardProfile==='function')return window.renderLeaderboardProfile();
+  // This global function is the boot-time fallback until google-leaderboard.js
+  // replaces window.renderLeaderboardProfile. Calling the fallback through
+  // window would recurse indefinitely and overflow the browser call stack.
+  const actual=window.renderLeaderboardProfile;
+  if(typeof actual==='function'&&actual!==renderLeaderboardProfile){
+    return actual();
+  }
+  return undefined;
 }
 $('#refreshLeaderboard')?.addEventListener('click',loadLeaderboard);
 loadLeaderboard();

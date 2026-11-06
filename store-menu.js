@@ -10,12 +10,14 @@
   var mm2DeathshardImage='game-covers/mm2-deathshard.png?v=local-cutout1';
   var mm2ElderwoodBladeImage='game-covers/mm2-elderwood-blade.png?v=local-cutout1';
   var mm2NightbladeImage='game-covers/mm2-nightblade.svg?v=nightblade-20261105-1';
+  var mm2PixelKnifeImage='game-covers/mm2-pixel-owner.svg?v=pixel-knife-upload-20261106-1';
   function mm2Artwork(product){
     var key=String(product&&product.product_key||'');
     if(key==='mm2-minty-gun')return mm2MintyImage;
     if(key==='mm2-deathshard')return mm2DeathshardImage;
     if(key==='mm2-elderwood-blade')return mm2ElderwoodBladeImage;
     if(key==='mm2-nightblade')return mm2NightbladeImage;
+    if(key==='mm2-pixel-knife')return mm2PixelKnifeImage;
     return '';
   }
 var styleId='robloxGamePageStyles';

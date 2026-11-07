@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="سلاح Phantom الأزرق في MM2">
+<defs>
+  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c8d0dd"/><stop offset=".28" stop-color="#71798d"/><stop offset=".64" stop-color="#303747"/><stop offset="1" stop-color="#151d2f"/></linearGradient>
+  <linearGradient id="ice" x1=".15" y1=".1" x2=".9" y2=".9"><stop stop-color="#d4ffff"/><stop offset=".28" stop-color="#6cfff3"/><stop offset=".55" stop-color="#36cecb"/><stop offset="1" stop-color="#087e91"/></linearGradient>
+  <linearGradient id="handle" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#082e3d"/><stop offset=".5" stop-color="#32c3c4"/><stop offset="1" stop-color="#153a47"/></linearGradient>
+  <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="2" dy="11" stdDeviation="8" flood-color="#020b21" flood-opacity=".56"/></filter>
+</defs>
+<g filter="url(#shadow)" transform="translate(7 12) rotate(-4 256 256)">
+  <path d="M89 49 C66 95 70 171 109 207 C143 239 184 237 212 253 C249 276 252 323 282 345 C312 364 351 345 357 312 C360 288 355 273 373 264 C387 256 390 278 403 277 C424 276 432 253 414 236 C395 217 366 227 359 249 C351 267 339 274 326 267 C296 252 293 214 264 184 C225 142 184 149 149 137 C111 124 92 94 89 49 Z" fill="url(#steel)" stroke="#172130" stroke-width="8"/>
+  <path d="M126 145 C154 157 184 155 213 170 C243 187 256 211 270 244 C288 290 305 304 327 297 C319 316 305 326 293 315 C272 294 269 264 247 234 C222 202 202 196 168 184 C153 180 139 167 126 145 Z" fill="url(#ice)" stroke="#075569" stroke-width="3"/>
+  <path d="M145 160 C184 168 214 176 236 202 C251 220 268 266 284 284" fill="none" stroke="#b3fff9" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+  <path d="M304 313 C326 303 341 307 353 318 L353 354 L326 369 L298 352 Z" fill="url(#steel)" stroke="#111828" stroke-width="6"/>
+  <path d="M316 322 L343 325 L342 349 L316 348 Z" fill="#46e7db" stroke="#14546c" stroke-width="4"/>
+  <path d="M318 328 L335 331 L335 341 L319 340 Z" fill="#bbffff" opacity=".83"/>
+  <path d="M304 353 C285 346 272 354 263 371 C253 391 231 385 226 370 C222 355 237 338 252 343 C264 347 267 356 265 362" fill="none" stroke="#364353" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="251" cy="359" r="10" fill="#41d8d2" stroke="#111e30" stroke-width="5"/>
+  <path d="M350 341 C367 339 374 350 365 360 L353 374 L341 369 Z" fill="#7e8b99" stroke="#1b2636" stroke-width="5"/>
+  <path d="M347 372 L387 416 L398 434 L421 456 L432 449 L415 424 L402 405 L367 365 Z" fill="url(#handle)" stroke="#0f2733" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M359 380 L374 371 M369 393 L384 386 M378 406 L395 401 M390 420 L405 414" stroke="#063442" stroke-width="6" opacity=".85"/>
+  <path d="M419 453 L441 465 L432 439 Z" fill="#65dbe2" stroke="#153a48" stroke-width="4"/>
+</g>
+</svg>

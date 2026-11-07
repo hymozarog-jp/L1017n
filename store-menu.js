@@ -11,6 +11,7 @@
   var mm2ElderwoodBladeImage='game-covers/mm2-elderwood-blade.png?v=local-cutout1';
   var mm2NightbladeImage='game-covers/mm2-nightblade.svg?v=nightblade-20261105-1';
   var mm2PixelKnifeImage='game-covers/mm2-pixel-owner.svg?v=pixel-knife-owner-20261106-2';
+  var mm2PhantomImage='game-covers/mm2-phantom.svg?v=phantom-20261107-1';
   function mm2Artwork(product){
     var key=String(product&&product.product_key||'');
     if(key==='mm2-minty-gun')return mm2MintyImage;
@@ -18,6 +19,7 @@
     if(key==='mm2-elderwood-blade')return mm2ElderwoodBladeImage;
     if(key==='mm2-nightblade')return mm2NightbladeImage;
     if(key==='mm2-pixel-knife')return mm2PixelKnifeImage;
+    if(key==='mm2-phantom')return mm2PhantomImage;
     return '';
   }
 var styleId='robloxGamePageStyles';

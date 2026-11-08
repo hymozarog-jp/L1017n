@@ -133,13 +133,14 @@
     if(networkError){
       root.dataset.state='pending';
       title.textContent='جاري التحقق من التحويل';
-      desc.textContent='تعذّر تحديث الحالة الآن. تأكد من اتصال الإنترنت واضغط «تحديث حالة الطلب».';
+      desc.textContent='تعذّر تحديث الحالة الآن. تأكد من اتصال الإنترنت واضغط «تحديث الحالة».';
       foot.textContent='لم يتم تأكيد الشحن بعد. لا تحول الرصيد مرة ثانية.';
       return;
     }
     if(data?.status==='approved'){
       root.dataset.state='approved';
-      setIconText(title,'check-circle','تم الشحن');
+      title.textContent='تم شحن محفظتك';
+      root.querySelector('.tpv-visual-icon').innerHTML='<svg viewBox="0 0 48 48"><path d="m12 24 8 8 16-17"/></svg>';
       desc.textContent='تم تأكيد التحويل وإضافة مبلغ الشحن إلى محفظتك بنجاح.';
       foot.textContent='صار الرصيد متاحًا في محفظتك. اضغط «شاهد رصيدك» لمشاهدة حركة الشحن.';
       const goWallet=root.querySelector('.tpv-dismiss');
@@ -151,6 +152,7 @@
     if(data?.status==='rejected'){
       root.dataset.state='rejected';
       title.textContent='لم يتم اعتماد الشحن';
+      root.querySelector('.tpv-visual-icon').innerHTML='<svg viewBox="0 0 48 48"><path d="m16 16 16 16m0-16L16 32"/></svg>';
       desc.textContent='لم تتم الموافقة على الطلب. راجع حالة الطلب أو تواصل مع الإدارة.';
       foot.textContent='لا تكرر التحويل قبل معرفة سبب الرفض.';
       forgetVerifier();
@@ -170,7 +172,7 @@
       desc.textContent='مرّت أكثر من 5 دقائق ولم يسجّل النظام رسالة ليبيانا مطابقة. إذا خُصم الرصيد فعلًا، راجع طلبك وتواصل مع المتجر برقم الطلب؛ لا تعِد التحويل.';
       if(followOrders)followOrders.textContent='عرض طلباتي';
     }else{
-      desc.textContent='طلبك أُرسل لمراجعة إدارة المتجر، ويُضاف الرصيد فقط بعد قبولها والتأكد من وصول التحويل.';
+      desc.textContent='نراجع وصول التحويل. يُضاف رصيدك فور اعتماد الطلب.';
     }
     foot.textContent=smsDelayed&&data?.sms_status!=='matched'
       ?'قبول الشحن يحتاج موافقة الإدارة بعد التحقق من وصول التحويل؛ الرجوع من الاتصال ليس إثبات دفع.'
@@ -212,7 +214,7 @@
       +'<span class="tpv-brand">L1017n <span>•</span> ليبيانا</span>'
       +'<div class="tpv-visual" aria-hidden="true">'
         +'<span class="tpv-spark"></span><span class="tpv-ring tpv-ring-outer"></span><span class="tpv-ring tpv-ring-inner"></span>'
-        +'<div class="tpv-visual-icon"><svg viewBox="0 0 48 48"><path d="M24 7 36 12v11c0 8-5 14-12 18-7-4-12-10-12-18V12Z"/><path d="m18 24 4 4 8-9"/></svg></div>'
+        +'<div class="tpv-visual-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 14v11l7 4"/></svg></div>'
       +'</div>'
       +'<h2 class="tpv-title" id="tpvHeading" tabindex="-1">جاري التحقق من التحويل</h2>'
       +'<p class="tpv-subtitle" id="tpvDescription" role="status" aria-live="polite">نراجع حالة طلبك ونتأكد من وصول إشعار ليبيانا. لا تحتاج إلى التحويل مرة ثانية.</p>'
@@ -224,7 +226,7 @@
         +'<div class="tpv-step"><i>3</i><span>اعتماد الرصيد</span></div>'
       +'</div>'
       +'<div class="tpv-actions">'
-        +'<button class="tpv-action tpv-refresh" type="button">تحديث حالة الطلب</button>'
+        +'<button class="tpv-action tpv-refresh" type="button">تحديث الحالة</button>'
         +'<button class="tpv-action tpv-dismiss" type="button">متابعة طلباتي</button>'
       +'</div>'
       +'<p class="tpv-footnote">الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.</p>'

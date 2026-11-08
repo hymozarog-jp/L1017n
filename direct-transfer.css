@@ -38,3 +38,38 @@
 .dt-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 #dtDialog button:focus-visible,.dt-home button:focus-visible{outline:3px solid #80bdff;outline-offset:3px}
 @media(max-width:380px){.dt-home .dt-card{padding:17px}.dt-heading h2{font-size:18px}#dtDialog{padding:22px 18px}.dt-number b{font-size:25px}}
+
+/* Compact transfer page with an amount sheet that enters from the bottom. */
+#topupDedicatedPage #topupForm.dt-enabled{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;margin:12px auto!important;max-width:520px!important}
+.dt-home{gap:12px}
+.dt-home .dt-card{padding:15px;border-radius:18px}
+.dt-home .dt-heading{gap:10px;margin-bottom:12px}
+.dt-home .dt-heading h2,.dt-home .dt-card h3{font-size:16px}
+.dt-home .dt-icon{width:40px;height:40px;border-radius:13px}
+.dt-home svg{width:20px;height:20px}
+.dt-home .dt-card p{font-size:12px;line-height:1.7;margin:5px 0 10px}
+.dt-home .dt-number{padding:10px 12px;margin:12px 0;border-radius:13px}
+.dt-home .dt-number b{font-size:23px;letter-spacing:.5px}
+.dt-home .dt-copy{width:44px;height:44px;font-size:25px}
+.dt-home .dt-open{min-height:44px;padding:10px 16px;font-size:15px;border-radius:12px}
+.dt-home .dt-card label{font-size:12px;margin:8px 0 6px}
+.dt-home #dtSender{padding:12px 14px;min-height:46px;border-radius:12px;font-size:16px}
+.dt-home .dt-phone-status{font-size:11px;margin-top:7px}
+.dt-home .dt-phone-status:empty{display:none}
+.dt-home .dt-card ol{margin-top:12px;gap:10px;font-size:12px}
+.dt-home .dt-card li{gap:9px}
+.dt-home .dt-card li::before{width:24px;height:24px;font-size:12px}
+#dtDialog{position:fixed;inset:auto 0 0;margin:0 auto;width:min(100%,520px);max-width:100%;max-height:calc(100dvh - 16px);border-radius:24px 24px 0 0;padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));border-bottom:0;overscroll-behavior:contain}
+#dtDialog::before{content:"";display:block;width:36px;height:4px;margin:0 auto 18px;border-radius:99px;background:#4c5970}
+#dtDialog[open]{animation:dt-sheet-rise .28s cubic-bezier(.2,.8,.2,1) both}
+#dtDialog .dt-heading{gap:11px;margin-bottom:17px}
+#dtDialog .dt-heading h2{font-size:18px}
+#dtDialog .dt-icon{width:42px;height:42px;border-radius:13px}
+#dtDialog svg{width:21px;height:21px}
+#dtDialog #dtAmount{min-height:54px;padding:15px;border-radius:14px;font-size:18px}
+#dtDialog .dt-actions{gap:12px;margin-top:17px}
+#dtDialog .dt-call{min-height:48px;font-size:17px;padding:10px 16px;border-radius:14px}
+#dtDialog .dt-cancel{min-height:48px;font-size:16px}
+#dtDialog .dt-error,#dtDialog .dt-fallback{font-size:12px}
+@keyframes dt-sheet-rise{from{transform:translateY(100%);opacity:.4}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){#dtDialog[open]{animation:none}}

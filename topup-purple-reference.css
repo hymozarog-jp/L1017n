@@ -1,0 +1,438 @@
+/* L1017N purple reference design • compact, mobile-first and RTL.
+   Visual only: sender + amount flow invokes existing verified USSD service. */
+#topupDedicatedPage{
+ --dt-purple:#9962f6;
+ --dt-purple-soft:#d5b5ff;
+ --dt-border:rgba(154,121,245,.42);
+ background:radial-gradient(ellipse 100% 290px at 95% 0%,#4f237660,transparent 90%),
+            radial-gradient(ellipse 90% 360px at 0% 90%,#1d347050,transparent 90%),
+            linear-gradient(160deg,#0f112d 0%,#0b1428 66%,#0e1329 100%)!important;
+ color:#f8f4ff!important;
+ padding:calc(10px + env(safe-area-inset-top,0px)) 12px
+ calc(28px + env(safe-area-inset-bottom,0px))!important;
+ scrollbar-width:thin;
+}
+#topupDedicatedPage .tp-dedicated-heading{
+ display:flex!important;
+ width:min(100%,520px)!important;
+ max-width:520px!important;
+ min-height:0!important;
+ margin:0 auto 8px!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+}
+#topupDedicatedPage .topup-dedicated-back{
+ display:inline-flex!important;
+ align-items:center;justify-content:center;
+ min-height:36px!important;
+ padding:7px 14px!important;
+ border:1px solid #9a80cb8c!important;
+ border-radius:99px!important;
+ background:#2a234ca8!important;
+ color:#f3eaff!important;
+ font:750 12px 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ box-shadow:none!important;
+ cursor:pointer;
+}
+#topupDedicatedPage .tp-clean-header{
+ display:grid!important;
+ direction:rtl!important;
+ grid-template-columns:43px minmax(0,1fr)!important;
+ gap:0 10px!important;
+ align-items:center!important;
+ width:min(100%,520px)!important;
+ max-width:520px!important;
+ padding:0 2px 4px!important;
+ margin:0 auto 11px!important;
+ min-height:0!important;
+}
+#topupDedicatedPage .tp-clean-header::before{
+ content:"L1017n  •  LIBYANA"!important;
+ grid-row:1!important;
+ grid-column:1 / -1!important;
+ justify-self:start!important;
+ display:inline-flex!important;
+ width:max-content!important;
+ height:25px!important;
+ padding:2px 12px!important;
+ margin:0 0 9px!important;
+ border:1px solid #6caa9890!important;
+ border-radius:30px!important;
+ background:linear-gradient(100deg,#193f4365,#40336e85)!important;
+ color:#a5ecc7!important;
+ font:750 10px system-ui,sans-serif!important;
+ letter-spacing:1.2px!important;
+}
+#topupDedicatedPage .tp-purple-hero-icon{
+ display:grid!important;
+ grid-column:1!important;
+ grid-row:2!important;
+ place-items:center!important;
+ width:42px;height:42px;
+ border:1px solid #b66bff78;
+ border-radius:13px;
+ background:linear-gradient(145deg,#5f309c,#30216a);
+ box-shadow:inset 0 1px #ffffff25,0 6px 17px #5816ba3b;
+ color:#e7b5ff;
+}
+#topupDedicatedPage .tp-purple-hero-icon svg{
+ width:25px;height:25px;display:block;
+ fill:none;stroke:currentColor;stroke-width:1.8;
+ stroke-linecap:round;stroke-linejoin:round;
+}
+#topupDedicatedPage .tp-clean-copy{
+ grid-column:2!important;grid-row:2!important;
+ min-width:0!important;
+ margin:0!important;padding:0!important;
+}
+#topupDedicatedPage .tp-clean-copy .topup-dedicated-title{
+ font:900 clamp(24px,7vw,31px)/1.35 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ letter-spacing:-.6px!important;
+ color:#f9f5ff!important;
+ margin:0!important;padding:0!important;
+ text-shadow:none!important;
+}
+#topupDedicatedPage .tp-clean-copy::after{
+ content:"اشحن رصيدك عن طريق تحويل من ليبيانا";
+ display:block!important;
+ margin:1px 0 0!important;
+ font:550 11px/1.6 'IBM Plex Sans Arabic',system-ui,sans-serif;
+ color:#a9a5c6;
+}
+#topupDedicatedPage #topupForm.dt-enabled{
+ display:block!important;
+ direction:rtl!important;
+ width:min(100%,520px)!important;
+ max-width:520px!important;
+ padding:0!important;margin:0 auto!important;
+ border:0!important;box-shadow:none!important;
+ background:transparent!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled > :not(.dt-home){
+ display:none!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-purple-home{
+ display:grid!important;
+ gap:12px!important;
+ width:100%!important;
+ direction:rtl!important;
+}
+#topupDedicatedPage .dt-purple-home .dt-card{
+ position:relative;
+ overflow:visible!important;
+ width:100%!important;
+ max-width:100%!important;
+ margin:0!important;
+ box-sizing:border-box!important;
+ border:1px solid var(--dt-border)!important;
+ border-radius:21px!important;
+ background:linear-gradient(146deg,#171a37 0%,#121b33 70%,#131831 100%)!important;
+ box-shadow:inset 0 1px #ffffff12,0 8px 27px #04051725!important;
+ color:#f5efff!important;
+}
+#topupDedicatedPage .dt-purple-home .dt-purple-form{
+ display:grid!important;
+ gap:0!important;
+ padding:15px 14px 13px!important;
+}
+#topupDedicatedPage .dt-purple-form-top{
+ display:flex!important;
+ flex-flow:row nowrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:10px!important;
+ margin:0 0 11px!important;
+}
+#topupDedicatedPage .dt-purple-form-top .dt-purple-form-icon{
+ display:grid!important;place-items:center!important;
+ width:35px!important;height:35px!important;flex:0 0 35px!important;
+ border:1px solid #7445cb85!important;border-radius:12px!important;
+ background:#36235d!important;color:#cb9aff!important;
+}
+#topupDedicatedPage .dt-purple-home svg{
+ width:18px;height:18px;display:block;
+ fill:none;stroke:currentColor;stroke-width:1.9;
+ stroke-linecap:round;stroke-linejoin:round;
+ flex-shrink:0;
+}
+#topupDedicatedPage .dt-purple-form-top h2{
+ margin:0!important;
+ color:#fcfaff!important;
+ font:900 16px/1.3 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-form-top p{
+ margin:3px 0 0!important;padding:0!important;
+ color:#a9a5c2!important;
+ font:500 11px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-home .dt-purple-field{
+ display:grid!important;
+ direction:rtl!important;
+ grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)!important;
+ align-items:center!important;
+ gap:8px!important;
+ min-height:65px!important;
+ padding:7px 0!important;
+ margin:0!important;
+ border-bottom:1px solid #9792bf1e!important;
+ box-sizing:border-box!important;
+}
+#topupDedicatedPage .dt-purple-home .dt-purple-field:last-of-type{border-bottom:0!important}
+#topupDedicatedPage .dt-purple-field label{
+ display:flex!important;
+ flex-flow:row nowrap!important;
+ align-items:center!important;
+ gap:6px!important;
+ min-width:0!important;
+ margin:0!important;
+ color:#f6efff!important;
+ text-align:right!important;
+ font:750 clamp(10.5px,3.3vw,13px)/1.45 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ white-space:normal!important;
+}
+#topupDedicatedPage .dt-purple-field-icon{
+ display:grid!important;
+ place-items:center!important;
+ flex:0 0 28px!important;
+ width:28px!important;height:30px!important;
+ border-radius:9px!important;
+ background:#3a2866!important;
+ color:#bf91ff!important;
+}
+#topupDedicatedPage .dt-purple-field-icon svg{width:16px!important;height:16px!important}
+#topupDedicatedPage .dt-purple-home input:is(#dtSender,#dtReceiver,#dtAmount){
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ height:45px!important;
+ min-height:45px!important;
+ margin:0!important;
+ padding:9px 11px!important;
+ border:1px solid #7167c180!important;
+ border-radius:12px!important;
+ outline:none!important;
+ background:linear-gradient(145deg,#252c52,#1d2948)!important;
+ box-shadow:inset 0 1px #ffffff12!important;
+ color:#faf6ff!important;
+ font:750 clamp(13px,4vw,16px)/1.2 -apple-system,system-ui,sans-serif!important;
+ font-variant-numeric:tabular-nums lining-nums;
+ letter-spacing:0!important;
+ text-align:left!important;
+ -webkit-appearance:none!important;
+ appearance:none!important;
+}
+#topupDedicatedPage .dt-purple-home #dtReceiver{font-weight:820!important}
+#topupDedicatedPage .dt-purple-home input::placeholder{
+ color:#9c9bb8!important;opacity:1!important;
+}
+#topupDedicatedPage .dt-purple-home input:focus{
+ border-color:#c79eff!important;
+ box-shadow:0 0 0 3px #a769f528,inset 0 1px #ffffff12!important;
+}
+#topupDedicatedPage .dt-purple-receiver{
+ position:relative;
+ min-width:0!important;
+ display:grid!important;
+ direction:ltr!important;
+ grid-template-columns:minmax(0,1fr) 28px!important;
+ gap:2px!important;
+ background:#212b4b!important;
+ border-radius:12px!important;
+ border:1px solid #7167c180!important;
+ overflow:hidden!important;
+}
+#topupDedicatedPage .dt-purple-receiver:focus-within{border-color:#c79eff!important}
+#topupDedicatedPage .dt-purple-receiver #dtReceiver{
+ border:0!important;
+ box-shadow:none!important;
+ background:transparent!important;
+ padding:9px 5px 9px 10px!important;
+}
+#topupDedicatedPage .dt-purple-home .dt-copy{
+ display:grid!important;
+ place-items:center!important;
+ align-self:center!important;
+ justify-self:center!important;
+ width:27px!important;height:32px!important;
+ padding:0!important;
+ min-width:0!important;
+ margin:0!important;
+ border:0!important;
+ border-radius:8px!important;
+ background:#604c9b44!important;
+ color:#d4b5ff!important;
+ box-shadow:none!important;
+ cursor:pointer;
+}
+#topupDedicatedPage .dt-purple-copy svg{width:15px;height:15px}
+#topupDedicatedPage .dt-purple-amount{
+ display:flex!important;
+ direction:ltr!important;
+ flex-flow:row nowrap!important;
+ align-items:center!important;
+ width:100%!important;
+ min-width:0!important;
+ overflow:hidden!important;
+ border:1px solid #7167c180!important;
+ border-radius:12px!important;
+ background:linear-gradient(145deg,#252c52,#1d2948)!important;
+}
+#topupDedicatedPage .dt-purple-amount #dtAmount{
+ flex:1 1 auto!important;
+ min-width:0!important;
+ border:0!important;
+ box-shadow:none!important;
+ background:transparent!important;
+}
+#topupDedicatedPage .dt-purple-amount span{
+ display:grid;place-items:center;
+ flex:0 0 auto;
+ padding:0 8px 0 4px;
+ color:#d4b8fa;font-weight:750;font-size:12px;
+ white-space:nowrap;
+}
+#topupDedicatedPage .dt-purple-message{
+ display:block!important;
+ min-height:0!important;
+ margin:9px 2px 10px!important;
+ padding:0!important;
+ color:#a5abc9!important;
+ background:transparent!important;border:0!important;
+ font:550 11px/1.6 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-message[data-kind="error"]{color:#ffc6c4!important}
+#topupDedicatedPage .dt-purple-message[data-kind="success"]{color:#abf1cd!important}
+#topupDedicatedPage .dt-purple-submit{
+ display:flex!important;
+ align-items:center!important;justify-content:center!important;
+ flex-flow:row nowrap!important;
+ gap:8px!important;
+ width:100%!important;
+ height:51px!important;
+ min-height:51px!important;
+ padding:11px 18px!important;
+ margin:0!important;
+ border:1px solid #b66efc!important;
+ border-radius:14px!important;
+ background:linear-gradient(105deg,#a43fea 0%,#803be8 46%,#694ce7 100%)!important;
+ box-shadow:inset 0 1px #ffffff54,0 8px 23px #7a36d046!important;
+ color:#fff!important;
+ font:900 16px/1.3 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ cursor:pointer!important;
+ transition:transform .16s ease,filter .16s ease,box-shadow .16s ease!important;
+}
+#topupDedicatedPage .dt-purple-submit svg{width:21px!important;height:21px!important}
+#topupDedicatedPage .dt-purple-submit:active{
+ transform:scale(.98)!important;filter:brightness(1.09)!important;
+}
+#topupDedicatedPage .dt-purple-submit:disabled{opacity:.62!important;cursor:wait!important}
+#topupDedicatedPage .dt-purple-fallback{
+ display:block!important;
+ margin:8px 0 0!important;
+ text-align:center!important;
+ color:#d7b7ff!important;
+ font:700 11px/1.8 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ text-decoration:underline!important;
+ text-underline-offset:3px!important;
+}
+#topupDedicatedPage .dt-purple-fallback[hidden]{display:none!important}
+#topupDedicatedPage .dt-purple-home .dt-purple-guide{
+ padding:12px 12px 15px!important;
+}
+#topupDedicatedPage .dt-purple-guide h3{
+ display:flex!important;align-items:center!important;gap:8px!important;
+ margin:0 0 12px!important;
+ color:#f7efff!important;
+ font:850 15px/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-guide-icon{
+ display:grid!important;place-items:center!important;
+ width:29px!important;height:29px!important;
+ border-radius:9px!important;
+ background:#3b276e!important;
+ color:#ce99ff!important;
+ font:800 17px system-ui!important;
+}
+#topupDedicatedPage .dt-purple-steps{
+ display:grid!important;
+ direction:rtl!important;
+ grid-template-columns:minmax(0,1fr) 11px minmax(0,1fr) 11px minmax(0,1fr)!important;
+ gap:2px!important;
+ align-items:start!important;
+ text-align:center!important;
+}
+#topupDedicatedPage .dt-purple-steps>div{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ gap:4px!important;
+ min-width:0!important;
+}
+#topupDedicatedPage .dt-purple-step-icon{
+ display:grid!important;place-items:center!important;
+ position:relative!important;
+ width:36px!important;height:36px!important;
+ margin:0 0 2px!important;
+ border-radius:12px!important;
+ color:#c9a5ff!important;
+ background:#2d2455!important;
+}
+#topupDedicatedPage .dt-purple-step-icon svg{width:19px!important;height:19px!important}
+#topupDedicatedPage .dt-purple-step-icon b{
+ position:absolute!important;
+ top:-5px!important;right:-4px!important;
+ display:grid!important;place-items:center!important;
+ width:17px!important;height:17px!important;
+ border:0!important;border-radius:50%!important;
+ background:#895bf3!important;color:white!important;
+ font:750 10px/1 system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-steps strong{
+ color:#f8f1ff!important;
+ font:800 clamp(10px,2.9vw,12px)/1.35 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-steps small{
+ color:#a5a5c0!important;
+ font:500 clamp(9px,2.6vw,10px)/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-steps>i{
+ margin-top:11px!important;
+ color:#beadf9!important;
+ font:800 15px/1 system-ui,sans-serif!important;
+ font-style:normal!important;
+}
+#topupDedicatedPage .dt-purple-home :is(input,button,a):focus-visible{
+ outline:2px solid #debdff!important;
+ outline-offset:2px!important;
+}
+@media(max-width:370px){
+ #topupDedicatedPage{padding-left:9px!important;padding-right:9px!important}
+ #topupDedicatedPage .dt-purple-home .dt-purple-form{padding:12px 10px!important}
+ #topupDedicatedPage .dt-purple-home .dt-purple-field{
+   grid-template-columns:minmax(0,1fr) minmax(0,1.19fr)!important;
+   gap:5px!important;min-height:58px!important;
+ }
+ #topupDedicatedPage .dt-purple-field-icon{
+   width:24px!important;flex-basis:24px!important;height:26px!important;
+ }
+ #topupDedicatedPage .dt-purple-field label{font-size:10px!important;gap:5px!important}
+ #topupDedicatedPage .dt-purple-home input:is(#dtSender,#dtReceiver,#dtAmount){
+   height:41px!important;min-height:41px!important;
+   padding:7px 7px!important;font-size:12.5px!important;
+ }
+ #topupDedicatedPage .dt-purple-receiver #dtReceiver{padding-left:5px!important}
+ #topupDedicatedPage .dt-purple-home .dt-purple-receiver{grid-template-columns:minmax(0,1fr) 24px!important}
+ #topupDedicatedPage .dt-purple-home .dt-copy{width:24px!important}
+ #topupDedicatedPage .dt-purple-amount span{padding-right:5px!important;font-size:10px!important}
+ #topupDedicatedPage .dt-purple-steps strong{font-size:10px!important}
+}
+@media(max-height:700px){
+ #topupDedicatedPage .dt-purple-home .dt-purple-form{padding-top:10px!important;padding-bottom:10px!important}
+ #topupDedicatedPage .dt-purple-home .dt-purple-field{min-height:57px!important;padding-block:5px!important}
+ #topupDedicatedPage .dt-purple-home input:is(#dtSender,#dtReceiver,#dtAmount){height:41px!important;min-height:41px!important}
+ #topupDedicatedPage .dt-purple-guide{padding-top:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #topupDedicatedPage .dt-purple-submit{transition:none!important;transform:none!important}
+}

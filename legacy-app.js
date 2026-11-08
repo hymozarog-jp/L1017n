@@ -14,6 +14,7 @@ const orderStatusText={paid_pending_fulfillment:'مدفوع — بانتظار �
 function orderStatusClass(status){return status==='completed'?'approved':(['rejected','refunded'].includes(status)?'rejected':'pending')}
 let toastTimer,products=[],robuxAvailable=0,robuxUnlimited=false,showTopupCode=false;
 let robuxStockPoller=null;
+let adminRobuxStockWatcher=null;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
@@ -1218,6 +1219,19 @@ async function refreshAdminAccess(){
 function adminItem(title,sub,amount,id,status,actions,note){
   return '<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(title)+'</b><small>'+escapeHtml(sub)+'</small><small>رقم الطلب: '+escapeHtml(String(id).slice(0,8).toUpperCase())+(note?' · ملاحظة: '+escapeHtml(note):'')+'</small><div class="admin-request-actions">'+actions+'</div></div><div><b>'+Number(amount||0).toFixed(2)+' د.ل</b><div><span class="status '+(status==='pending'||status==='paid_pending_fulfillment'||status==='processing'||status==='fulfilling'?'pending':status==='approved'||status==='completed'?'approved':'rejected')+'">'+escapeHtml(statusText[status]||orderStatusText[status]||status)+'</span></div></div></article>'
 }
+function watchAdminRobuxStock(){
+ if(adminRobuxStockWatcher)return;
+ adminRobuxStockWatcher=setInterval(()=>{
+  const view=document.getElementById('adminView');
+  if(!view||view.classList.contains('hidden')||document.visibilityState!=='visible')return;
+  supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()
+    .then(({data,error})=>{
+      if(error||!data||view.classList.contains('hidden'))return;
+      const indicator=document.getElementById('adminRobuxStockLive');
+      if(indicator)indicator.textContent='المتوفر الآن: '+Math.max(0,Number(data.robux_available)||0).toLocaleString('en-US')+' روبوكس';
+    }).catch(()=>{});
+ },8000);
+}
 async function loadAdminDashboard(){
   $('#adminStatus').innerHTML='<p class="muted">جاري التحقق من صلاحيات الإدارة…</p>';
   const user=await currentUser();
@@ -1226,6 +1240,7 @@ async function loadAdminDashboard(){
   if(adminError||!admin){$('#adminStatus').innerHTML='<p>ما عندكش صلاحية الوصول للوحة الإدارة.</p>';$('#adminContent').classList.add('hidden');return}
   $('#adminStatus').innerHTML='<p>تم التحقق من صلاحيات الإدارة للحساب: <b>'+escapeHtml(user.email)+'</b></p>';
   $('#adminContent').classList.remove('hidden');
+  watchAdminRobuxStock();
   const [topups,orders,productResult,inventoryResult]=await Promise.all([
     supabaseClient.from('topup_requests').select('id,user_id,amount,method,phone,transfer_reference,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('purchase_orders').select('id,user_id,product_name,total_amount,roblox_username,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
@@ -1234,6 +1249,8 @@ async function loadAdminDashboard(){
   ]);
   if(!inventoryResult.error&&inventoryResult.data){
     $('#adminRobuxStock').value=Number(inventoryResult.data.robux_available)||0;
+    const currentStock=$('#adminRobuxStockLive');
+    if(currentStock)currentStock.textContent='المتوفر الآن: '+Math.max(0,Number(inventoryResult.data.robux_available)||0).toLocaleString('en-US')+' روبوكس';
     const mode=$('#adminRobuxStockMode');
     if(mode)mode.textContent=inventoryResult.data.robux_unlimited===true
       ? '♾ وضع غير محدود مفعّل. اكتب كمية واضغط حفظ المخزون لتفعيل الخصم من المخزون الحقيقي.'

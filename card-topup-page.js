@@ -35,13 +35,33 @@
  function createRow(position){
    const card=document.createElement("article");card.className="ct-card";
    card.innerHTML='<div class="ct-card-head"><span class="ct-card-count"></span><button type="button" class="ct-remove-card" aria-label="حذف الكرت">حذف</button></div>'+
-   '<label>رقم الكرت<input class="ct-card-code" type="password" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="36" placeholder="اكتب رقم كرت الشحن" required></label>'+
-   '<div class="ct-code-visibility"><button type="button" class="ct-reveal">إظهار رقم الكرت</button></div>'+
-   '<label>قيمة الكرت بالدينار الليبي<div class="ct-amount-input"><input class="ct-card-amount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="مثال: 10" required><span>د.ل</span></div></label>';
+   '<div class="ct-amount-heading"><span>قيمة الكرت</span><small>اختر قيمة أو اكتب مبلغًا آخر</small></div>'+
+   '<div class="ct-preset-grid" role="group" aria-label="قيمة كرت ليبيانا">'+[3,5,10,30,40,100].map(value=>'<button type="button" class="ct-preset" data-amount="'+value+'" aria-pressed="false"><strong>'+value+'</strong><small>دينار</small></button>').join('')+'</div>'+
+   '<label class="ct-custom-amount-label">قيمة أخرى (د.ل)<div class="ct-amount-input"><input class="ct-card-amount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="أو اكتب المبلغ" required><span>د.ل</span></div></label>'+
+   '<label class="ct-secret-label">الرقم السري للكرت<input class="ct-card-code" type="password" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="36" placeholder="اكتب الرقم السري هنا" required></label>'+
+   '<div class="ct-code-tools"><small>اكتب الأرقام فقط دون رموز الاتصال</small><button type="button" class="ct-reveal">إظهار الرقم</button></div>';
    const num=card.querySelector(".ct-card-count");num.textContent="الكرت "+position;
+   const amountInput=card.querySelector(".ct-card-amount");
+   function syncPresets(){
+     const chosen=String(amountInput.value||"");
+     card.querySelectorAll(".ct-preset").forEach(button=>{
+       const selected=button.dataset.amount===chosen;
+       button.classList.toggle("selected",selected);
+       button.setAttribute("aria-pressed",String(selected));
+     });
+   }
+   card.querySelectorAll(".ct-preset").forEach(button=>{
+     button.addEventListener("click",()=>{
+       if(working||submittedCards)return;
+       amountInput.value=button.dataset.amount;
+       amountInput.dispatchEvent(new Event("input",{bubbles:true}));
+       syncPresets();
+     });
+   });
+   amountInput.addEventListener("input",syncPresets);
    card.querySelector(".ct-reveal").addEventListener("click",()=>{
      const inp=card.querySelector(".ct-card-code");inp.type=inp.type==="password"?"text":"password";
-     card.querySelector(".ct-reveal").textContent=inp.type==="password"?"إظهار رقم الكرت":"إخفاء رقم الكرت";
+     card.querySelector(".ct-reveal").textContent=inp.type==="password"?"إظهار الرقم":"إخفاء الرقم";
    });
    card.querySelector(".ct-remove-card").addEventListener("click",()=>{
      if(working||submittedCards)return;
@@ -86,7 +106,7 @@
  function setBusy(active){
    working=active;$(".ct-submit").disabled=active||!!submittedCards;
    $(".ct-add").disabled=active||!!submittedCards||$$(".ct-card").length>=maxCards;
-   $(".ct-submit").textContent=active?"جاري تسجيل الطلب…":"تسجيل طلب الكروت";
+   $(".ct-submit").textContent=active?"جاري تسجيل الطلب…":"إرسال طلب التعبئة للمراجعة";
  }
  async function submit(event){
    event.preventDefault();if(working||submittedCards)return;
@@ -133,11 +153,12 @@
    page=document.createElement("section");page.id="cardTopupPage";page.hidden=true;page.dir="rtl";
    page.setAttribute("role","dialog");page.setAttribute("aria-modal","true");page.setAttribute("aria-labelledby","cardTopupTitle");
    page.innerHTML='<div class="ct-shell"><header class="ct-head"><button type="button" class="ct-back" aria-label="رجوع">›</button><span>L1017n WALLET</span><span class="ct-safe">مراجعة آمنة</span></header>'+
-   '<div class="ct-hero"><div class="ct-hero-art" aria-hidden="true"><svg viewBox="0 0 72 72" width="57" height="57" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="15" width="54" height="42" rx="8"/><path d="M9 28h54M17 45h17M48 42h6"/></svg></div><span class="ct-current-step">شحن المحفظة بطريقة جديدة</span><h1 id="cardTopupTitle">شحن المحفظة بالكروت</h1><p>أضف كرت ليبيانا أو أكثر واكتب مبلغ كل كرت. نرسل تنبيهًا للإدارة ونحفظ الأرقام بصورة مشفّرة في لوحة مراجعة خاصة بالمسؤول.</p></div>'+
+   '<div class="ct-hero"><div class="ct-hero-art" aria-hidden="true"><svg viewBox="0 0 72 72" width="57" height="57" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="15" width="54" height="42" rx="8"/><path d="M9 28h54M17 45h17M48 42h6"/></svg></div><span class="ct-current-step">ليبيانا · كروت الشحن</span><h1 id="cardTopupTitle">تعبئة بكرت ليبيانا</h1><p>اختار قيمة الكرت، واكتب رقمه السري. يتم إرسال الطلب للإدارة ومراجعته قبل إضافة الرصيد.</p></div>'+
+   '<div class="ct-top-alert" role="note"><span class="ct-alert-icon" aria-hidden="true">!</span><p><strong>تنبيه مهم</strong> تأكد من الرقم السري وقيمة الكرت قبل الإرسال. لا تشارك الرقم مع الآخرين؛ تتم التعبئة بعد اعتماد المسؤول فقط.</p></div>'+
    '<section class="ct-entry"><form id="cardTopupForm"><div class="ct-list"></div><button type="button" class="ct-add"><span>＋</span> إضافة كرت جديد</button>'+
    '<div class="ct-summary"><div><small>عدد الكروت</small><strong class="ct-count">1</strong></div><div><small>مجموع المبالغ</small><strong class="ct-total">0.00 د.ل</strong></div></div>'+
-   '<p class="ct-warning">مهم: كتابة رقم الكرت وقيمته ليست إثباتًا للشحن. لن يُضاف الرصيد حتى يراجع المسؤول الكروت ويتأكد من قيمتها وصلاحيتها ويعتمد الطلب.</p>'+
-   '<button class="ct-submit" type="submit">تسجيل طلب الكروت</button></form></section>'+
+   '<p class="ct-warning">إرسال البيانات لا يعني شحن المحفظة فورًا. يظهر الرصيد بعد مراجعة المسؤول للكرت والتأكد من قيمته واعتماد طلبك.</p>'+
+   '<button class="ct-submit" type="submit">إرسال طلب التعبئة للمراجعة</button></form></section>'+
    '<section class="ct-success" hidden><div class="ct-ok-icon" aria-hidden="true">✓</div><h2>تم تسجيل طلب الكروت</h2><p>رقم الطلب <strong class="ct-success-id" dir="ltr"></strong></p>'+
    '<div class="ct-success-summary"><span>الكروت: <b class="ct-success-count"></b></span><span>المبلغ: <b class="ct-success-total"></b></span></div>'+
    '<p>أرقام الكروت محفوظة بصورة مشفّرة في لوحة الإدارة، ويتم عرضها فقط للمسؤول المعتمد بعد تسجيل الدخول. الرصيد ينتظر مراجعة المسؤول.</p>'+

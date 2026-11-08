@@ -471,3 +471,39 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 @media(prefers-reduced-motion:reduce){
   #llBottomNav>button[data-ll-nav]{transition:none!important}
 }
+
+
+/* iPhone bottom navigation follows scroll with a soft slide.
+   Scroll down: glide out of sight; scroll up: return to normal position.
+   Keep the original RTL tab layout, selected button colors and tap handlers. */
+@media(max-width:680px){
+  html body.l1017-live-ui #llBottomNav{
+    transform:translate3d(0,0,0)!important;
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+    transition:transform .3s cubic-bezier(.22,.8,.24,1),
+               opacity .21s ease, visibility 0s linear 0s!important;
+    will-change:transform;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+  }
+  html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{
+    transform:translate3d(0,calc(100% + 12px),0)!important;
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transition:transform .3s cubic-bezier(.22,.8,.24,1),
+               opacity .21s ease,visibility 0s linear .3s!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html body.l1017-live-ui #llBottomNav,
+  html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{
+    transition:none!important;
+    transform:none!important;
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+}

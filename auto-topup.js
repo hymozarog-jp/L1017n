@@ -219,13 +219,13 @@
       +'<div class="tpv-amount">مبلغ الشحن <b class="tpv-amount-value"></b> د.ل</div>'
       +'<div class="tpv-progress" aria-hidden="true"><div class="tpv-progress-fill"></div></div>'
       +'<div class="tpv-steps" aria-label="خطوات متابعة الشحن">'
-        +'<div class="tpv-step"><i>1</i><span>تجهيز الطلب</span></div>'
-        +'<div class="tpv-step"><i>2</i><span>مطابقة التحويل</span></div>'
+        +'<div class="tpv-step"><i>1</i><span>إرسال الطلب</span></div>'
+        +'<div class="tpv-step"><i>2</i><span>مراجعة التحويل</span></div>'
         +'<div class="tpv-step"><i>3</i><span>اعتماد الرصيد</span></div>'
       +'</div>'
       +'<div class="tpv-actions">'
         +'<button class="tpv-action tpv-refresh" type="button">تحديث حالة الطلب</button>'
-        +'<button class="tpv-action tpv-dismiss" type="button">متابعة التسوق</button>'
+        +'<button class="tpv-action tpv-dismiss" type="button">متابعة طلباتي</button>'
       +'</div>'
       +'<p class="tpv-footnote">الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.</p>'
     +'</div>';
@@ -311,7 +311,7 @@
         setIconText(status,'check-circle','تم الشحن! أُضيف الرصيد إلى محفظتك.');
         // Only a verified credited transaction (not an SMS or pending request)
         // can launch the falling balance animation.
-        void window.L1017nCreditDrop?.approved?.(String(id));
+        await window.L1017nCreditDrop?.approved?.(String(id));
         stopWatcher();chosen=false;forgetVerifier();
         if(typeof renderWallet==='function')Promise.resolve(renderWallet()).catch(()=>{});
         return;

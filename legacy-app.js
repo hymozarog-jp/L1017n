@@ -738,7 +738,7 @@ async function renderCustomerHeaderWallet(user){
  if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
  bindCustomerHeaderBalanceFit();
- amount.textContent='…';
+ if(amount.dataset.balanceIdentity!==user.id+':'+carrier)amount.textContent='…';
  // The auth event and the detailed account renderer can request this balance
  // together; share their in-flight query instead of fetching it twice.
  const queryKey=user.id+':'+carrier;
@@ -756,6 +756,9 @@ async function renderCustomerHeaderWallet(user){
  if(sequence!==customerHeaderWalletSeq)return;
  const {data,error}=result;
  const shownBalance=Number(isMadar?data?.madar_balance||0:data?.balance||0).toFixed(3);
+  const balanceIdentity=user.id+':'+carrier;
+  if(!error&&!isMadar&&window.L1017nCreditDrop?.deferBalance(amount,Number(shownBalance),balanceIdentity))return;
+  amount.dataset.balanceIdentity=balanceIdentity;
   amount.textContent=error?'—':shownBalance;
   amount.setAttribute('aria-label',error?'تعذر عرض رصيد المحفظة':shownBalance+' دينار ليبي');
   queueCustomerHeaderBalanceFit();

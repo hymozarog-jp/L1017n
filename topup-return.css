@@ -63,3 +63,30 @@ body.tpv-open{overflow:hidden!important}
 #tpReturnVerify[data-state="rejected"] .tpv-steps{display:none}
 @keyframes tpv-finish{0%{transform:scale(.66);opacity:.25}65%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){#tpReturnVerify[data-state="approved"] .tpv-visual-icon{animation:none}}
+
+/* Quiet verification card, distinct from the completed receipt. */
+#tpReturnVerify{background:rgba(3,6,14,.88)}
+#tpReturnVerify .tpv-card{padding:32px 24px 24px;border-radius:32px;border-color:#ffffff20;background:radial-gradient(ellipse at 50% 0%,#51407940,transparent 55%),#111522;box-shadow:0 32px 100px #000a}
+#tpReturnVerify .tpv-brand{letter-spacing:1px;background:#ffffff08;border-color:#ffffff16;color:#ded8f3}
+#tpReturnVerify .tpv-visual{margin:30px auto 24px;width:132px;height:132px}
+#tpReturnVerify .tpv-ring-inner{border-style:solid;border-color:#ffffff0c}
+#tpReturnVerify .tpv-ring-outer{border-color:#bba2ff20;border-top-color:#c4afff;border-left-color:#c4afff60;box-shadow:none}
+#tpReturnVerify .tpv-visual-icon{width:80px;height:80px;border-radius:25px;background:linear-gradient(145deg,#514071,#282238);box-shadow:inset 0 1px #ffffff25,0 12px 32px #0005}
+#tpReturnVerify .tpv-subtitle{line-height:1.95;color:#acb3c7}
+#tpReturnVerify .tpv-amount{display:flex;flex-wrap:wrap;margin:22px 0;padding:18px;background:#ffffff05;border:1px solid #ffffff12;border-radius:18px;color:#aeb7ca}
+#tpReturnVerify .tpv-amount b{font-size:28px;line-height:1.3;font-variant-numeric:tabular-nums;color:#f5efff;direction:ltr}
+#tpReturnVerify .tpv-progress{height:3px;background:#ffffff09;margin-bottom:25px}
+#tpReturnVerify .tpv-progress-fill{background:linear-gradient(90deg,#8064b7,#d1beff)}
+#tpReturnVerify .tpv-steps{gap:8px;margin-bottom:28px}
+#tpReturnVerify .tpv-step{font-weight:500;line-height:1.6}
+#tpReturnVerify .tpv-step i{width:33px;height:33px}
+#tpReturnVerify .tpv-step:nth-child(2) i{background:#8d70c92b;border-color:#b69ae5;color:#ddcbff;box-shadow:0 0 0 5px #ab83f00a}
+#tpReturnVerify .tpv-refresh{background:#d9c8fa;color:#21182e;min-height:50px;border-radius:16px}
+#tpReturnVerify .tpv-dismiss{background:transparent;border-color:#ffffff15;min-height:47px}
+#tpReturnVerify .tpv-close{width:40px;height:40px;background:#ffffff06;border-color:#ffffff12}
+#tpReturnVerify .tpv-footnote{color:#939caf;margin-top:18px}
+#tpReturnVerify[data-state="approved"] .tpv-card{background:radial-gradient(ellipse at 50% 0%,#27836535,transparent 60%),#101c1b;border-color:#75d4ab35}
+#tpReturnVerify[data-state="approved"] .tpv-amount b{color:#a5f8ce}
+#tpReturnVerify[data-state="delayed"] .tpv-ring-outer{animation:none;border-color:#dcb77e55}
+#tpReturnVerify[data-state="delayed"] .tpv-progress{display:none}
+@media(max-height:700px){#tpReturnVerify .tpv-card{padding-top:24px}#tpReturnVerify .tpv-visual{width:104px;height:104px;margin:18px auto}#tpReturnVerify .tpv-visual-icon{width:66px;height:66px}#tpReturnVerify .tpv-amount{margin:15px 0;padding:12px}}

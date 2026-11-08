@@ -292,6 +292,7 @@ function animateBalance(el,amount){
  if(!el)return;
  const end=Number(amount);
  if(!Number.isFinite(end))return;
+ if(el.id==='walletShowcaseBalance'&&window.L1017nCreditDrop?.deferBalance(el,end))return;
  const previous=lastBalances.get(el);
  const displayed=Number(el.textContent);
  const current=Number.isFinite(displayed)?displayed:end;

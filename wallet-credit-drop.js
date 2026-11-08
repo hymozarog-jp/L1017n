@@ -91,6 +91,24 @@
    if(chip&&amount&&chip.dataset.walletCarrier!=='madar'&&!chip.classList.contains('hidden')&&amount.getClientRects().length)return {element:amount,card:chip};
    return null;
  }
+ // Presentation-only gate: keep the previous number until the coin lands.
+ const displayedBalances=new Map();
+ let releasingBalance=false;
+ function deferBalance(el,amount,identity){
+   if(!el)return false;
+   const key=identity||activeUser;
+   const previous=displayedBalances.get(el);
+   const next=Number(amount);
+   const dialog=document.getElementById('tpReturnVerify');
+   const waiting=dialog&&['pending','delayed','approved'].includes(dialog.dataset.state);
+   if(!releasingBalance&&previous?.key===key&&next>previous.amount&&
+      (waiting||isPlaying||queue.length)){
+     el.textContent=previous.amount.toFixed(3);
+     return true;
+   }
+   displayedBalances.set(el,{key,amount:next});
+   return false;
+ }
  function creditLabel(amount){return '+'+Number(amount).toFixed(3)+' د.ل'}
  async function refreshBalances(){
    try{
@@ -133,7 +151,8 @@
    const found=target();
    const amount=Number(entry.amount);
    if(!found){
-     await refreshBalances();
+     releasingBalance=true;
+     try{await refreshBalances()}finally{releasingBalance=false}
      return;
    }
    const el=found.element,card=found.card;
@@ -171,12 +190,13 @@
      await new Promise(resolve=>setTimeout(resolve,150));
    }
    host.remove();sparkle(card);
+   releasingBalance=true;
    const display=card.querySelector('.wallet-candy-gain');
    if(display){
      clearTimeout(display._hideTimer);display.textContent=creditLabel(amount);
      display._hideTimer=setTimeout(()=>{display.textContent=''},2100);
    }
-   await refreshBalances();
+   try{await refreshBalances()}finally{releasingBalance=false}
  }
  function enqueue(entry,explicitApproved){
    if(!valid(entry)||!activeUser)return;
@@ -274,7 +294,7 @@
      if(document.visibilityState==='visible')void scan();
    },4800);
  }
- window.L1017nCreditDrop=Object.freeze({approved,check:scan});
+ window.L1017nCreditDrop=Object.freeze({approved,check:scan,deferBalance});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
  else init();
 })();

@@ -494,12 +494,18 @@ body::before{
 }
 .mobile-nav button.active,.mobile-nav button[aria-current="page"],
 .mobile-bottom-nav button.active,.bottom-nav button.active{
-  color:#f7efff!important;background:#473265!important;
+  color:#172130!important;background:#fff!important;
+  border-color:#fff!important;border-radius:17px!important;
+  box-shadow:0 4px 14px #0004!important;
 }
 .mobile-nav button.active .nav-icon,
 .mobile-nav button[aria-current="page"] .nav-icon,
 .mobile-nav button.active .l1017-icon{
-  color:#dfcbff!important;stroke:currentColor!important;
+  color:#172130!important;stroke:currentColor!important;
+}
+.mobile-nav button.active span,
+.mobile-nav button[aria-current="page"] span{
+  color:#172130!important;
 }
 
 /* Black cards with purple edge lighting. */

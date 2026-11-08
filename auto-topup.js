@@ -115,8 +115,39 @@
     dialHandoff={id:String(id),amount:Number(amount),startedAt:Date.now(),hidden:false,shown:false};
     saveDialHandoff();
   }
+  // Keep verification in this wallet form. Never open a full-screen status dialog.
+  function inlineTopupStatus(state,title,detail){
+    const panel=document.querySelector('#topupForm .dt-purple-form');
+    const line=document.getElementById('dtPhoneStatus');
+    const messageText=title+(detail?' — '+detail:'');
+    if(line){
+      line.textContent=messageText;
+      line.dataset.kind=state==='approved'?'success':state==='rejected'?'error':'';
+    }
+    if(!panel)return;
+    let result=document.getElementById('dtInlineTopupStatus');
+    if(!result){
+      result=el('div','dt-inline-credit');
+      result.id='dtInlineTopupStatus';
+      result.setAttribute('role','status');
+      result.setAttribute('aria-live','polite');
+      const lineNode=panel.querySelector('#dtPhoneStatus');
+      if(lineNode)lineNode.insertAdjacentElement('afterend',result);
+      else panel.querySelector('#dtConfirm')?.insertAdjacentElement('beforebegin',result);
+    }
+    result.hidden=false;
+    result.dataset.state=state;
+    const symbol=el('span','dt-inline-credit-symbol',
+      state==='approved'?'✓':state==='rejected'?'!':state==='delayed'?'!':'⋯');
+    symbol.setAttribute('aria-hidden','true');
+    const words=el('span','dt-inline-credit-copy');
+    words.append(el('strong','',title));
+    if(detail)words.append(el('small','',detail));
+    result.replaceChildren(symbol,words);
+  }
   function closeVerifier(){
     document.getElementById('tpReturnVerify')?.remove();
+    document.getElementById('dtInlineTopupStatus')?.remove();
     document.body.classList.remove('tpv-open');
     stopWatcher();
     forgetVerifier();
@@ -124,59 +155,45 @@
   function updateVerifier(id,data,networkError){
     const root=document.getElementById('tpReturnVerify');
     if(!root||root.dataset.requestId!==String(id))return;
-    // A confirmed result can never be replaced with an old pending network response.
+    // RLS-backed topup_requests.status='approved' is the only success condition.
     if(root.dataset.state==='approved'||root.dataset.state==='rejected')return;
-    const title=root.querySelector('.tpv-title');
-    const desc=root.querySelector('.tpv-subtitle');
-    const foot=root.querySelector('.tpv-footnote');
-    if(!title||!desc||!foot)return;
     if(networkError){
-      root.dataset.state='pending';
-      title.textContent='جاري التحقق من التحويل';
-      desc.textContent='تعذّر تحديث الحالة الآن. تأكد من اتصال الإنترنت واضغط «تحديث الحالة».';
-      foot.textContent='لم يتم تأكيد الشحن بعد. لا تحول الرصيد مرة ثانية.';
+      inlineTopupStatus('pending','تعذّر تحديث حالة التحويل',
+        'سنواصل المحاولة تلقائيًا عند توفر الاتصال. لا تحوّل الرصيد مرة ثانية.');
       return;
     }
     if(data?.status==='approved'){
       root.dataset.state='approved';
-      title.textContent='تم شحن محفظتك';
-      root.querySelector('.tpv-visual-icon').innerHTML='<svg viewBox="0 0 48 48"><path d="m12 24 8 8 16-17"/></svg>';
-      desc.textContent='تم تأكيد التحويل وإضافة مبلغ الشحن إلى محفظتك بنجاح.';
-      foot.textContent='صار الرصيد متاحًا في محفظتك. اضغط «شاهد رصيدك» لمشاهدة حركة الشحن.';
-      const goWallet=root.querySelector('.tpv-dismiss');
-      if(goWallet)goWallet.textContent='شاهد رصيدك';
+      const value=Number(data.amount);
+      const amount=Number.isFinite(value)&&value>0?' بقيمة '+value.toFixed(2)+' د.ل':'';
+      inlineTopupStatus('approved','تم الشحن ✓',
+        'تم تأكيد وصول التحويل واعتماد رصيد محفظتك'+amount+'.');
       forgetVerifier();
       clearDialHandoff();
       return;
     }
     if(data?.status==='rejected'){
       root.dataset.state='rejected';
-      title.textContent='لم يتم اعتماد الشحن';
-      root.querySelector('.tpv-visual-icon').innerHTML='<svg viewBox="0 0 48 48"><path d="m16 16 16 16m0-16L16 32"/></svg>';
-      desc.textContent='لم تتم الموافقة على الطلب. راجع حالة الطلب أو تواصل مع الإدارة.';
-      foot.textContent='لا تكرر التحويل قبل معرفة سبب الرفض.';
+      inlineTopupStatus('rejected','لم يتم اعتماد الشحن',
+        'راجع طلباتك أو تواصل مع إدارة المتجر قبل إعادة التحويل.');
       forgetVerifier();
       clearDialHandoff();
       return;
     }
     root.dataset.state='pending';
-    title.textContent='جاري التحقق من التحويل';
     const ageMs=data?.created_at?Date.now()-Date.parse(data.created_at):0;
-    const smsDelayed=Number.isFinite(ageMs)&&ageMs>=5*60*1000;
-    const followOrders=root.querySelector('.tpv-dismiss');
+    const delayed=Number.isFinite(ageMs)&&ageMs>=5*60*1000;
     if(data?.sms_status==='matched'){
-      desc.textContent='وصل إشعار تحويل مطابق لطلبك. العملية الآن قيد المراجعة؛ لا تكرر التحويل.';
-    }else if(smsDelayed){
+      inlineTopupStatus('matched','وصل إشعار تحويل مطابق',
+        'الطلب بانتظار الاعتماد؛ سيتم عرض «تم الشحن» فقط بعد إضافة الرصيد.');
+    }else if(delayed){
       root.dataset.state='delayed';
-      title.textContent='لم تصل رسالة التحويل بعد';
-      desc.textContent='مرّت أكثر من 5 دقائق ولم يسجّل النظام رسالة ليبيانا مطابقة. إذا خُصم الرصيد فعلًا، راجع طلبك وتواصل مع المتجر برقم الطلب؛ لا تعِد التحويل.';
-      if(followOrders)followOrders.textContent='عرض طلباتي';
+      inlineTopupStatus('delayed','لم يتم تأكيد التحويل بعد',
+        'إذا تم الخصم ولم يصل إشعار ليبيانا، راجع طلباتك ولا تعِد التحويل.');
     }else{
-      desc.textContent='نراجع وصول التحويل. يُضاف رصيدك فور اعتماد الطلب.';
+      inlineTopupStatus('pending','بانتظار وصول التحويل',
+        'سيتم تحديث الحالة تلقائيًا بعد مطابقة رسالة ليبيانا واعتماد الرصيد.');
     }
-    foot.textContent=smsDelayed&&data?.sms_status!=='matched'
-      ?'قبول الشحن يحتاج موافقة الإدارة بعد التحقق من وصول التحويل؛ الرجوع من الاتصال ليس إثبات دفع.'
-      :'الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.';
   }
   const adminNotified=new Set();
   const adminNotificationInFlight=new Set();
@@ -199,53 +216,30 @@
   function showVerifier(id,amount){
     if(!id)return;
     const existing=document.getElementById('tpReturnVerify');
-    if(existing){if(existing.dataset.requestId===String(id))return;closeVerifier()}
-    const root=document.createElement('section');
+    if(existing?.dataset.requestId===String(id)){
+      if(!watcherId)watch(id);
+      return;
+    }
+    if(existing)closeVerifier();
+    // A hidden marker maintains request identity for polling/realtime without
+    // any modal, focus trap or new screen. CSS for the old overlay cannot show it.
+    const root=el('span','','');
     root.id='tpReturnVerify';
     root.dataset.requestId=String(id);
     root.dataset.state='pending';
-    root.setAttribute('role','dialog');
-    root.setAttribute('aria-modal','true');
-    root.setAttribute('aria-labelledby','tpvHeading');
-    root.setAttribute('aria-describedby','tpvDescription');
-    root.dir='rtl';
-    root.innerHTML='<div class="tpv-card">'
-      +'<button type="button" class="tpv-close" aria-label="إغلاق شاشة التحقق">×</button>'
-      +'<span class="tpv-brand">L1017n <span>•</span> ليبيانا</span>'
-      +'<div class="tpv-visual" aria-hidden="true">'
-        +'<span class="tpv-spark"></span><span class="tpv-ring tpv-ring-outer"></span><span class="tpv-ring tpv-ring-inner"></span>'
-        +'<div class="tpv-visual-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 14v11l7 4"/></svg></div>'
-      +'</div>'
-      +'<h2 class="tpv-title" id="tpvHeading" tabindex="-1">جاري التحقق من التحويل</h2>'
-      +'<p class="tpv-subtitle" id="tpvDescription" role="status" aria-live="polite">نراجع حالة طلبك ونتأكد من وصول إشعار ليبيانا. لا تحتاج إلى التحويل مرة ثانية.</p>'
-      +'<div class="tpv-amount">مبلغ الشحن <b class="tpv-amount-value"></b> د.ل</div>'
-      +'<div class="tpv-progress" aria-hidden="true"><div class="tpv-progress-fill"></div></div>'
-      +'<div class="tpv-steps" aria-label="خطوات متابعة الشحن">'
-        +'<div class="tpv-step"><i>1</i><span>إرسال الطلب</span></div>'
-        +'<div class="tpv-step"><i>2</i><span>مراجعة التحويل</span></div>'
-        +'<div class="tpv-step"><i>3</i><span>اعتماد الرصيد</span></div>'
-      +'</div>'
-      +'<div class="tpv-actions">'
-        +'<button class="tpv-action tpv-refresh" type="button">تحديث الحالة</button>'
-        +'<button class="tpv-action tpv-dismiss" type="button">متابعة طلباتي</button>'
-      +'</div>'
-      +'<p class="tpv-footnote">الرجوع من الاتصال لا يؤكد نجاح الدفع. لا تكرر التحويل.</p>'
-    +'</div>';
-    root.querySelector('.tpv-amount-value').textContent=
-      Number.isFinite(Number(amount))&&Number(amount)>0?Number(amount).toFixed(2):'—';
-    root.querySelector('.tpv-close').addEventListener('click',closeVerifier);
-    root.querySelector('.tpv-dismiss').addEventListener('click',()=>{
-      const credited=root.dataset.state==='approved';
-      closeVerifier();
-      const page=document.getElementById('topupDedicatedPage');
-      if(page)page.querySelector('.topup-dedicated-back')?.click();
-      if(typeof switchView==='function')switchView(credited?'wallet':'orders');
-    });
-    root.querySelector('.tpv-refresh').addEventListener('click',()=>refreshRequest(id));
-    document.body.appendChild(root);
-    document.body.classList.add('tpv-open');
-    // This view only checks status; it must not trigger a new Telegram alert.
-    root.querySelector('.tpv-title')?.focus({preventScroll:true});
+    root.dataset.amount=String(amount||'');
+    root.hidden=true;
+    root.setAttribute('aria-hidden','true');
+    root.style.setProperty('display','none','important');
+    root.style.setProperty('position','static','important');
+    (document.getElementById('topupForm')||document.body).appendChild(root);
+    document.body.classList.remove('tpv-open');
+    // When returning from the dialer/reloading, show the normal top-up form,
+    // not the former separate verification overlay.
+    if(!document.getElementById('topupDedicatedPage')
+      && typeof window.openDedicatedTopup==='function')window.openDedicatedTopup();
+    inlineTopupStatus('pending','بانتظار وصول التحويل',
+      'نراجع حالة الطلب في الخلفية؛ لا تحوّل المبلغ مرة ثانية.');
     currentRequest=String(id);
     currentAmount=Number(amount);
     rememberVerifier(id,amount);
@@ -274,7 +268,7 @@
   });
   window.addEventListener('focus',()=>setTimeout(maybeShowReturnVerify,270));
   window.addEventListener('pageshow',()=>setTimeout(maybeShowReturnVerify,430));
-  // Restore an active verification view after a browser reload; permissions
+  // Restore the in-form pending status after a browser reload; permissions
   // are checked again server-side for the logged-in customer.
   setTimeout(()=>{maybeShowReturnVerify();if(!document.getElementById('tpReturnVerify'))restoreVerifier()},1150);
 
@@ -442,7 +436,8 @@
       const onDialCode=()=>{
         armDialHandoff(intent.request_id,amount);
         notifyAdminForReview(intent.request_id);
-        watch(intent.request_id);
+        // Start unobtrusive monitoring on the same page as soon as the dialer opens.
+        showVerifier(intent.request_id,amount);
       };
       const code=el('a','ussd-code',codeFor(amount));
       code.href=dialHref;

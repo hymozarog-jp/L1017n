@@ -382,7 +382,7 @@
       show('warning','مبلغ غير صحيح','أدخل مبلغًا صحيحًا بالدينار الليبي. تأكد أن المبلغ يتوافق مع شروط خدمة تحويل ليبيانا.');
       return;
     }
-    show('','جاري تجهيز كود التحويل…','نجهّز طلبك للتأكد من وصول تحويل ليبيانا ومراجعة الإدارة.');
+    show('','جاري تجهيز كود التحويل…','نجهّز كود التحويل؛ الشحن يتم تلقائيًا بعد مطابقة رقم المحوّل والمبلغ برسالة ليبيانا الواردة.');
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db){show('warning','تعذر الاتصال بالمتجر','حدّث الصفحة وحاول مرة ثانية.');return}
     try{
@@ -406,7 +406,7 @@
         return;
       }
       // The account must be signed in. An OTP-verified sender uses the original
-      // path; other senders and unverified accounts use manual admin review.
+      // path; other senders are matched against their entered number and the incoming carrier SMS.
       const senderPicker=window.L1017nTopupWizard?.getSenderPhone;
       const sender=typeof senderPicker==='function'?senderPicker():phone;
       if(!/^09[24][0-9]{7}$/.test(sender)){
@@ -433,7 +433,7 @@
         return;
       }
       const area=show('ok','تم تجهيز طلب شحن '+amount+' د.ل',
-        'عند فتح كود الاتصال يصلك إشعار للإدارة عن محاولة التحويل، لكن الرصيد لا يُضاف إلا بعد التأكد من وصول المبلغ وموافقتك.');
+        'فتح الكود وحده ما يشحنش رصيد. بعد وصول رسالة ليبيانا المطابقة لرقم المحوّل والمبلغ، يُضاف الرصيد تلقائيًا إذا اجتاز التحويل فحوص الأمان.');
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));

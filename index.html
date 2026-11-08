@@ -487,6 +487,7 @@
       </section>
       <h3 class="account-group-title">الحساب</h3>
       <div class="account-settings-list account-core-settings">
+        <a id="accountReportsAdminLink" class="hidden" hidden href="./admin.html" aria-label="فتح لوحة إدارة المتجر وتقارير المبيعات والأرباح" aria-hidden="true"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 16v-4m5 4V8m5 8V6"/></svg></span><span class="account-core-copy"><b>لوحة الإدارة</b><small>الطلبات · المبيعات والأرباح · محافظ الزبائن</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></a>
         <button type="button" id="accountCardAdminButton" hidden aria-label="مراجعة كروت شحن المحفظة من حساب المسؤول"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18m-13 5h6"/></svg></span><span class="account-core-copy"><b>مراجعة كروت المحفظة</b><small>أرقام مشفّرة · للمسؤول المعتمد فقط</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
@@ -576,7 +577,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1';
+      var s=document.createElement('script');s.src='app.js?v=account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -854,6 +855,10 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #accountModern .account-id-stats b{font-size:15px}
 #accountModern .account-group-title{font-size:15px;color:#91a0bb;margin:23px 8px 13px}
 #accountModern .account-settings-list{border:1px solid #263453;border-radius:22px;background:#10192d;overflow:hidden}
+#accountView #accountReportsAdminLink{width:100%;min-height:74px;display:flex;align-items:center;gap:13px;text-align:right;background:linear-gradient(105deg,#28402d,#1a2830);color:#eaffdf;border:0;border-bottom:1px solid #547f5366;padding:13px 15px;text-decoration:none;box-sizing:border-box}
+#accountView #accountReportsAdminLink[hidden],#accountView #accountReportsAdminLink.hidden{display:none!important}
+#accountView #accountReportsAdminLink .account-row-icon{background:#436b41;color:#d5ffba}
+#accountView #accountReportsAdminLink:focus-visible{outline:2px solid #a8f36b;outline-offset:-3px}
 #accountModern .account-settings-list button{width:100%;min-height:74px;display:flex;align-items:center;gap:13px;text-align:right;background:transparent;color:#f2f5ff;border:0;border-bottom:1px solid #283654;padding:13px 15px;cursor:pointer}
 #accountModern .account-settings-list button:last-child{border-bottom:0}
 #accountModern .account-settings-list b{flex:1;font-size:15px}

@@ -189,13 +189,30 @@
     });
     renderCatalog();
   }
+  // One white circle glides between the icons. Measuring its position against
+  // the real nav means it stays aligned in RTL, on all iPhones and on resize.
+  function moveNavigationGlider(nav) {
+    if (!nav) return;
+    const glider = nav.querySelector(".ll-nav-glider");
+    const icon = nav.querySelector('button[data-ll-nav].active .ll-nav-icon');
+    if (!glider || !icon) return;
+    const rect = icon.getBoundingClientRect();
+    const base = nav.getBoundingClientRect();
+    if (!rect.width || !base.width) return;
+    const x = Math.round(rect.left - base.left + (rect.width - 40) / 2);
+    const y = Math.round(rect.top - base.top + (rect.height - 40) / 2);
+    glider.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+    glider.classList.add("is-ready");
+  }
   function updateNavigation(view) {
     const which = (view === "store" || view === "offers") ? "home" : view;
-    q("#llBottomNav")?.querySelectorAll("[data-ll-nav]").forEach(button => {
+    const nav = q("#llBottomNav");
+    nav?.querySelectorAll("[data-ll-nav]").forEach(button => {
       const active = button.dataset.llNav === which;
       button.classList.toggle("active", active);
       button.setAttribute("aria-current", active ? "page" : "false");
     });
+    moveNavigationGlider(nav);
   }
   function goSearch() {
     routeView("home");
@@ -244,7 +261,7 @@
     const nav = document.createElement("nav");
     nav.id = "llBottomNav";
     nav.setAttribute("aria-label", "التنقل الرئيسي");
-    nav.innerHTML = [
+    nav.innerHTML = '<span class="ll-nav-glider" aria-hidden="true"></span>' + [
       ["home", "الرئيسية", "home"],
       ["orders", "طلباتي", "orders"],
       ["leaderboard", "التصنيف", "leaderboard"],
@@ -272,6 +289,9 @@
       bar.appendChild(searchButton);
     }
     document.body.classList.add("l1017-live-ui");
+    requestAnimationFrame(() => moveNavigationGlider(nav));
+    window.addEventListener("resize", () => requestAnimationFrame(() => moveNavigationGlider(nav)), {passive:true});
+    window.addEventListener("orientationchange", () => requestAnimationFrame(() => moveNavigationGlider(nav)));
     enableScrollMotion(nav);
     bindEvents(container, nav);
     renderCatalog();

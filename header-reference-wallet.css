@@ -1,0 +1,213 @@
+/* L1017N reference header: profile image on far left, bell, real balance.
+   The user's wallet balance and notification count remain dynamically supplied. */
+@media (max-width:900px) {
+  html body.l1017-live-ui .topbar #headerAccountCluster {
+    position:absolute!important;
+    left:clamp(7px,2.1vw,12px)!important;
+    right:auto!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    display:flex!important;
+    flex-flow:row nowrap!important;
+    direction:ltr!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:clamp(5px,1.5vw,9px)!important;
+    margin:0!important;
+    padding:0!important;
+    width:max-content!important;
+    max-width:calc(100vw - 59px)!important;
+    min-width:0!important;
+    z-index:11!important;
+  }
+  /* The actual profile IMAGE sits farthest LEFT, as requested. */
+  html body.l1017-live-ui .topbar #headerAccountCluster > #googleProfileButton:not(.hidden){
+    order:0!important;
+    position:relative!important;
+    width:clamp(35px,9.7vw,42px)!important;
+    height:clamp(35px,9.7vw,42px)!important;
+    min-width:0!important;
+    flex:0 0 clamp(35px,9.7vw,42px)!important;
+    margin:0!important;
+    overflow:hidden!important;
+    border-radius:50%!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster #googleProfileImage{
+    display:block;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+  }
+  /* The bell matches the original reference's softly outlined dark square. */
+  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){
+    order:1!important;
+    position:relative!important;
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 clamp(42px,11.4vw,51px)!important;
+    width:clamp(42px,11.4vw,51px)!important;
+    height:clamp(42px,11.4vw,51px)!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    border:2px solid #32343f!important;
+    border-radius:18px!important;
+    background:#1a1a23!important;
+    color:#bebdc7!important;
+    box-shadow:none!important;
+    transform:none;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden) svg{
+    width:clamp(23px,6.7vw,28px)!important;
+    height:clamp(23px,6.7vw,28px)!important;
+    stroke:currentColor!important;
+    stroke-width:1.85!important;
+    animation:none!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:active {
+    background:#292935!important;
+    transform:scale(.96)!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster > .account-wallet-group{
+    order:2!important;
+    display:flex!important;
+    justify-content:flex-start!important;
+    direction:rtl!important;
+    align-items:center!important;
+    margin:0!important;
+    padding:0!important;
+    flex:0 1 auto!important;
+    min-width:0!important;
+    width:auto!important;
+  }
+  /* Same proportions as reference: wide charcoal pill, compact wallet line icon. */
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
+    box-sizing:border-box!important;
+    display:grid!important;
+    grid-template-columns:clamp(29px,8.6vw,39px) minmax(0,1fr) clamp(45px,12vw,57px)!important;
+    direction:rtl!important;
+    align-items:center!important;
+    justify-items:stretch!important;
+    gap:clamp(3px,1.1vw,7px)!important;
+    flex:0 0 auto!important;
+    width:clamp(164px,51vw,220px)!important;
+    max-width:220px!important;
+    min-width:0!important;
+    height:clamp(51px,13.7vw,60px)!important;
+    min-height:clamp(51px,13.7vw,60px)!important;
+    padding:5px clamp(8px,2vw,12px)!important;
+    margin:0!important;
+    overflow:hidden!important;
+    border:2px solid #34343e!important;
+    border-radius:clamp(24px,7vw,31px)!important;
+    background:#1b1b23!important;
+    box-shadow:none!important;
+    color:#f6f6fa!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden)::after{
+    content:"ليبيانا";
+    display:block!important;
+    grid-column:3!important;
+    grid-row:1!important;
+    align-self:center!important;
+    justify-self:center!important;
+    font:650 clamp(12px,3.7vw,16px)/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+    white-space:nowrap!important;
+    color:#9d9ba7!important;
+    letter-spacing:0!important;
+    pointer-events:none!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"]::after{
+    content:"المدار";
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .gb-libyana-badge{
+    display:none!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .gb-wallet-balance-content{
+    display:flex!important;
+    grid-column:2!important;
+    grid-row:1!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:100%!important;
+    flex:1 1 auto!important;
+    overflow:visible!important;
+    text-align:center!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .customer-wallet-label{
+    display:none!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerHeaderBalance{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    text-align:center!important;
+    direction:ltr!important;
+    color:#f5f4f8!important;
+    font-family:system-ui,-apple-system,sans-serif!important;
+    font-size:var(--l1017-header-balance-font-size,21px)!important;
+    font-weight:830!important;
+    line-height:1.22!important;
+    letter-spacing:0!important;
+    text-shadow:none!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut{
+    display:grid!important;
+    grid-column:1!important;
+    grid-row:1!important;
+    place-items:center!important;
+    justify-self:center!important;
+    align-self:center!important;
+    flex:0 0 auto!important;
+    width:clamp(27px,8.6vw,35px)!important;
+    height:clamp(27px,8.6vw,35px)!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:8px!important;
+    background:transparent!important;
+    color:#a592f1!important;
+    box-shadow:none!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut svg{
+    display:block!important;
+    width:clamp(25px,8.2vw,33px)!important;
+    height:clamp(25px,8.2vw,33px)!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.9!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut:active{
+    transform:scale(.92)!important;
+  }
+  html body.l1017-live-ui .topbar:has(#headerAccountCluster #customerWalletChip:not(.hidden)){
+    min-height:68px!important;
+    padding-left:clamp(225px,65vw,318px)!important;
+  }
+}
+@media(max-width:380px){
+  html body.l1017-live-ui .topbar #headerAccountCluster{gap:4px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
+    width:clamp(156px,48vw,187px)!important;
+    padding-inline:6px!important;
+    grid-template-columns:27px minmax(0,1fr) 43px!important;
+  }
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden)::after{font-size:12px!important}
+}
+@media(max-width:340px){
+  html body.l1017-live-ui .topbar #headerAccountCluster #googleProfileButton:not(.hidden){width:33px!important;height:33px!important;flex-basis:33px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){width:39px!important;height:44px!important;flex-basis:39px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:155px!important}
+}

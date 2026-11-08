@@ -452,21 +452,23 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav="leaderboard"]{order:3!important}
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav="wallet"]{order:4!important}
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav="account"]{order:5!important}
+  /* Only the selected icon's inner pill turns white; never the entire tab. */
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active{
-    background:#fff!important;
-    border-color:#fff!important;
-    box-shadow:0 4px 16px #0005!important;
-    color:#171e2b!important;
+    background:transparent!important;
+    border-color:transparent!important;
+    box-shadow:none!important;
+    color:#f4f0ff!important;
   }
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active .ll-nav-icon{
-    background:transparent!important;
+    background:#fff!important;
+    box-shadow:0 3px 12px #0003!important;
     color:#171e2b!important;
   }
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active svg{
     color:#171e2b!important;
     stroke:currentColor!important;
   }
-  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#171e2b!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#f4f0ff!important}
 }
 @media(prefers-reduced-motion:reduce){
   #llBottomNav>button[data-ll-nav]{transition:none!important}

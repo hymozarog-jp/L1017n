@@ -1,0 +1,262 @@
+/* L1017N — illustrated Libyana prepaid card interface, visual only.
+   Card credentials still go through encrypted submission and admin approval. */
+#cardTopupPage{
+  background:
+    radial-gradient(ellipse 480px 330px at 90% -120px,rgba(131,25,92,.25),transparent 75%),
+    radial-gradient(ellipse 300px 330px at -15% 65%,rgba(74,31,113,.17),transparent 75%),
+    #101016!important;
+  color:#f5f3f8!important;
+  padding:calc(13px + env(safe-area-inset-top)) clamp(12px,4vw,24px) calc(45px + env(safe-area-inset-bottom))!important;
+}
+#cardTopupPage .ct-shell{max-width:590px;margin:0 auto}
+#cardTopupPage .ct-head{
+  display:flex;align-items:center;gap:12px;
+  margin:0 0 16px!important;
+  font-size:11px;color:#a9a5b5;
+}
+#cardTopupPage .ct-head>span:first-of-type{flex:1;letter-spacing:1px;font-size:10px;color:#b9a9c1}
+#cardTopupPage .ct-back{
+  width:44px;height:44px;flex:0 0 44px;
+  border:1px solid #51465e!important;
+  border-radius:14px!important;
+  background:#1e1a27!important;
+  color:#fff;font:bold 32px/1 system-ui,sans-serif!important;
+  transition:transform .2s ease,background .2s ease;
+}
+#cardTopupPage .ct-back:active{transform:scale(.94)}
+#cardTopupPage .ct-safe{
+  padding:7px 11px;border-radius:999px;
+  color:#b9ffda!important;
+  background:#17372c!important;
+  border:1px solid #36684e!important;
+  font-size:11px;
+}
+#cardTopupPage .ct-hero{
+  display:grid;grid-template-columns:52px minmax(0,1fr);
+  grid-template-rows:auto auto auto;
+  align-items:center;column-gap:13px;
+  margin:0 0 17px!important;
+  text-align:right!important;
+}
+#cardTopupPage .ct-hero-art{
+  grid-column:1;grid-row:1/4;
+  display:grid;place-items:center;
+  width:52px;height:52px;margin:0!important;
+  border-radius:15px!important;
+  color:#ff62ac!important;
+  background:linear-gradient(145deg,#502039,#311c31)!important;
+  box-shadow:0 7px 24px #aa1a7237!important;
+}
+#cardTopupPage .ct-hero-art svg{width:29px;height:29px;stroke-width:2.2}
+#cardTopupPage .ct-current-step{
+  grid-column:2;grid-row:1;justify-self:start;
+  display:inline-flex;
+  padding:5px 10px!important;border-radius:99px;
+  border:1px solid rgba(255,104,173,.28)!important;
+  background:#6623423d!important;color:#ffb5d5!important;
+  font-size:10px;font-weight:800;
+}
+#cardTopupPage h1{
+  grid-column:2;grid-row:2;
+  margin:4px 0 0!important;
+  font-size:clamp(23px,6.2vw,34px)!important;
+  font-weight:900;line-height:1.3!important;
+  letter-spacing:-.4px;
+}
+#cardTopupPage .ct-hero p{
+  grid-column:2;grid-row:3;
+  max-width:none!important;margin:3px 0 0!important;
+  font-size:clamp(11px,2.85vw,13px)!important;
+  line-height:1.65!important;color:#aaa4b6!important;
+}
+#cardTopupPage .ct-top-alert{
+  display:flex;align-items:flex-start;gap:10px;
+  background:linear-gradient(120deg,#321c27,#221923)!important;
+  border:1px solid #a44f6375!important;
+  color:#ffb2bd!important;
+  padding:13px 14px!important;
+  border-radius:15px!important;
+  margin:0 0 19px!important;
+}
+#cardTopupPage .ct-alert-icon{
+  display:grid;place-items:center;
+  flex:0 0 26px;width:26px;height:26px;
+  border-radius:50%;background:#bc4a5a35;
+  color:#ffc1ca;font:900 16px/1 system-ui,sans-serif;
+}
+#cardTopupPage .ct-top-alert p{
+  margin:0;font-size:clamp(11px,2.9vw,13px);
+  line-height:1.9;color:#ffb4c0;
+}
+#cardTopupPage .ct-top-alert strong{
+  display:inline;margin-left:3px;
+  color:#ff8797;font-weight:900;
+}
+#cardTopupPage .ct-list{gap:13px}
+#cardTopupPage .ct-card{
+  background:linear-gradient(145deg,#1c1b27,#15151e 82%)!important;
+  border:1px solid #46404e!important;
+  padding:clamp(14px,4vw,21px)!important;
+  border-radius:22px!important;
+  box-shadow:0 12px 30px #0003,inset 0 1px #ffffff0b!important;
+  animation:ctCardRise .34s cubic-bezier(.2,.8,.3,1) both;
+}
+#cardTopupPage .ct-card-head{margin:0 0 13px!important}
+#cardTopupPage .ct-card-count{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14px!important;color:#f6edf7;font-weight:850;
+}
+#cardTopupPage .ct-card-count::before{
+  content:"";display:block;width:7px;height:7px;border-radius:50%;
+  background:#f54498;box-shadow:0 0 12px #f5449865;
+}
+#cardTopupPage .ct-amount-heading{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:6px;margin-bottom:10px;
+  font-size:15px;font-weight:800;color:#f9eff8;
+}
+#cardTopupPage .ct-amount-heading small{
+  color:#a7a2b4;font-size:10px;font-weight:500;
+}
+#cardTopupPage .ct-preset-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;direction:rtl;
+}
+#cardTopupPage .ct-preset{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  min-width:0;min-height:76px;gap:2px;
+  border:1px solid #4b4456!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,#22212c,#1b1a24)!important;
+  color:#f6f3f9!important;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+#cardTopupPage .ct-preset strong{
+  font:900 clamp(23px,6.4vw,31px)/1.2 system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;
+}
+#cardTopupPage .ct-preset small{
+  color:#aaa4b4;font-size:12px;font-weight:700;
+}
+#cardTopupPage .ct-preset:hover{
+  border-color:#cf6298!important;
+}
+#cardTopupPage .ct-preset.selected,
+#cardTopupPage .ct-preset[aria-pressed="true"]{
+  background:linear-gradient(140deg,#4d1a36,#311426)!important;
+  border:2px solid #ff3d9b!important;
+  box-shadow:0 0 0 3px #ea358b13,inset 0 1px #ffa1ce16!important;
+}
+#cardTopupPage .ct-preset.selected small{color:#ffc3dd}
+#cardTopupPage .ct-preset:active{transform:scale(.96)}
+#cardTopupPage .ct-custom-amount-label{
+  display:block;margin:16px 0 0!important;
+  color:#bbb4c2!important;font-size:12px!important;
+}
+#cardTopupPage .ct-amount-input input{
+  min-height:51px!important;margin-top:6px!important;
+  padding:11px 12px 11px 56px!important;
+  background:#24232e!important;
+  border:1px solid #524f61!important;
+  border-radius:13px!important;color:#fff!important;
+  font-size:18px!important;
+}
+#cardTopupPage .ct-amount-input span{
+  right:auto!important;left:14px!important;
+  color:#aeabb8!important;
+}
+#cardTopupPage .ct-secret-label{
+  display:block;margin:20px 0 0!important;
+  font-size:15px!important;font-weight:850!important;color:#faf3fb!important;
+}
+#cardTopupPage .ct-card-code{
+  min-height:62px!important;margin-top:10px!important;
+  padding:12px 16px!important;
+  border-radius:15px!important;
+  background:#24232e!important;border:1px solid #575062!important;
+  color:#fff!important;
+  font:700 clamp(19px,5vw,25px)/1.4 system-ui,sans-serif!important;
+  letter-spacing:.7px;text-align:right!important;direction:ltr!important;
+}
+#cardTopupPage .ct-card-code::placeholder{
+  font:500 clamp(15px,4.3vw,20px)/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  color:#8b8498!important;letter-spacing:0!important;text-align:right!important;
+}
+#cardTopupPage .ct-card-code:focus,
+#cardTopupPage .ct-amount-input input:focus{
+  border-color:#ff62ab!important;
+  outline:none;box-shadow:0 0 0 3px #ff42941a!important;
+}
+#cardTopupPage .ct-code-tools{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;margin-top:9px;
+}
+#cardTopupPage .ct-code-tools small{color:#a9a2b6;font-size:11px}
+#cardTopupPage .ct-code-tools .ct-reveal{
+  display:inline-flex;gap:5px;align-items:center;
+  padding:5px 10px!important;border-radius:9px;
+  border:1px solid #61516a!important;
+  color:#ffc0dc!important;background:#33223a!important;
+  font:700 11px 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#cardTopupPage .ct-remove-card{
+  padding:6px 11px;border-radius:9px;
+  color:#ffb8c7;background:#482734;border:1px solid #875565;
+}
+#cardTopupPage .ct-add{
+  margin:12px 0 0!important;
+  min-height:48px;border:1px dashed #786179!important;
+  border-radius:14px!important;
+  background:#261c2c!important;color:#ffb5d5!important;
+}
+#cardTopupPage .ct-summary{
+  gap:10px;margin:15px 0 10px!important;
+}
+#cardTopupPage .ct-summary>div{
+  background:#22202c!important;border:1px solid #4a4357!important;
+  border-radius:15px!important;padding:12px 13px!important;
+}
+#cardTopupPage .ct-summary small{color:#b0a7bb!important}
+#cardTopupPage .ct-summary strong{font-size:19px!important;color:#fff!important}
+#cardTopupPage .ct-warning{
+  margin:13px 0!important;padding:12px 13px!important;
+  background:#33251d!important;border:1px solid #a07a4273!important;
+  color:#e8cfaa!important;border-radius:13px!important;
+  font-size:11px!important;line-height:1.85!important;
+}
+#cardTopupPage .ct-submit{
+  min-height:58px!important;border:0!important;
+  border-radius:16px!important;
+  background:linear-gradient(105deg,#fa3a99,#ce246e)!important;
+  box-shadow:0 8px 23px #dd2b7a3c!important;
+  color:#fff!important;
+  font:850 clamp(14px,3.8vw,17px)/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  transition:transform .18s ease,filter .18s ease;
+}
+#cardTopupPage .ct-submit:not(:disabled):active{transform:scale(.985);filter:brightness(1.1)}
+#cardTopupPage .ct-submit:disabled{
+  background:linear-gradient(110deg,#8c2256,#661c42)!important;
+  color:#ac95a4!important;box-shadow:none!important;
+}
+#cardTopupPage .ct-status{font-size:12px;line-height:1.8;margin-top:13px!important}
+#cardTopupPage .ct-success{background:linear-gradient(145deg,#183c33,#141d28)!important}
+#cardTopupPage .ct-success .ct-ok-icon{animation:ctSuccessPop .48s cubic-bezier(.2,1.3,.3,1)}
+#cardTopupPage button:focus-visible,#cardTopupPage input:focus-visible{
+  outline:2px solid #ffacd3!important;outline-offset:3px!important;
+}
+@keyframes ctCardRise{from{opacity:.6;transform:translateY(11px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ctSuccessPop{from{transform:scale(.7);opacity:.2}to{transform:scale(1);opacity:1}}
+@media(max-width:390px){
+ #cardTopupPage .ct-hero{grid-template-columns:44px minmax(0,1fr);column-gap:8px}
+ #cardTopupPage .ct-hero-art{width:44px;height:44px}
+ #cardTopupPage .ct-hero-art svg{width:24px;height:24px}
+ #cardTopupPage .ct-preset-grid{gap:7px}
+ #cardTopupPage .ct-preset{min-height:69px;border-radius:13px!important}
+ #cardTopupPage .ct-shell{min-width:0}
+ #cardTopupPage .ct-card{padding:13px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #cardTopupPage .ct-card,#cardTopupPage .ct-success .ct-ok-icon{animation:none!important}
+ #cardTopupPage button{transition:none!important}
+}

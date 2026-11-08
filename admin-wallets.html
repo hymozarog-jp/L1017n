@@ -50,6 +50,23 @@
 .history-main{min-width:0}.history-title{font-size:13px;font-weight:700;overflow-wrap:anywhere}.history-date{font-size:11px;color:var(--soft);margin-top:3px}.history-amount{white-space:nowrap;text-align:left;direction:ltr;font-weight:700;font-size:13px}.positive{color:var(--bright)}.negative{color:var(--red)}
 .detail-prompt{padding:60px 20px;text-align:center;color:var(--soft);font-size:13px;line-height:2}
 .help{margin-top:16px;color:var(--soft);font-size:12px;line-height:1.8}
+/* Admin-only customer balance deduction */
+.debit-toggle{margin:0 0 14px;width:100%;min-height:43px;background:#3c2925;border:1px solid #f4ab7755;color:#ffe1c4;font-size:13px;font-weight:700}
+.debit-toggle:hover{background:#503127}.debit-toggle:disabled{opacity:.5;cursor:not-allowed}
+.debit-panel{padding:16px;border:1px solid #f4ab7755;border-radius:16px;background:linear-gradient(140deg,#2a1c1a,#171a16);margin:0 0 15px}
+.debit-panel h4{font-size:15px;margin:0 0 5px;color:#ffdfc0}
+.debit-warning{font-size:12px;color:#d9b7aa;line-height:1.9;margin:0 0 13px}
+.debit-form{display:grid;gap:10px}
+.debit-field{display:grid;gap:6px;font-size:12px;color:#e7d9d0}
+.debit-input{width:100%;min-height:43px;border:1px solid #ffffff36;border-radius:11px;background:#0b1310;color:white;box-sizing:border-box;padding:10px 12px;outline:none}
+.debit-input:focus{border-color:#f6af82}
+.debit-preview{font-size:12px;line-height:1.9;color:#f3d3b5;margin:2px 0}
+.debit-buttons{display:flex;flex-wrap:wrap;gap:9px}
+.debit-confirm{min-height:42px;border:1px solid #f9b38a;color:#25110a;background:#f4af81;padding:10px 18px;border-radius:11px;font-weight:700}
+.debit-confirm:disabled{opacity:.5;cursor:wait}
+.debit-msg{padding:10px 12px;margin:0;border-radius:10px;background:#53282b;color:#fff1e8;font-size:12px;line-height:1.8}
+.debit-msg.good{background:#174127;color:#d4ffe2}
+
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.detail{position:static}.customer-list{max-height:none}}
 @media(max-width:520px){.shell{width:94%;padding-top:15px}.panel{padding:14px;border-radius:17px}.metrics{gap:7px}.metric{padding:12px;border-radius:13px}.metric small{display:block;padding:0}.header{gap:10px}.header h1{font-size:22px}.admin-label{font-size:10px;padding:6px 9px}.customer-money{font-size:14px}.tab{font-size:11px}}
 </style>
@@ -80,6 +97,19 @@
 <div id="detailContent" hidden>
 <div class="detail-top"><div><h3 id="detailName"></h3><div class="hint" id="detailNickname"></div></div><button class="ghost" id="closeDetail" type="button">إغلاق</button></div>
 <div class="balance-line"><span id="detailBalance"></span> <small style="font-size:13px;color:var(--soft)">د.ل</small></div>
+
+<button id="debitToggle" type="button" class="ghost debit-toggle">خصم مبلغ من محفظة هذا الزبون</button>
+<div id="debitPanel" class="debit-panel" hidden>
+<h4>خصم رصيد زبون</h4>
+<p class="debit-warning">الخصم ينقص رصيد الزبون داخل المتجر فقط، ولا يحوّل مالًا إلى هاتفك. يلزم سبب واضح وتأكيدك قبل التنفيذ، وتُحفظ العملية في سجل المحفظة.</p>
+<form id="debitForm" class="debit-form">
+<label class="debit-field" for="debitAmount">المبلغ المراد خصمه (د.ل)<input id="debitAmount" class="debit-input" type="number" inputmode="decimal" min="0.001" step="0.001" placeholder="مثال: 15.000" required></label>
+<label class="debit-field" for="debitReason">سبب الخصم<input id="debitReason" class="debit-input" type="text" minlength="3" maxlength="300" autocomplete="off" placeholder="مثال: تصحيح شحن زائد" required></label>
+<p id="debitPreview" class="debit-preview">اكتب المبلغ لعرض الرصيد بعد الخصم.</p>
+<div class="debit-buttons"><button id="debitSubmit" type="submit" class="debit-confirm">مراجعة وتأكيد الخصم</button><button id="debitCancel" type="button" class="ghost">إلغاء</button></div>
+<p id="debitMessage" class="debit-msg" hidden role="status" aria-live="polite"></p>
+</form>
+</div>
 <div class="tabs" role="tablist">
 <button type="button" class="tab active" role="tab" data-tab="transactions" aria-selected="true">حركات الرصيد</button>
 <button type="button" class="tab" role="tab" data-tab="topups" aria-selected="false">طلبات الشحن</button>
@@ -89,7 +119,7 @@
 </div>
 </aside>
 </div>
-<p class="help">الأرصدة معروضة بالدينار الليبي من قاعدة البيانات مباشرة. هذه الصفحة للقراءة فقط ولا تسمح بتغيير رصيد أي زبون.</p>
+<p class="help">الأرصدة معروضة بالدينار الليبي من قاعدة البيانات مباشرة. الخصم الإداري متاح بعد اختيار الزبون، ولا يتم إلا من حساب المدير مع تسجيل المبلغ والسبب. لا يسمح النظام بخصم أكثر من الرصيد الموجود.</p>
 </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -106,8 +136,25 @@ var labels = {topup:"شحن رصيد",purchase:"شراء منتج",adjustment:"�
 pending:"معلّق",approved:"معتمد",rejected:"مرفوض",paid_pending_fulfillment:"بانتظار التنفيذ",
 processing:"قيد المعالجة",fulfilling:"قيد التسليم",completed:"مكتمل",refunded:"مُسترجع",libyana:"ليبيانا",almadar:"المدار"};
 var getLabel = function(value){return labels[value]||String(value||"غير محدد");};
-var wallets=[],selectedId=null,currentTab="transactions",detailData={transactions:[],topups:[],orders:[]},requestSerial=0,client;
+var wallets=[],selectedId=null,currentTab="transactions",detailData={transactions:[],topups:[],orders:[],audits:[]},requestSerial=0,client,debitBusy=false,debitRequestKey=null;
 function showStatus(message,isError){status.textContent=message;status.classList.toggle("error",!!isError);status.hidden=!message;}
+function selectedWallet(){return wallets.find(function(w){return w.customer_id===selectedId;})||null;}
+function debitMessage(message,good){
+ var box=$("debitMessage");box.textContent=String(message||"");box.hidden=!message;box.classList.toggle("good",!!good);
+}
+function resetDebitPanel(){
+ debitRequestKey=null;$("debitPanel").hidden=true;$("debitForm").reset();debitMessage("",false);updateDebitPreview();
+}
+function updateDebitPreview(){
+ var w=selectedWallet(),amount=Number($("debitAmount").value),available=Number(w&&w.balance||0);
+ if(!w||!$("debitAmount").value){$("debitPreview").textContent="اكتب المبلغ لعرض الرصيد بعد الخصم.";return;}
+ if(!Number.isFinite(amount)||amount<=0||Math.round(amount*1000)!==amount*1000||amount>available){
+  $("debitPreview").textContent="المبلغ يجب أن يكون موجبًا وبحد 3 خانات عشرية، ولا يتجاوز الرصيد الحالي ("+fmt(available)+" د.ل).";
+  return;
+ }
+ $("debitPreview").textContent="الرصيد الحالي: "+fmt(available)+" د.ل ← بعد الخصم: "+fmt(Math.round((available-amount)*1000)/1000)+" د.ل";
+}
+
 function renderCustomers(){
  var term=$("search").value.trim().toLocaleLowerCase();
  var visible=wallets.filter(function(w){return [w.customer_name,w.nickname,w.customer_id].join(" ").toLocaleLowerCase().includes(term);});
@@ -139,7 +186,7 @@ async function overview(){
  }
 }
 function closeDetails(){
- selectedId=null;requestSerial++;$("detailContent").hidden=true;$("detailPrompt").hidden=false;renderCustomers();
+ selectedId=null;requestSerial++;resetDebitPanel();$("detailContent").hidden=true;$("detailPrompt").hidden=false;renderCustomers();
 }
 function historyItem(title,subtitle,amount,cls){
  return '<div class="history-item"><div class="history-main"><div class="history-title">'+htmlEscape(title)+'</div>'+
@@ -147,11 +194,12 @@ function historyItem(title,subtitle,amount,cls){
  '<div class="history-amount '+(cls||"")+'">'+htmlEscape(amount)+'</div></div>';
 }
 function renderHistory(){
- var entries=detailData[currentTab]||[],content="";
+ var entries=detailData[currentTab]||[],content="",debitNotes={};
+ (detailData.audits||[]).forEach(function(r){debitNotes[r.transaction_id]=r.reason;});
  if(currentTab==="transactions"){
   content=entries.map(function(r){
    var n=Number(r.amount||0);
-   return historyItem(getLabel(r.transaction_type),formatDate(r.created_at)+" · بعد العملية: "+fmt(r.balance_after)+" د.ل",(n>0?"+":"")+fmt(n)+" د.ل",n>0?"positive":n<0?"negative":"");
+   return historyItem(getLabel(r.transaction_type)+(debitNotes[r.id]?" · "+debitNotes[r.id]:""),formatDate(r.created_at)+" · بعد العملية: "+fmt(r.balance_after)+" د.ل",(n>0?"+":"")+fmt(n)+" د.ل",n>0?"positive":n<0?"negative":"");
   }).join("");
  }else if(currentTab==="topups"){
   content=entries.map(function(r){return historyItem(getLabel(r.method)+" · "+getLabel(r.status),formatDate(r.created_at),fmt(r.amount)+" د.ل","");}).join("");
@@ -165,27 +213,86 @@ function renderHistory(){
 }
 async function selectCustomer(id){
  var w=wallets.find(function(x){return x.customer_id===id;});if(!w)return;
+ resetDebitPanel();
  selectedId=id;currentTab="transactions";renderCustomers();
  $("detailPrompt").hidden=true;$("detailContent").hidden=false;
  $("detailName").textContent=w.customer_name||"زبون";
  $("detailNickname").textContent="معرّف الحساب: "+String(w.customer_id).slice(0,8)+" · "+Number(w.orders_count||0)+" طلب";
  $("detailBalance").textContent=fmt(w.balance);
+ $("debitToggle").disabled=Number(w.balance)<=0;
+ $("debitToggle").textContent=Number(w.balance)>0?"خصم مبلغ من محفظة هذا الزبون":"الرصيد صفر — لا يمكن الخصم";
  $("history").innerHTML='<div class="empty">جاري تحميل السجل...</div>';
  var serial=++requestSerial;
  try{
   var result=await Promise.all([
-   client.from("wallet_transactions").select("transaction_type,amount,balance_after,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(40),
+   client.from("wallet_transactions").select("id,transaction_type,amount,balance_after,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(40),
    client.from("topup_requests").select("amount,method,status,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(30),
-   client.from("purchase_orders").select("product_name,total_amount,status,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(30)
+   client.from("purchase_orders").select("product_name,total_amount,status,created_at").eq("user_id",id).order("created_at",{ascending:false}).limit(30),
+   client.from("wallet_admin_debits").select("transaction_id,reason,created_at").eq("customer_id",id).order("created_at",{ascending:false}).limit(40)
   ]);
   if(serial!==requestSerial)return;
   var err=result.find(function(item){return item.error;});if(err)throw err.error;
-  detailData={transactions:result[0].data||[],topups:result[1].data||[],orders:result[2].data||[]};
+  detailData={transactions:result[0].data||[],topups:result[1].data||[],orders:result[2].data||[],audits:result[3].data||[]};
   renderHistory();
  }catch(error){
   if(serial===requestSerial){$("history").innerHTML='<div class="empty">تعذّر تحميل سجل العمليات. اضغط على الزبون للمحاولة مجددًا.</div>';}
  }
 }
+
+$("debitToggle").addEventListener("click",function(){
+ if(debitBusy)return;
+ var w=selectedWallet();if(!w||Number(w.balance)<=0)return;
+ $("debitPanel").hidden=!$("debitPanel").hidden;
+ if(!$("debitPanel").hidden){$("debitAmount").max=String(w.balance);$("debitAmount").focus();}
+});
+$("debitCancel").addEventListener("click",resetDebitPanel);
+["debitAmount","debitReason"].forEach(function(id){
+ $(id).addEventListener("input",function(){debitRequestKey=null;debitMessage("",false);updateDebitPreview();});
+});
+$("debitForm").addEventListener("submit",async function(event){
+ event.preventDefault();
+ if(debitBusy)return;
+ var w=selectedWallet();if(!w){debitMessage("اختر زبونًا أولًا.",false);return;}
+ var amount=Number($("debitAmount").value),available=Number(w.balance||0),reason=$("debitReason").value.trim();
+ if(!Number.isFinite(amount)||amount<=0||Math.round(amount*1000)!==amount*1000){
+  debitMessage("اكتب مبلغًا موجبًا بثلاث خانات عشرية كحد أقصى.",false);return;
+ }
+ if(amount>available){debitMessage("لا يمكن خصم مبلغ أكبر من الرصيد الحالي.",false);return;}
+ if(reason.length<3||reason.length>300){debitMessage("اكتب سببًا واضحًا بين 3 و300 حرف.",false);return;}
+ var after=Math.round((available-amount)*1000)/1000;
+ var message="تأكيد خصم "+fmt(amount)+" د.ل من محفظة «"+String(w.customer_name||"الزبون")+"»؟\n\nالرصيد قبل: "+fmt(available)+" د.ل\nالرصيد بعد: "+fmt(after)+" د.ل\nالسبب: "+reason+"\n\nستُسجّل العملية باسم المسؤول، ولا يمكن إلغاؤها بمجرد إغلاق الصفحة.";
+ if(!window.confirm(message))return;
+ if(!window.crypto||typeof window.crypto.randomUUID!=="function"){
+  debitMessage("المتصفح لا يدعم تأمين هذه العملية. افتح الصفحة في Safari محدث.",false);return;
+ }
+ var customerId=w.customer_id;
+ debitRequestKey=debitRequestKey||window.crypto.randomUUID();
+ debitBusy=true;$("debitSubmit").disabled=true;$("debitCancel").disabled=true;$("debitToggle").disabled=true;
+ debitMessage("جارٍ التحقق من الرصيد وتنفيذ الخصم...",true);
+ try{
+  var response=await client.rpc("admin_deduct_wallet",{
+   p_customer_id:customerId,p_amount:amount,p_reason:reason,
+   p_expected_balance:available,p_request_key:debitRequestKey
+  });
+  if(response.error)throw response.error;
+  if(!response.data||!response.data.applied)throw new Error("لم يؤكّد الخادم تنفيذ الخصم.");
+  debitRequestKey=null;
+  await overview();
+  await selectCustomer(customerId);
+  showStatus("تم خصم "+fmt(amount)+" د.ل من المحفظة وتسجيل السبب والحركة في السجل. الرصيد الجديد: "+fmt(response.data.balance_after)+" د.ل.",false);
+ }catch(error){
+  var raw=String(error&&error.message||"تعذّر تنفيذ الخصم");
+  var friendly=raw.includes("balance_changed_refresh_required")?"تغيّر رصيد الزبون. اضغط تحديث الأرصدة وراجع المبلغ قبل المحاولة مجددًا.":
+   raw.includes("insufficient_balance")?"الرصيد لا يكفي. حدّث الصفحة وراجع المبلغ.":
+   raw.includes("not_authorized")?"ليس لديك صلاحية خصم الرصيد. سجّل الدخول بحساب المدير.":
+   raw.includes("reason_required")?"اكتب سبب الخصم بوضوح.":
+   raw.includes("request_key_conflict")?"تعارض في رمز العملية، حدّث الصفحة وأعد المحاولة.":raw;
+  debitMessage("تعذّر تأكيد العملية: "+friendly+" في حالة انقطاع الاتصال، أعد المحاولة بنفس البيانات فقط لتجنب التكرار.",false);
+ }finally{
+  debitBusy=false;$("debitSubmit").disabled=false;$("debitCancel").disabled=false;
+  var active=selectedWallet();$("debitToggle").disabled=!active||Number(active.balance)<=0;
+ }
+});
 $("customerList").addEventListener("click",function(event){
  var button=event.target.closest("button[data-customer]");if(button)selectCustomer(button.getAttribute("data-customer"));
 });

@@ -34,7 +34,7 @@
       var back=document.createElement('button');
       back.type='button';
       back.className='robux-purchase-back';
-      back.textContent='رجوع للباقات ←';
+      back.textContent='رجوع لاختيار الكمية ←';
       var kicker=document.createElement('span');
       kicker.className='robux-menu-kicker';
       kicker.textContent='GAMEBOXLY • ROBUX';
@@ -48,7 +48,7 @@
       var headingTitle=document.createElement('h2');
       headingTitle.textContent='قائمة طلب روبوكس';
       var description=document.createElement('p');
-      description.textContent='راجع الباقة وتحقق من حساب Roblox قبل تأكيد الشراء.';
+      description.textContent='راجع كمية الروبوكس وتحقق من حساب Roblox قبل تأكيد الشراء.';
       words.append(headingTitle,description);
       heading.append(art,words);
       var summary=document.createElement('div');

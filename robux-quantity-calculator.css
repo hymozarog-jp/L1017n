@@ -387,3 +387,35 @@
   #robuxModal .rqc-select,
   #robuxModal .rqc-input-box{transition:none!important}
 }
+
+
+/* Custom-quantity-only purchase flow. Old fixed package DOM is retained only
+   as a hidden compatibility target for the existing verified checkout path. */
+#robuxModal.robux-custom-only .robux-reference-section,
+#robuxModal.robux-custom-only .robux-packages-help,
+#robuxModal.robux-custom-only .package-grid,
+#robuxModal.robux-custom-only .robux-checkout-bar{display:none!important}
+#robuxModal.robux-custom-only .robux-quantity-calculator{
+  display:block!important;
+  margin:18px 0 22px!important;
+  border-color:#7262ac83!important;
+}
+#robuxModal.robux-custom-only .rqc-quick-label,
+#robuxModal.robux-custom-only .rqc-quick-amounts{display:none!important}
+#robuxModal.robux-custom-only .rqc-stock-hint{
+  display:flex;align-items:center;gap:7px;
+  margin:12px 1px 17px!important;color:#b9d5e6!important;
+  font-size:12px!important;line-height:1.7!important;
+}
+#robuxModal.robux-custom-only .rqc-stock-hint::before{
+  content:"";display:block;width:7px;height:7px;flex:none;
+  border-radius:50%;background:#67d9b4;box-shadow:0 0 0 4px #67d9b41a;
+}
+#robuxModal.robux-custom-only .rqc-total{margin-top:13px!important}
+#robuxModal.robux-custom-only .rqc-select{margin-top:8px!important}
+@media(max-width:520px){
+ #robuxModal.robux-custom-only .robux-quantity-calculator{
+   margin:12px 0 20px!important;
+ }
+ #robuxModal.robux-custom-only .rqc-stock-hint{font-size:11px!important}
+}

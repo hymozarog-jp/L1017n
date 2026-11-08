@@ -430,3 +430,44 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 @media(prefers-reduced-motion:reduce){
   #llLanding .ll-game-section-art{transition:none!important}
 }
+
+
+/* Real live bottom navigation (#llBottomNav), not the legacy .mobile-nav.
+   Right-to-left positions: Home | Orders | Ranking | Wallet | Account. */
+@media(max-width:680px){
+  html body.l1017-live-ui #llBottomNav{
+    direction:rtl!important;
+    flex-direction:row!important;
+    justify-content:space-around!important;
+  }
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav]{
+    min-width:0!important;
+    flex:1 1 20%!important;
+    border-radius:16px!important;
+    border:1px solid transparent!important;
+    transition:background .22s ease,color .22s ease,transform .2s ease!important;
+  }
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav="home"]{order:1!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav="orders"]{order:2!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav="leaderboard"]{order:3!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav="wallet"]{order:4!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav="account"]{order:5!important}
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active{
+    background:#fff!important;
+    border-color:#fff!important;
+    box-shadow:0 4px 16px #0005!important;
+    color:#171e2b!important;
+  }
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active .ll-nav-icon{
+    background:transparent!important;
+    color:#171e2b!important;
+  }
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active svg{
+    color:#171e2b!important;
+    stroke:currentColor!important;
+  }
+  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#171e2b!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #llBottomNav>button[data-ll-nav]{transition:none!important}
+}

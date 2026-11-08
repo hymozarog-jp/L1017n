@@ -1,0 +1,236 @@
+/* L1017N — animated, package-like customer order cards.
+   UI only: never changes payment, inventory, order status, or fulfillment. */
+#ordersView #ordersList .orders-modern-list{
+  gap:15px!important;
+  perspective:900px;
+}
+#ordersView #ordersList .orders-modern-card{
+  isolation:isolate;
+  border-radius:22px!important;
+  box-shadow:0 12px 30px #00000042,inset 0 1px 0 #ffffff0a!important;
+  transition:border-color .24s ease,box-shadow .24s ease,transform .24s ease;
+  animation:gbOrderCardEnter .42s cubic-bezier(.2,.8,.2,1) both!important;
+}
+#ordersView #ordersList .orders-modern-card:nth-child(2){animation-delay:.04s!important}
+#ordersView #ordersList .orders-modern-card:nth-child(3){animation-delay:.08s!important}
+#ordersView #ordersList .orders-modern-card:nth-child(4){animation-delay:.12s!important}
+#ordersView #ordersList .orders-modern-card:nth-child(n+5){animation-delay:.14s!important}
+#ordersView #ordersList .orders-modern-card:focus-visible{
+  outline:2px solid #fff4bb!important;outline-offset:3px!important;
+}
+@media(hover:hover){
+ #ordersView #ordersList .orders-modern-card:hover{
+   transform:translateY(-3px);
+   box-shadow:0 19px 36px #00000050,inset 0 1px 0 #ffffff13!important;
+ }
+}
+#ordersView #ordersList .orders-modern-card[hidden]{display:none!important}
+#ordersView #ordersList .orders-game-icon{
+  position:relative!important;
+  overflow:visible!important;
+}
+#ordersView #ordersList .orders-parcel-chip{
+  position:absolute;bottom:-6px;left:-6px;
+  display:grid;place-items:center;width:24px;height:24px;
+  color:#fff7df;background:linear-gradient(135deg,#9673e5,#5141a0);
+  border:1px solid #c4b0ff;box-shadow:0 3px 10px #09071380;
+  border-radius:8px;pointer-events:none;
+  animation:gbOrderParcelFloat 3.5s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-parcel-chip svg{
+  width:17px;height:17px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+#ordersView #ordersList .orders-status{
+  display:inline-flex!important;align-items:center!important;
+  justify-content:flex-start;gap:7px!important;
+  min-height:36px!important;
+  box-sizing:border-box;
+  white-space:normal!important;text-align:right;
+  line-height:1.35!important;
+  padding:5px 10px 5px 6px!important;
+  font-size:clamp(10px,2.5vw,12px)!important;
+  font-weight:800!important;
+  transition:background .25s ease,border-color .25s ease;
+}
+#ordersView #ordersList .orders-status-label{display:inline-block;white-space:nowrap}
+#ordersView #ordersList .orders-state-emblem{
+  width:27px;height:27px;flex:0 0 27px;
+  border-radius:50%;position:relative;
+  display:inline-grid;place-items:center;
+  background:#ffffff12;
+}
+#ordersView #ordersList .orders-state-emblem::after{
+  content:"";position:absolute;inset:-3px;border-radius:50%;
+  border:1px solid currentColor;opacity:.16;pointer-events:none;
+}
+#ordersView #ordersList .orders-state-emblem svg{
+  width:26px;height:26px;display:block;overflow:visible;
+  fill:none;stroke:currentColor;
+  stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;
+}
+#ordersView #ordersList .orders-state-success{
+  color:#a0ffd3;background:#19885c35;
+  animation:gbOrderSuccessPop .58s cubic-bezier(.2,1.8,.35,1) both;
+}
+#ordersView #ordersList .orders-state-success::after{
+  animation:gbOrderSuccessHalo 2.9s ease-out 1;
+}
+#ordersView #ordersList .orders-state-success .orders-check-circle{
+  stroke-dasharray:70;stroke-dashoffset:70;
+  animation:gbOrderCheckDraw .65s ease .08s both;
+}
+#ordersView #ordersList .orders-state-success .orders-check-path{
+  stroke-dasharray:22;stroke-dashoffset:22;
+  animation:gbOrderCheckDraw .48s cubic-bezier(.2,.6,.2,1) .52s both;
+}
+#ordersView #ordersList .orders-state-waiting{
+  color:#ffd98d;background:#b5893030;
+}
+#ordersView #ordersList .orders-state-waiting::after{
+  animation:gbOrderPendingRing 2.5s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-animated-wait{
+  animation:gbOrderClockTick 3.2s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-state-working{
+  color:#a4dfff;background:#2a7ca63a;
+}
+#ordersView #ordersList .orders-state-working svg{
+  animation:gbOrderParcelRock 2.4s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-state-working::after{
+  animation:gbOrderPendingRing 2.7s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-state-rejected{
+  color:#ffb3be;background:#b63b5a25;
+  animation:gbOrderXShake .43s ease-in-out both;
+}
+#ordersView #ordersList .orders-state-rejected::after{border-color:#f28ca1;opacity:.35}
+#ordersView #ordersList .orders-card-title{
+  letter-spacing:0;line-height:1.4!important;
+}
+#ordersView #ordersList .orders-mini-progress{gap:6px!important}
+#ordersView #ordersList .orders-mini-progress>span{
+  transition:background-color .3s ease;
+}
+#ordersView #ordersList .orders-mini-progress>span.is-on:last-of-type{
+  box-shadow:0 0 10px currentColor;
+}
+/* Approved vs delivered is still determined entirely from real source status. */
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-state-success{
+  color:#b3eaff;background:#2f83ad35;
+}
+#ordersView #ordersList .orders-modern-card[data-order-phase="approved"] .orders-status{
+  border-color:#5ca4cf!important;color:#a7e1ff!important;
+  background:#1d466050!important;
+}
+#ordersView #ordersList .orders-modern-card[data-visual-state="working"] .orders-status{
+  border-color:#3f8aa8!important;color:#aee5ff!important;
+  background:#153548!important;
+}
+#ordersView #ordersList .orders-track-panel[data-visual-state="success"] .orders-track-symbol{
+  animation:gbOrderDetailSuccess 2.8s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-track-panel[data-visual-state="success"] .orders-track-symbol svg path{
+  stroke-dasharray:75;stroke-dashoffset:75;
+  animation:gbOrderCheckDraw .66s ease .12s both;
+}
+#ordersView #ordersList .orders-track-panel[data-visual-state="waiting"] .orders-track-symbol{
+  animation:gbOrderDetailWaiting 2.5s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-track-panel[data-visual-state="working"] .orders-track-symbol{
+  animation:gbOrderParcelFloat 2.5s ease-in-out infinite;
+}
+#ordersView #ordersList .orders-track-panel[data-visual-state="rejected"] .orders-track-symbol{
+  animation:gbOrderXShake .45s ease both;
+}
+#ordersView #ordersList .orders-track-step.is-current .orders-track-node{
+  animation:gbOrderNodeGlow 2.7s ease-in-out infinite;
+}
+/* Mobile: keep the badge compact, readable and inside the actual card. */
+@media(max-width:540px){
+  #ordersView #ordersList .orders-modern-list{gap:12px!important}
+  #ordersView #ordersList .orders-modern-card{border-radius:18px!important}
+  #ordersView #ordersList .orders-status{
+    min-height:30px!important;font-size:10px!important;
+    padding:4px 7px 4px 4px!important;gap:5px!important;
+  }
+  #ordersView #ordersList .orders-state-emblem{
+    width:22px;height:22px;flex-basis:22px;
+  }
+  #ordersView #ordersList .orders-state-emblem svg{width:21px;height:21px}
+  #ordersView #ordersList .orders-parcel-chip{width:20px;height:20px;border-radius:7px}
+  #ordersView #ordersList .orders-parcel-chip svg{width:14px;height:14px}
+}
+@media(max-width:350px){
+  #ordersView #ordersList .orders-status-label{white-space:normal}
+}
+@keyframes gbOrderCardEnter{
+ from{opacity:.55;transform:translateY(13px) scale(.985)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes gbOrderSuccessPop{
+ 0%{transform:scale(.55);opacity:.1}
+ 60%{transform:scale(1.18);opacity:1}
+ 100%{transform:scale(1);opacity:1}
+}
+@keyframes gbOrderCheckDraw{to{stroke-dashoffset:0}}
+@keyframes gbOrderSuccessHalo{
+ 0%{transform:scale(.7);opacity:.55}
+ 70%{transform:scale(1.45);opacity:.1}
+ 100%{transform:scale(1.5);opacity:0}
+}
+@keyframes gbOrderPendingRing{
+ 0%,100%{transform:scale(.94);opacity:.1}
+ 50%{transform:scale(1.16);opacity:.45}
+}
+@keyframes gbOrderClockTick{
+ 0%,100%{transform:rotate(0)}
+ 48%{transform:rotate(9deg)}
+ 53%{transform:rotate(-5deg)}
+ 58%{transform:rotate(0)}
+}
+@keyframes gbOrderParcelFloat{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-3px)}
+}
+@keyframes gbOrderParcelRock{
+ 0%,100%{transform:rotate(0)}
+ 45%{transform:rotate(-9deg)}
+ 55%{transform:rotate(5deg)}
+}
+@keyframes gbOrderXShake{
+ 0%{transform:scale(.8);opacity:.5}
+ 40%{transform:scale(1.05) rotate(-7deg);opacity:1}
+ 65%{transform:scale(1) rotate(5deg)}
+ 100%{transform:scale(1) rotate(0)}
+}
+@keyframes gbOrderDetailSuccess{
+ 0%,100%{box-shadow:0 0 0 6px #38d39b20,inset 0 0 0 3px #163a2d}
+ 50%{box-shadow:0 0 0 11px #38d39b13,inset 0 0 0 3px #163a2d}
+}
+@keyframes gbOrderDetailWaiting{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-3px)}
+}
+@keyframes gbOrderNodeGlow{
+ 0%,100%{filter:drop-shadow(0 0 1px #f3ce6e30)}
+ 50%{filter:drop-shadow(0 0 7px #f3ce6e80)}
+}
+@media(prefers-reduced-motion:reduce){
+ #ordersView #ordersList .orders-modern-card,
+ #ordersView #ordersList .orders-state-emblem,
+ #ordersView #ordersList .orders-state-emblem *,
+ #ordersView #ordersList .orders-state-emblem::after,
+ #ordersView #ordersList .orders-parcel-chip,
+ #ordersView #ordersList .orders-track-symbol,
+ #ordersView #ordersList .orders-track-symbol *,
+ #ordersView #ordersList .orders-track-node{
+   animation:none!important;transition:none!important;
+ }
+ #ordersView #ordersList .orders-state-success .orders-check-circle,
+ #ordersView #ordersList .orders-state-success .orders-check-path{
+   stroke-dashoffset:0;
+ }
+}

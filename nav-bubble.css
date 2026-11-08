@@ -1,30 +1,54 @@
-
-/* White, animated active selection for L1017N mobile bottom navigation. */
-.mobile-nav{isolation:isolate;position:fixed!important}
-.mobile-nav .nav-follow-bubble{
- position:absolute;z-index:-1;top:7px;left:0;width:0;
- height:calc(100% - 14px - env(safe-area-inset-bottom));
- border-radius:999px;
- background:linear-gradient(155deg,#ffffff 0%,#f1f4ff 100%);
- border:1px solid rgba(255,255,255,.98);
- box-shadow:0 4px 18px #0000002e,inset 0 1px 0 #ffffff;
- pointer-events:none;opacity:0;
- transition:transform .36s cubic-bezier(.2,.9,.25,1.15),width .36s cubic-bezier(.2,.9,.25,1.15),opacity .18s ease;
+/* Active mobile bottom navigation — white selection must be visible without JS. */
+.mobile-nav{isolation:isolate!important;position:fixed!important}
+.mobile-nav .nav-follow-bubble{display:none!important}
+/* High-specificity override for all earlier midnight/green/purple themes. */
+body .mobile-nav>button[data-view]{
+  position:relative!important;
+  z-index:1!important;
+  background:transparent!important;
+  color:#bfc5d3!important;
+  border:1px solid transparent!important;
+  border-radius:17px!important;
+  box-shadow:none!important;
+  transition:background-color .23s ease,color .23s ease,border-color .23s ease,box-shadow .23s ease,transform .2s ease!important;
+  -webkit-tap-highlight-color:transparent;
 }
-.mobile-nav .nav-follow-bubble.ready{opacity:1}
-.mobile-nav button{
- position:relative;z-index:1;
- transition:color .25s ease,transform .25s ease;
+body .mobile-nav>button[data-view].active,
+body .mobile-nav>button[data-view][aria-current="page"],
+body:has(#homeView:not(.hidden)) .mobile-nav>button[data-view].active{
+  background:#ffffff!important;
+  color:#172130!important;
+  border:1px solid #ffffff!important;
+  box-shadow:0 4px 14px #00000038,inset 0 1px 0 #ffffff!important;
+  font-weight:850!important;
+  animation:l1017NavWhiteAppear .25s cubic-bezier(.2,.8,.25,1) both;
 }
-.mobile-nav button.active,
-body:has(#homeView:not(.hidden)) .mobile-nav button.active{
- background:transparent!important;
- border-color:transparent!important;
- box-shadow:none!important;
- color:#13202b!important;
- font-weight:750;
+body .mobile-nav>button[data-view].active .nav-icon,
+body .mobile-nav>button[data-view][aria-current="page"] .nav-icon,
+body .mobile-nav>button[data-view].active .l1017-icon,
+body .mobile-nav>button[data-view].active>svg{
+  color:#172130!important;
+  stroke:#172130!important;
+  filter:none!important;
 }
-.mobile-nav button.active .nav-icon{color:#13202b!important;stroke:currentColor;filter:none}
-.mobile-nav button.active span{color:#13202b!important}
-.mobile-nav button:focus-visible{outline:2px solid #fff;outline-offset:2px}
-@media(prefers-reduced-motion:reduce){.mobile-nav .nav-follow-bubble{transition:none!important}}
+body .mobile-nav>button[data-view].active span,
+body .mobile-nav>button[data-view][aria-current="page"] span{
+  color:#172130!important;
+}
+body .mobile-nav>button[data-view]:not(.active):not([aria-current="page"]) span{
+  color:inherit!important;
+}
+body .mobile-nav>button[data-view]:active{transform:scale(.96)}
+body .mobile-nav>button[data-view]:focus-visible{
+  outline:2px solid #ffffff!important;outline-offset:3px!important;
+}
+@keyframes l1017NavWhiteAppear{
+  0%{transform:scale(.91)}
+  65%{transform:scale(1.035)}
+  100%{transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+ body .mobile-nav>button[data-view]{
+   animation:none!important;transition:none!important;
+ }
+}

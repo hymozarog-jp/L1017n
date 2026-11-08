@@ -243,22 +243,24 @@ jobs:
             'Remove repeated wizard subtitle beneath the main heading');
 
 
-          // User-hidden ready-made packs 500,600,...,1000 must not reappear.
-          assert(loader.includes('&robux-packs-500-1000-removed=20261104-1'),
-            'Updated Robux preset list needs fresh legacy JS in every browser');
-          const picks=legacy.match(/\+\[([0-9,]+)\]\.map\(q=>'<button class="rqc-amount-chip"/);
-          assert(picks,'Robux quick-pick list must be present');
-          assert.deepEqual(picks[1].split(',').map(Number),[100,200,400],
-            'Only 100, 200 and 400 Robux may remain in quick picks');
-          const catalogMarker="Number(p.amount)>=100 && Number(p.amount)<500 && Number(p.amount)%100===0 && Number(p.amount)!==300";
-          assert(legacy.includes(catalogMarker),
-            'Ready-made Robux catalog must exclude 500 through 1000');
-          assert(legacy.includes("String(p.product_key||'').startsWith('robux-promo-')"),
-            'The existing special 300 Robux promotional offer must remain');
-          const isPreset=amount=>Number.isInteger(amount) && amount>=100 && amount<500 &&
-            amount%100===0 && amount!==300;
-          assert.deepEqual([100,200,300,400,500,600,700,800,900,1000].filter(isPreset),
-            [100,200,400], 'Package range filter must hide 500 through 1000');
+          // Robux now sells an exact customer-entered quantity, not fixed package cards.
+          assert(loader.includes('&custom-robux-quantity=20261108-1'),
+            'Fresh legacy code must load on all browsers after the quantity-only switch');
+          assert(legacy.includes('const robux=[];') &&
+            legacy.includes("modal.classList.add('robux-custom-only')") &&
+            legacy.includes('mountRobuxQuantityCalculator(modal,robux)'),
+            'Fixed packages must be removed from the rendered Robux storefront');
+          assert(legacy.includes("section.querySelector('.rqc-quick-amounts')?.remove()") &&
+            legacy.includes("section.querySelector('.rqc-quick-label')?.remove()"),
+            'Old preset quantity chips must no longer appear to the customer');
+          assert(legacy.includes("supabaseClient.rpc('quote_custom_robux'") &&
+            legacy.includes("supabaseClient.rpc('create_custom_robux_order'") &&
+            legacy.includes('const maxQuantity=()=>robuxUnlimited?100000:'),
+            'Only the server-priced, stock-bounded custom Robux checkout can accept purchases');
+          const robuxQuantityCss=read('robux-quantity-calculator.css');
+          assert(robuxQuantityCss.includes('#robuxModal.robux-custom-only .package-grid') &&
+            robuxQuantityCss.includes('display:none!important'),
+            'The legacy product grid must be hidden but preserved for checkout compatibility');
 
           assert(html.includes('app.js?v=dial-code-telegram-20261105-1') &&
             loader.includes('&fast-auth=20261104-1'),

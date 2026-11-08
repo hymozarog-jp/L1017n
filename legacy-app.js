@@ -1156,13 +1156,23 @@ async function openAdminDashboard(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 async function refreshAdminAccess(){
-  const user=await currentUser();
   const btn=$('#openAdminDashboard');
-  if(!btn)return;
+  const reportsLink=$('#accountReportsAdminLink');
+  if(!btn&&!reportsLink)return;
   let allowed=false;
-  if(user){const {data}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();allowed=!!data}
-  btn.classList.toggle('hidden',!allowed);
-  if(allowed)btn.onclick=openAdminDashboard;
+  try{
+    const user=await currentUser();
+    if(user){
+      const {data,error}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
+      allowed=!error&&!!data;
+    }
+  }catch(error){allowed=false}
+  if(btn){btn.classList.toggle('hidden',!allowed);if(allowed)btn.onclick=openAdminDashboard;}
+  if(reportsLink){
+    reportsLink.hidden=!allowed;
+    reportsLink.classList.toggle('hidden',!allowed);
+    reportsLink.setAttribute('aria-hidden',allowed?'false':'true');
+  }
 }
 function adminItem(title,sub,amount,id,status,actions,note){
   return '<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(title)+'</b><small>'+escapeHtml(sub)+'</small><small>رقم الطلب: '+escapeHtml(String(id).slice(0,8).toUpperCase())+(note?' · ملاحظة: '+escapeHtml(note):'')+'</small><div class="admin-request-actions">'+actions+'</div></div><div><b>'+Number(amount||0).toFixed(2)+' د.ل</b><div><span class="status '+(status==='pending'||status==='paid_pending_fulfillment'||status==='processing'||status==='fulfilling'?'pending':status==='approved'||status==='completed'?'approved':'rejected')+'">'+escapeHtml(statusText[status]||orderStatusText[status]||status)+'</span></div></div></article>'

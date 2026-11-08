@@ -544,6 +544,14 @@
       setIconText(state,'check-circle','رقم موثّق');state.className='tp-phone-state is-verified';
     }catch(error){number.textContent='تعذر جلب الرقم';state.textContent='أعد المحاولة';state.className='tp-phone-state is-error'}
   }
+  let directBusy=false;
+  window.L1017nDirectTransfer=Object.freeze({receiver:RECEIVER,prepare:async()=>{
+    if(directBusy)return null;
+    directBusy=true;chosen=true;
+    try{await render();return host()?.querySelector('a.ussd-code')||null}
+    finally{directBusy=false}
+  }});
+  window.dispatchEvent(new Event('l1017n-direct-ready'));
   window.renderTopupPhoneStatus=renderTopupPhoneStatus;
   window.refreshAutoTopup=()=>render();
   document.addEventListener('click',event=>{

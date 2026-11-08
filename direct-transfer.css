@@ -1,0 +1,39 @@
+/* Reference-inspired direct transfer, scoped to the top-up page. */
+#topupForm.dt-enabled{display:block!important}
+#topupForm.dt-enabled>:not(.dt-home){display:none!important}
+.dt-home{display:grid;gap:18px;direction:rtl;color:#edf3ff;text-align:right;width:100%;font-family:inherit}
+.dt-home .dt-card{padding:22px;border:1px solid #202a3c;border-radius:23px;background:#0c1320;box-shadow:none}
+.dt-heading{display:flex;align-items:center;gap:15px;margin-bottom:20px}
+.dt-heading h2,.dt-card h3{margin:0;color:#f0f5ff;font-size:21px;line-height:1.5}
+.dt-card p{color:#8d9db6;line-height:1.9;font-size:13px;margin:7px 0 15px}
+.dt-icon{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:#0c2d50;color:#1487f5;flex-shrink:0}
+.dt-home svg,#dtDialog svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.dt-number{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 15px;border:1px solid #202d43;border-radius:17px;background:#101a2b;margin:18px 0}
+.dt-number b{font-size:clamp(23px,6vw,32px);letter-spacing:1px;user-select:all;font-variant-numeric:tabular-nums}
+.dt-copy{border:0;background:#223047;color:#f2f6ff;border-radius:13px;width:44px;height:44px;font-size:29px;cursor:pointer}
+.dt-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;border:0;border-radius:16px;padding:13px 24px;background:#087be9;color:white;font:700 17px inherit;cursor:pointer;text-decoration:none}
+.dt-home .dt-open{width:100%;font-family:inherit;font-size:17px;font-weight:700}
+.dt-card label{display:block;font-size:13px;color:#b4c2d7;margin:12px 0 9px}
+.dt-home #dtSender,#dtDialog #dtAmount{box-sizing:border-box;width:100%;border:1px solid #26354e;border-radius:17px;padding:18px;background:#152037;color:#f0f5ff;font-family:inherit;font-size:20px;outline:none}
+.dt-home #dtSender:focus,#dtDialog #dtAmount:focus{border-color:#389cff;box-shadow:0 0 0 3px #087be920}
+.dt-phone-status{display:block;color:#9fc9f5;margin-top:10px;font-size:12px;line-height:1.7}
+.dt-card ol{list-style:none;counter-reset:steps;padding:0;margin:18px 0 0;display:grid;gap:16px;color:#a8b7cc;font-size:14px;line-height:1.8}
+.dt-card li{display:flex;gap:12px;align-items:center;counter-increment:steps}
+.dt-card li::before{content:counter(steps);display:grid;place-items:center;flex-shrink:0;width:29px;height:29px;background:#0d335b;color:#85c5ff;border-radius:50%;font-weight:800}
+#dtDialog{box-sizing:border-box;width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #18263c;border-radius:26px;padding:25px;background:#0f1829;color:#edf3ff;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;box-shadow:0 30px 100px #0009}
+#dtDialog::backdrop{background:#000b;backdrop-filter:blur(3px)}
+#dtDialog .dt-heading{margin-bottom:23px}
+#dtDialog .dt-heading h2{font-size:22px}
+#dtDialog #dtAmount{border-color:transparent;min-height:76px;text-align:right;font-size:23px}
+#dtDialog #dtAmount::placeholder{color:#8293ae}
+#dtDialog .dt-actions{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+#dtDialog .dt-cancel{background:transparent;border:0;color:#6dbaff;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer}
+#dtDialog .dt-call{font-family:inherit;font-size:20px;min-height:62px}
+#dtDialog .dt-error{font-size:13px;color:#b5cbe4;line-height:1.8;margin:12px 0 0}
+#dtDialog .dt-error:empty{display:none}
+#dtDialog .dt-fallback{display:block;margin-top:16px;color:#76bcff;text-align:center;font-size:13px;line-height:1.7}
+#dtDialog .dt-fallback[hidden]{display:none}
+#dtDialog button:disabled{opacity:.55;cursor:wait}
+.dt-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#dtDialog button:focus-visible,.dt-home button:focus-visible{outline:3px solid #80bdff;outline-offset:3px}
+@media(max-width:380px){.dt-home .dt-card{padding:17px}.dt-heading h2{font-size:18px}#dtDialog{padding:22px 18px}.dt-number b{font-size:25px}}

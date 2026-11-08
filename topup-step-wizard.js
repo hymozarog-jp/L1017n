@@ -1,231 +1,58 @@
-/* L1017n — dedicated wallet top-up wizard.
-   Navigation only on steps 1 and 2. The original, server-verified USSD
-   handler continues to own the final step and all payment intent creation. */
+/* Direct-transfer presentation. Existing backend intent and receipt checks own payment. */
 (function(){
  'use strict';
- const form=document.getElementById('topupForm');
- const proceed=document.getElementById('topupProceed');
- const amount=document.getElementById('topupAmount');
- const phone=document.getElementById('topupVerifiedNumber');
- const phoneStatus=document.getElementById('topupPhoneState');
- const phonePanel=form?.querySelector('.tp-phone-panel');
- const progress=form?.querySelector('.tp-progress');
- const instructions=document.getElementById('transferInstructions');
- if(!form||!proceed||!amount||!phone||!phonePanel||!progress||!instructions)return;
- if(form.dataset.tpWizardMounted==='1')return;
- form.dataset.tpWizardMounted='1';
- const page=()=>document.getElementById('topupDedicatedPage');
- const statusIsVerified=()=>phoneStatus?.classList.contains('is-verified')&&/^09[24][0-9]{7}$/.test(phone.textContent.trim());
- const isValidAmount=()=>Number.isSafeInteger(Number(amount.value))&&amount.value.trim()!==''&&Number(amount.value)>=1&&Number(amount.value)<=10000;
- // Decorative illustrations are intentionally separate SVG assets so the
- // three-stage form remains fast, accessible, and independent of payments.
- const stageArt=document.createElement('div');
- stageArt.className='tp-stage-art';
- stageArt.setAttribute('aria-hidden','true');
- const stageImage=document.createElement('img');
- stageImage.alt='';
- stageImage.decoding='async';
- stageImage.loading='eager';
- stageImage.width=420;stageImage.height=205;
- stageArt.appendChild(stageImage);
- progress.insertAdjacentElement('afterend',stageArt);
- const stageImages={
-  1:'topup-illustration-amount.svg?v=clear-icons-20261104-1',
-  2:'topup-illustration-sender.svg?v=premium-wallet-20261104-1',
-  3:'topup-illustration-review.svg?v=premium-wallet-20261104-1'
+ const form=document.getElementById('topupForm'),amount=document.getElementById('topupAmount');
+ if(!form||!amount)return;
+ const icon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a14 14 0 0 1-7-7l3-2z"/><path d="M16 3h5v5m0-5-6 6"/></svg>';
+ const panel=document.createElement('section');panel.className='dt-home';
+ panel.innerHTML='<article class="dt-card"><div class="dt-heading"><span class="dt-icon">'+icon+'</span><div><h2>حوّل إلى رقم المتجر</h2><p>اشحن محفظتك بتحويل رصيد ليبيانا</p></div></div><div class="dt-number"><b dir="ltr" class="dt-receiver">—</b><button type="button" class="dt-copy" aria-label="نسخ رقم المتجر">⧉</button></div><button type="button" class="dt-primary dt-open">'+icon+' تحويل مباشر</button></article><article class="dt-card"><h3>رقم المحوّل</h3><p>استخدم رقم ليبيانا الذي ستُجري منه التحويل.</p><label for="dtSender">رقم الهاتف</label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16"><small class="dt-phone-status" role="status"></small></article><article class="dt-card"><h3>طريقة شحن المحفظة</h3><ol><li>أدخل رقم ليبيانا الذي سيحوّل الرصيد.</li><li>اضغط «تحويل مباشر» واكتب المبلغ.</li><li>اضغط «اتصال» وأكّد التحويل من هاتفك.</li><li>تابع التحقق؛ يُضاف الرصيد بعد اعتماد التحويل.</li></ol></article>';
+ form.append(panel);form.classList.add('dt-enabled');
+ const sender=panel.querySelector('#dtSender');
+ function normalize(value){let d=String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/\D/g,'');if(d.startsWith('218'))d=d.slice(3);if(/^9[24]\d{7}$/.test(d))d='0'+d;return /^09[24]\d{7}$/.test(d)?d:''}
+ window.L1017nTopupWizard={getStep:()=>3,getSenderPhone:()=>normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent),reset:()=>{}};
+ const modal=document.createElement('dialog');modal.id='dtDialog';modal.dir='rtl';
+ modal.setAttribute('aria-labelledby','dtTitle');
+ modal.innerHTML='<div class="dt-heading"><span class="dt-icon">'+icon+'</span><h2 id="dtTitle">تحويل مباشر</h2></div><form method="dialog" id="dtTransferForm"><label class="dt-sr" for="dtAmount">قيمة التحويل بالدينار</label><input id="dtAmount" inputmode="numeric" type="text" placeholder="قيمة التحويل" autocomplete="off" maxlength="5"><p class="dt-error" role="status" aria-live="polite"></p><div class="dt-actions"><button type="button" class="dt-cancel">إلغاء</button><button type="submit" class="dt-primary dt-call">'+icon+'<span>اتصال</span></button></div><a class="dt-fallback" hidden>اضغط هنا إذا لم يفتح تطبيق الهاتف</a></form>';
+ document.body.append(modal);
+ const input=modal.querySelector('#dtAmount'),error=modal.querySelector('.dt-error'),call=modal.querySelector('.dt-call'),fallback=modal.querySelector('.dt-fallback');
+ let busy=false,prepared=null,lastFocus=null;
+ function close(){if(busy)return;modal.close();lastFocus?.focus()}
+ modal.querySelector('.dt-cancel').onclick=close;
+ modal.addEventListener('cancel',event=>{if(busy)event.preventDefault()});
+ modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)close()}});
+ panel.querySelector('.dt-open').onclick=()=>{
+   if(!window.L1017nDirectTransfer){panel.querySelector('.dt-phone-status').textContent='جاري تحميل خدمة التحويل، حاول بعد لحظة.';return}
+   if(!window.L1017nTopupWizard.getSenderPhone()){panel.querySelector('.dt-phone-status').textContent='اكتب رقم ليبيانا الصحيح أولًا.';sender.focus();return}
+   lastFocus=document.activeElement;error.textContent='';fallback.hidden=true;modal.showModal();input.focus();
  };
- const selected=document.createElement('div');
- selected.className='tp-wizard-selected';
- selected.innerHTML='<span>المبلغ</span><strong id="tpWizardSelectedAmount" dir="ltr">—</strong>';
- progress.insertAdjacentElement('afterend',selected);
- const phoneActions=document.createElement('div');
- phoneActions.className='tp-wizard-phone-actions';
- phoneActions.innerHTML='<button type="button" class="tp-wizard-recheck">تحديث</button>'+
-  '<button type="button" class="tp-wizard-verify">توثيق الهاتف</button>';
- phonePanel.appendChild(phoneActions);
- const senderField=document.createElement('div');
- senderField.className='tp-wizard-sender';
- senderField.innerHTML='<label for="tpTopupSender">رقم المحوّل (ليبيانا)</label>'+
-  '<input id="tpTopupSender" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="09xxxxxxxx" dir="ltr">'+
-  '<small>اكتب رقم ليبيانا اللي بيحوّل. لو رقمك موثّق تقدر تتركه فارغًا.</small>';
- phonePanel.appendChild(senderField);
- const senderInput=senderField.querySelector('#tpTopupSender');
- const normalizePhone=value=>{
-  let digits=String(value||'').replace(/[^0-9]/g,'');
-  if(digits.length===12&&digits.startsWith('218'))digits=digits.slice(3);
-  if(digits.length===9&&/^9[24]\d{7}$/.test(digits))digits='0'+digits;
-  return /^09[24]\d{7}$/.test(digits)?digits:'';
- };
- const getSenderPhone=()=>{
-  const entered=senderInput.value.trim();
-  return entered?normalizePhone(entered):normalizePhone(phone.textContent);
- };
- let noticeSeen=false;
- const senderNotice=document.createElement('div');
- senderNotice.id='tpTopupSenderNotice';
- senderNotice.className='tp-wizard-notice-layer';
- senderNotice.setAttribute('role','dialog');
- senderNotice.setAttribute('aria-modal','true');
- senderNotice.setAttribute('aria-labelledby','tpTopupNoticeTitle');
- senderNotice.setAttribute('aria-describedby','tpTopupNoticeText');
- senderNotice.innerHTML='<section class="tp-wizard-notice-card" dir="rtl">'+
-   '<span class="tp-wizard-notice-symbol" aria-hidden="true">!</span>'+
-   '<h3 id="tpTopupNoticeTitle">ملاحظة مهمة</h3>'+
-   '<p id="tpTopupNoticeText">تقدر تشحن من رقم ليبيانا آخر بموافقة صاحبه، حتى لو مرتبط بحساب مختلف. الرصيد يُضاف فقط بعد مطابقة رسالة التحويل وموافقة الإدارة.</p>'+
-   '<button type="button" id="tpTopupNoticeUnderstood">فهمت</button></section>';
- const understood=senderNotice.querySelector('#tpTopupNoticeUnderstood');
- understood.addEventListener('click',()=>senderNotice.remove());
- function openNotice(){
-  if(!page()||senderNotice.isConnected)return;
-  document.body.appendChild(senderNotice);
-  understood.focus({preventScroll:true});
- }
-
- const review=document.createElement('section');
- review.className='tp-wizard-review';
- review.setAttribute('aria-labelledby','tpWizardReviewTitle');
- review.innerHTML='<div class="tp-wizard-review-head">'+
-  '<span class="tp-wizard-review-icon" aria-hidden="true">✓</span>'+
-  '<div><h3 id="tpWizardReviewTitle">مراجعة الشحن</h3>'+
-  '</div></div>'+
-  '<div class="tp-wizard-review-line"><span>طريقة الشحن</span><strong>ليبيانا</strong></div>'+
-  '<div class="tp-wizard-review-line"><span>المبلغ</span><strong id="tpWizardReviewAmount" dir="ltr">—</strong></div>'+
-  '<div class="tp-wizard-review-line"><span>رقم المحوّل</span><strong id="tpWizardReviewPhone" dir="ltr">—</strong></div>'+
-  '<p class="tp-wizard-safety">التحويل من رقم المحوّل الذي اخترته. الرصيد يُضاف بعد التحقق والموافقة.</p>';
- proceed.insertAdjacentElement('beforebegin',review);
- const alert=document.createElement('p');
- alert.id='tpWizardAlert';alert.className='tp-wizard-alert';alert.setAttribute('role','alert');
- alert.hidden=true;
- proceed.insertAdjacentElement('beforebegin',alert);
- const previous=document.createElement('button');
- previous.type='button';previous.className='tp-wizard-back';previous.textContent='رجوع ←';
- proceed.insertAdjacentElement('beforebegin',previous);
- let stage=1,phoneCheck=null;
- const move=(node)=>{if(node&&page())node.scrollIntoView({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches?'auto':'smooth',block:'start'});};
- const money=()=>isValidAmount()?Number(amount.value).toFixed(2)+' د.ل':'—';
- const warning=message=>{
-  alert.textContent=message||'';
-  alert.hidden=!message;
- };
- function updateDisplay(){
-  selected.querySelector('#tpWizardSelectedAmount').textContent=money();
-  review.querySelector('#tpWizardReviewAmount').textContent=money();
-  const hasVerifiedPhone=statusIsVerified();
-  phonePanel.classList.toggle('tp-no-verified',!hasVerifiedPhone);
-  senderInput.setAttribute('aria-required',String(!hasVerifiedPhone));
-  review.querySelector('#tpWizardReviewPhone').textContent=getSenderPhone()||'رقم غير صحيح';
- }
- function setStage(next,scroll=true){
-  stage=next;
-  form.dataset.tpWizardStep=String(stage);
-  stageArt.dataset.step=String(stage);
-  if(!stageImage.getAttribute('src')||!stageImage.getAttribute('src').includes(stageImages[stage])){
-   stageImage.src=stageImages[stage];
-  }
-  warning('');
-  updateDisplay();
-  progress.querySelectorAll('[data-tp-step]').forEach(button=>{
-   const number=Number(button.dataset.tpStep);
-   button.disabled=number>stage;
-   button.classList.toggle('tp-wizard-done',number<stage);
-   if(number===stage)button.setAttribute('aria-current','step');
-   else button.removeAttribute('aria-current');
-  });
-  const titles={1:'متابعة',2:'متابعة',3:'تجهيز التحويل'};
-  proceed.innerHTML=titles[stage]+' <span aria-hidden="true">←</span>';
-  proceed.setAttribute('aria-label',titles[stage]);
-  if(stage===2){
-   const check=window.renderTopupPhoneStatus?.();
-   phoneCheck=Promise.resolve(check).catch(()=>{});
-   if(!noticeSeen&&page()){noticeSeen=true;queueMicrotask(()=>{if(stage===2)openNotice()});}
-  }
-  const hero=page()?.querySelector('.tp-clean-copy p');
-  if(hero)hero.textContent='';
-  if(scroll)move(progress);
- }
- function initPage(){
-  if(!page())return;
-  // Reopening an already prepared transfer should keep its real USSD code.
-  const hasTransfer=!!instructions.querySelector('.auto-topup-transfer');
-  form.dataset.tpWizardReady=hasTransfer?'true':'false';
-  noticeSeen=false;
-  senderNotice.remove();
-  setStage(hasTransfer?3:1,false);
-  window.scrollTo({top:0,behavior:'auto'});
- }
- // Capture prevents the original topupProceed handler from creating an intent
- // until BOTH navigation stages were completed intentionally by the customer.
- document.addEventListener('click',async function(event){
-  const current=page();
-  if(!current||!current.contains(form))return;
-  const nav=event.target.closest('[data-tp-step]');
-  if(nav&&progress.contains(nav)){
-   event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
-   const desired=Number(nav.dataset.tpStep);
-   if(desired<=stage&&desired>=1&&!instructions.querySelector('.auto-topup-transfer'))setStage(desired);
-   return;
-  }
-  const button=event.target.closest('#topupProceed');
-  if(!button||button!==proceed||stage===3)return;
-  event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
-  if(stage===1){
-   if(!isValidAmount()){
-    warning('اختار مبلغًا صحيحًا من 1 إلى 10000 د.ل.');
-    amount.focus({preventScroll:true});move(form.querySelector('.tp-amount-panel'));return;
-   }
-   setStage(2);return;
-  }
-  if(stage===2){
-   button.disabled=true;
+ input.addEventListener('input',()=>{prepared=null;fallback.hidden=true;error.textContent=''});
+ sender.addEventListener('input',()=>{prepared=null;panel.querySelector('.dt-phone-status').textContent=''});
+ modal.querySelector('form').addEventListener('submit',async event=>{
+   event.preventDefault();if(busy)return;
+   const raw=input.value.trim().replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632));
+   const value=Number(raw);
+   if(!/^\d+$/.test(raw)||!Number.isSafeInteger(value)||value<1||value>10000){error.textContent='أدخل مبلغًا صحيحًا من 1 إلى 10000 دينار.';input.focus();return}
+   const key=value+':'+window.L1017nTopupWizard.getSenderPhone();
+   if(prepared?.key===key&&prepared.link.isConnected){prepared.link.click();return}
+   busy=true;call.disabled=true;input.disabled=true;modal.querySelector('.dt-cancel').disabled=true;call.querySelector('span').textContent='جاري التجهيز…';error.textContent='';
    try{
-    if(phoneCheck)await phoneCheck;
-    if(!page()||stage!==2)return;
-    updateDisplay();
-    // Logged-in customers may submit manually reviewed top-ups without OTP.
-    // Only the sender number is needed for independent SMS/admin matching.
-    if(!getSenderPhone()){
-     warning('اكتب رقم المحوّل الصحيح، ويبدأ بـ 092 أو 094.');
-     senderInput.focus({preventScroll:true});return;
-    }
-    setStage(3);
-   }finally{button.disabled=false;}
-  }
- },true);
- previous.addEventListener('click',()=>{
-  if(stage>1&&!instructions.querySelector('.auto-topup-transfer'))setStage(stage-1);
+     amount.value=String(value);amount.dispatchEvent(new Event('input',{bubbles:true}));
+     const link=await window.L1017nDirectTransfer.prepare();
+     if(document.getElementById('tpReturnVerify')){modal.close();return}
+     if(!link){error.textContent=document.getElementById('transferInstructions')?.textContent||'تعذر تجهيز التحويل. حاول مرة أخرى.';return}
+     prepared={key,link};fallback.href=link.href;fallback.hidden=false;
+     fallback.onclick=event=>{event.preventDefault();link.click()};
+     error.textContent='الكود جاهز. أكّد الاتصال من هاتفك لإتمام التحويل.';
+     link.click();
+   }catch(_){error.textContent='تعذر تجهيز التحويل. تحقق من اتصالك وحاول مجددًا.'}
+   finally{busy=false;call.disabled=false;input.disabled=false;modal.querySelector('.dt-cancel').disabled=false;call.querySelector('span').textContent='اتصال'}
  });
- phoneActions.querySelector('.tp-wizard-recheck').addEventListener('click',async()=>{
-  const button=phoneActions.querySelector('.tp-wizard-recheck');
-  button.disabled=true;
-  try{await window.renderTopupPhoneStatus?.();if(statusIsVerified())warning('');updateDisplay();}
-  finally{button.disabled=false;}
- });
- phoneActions.querySelector('.tp-wizard-verify').addEventListener('click',async()=>{
-  page()?.querySelector('.topup-dedicated-back')?.click();
-  if(typeof window.switchView==='function')window.switchView('account');
-  else document.querySelector('[data-view="account"]')?.click();
-  if(typeof window.openPersonalDetails==='function')await window.openPersonalDetails({focusPhone:true});
- });
- // Actual changes to the selected amount invalidate the review.
- amount.addEventListener('input',()=>{updateDisplay();if(stage>1)setStage(1,false)});
- senderInput.addEventListener('input',()=>{updateDisplay();if(stage===3)setStage(2,false)});
- const transferObserver=new MutationObserver(()=>{
-  form.dataset.tpWizardReady=instructions.querySelector('.auto-topup-transfer')?'true':'false';
- });
- transferObserver.observe(instructions,{childList:true,subtree:true});
- const pageObserver=new MutationObserver(records=>{
-  for(const record of records){
-   for(const node of record.removedNodes){
-    if(node.nodeType===1&&node.id==='topupDedicatedPage')senderNotice.remove();
-   }
-   for(const node of record.addedNodes){
-    if(node.nodeType===1&&(node.id==='topupDedicatedPage'||node.querySelector?.('#topupDedicatedPage'))){
-     initPage();return;
-    }
-   }
-  }
- });
- pageObserver.observe(document.body,{childList:true});
- if(page())initPage();
- window.L1017nTopupWizard={getStep:()=>stage,getSenderPhone,reset:()=>setStage(1,false)};
+ panel.querySelector('.dt-copy').onclick=async()=>{const receiver=window.L1017nDirectTransfer?.receiver;if(!receiver)return;try{await navigator.clipboard.writeText(receiver);panel.querySelector('.dt-phone-status').textContent='تم نسخ رقم المتجر'}catch(_){panel.querySelector('.dt-phone-status').textContent='اضغط مطولًا على الرقم لنسخه'}};
+ function sync(){
+   const receiver=window.L1017nDirectTransfer?.receiver;if(receiver&&panel.querySelector('.dt-receiver').textContent!==receiver)panel.querySelector('.dt-receiver').textContent=receiver;
+   const phone=normalize(document.getElementById('topupVerifiedNumber')?.textContent);if(phone&&!sender.value)sender.value=phone;
+   if(document.getElementById('tpReturnVerify')){prepared=null;if(modal.open)modal.close();}
+ }
+ new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
+ window.addEventListener('l1017n-direct-ready',sync);sync();
 })();

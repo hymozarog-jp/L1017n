@@ -152,7 +152,7 @@
    if(page)return;
    page=document.createElement("section");page.id="cardTopupPage";page.hidden=true;page.dir="rtl";
    page.setAttribute("role","dialog");page.setAttribute("aria-modal","true");page.setAttribute("aria-labelledby","cardTopupTitle");
-   page.innerHTML='<div class="ct-shell"><header class="ct-head"><button type="button" class="ct-back" aria-label="رجوع">›</button><span>L1017n WALLET</span><span class="ct-safe">مراجعة آمنة</span></header>'+
+   page.innerHTML='<div class="ct-shell"><header class="ct-head"><button type="button" class="ct-back" aria-label="إغلاق صفحة تعبئة الكروت">×</button><span>L1017n WALLET</span><span class="ct-safe">مراجعة آمنة</span></header>'+
    '<div class="ct-hero"><div class="ct-hero-art" aria-hidden="true"><svg viewBox="0 0 72 72" width="57" height="57" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="15" width="54" height="42" rx="8"/><path d="M9 28h54M17 45h17M48 42h6"/></svg></div><span class="ct-current-step">ليبيانا · كروت الشحن</span><h1 id="cardTopupTitle">تعبئة بكرت ليبيانا</h1><p>اختار قيمة الكرت، واكتب رقمه السري. يتم إرسال الطلب للإدارة ومراجعته قبل إضافة الرصيد.</p></div>'+
    '<div class="ct-top-alert" role="note"><span class="ct-alert-icon" aria-hidden="true">!</span><p><strong>تنبيه مهم</strong> تأكد من الرقم السري وقيمة الكرت قبل الإرسال. لا تشارك الرقم مع الآخرين؛ تتم التعبئة بعد اعتماد المسؤول فقط.</p></div>'+
    '<section class="ct-entry"><form id="cardTopupForm"><div class="ct-list"></div><button type="button" class="ct-add"><span>＋</span> إضافة كرت جديد</button>'+

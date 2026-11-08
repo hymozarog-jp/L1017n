@@ -11,7 +11,11 @@
  for(const child of form.children){if(child!==panel){child.hidden=true;child.style.setProperty('display','none','important');}}
  const sender=panel.querySelector('#dtSender');
  function normalize(value){let d=String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/\D/g,'');if(d.startsWith('218'))d=d.slice(3);if(/^9[24]\d{7}$/.test(d))d='0'+d;return /^09[24]\d{7}$/.test(d)?d:''}
- window.L1017nTopupWizard={getStep:()=>3,getSenderPhone:()=>normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent),reset:()=>{}};
+ window.L1017nTopupWizard={getStep:()=>3,getSenderPhone:()=>{
+   const own=normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent);
+   const shop=normalize(window.L1017nDirectTransfer?.receiver);
+   return own&&(!shop||own!==shop)?own:'';
+ },reset:()=>{}};
  const modal=document.createElement('dialog');modal.id='dtDialog';modal.dir='rtl';
  modal.setAttribute('aria-labelledby','dtTitle');
  modal.innerHTML='<div class="dt-heading"><span class="dt-icon">'+icon+'</span><h2 id="dtTitle">تحويل الآن</h2></div><form method="dialog" id="dtTransferForm"><label class="dt-sr" for="dtAmount">قيمة التحويل بالدينار</label><input id="dtAmount" inputmode="numeric" type="text" placeholder="قيمة التحويل" autocomplete="off" maxlength="5"><p class="dt-error" role="status" aria-live="polite"></p><div class="dt-actions"><button type="button" class="dt-cancel">إلغاء</button><button type="submit" class="dt-primary dt-call">'+icon+'<span>اتصال</span></button></div><a class="dt-fallback" hidden>اضغط هنا إذا لم يفتح تطبيق الهاتف</a></form>';
@@ -53,7 +57,15 @@
  panel.querySelector('.dt-copy').onclick=async()=>{const receiver=window.L1017nDirectTransfer?.receiver;if(!receiver)return;try{await navigator.clipboard.writeText(receiver);panel.querySelector('.dt-copy-status').textContent='تم نسخ رقم المتجر بنجاح'}catch(_){panel.querySelector('.dt-copy-status').textContent='اضغط مطولًا على الرقم لنسخه'}};
  function sync(){
    const receiver=window.L1017nDirectTransfer?.receiver;if(receiver&&panel.querySelector('.dt-receiver').textContent!==receiver)panel.querySelector('.dt-receiver').textContent=receiver;
-   const phone=normalize(document.getElementById('topupVerifiedNumber')?.textContent);if(phone&&!sender.value)sender.value=phone;
+   const phone=normalize(document.getElementById('topupVerifiedNumber')?.textContent);
+   const shop=normalize(receiver);
+   if(phone&&phone!==shop&&!sender.value)sender.value=phone;
+   if(shop&&normalize(sender.value)===shop){
+     sender.value='';
+     const status=panel.querySelector('.dt-phone-status');
+     const warning='رقم المتجر للاستقبال فقط. اكتب رقم ليبيانا الذي ستحوّل منه.';
+     if(status.textContent!==warning)status.textContent=warning;
+   }
    if(document.getElementById('tpReturnVerify')){prepared=null;if(modal.open)modal.close();}
  }
  new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});

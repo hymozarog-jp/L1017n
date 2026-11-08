@@ -72,13 +72,24 @@
     getSenderPhone:senderNumber,
     reset:()=>{prepared=null;},
   };
+  function resetApprovedPresentation(){
+    const done=document.getElementById('dtInlineTopupStatus');
+    if(done?.dataset.state==='approved'||done?.dataset.state==='rejected')done.remove();
+    if(confirm.disabled){
+      confirm.disabled=false;
+      const label=confirm.querySelector('span');
+      if(label)label.textContent='تأكيد الشحن';
+    }
+  }
   sender.addEventListener('input',()=>{
     prepared=null;fallback.hidden=true;
+    resetApprovedPresentation();
     if(shopNumber()&&normalize(sender.value)===shopNumber())message('هذا رقم المتجر؛ أدخل رقم ليبيانا الذي ستحوّل منه.','error');
     else message('اضغط «تأكيد الشحن» لفتح اتصال ليبيانا، وبعد التحويل سنتحقق من وصول الرصيد.','');
   });
   enteredAmount.addEventListener('input',()=>{
     prepared=null;fallback.hidden=true;
+    resetApprovedPresentation();
     message('اضغط «تأكيد الشحن» لفتح اتصال ليبيانا، وبعد التحويل سنتحقق من وصول الرصيد.','');
   });
   copy.addEventListener('click',async()=>{

@@ -137,11 +137,14 @@ async function renderOrders(){
  const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
- const [pr,tr]=await Promise.all([
+ const [pr,tr,verifiedTopups]=await Promise.all([
   supabaseClient.from('purchase_orders').select('id,product_id,product_name,total_amount,roblox_username,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
-  supabaseClient.from('topup_requests').select('id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50)
+  supabaseClient.from('topup_requests').select('id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
+  // A dial-code tap only creates an internal payment intent. Require a linked
+  // carrier receipt or approved top-up before listing it as a customer order.
+  supabaseClient.rpc('get_my_visible_ussd_topup_ids')
  ]);
- if(pr.error||tr.error){root.innerHTML='<p class="orders-empty">تعذر تحميل الطلبات. حاول مرة ثانية.</p>';return}
+ if(pr.error||tr.error||verifiedTopups.error){root.innerHTML='<p class="orders-empty">تعذر التحقق من الطلبات وحالة التحويل. حاول مرة ثانية.</p>';return}
  let receivedCodes=[];
  if(typeof window.getMyInstantCodes==='function'){
   try{receivedCodes=await window.getMyInstantCodes()}catch(_){receivedCodes=[]}
@@ -160,7 +163,14 @@ async function renderOrders(){
    }catch(err){console.warn('[orders/handover] Product lookup failed',err)}
  }
 
- const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...(tr.data||[]).map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ // Customer orders include only actual USSD transfers, not prepared/abandoned dial codes.
+ // Keep other top-up methods unchanged and keep unverified intents in the backend
+ // for SMS matching, admin review and the wallet's own in-progress verifier.
+ const verifiedUssdIds=new Set((verifiedTopups.data||[]).map(x=>String(x.request_id)));
+ const visibleTopups=(tr.data||[]).filter(x=>
+   !String(x.transfer_reference||'').startsWith('ussd-intent:')||
+   verifiedUssdIds.has(String(x.id)));
+ const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...visibleTopups.map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||(x.kind==='topup'&&x.status==='approved')?'completed':'pending';
  const status=x=>x.status==='approved'?'تم القبول':x.status==='processing'?'قيد المعالجة':x.status==='fulfilling'?'قيد التنفيذ':group(x)==='completed'?'تم التنفيذ':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');

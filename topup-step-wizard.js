@@ -7,6 +7,8 @@
  const panel=document.createElement('section');panel.className='dt-home';
  panel.innerHTML='<article class="dt-card"><div class="dt-heading"><span class="dt-icon">'+icon+'</span><div><h2>حوّل إلى رقم المتجر</h2><p>اشحن محفظتك بتحويل رصيد ليبيانا</p></div></div><div class="dt-number"><b dir="ltr" class="dt-receiver">—</b><button type="button" class="dt-copy" aria-label="نسخ رقم المتجر">⧉</button></div><button type="button" class="dt-primary dt-open">'+icon+' تحويل مباشر</button></article><article class="dt-card"><h3>رقم المحوّل</h3><p>استخدم رقم ليبيانا الذي ستُجري منه التحويل.</p><label for="dtSender">رقم الهاتف</label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16"><small class="dt-phone-status" role="status"></small></article><article class="dt-card"><h3>طريقة شحن المحفظة</h3><ol><li>أدخل رقم ليبيانا الذي سيحوّل الرصيد.</li><li>اضغط «تحويل مباشر» واكتب المبلغ.</li><li>اضغط «اتصال» وأكّد التحويل من هاتفك.</li><li>تابع التحقق؛ يُضاف الرصيد بعد اعتماد التحويل.</li></ol></article>';
  form.append(panel);form.classList.add('dt-enabled');
+ // Keep legacy controls available to payment code, but out of the visible UI.
+ for(const child of form.children){if(child!==panel){child.hidden=true;child.style.setProperty('display','none','important');}}
  const sender=panel.querySelector('#dtSender');
  function normalize(value){let d=String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/\D/g,'');if(d.startsWith('218'))d=d.slice(3);if(/^9[24]\d{7}$/.test(d))d='0'+d;return /^09[24]\d{7}$/.test(d)?d:''}
  window.L1017nTopupWizard={getStep:()=>3,getSenderPhone:()=>normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent),reset:()=>{}};

@@ -1,6 +1,7 @@
 /* Reference-inspired direct transfer, scoped to the top-up page. */
 #topupForm.dt-enabled{display:block!important}
-#topupForm.dt-enabled>:not(.dt-home){display:none!important}
+#topupDedicatedPage #topupForm.dt-enabled>:not(.dt-home),
+#walletView #topupForm.dt-enabled>:not(.dt-home){display:none!important}
 .dt-home{display:grid;gap:18px;direction:rtl;color:#edf3ff;text-align:right;width:100%;font-family:inherit}
 .dt-home .dt-card{padding:22px;border:1px solid #202a3c;border-radius:23px;background:#0c1320;box-shadow:none}
 .dt-heading{display:flex;align-items:center;gap:15px;margin-bottom:20px}

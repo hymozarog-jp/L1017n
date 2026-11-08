@@ -43,7 +43,7 @@ Deno.serve(async(req:Request)=>{
     ? "⚠️ الزبون فتح كود الاتصال فقط. هذا ليس إثبات دفع من ليبيانا. تأكد من وصول المبلغ فعليًا قبل القبول."
     : "⚠️ راجع وصول التحويل الحقيقي قبل القبول. إنشاء الطلب وحده ليس إثبات دفع.";
   const msg=(isUssd?"📲 ضغط الزبون كود تحويل ليبيانا":"🔔 طلب شحن محفظة جديد")+"\n\n💰 "+amount+" د.ل\n📱 "+provider+"\n☎️ رقم المحوّل: "+String(r.phone).slice(0,30)+"\n🆔 رقم الطلب: "+id+"\n\n"+note;
-  await api(token,"sendMessage",{chat_id:Number(admin),text:msg,reply_markup:{inline_keyboard:[[{text:"✅ قبول",callback_data:"wt:a:"+id},{text:"❌ رفض",callback_data:"wt:r:"+id}]]}});
+  await api(token,"sendMessage",{chat_id:Number(admin),text:msg,reply_markup:{inline_keyboard:[[{text:"🔎 فحص التحويل والمحفظة",callback_data:"ta:"+id}],[{text:"✅ قبول",callback_data:"wt:a:"+id},{text:"❌ رفض",callback_data:"wt:r:"+id}]]}});
   const {error:markError}=await db.from("topup_requests").update({telegram_notified_at:new Date().toISOString()}).eq("id",id);
   if(markError)console.error("Topup Telegram message sent but marking delivery failed");
   return answer({ok:true,delivery_recorded:!markError});

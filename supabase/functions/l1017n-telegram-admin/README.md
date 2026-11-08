@@ -53,3 +53,19 @@ Game keys should use lowercase ASCII identifiers, such as `roblox`, `pubg`, `fre
 The Edge Function source is `supabase/functions/l1017n-telegram-admin/index.ts`. It has already been deployed to the existing Supabase project. If the code is updated, redeploy it to the same project with `verify_jwt=false`; do **not** create an additional Supabase project.
 
 You can check deployment status using GET on the webhook URL; this reports deployed/configured status only, not secrets.
+
+## Read-only transfer audit
+
+Open `/start` → `🔎 فحص التحويل والمحفظة`, or send `تحقق 092xxxxxxx`.
+`/check <request UUID>` inspects one request. A phone lookup reports the two newest
+requests and explicitly identifies the account for each (senders may be shared).
+New top-up notifications and `/topups` and `/sms` expose the same audit button.
+
+The audit reads the request, its linked SMS receipts, linked wallet ledger entries,
+and current Libyana wallet balance. It distinguishes current balance from historical
+`balance_after`, warns about mismatched numbers/amounts, multiple credits, missing
+receipts, missing credits, and reversed top-ups. SMS data is labelled as recorded
+phone evidence, never as a live carrier balance enquiry. Lookup failures report an
+incomplete check; they never claim a successful match. No money is moved by auditing.
+The existing private-chat/admin-actor/webhook-secret checks cover both command and
+callback entry points. Keep all five admin function source modules when deploying.

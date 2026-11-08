@@ -268,3 +268,4 @@ export async function handleArabicAdmin(db,chatId,text) {
   if(st)return await continueChat(db,chatId,st,text);
   return {reply:"فهمني شنو تبي ندير 😊 مثلاً: «نبي نضيف كود»، «كم كود في ببجي؟»، أو «وريني الباقات». قول «مساعدة» للأمثلة."};
 }
+

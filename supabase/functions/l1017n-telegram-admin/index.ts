@@ -6,7 +6,10 @@
  * Commands operate on existing public.products and protected telegram_code_stock.
  * This function does NOT fulfill customer purchases, touch wallets, or send codes.
  */
+import { buildTransferAudit, auditCommand } from "./transfer-audit.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.75.0";
+import { MENU_TEXT, MAIN_KEYBOARD, BUTTONS, dialogKeyboard, walletMenu, activityMenu } from "./menu.ts";
+import { handleWalletAction } from "./wallet-actions.ts";
 import { handleArabicAdmin } from "./arabic-chat.ts";
 
 const json = (value: unknown, status = 200) =>
@@ -28,34 +31,16 @@ function sameSecret(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
-async function telegramMessage(token: string, chatId: number, message: string): Promise<void> {
+async function telegramMessage(token: string, chatId: number, message: string, keyboard:unknown=MAIN_KEYBOARD): Promise<void> {
   const response = await fetch("https://api.telegram.org/bot" + token + "/sendMessage", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text: message.slice(0, 3900) }),
+    body: JSON.stringify({ chat_id: chatId, text: message.slice(0, 3900), reply_markup:keyboard }),
   });
   if (!response.ok) throw new Error("Telegram response " + response.status);
 }
 
-const HELP = [
-  "👋 هلا بيك في مساعد إدارة متجر L1017n",
-  "تقدر تكلمني بالعربي عادي؛ مش لازم تحفظ أوامر.",
-  "",
-  "🔐 «نبي نضيف كود» — نحدد الباقة ونحفظ الكود.",
-  "📊 «كم كود عندي في ببجي؟» — نعرض المخزون.",
-  "📦 «وريني الباقات» — نعرض المنتجات والأسعار.",
-  "➕ «ضيف باقة جديدة» — نسألك اللعبة والاسم والكمية والسعر.",
-  "💵 «غير سعر باقة ببجي» — نحدد الباقة والسعر ونطلب موافقتك.",
-  "👁️ «اخفي باقة ...» أو «فعّل باقة ...».",
-  "",
-  "في أي وقت قول «إلغاء» أو «مساعدة».",
-  "الأوامر المختصرة القديمة ما زالت تشتغل: /list /games /add /code /stock /price /rename /on /off /id.",
-  "⚠️ تسليم الأكواد الفوري للباقات الرقمية فقط. روبلوكس حاليًا تنفيذ يدوي.",
-  "📋 /orders — حالات طلبات الشراء اليدوية، بدون الأكواد الرقمية.",
-  "📨 /sms لرسائل ليبيانا، مع أزرار قبول/رفض للتحويلات المطابقة. /smsok رقم و /smsno رقم بدائل يدوية.",
-  "🧾 /topups — الطلبات المعلّقة، مع تفاصيل كل طلب وزرّي قبول أو رفض بعد التحقق من التحويل.",
-  "🤖 /smsauto status لمعرفة حالة الشحن الآلي، /smsauto off للإيقاف، /smsauto on للتفعيل.",
-].join("\n");
+const HELP = MENU_TEXT;
 
 const textPart = (text: string): string[] =>
   text.split("|").map(v => v.trim());
@@ -122,78 +107,130 @@ Deno.serve(async (request: Request) => {
     const actor = cb.from?.id;
     if (!adminId || String(adminChat) !== adminId || String(actor) !== adminId ||
         cb.message?.chat?.type !== "private") return json({ ok:true });
-    // Manual purchase fulfillment (Robux, MM2 and Brainrot).
-    // Customer payment is already complete; only the store owner can mark
-    // a manually delivered order as fulfilled. Never mark code orders here.
-    const manualChoice = /^po:(done|check):([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(cb.data ?? "");
+    const auditChoice=/^ta:([0-9a-f-]{36})$/i.exec(cb.data??"");
+    if(auditChoice){
+      await fetch("https://api.telegram.org/bot"+token+"/answerCallbackQuery",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({callback_query_id:cb.id,text:"جاري فحص السجلات…"})});
+      try{
+        const db=createClient(Deno.env.get("SUPABASE_URL")||"",serviceRoleKey(),{auth:{persistSession:false,autoRefreshToken:false}});
+        const report=await buildTransferAudit(db,auditChoice[1]);
+        await telegramMessage(token,Number(adminId),report,{inline_keyboard:[[{text:"🔄 إعادة الفحص",callback_data:"ta:"+auditChoice[1]}]]});
+      }catch{await telegramMessage(token,Number(adminId),"تعذر إكمال الفحص؛ لم يتم تأكيد المبلغ أو الرصيد. حاول مجددًا.");}
+      return json({ok:true});
+    }
+    if(/^wm:/.test(cb.data??"")){
+      const db=createClient(Deno.env.get("SUPABASE_URL")||"",serviceRoleKey(),{auth:{persistSession:false,autoRefreshToken:false}});
+      await fetch("https://api.telegram.org/bot"+token+"/answerCallbackQuery",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({callback_query_id:cb.id})});
+      try{await walletMenu(db,token,Number(adminId),(cb.data??"").slice(3));}
+      catch{await telegramMessage(token,Number(adminId),"تعذر تحميل المحافظ، جرّب مرة ثانية.");}
+      return json({ok:true});
+    }
+    if(/^sw:/.test(cb.data??"")){
+      const db=createClient(Deno.env.get("SUPABASE_URL")||"",serviceRoleKey(),{auth:{persistSession:false,autoRefreshToken:false}});
+      try{await handleWalletAction(db,cb,token);}
+      catch{console.error("telegram_wallet_action_failed");return json({error:"wallet_action_failed"},503);}
+      return json({ok:true});
+    }
+    // Purchases: independent manual stages and one atomic wallet refund on rejection.
+    // Webhook secret, private admin chat ID, and actor ID have already been verified.
+    // Recharge requests use a separate two-choice (accept/reject) handler below.
+    const manualChoice = /^po:(accept|process|fulfill|done|reject|check):([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(cb.data ?? "");
     if (manualChoice) {
-      const notify = async (method: string, params: unknown) => {
-        const response = await fetch("https://api.telegram.org/bot" + token + "/" + method, {
-          method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(params)
-        });
-        return response.ok;
+      const notify = async (method: string, params: unknown): Promise<boolean> => {
+        try{
+          const response = await fetch("https://api.telegram.org/bot" + token + "/" + method, {
+            method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(params)
+          });
+          if(!response.ok)console.error("telegram_purchase_action_failed",method,response.status);
+          return response.ok;
+        }catch(err){
+          console.error("telegram_purchase_action_unreachable",method,err instanceof Error?err.message:"unknown");
+          return false;
+        }
       };
-      const databaseUrl = Deno.env.get("SUPABASE_URL") || "";
-      const key = serviceRoleKey();
-      if (!databaseUrl || !key) {
+      const databaseUrl=Deno.env.get("SUPABASE_URL")||"";
+      const key=serviceRoleKey();
+      if(!databaseUrl||!key){
         await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"خدمة الطلبات غير جاهزة، جرّب لاحقًا",show_alert:true});
         return json({ok:true});
       }
-      const db = createClient(databaseUrl,key,{auth:{persistSession:false,autoRefreshToken:false}});
-      const orderId = manualChoice[2];
-      let {data:order,error:readError} = await db.from("purchase_orders")
+      const db=createClient(databaseUrl,key,{auth:{persistSession:false,autoRefreshToken:false}});
+      const orderId=manualChoice[2];
+      const action=manualChoice[1].toLowerCase();
+      let {data:order,error:readError}=await db.from("purchase_orders")
         .select("id,roblox_username,status").eq("id",orderId).maybeSingle();
-      if (readError || !order || order.roblox_username === "DIGITAL_CODE") {
-        await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"الطلب غير موجود أو تم تسليم الكود آليًا",show_alert:true});
+      if(readError||!order||order.roblox_username==="DIGITAL_CODE"){
+        await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"الطلب غير موجود أو تم تسليم كوده آليًا",show_alert:true});
         return json({ok:true});
       }
-      if (manualChoice[1] === "done" && order.status === "paid_pending_fulfillment") {
-        // Atomic, status-guarded change: no wallet credits, refunds, codes,
-        // or inventory operations. Repeated clicks cannot complete twice.
-        const {data:updated,error:updateError} = await db.from("purchase_orders")
-          .update({
-            status:"completed",
-            reviewed_at:new Date().toISOString(),
-            admin_note:"تم تأكيد تنفيذ وتسليم الطلب بواسطة إدارة المتجر عبر تيليجرام"
-          })
-          .eq("id",orderId)
-          .eq("status","paid_pending_fulfillment")
-          .neq("roblox_username","DIGITAL_CODE")
-          .select("id,status").maybeSingle();
-        if (updateError) {
-          await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر تأكيد تنفيذ الطلب، حاول لاحقًا",show_alert:true});
+      let changed=false;
+      let refunded=false;
+      if(action!=="check"){
+        const {data:decision,error:decisionError}=await db.rpc("telegram_update_purchase_status",{
+          p_order_id:orderId,p_action:action
+        });
+        if(decisionError){
+          console.error("telegram_purchase_review_failed",String(decisionError.code||""),String(decisionError.message||"").slice(0,130));
+          const message=/invalid_purchase_transition/.test(decisionError.message||"")
+            ?"نفّذ مراحل الطلب بالترتيب، وابدأ بالزر الظاهر في الرسالة"
+            :/wallet_missing_cannot_refund/.test(decisionError.message||"")
+              ?"تعذّر إرجاع الرصيد؛ راجع المحفظة ولا تعيد الرفض قبل حل المشكلة"
+              :"تعذّر تحديث حالة الطلب. لم يتم تأكيد العملية";
+          await notify("answerCallbackQuery",{callback_query_id:cb.id,text:message.slice(0,190),show_alert:true});
           return json({ok:true});
         }
-        if (updated) order={...order,status:"completed"};
-        else {
-          // Another administrator may have reviewed this same order in the website.
-          const latest=await db.from("purchase_orders").select("id,status,roblox_username").eq("id",orderId).maybeSingle();
-          if(latest.error||!latest.data) {
-            await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر قراءة حالة الطلب",show_alert:true});
-            return json({ok:true});
-          }
-          order=latest.data;
+        changed=decision?.changed===true;
+        refunded=decision?.wallet_refunded===true;
+        const latest=await db.from("purchase_orders").select("id,roblox_username,status")
+          .eq("id",orderId).maybeSingle();
+        if(latest.error||!latest.data){
+          await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تم إرسال القرار، لكن تعذّر إعادة قراءة الحالة",show_alert:true});
+          return json({ok:true});
         }
+        order=latest.data;
       }
-      const statusLabel=order.status==="completed"?"✅ تم التنفيذ"
-        :order.status==="rejected"?"❌ مرفوض وأُرجع الرصيد"
-        :order.status==="refunded"?"↩️ تم إرجاع الرصيد"
-        :"⏳ لم يتم التنفيذ بعد";
-      if(order.status!=="paid_pending_fulfillment"&&cb.message?.message_id){
-        const baseText=cb.message.text||"🛍️ طلب شراء — L1017n\\n🆔 رقم الطلب: "+orderId;
-        const updatedText=/📋 الحالة:[^\n]*/.test(baseText)
-          ? baseText.replace(/📋 الحالة:[^\n]*/, "📋 الحالة: "+statusLabel)
-          : baseText+"\n\n📋 الحالة: "+statusLabel;
+      const names:Record<string,string>={
+        paid_pending_fulfillment:"⏳ قيد الانتظار",
+        approved:"🔵 تم القبول",
+        processing:"🟣 قيد المعالجة",
+        fulfilling:"🟠 قيد التنفيذ",
+        completed:"✅ تم التنفيذ",
+        rejected:"❌ مرفوض — أُرجع المبلغ لمحفظة المتجر",
+        refunded:"↩️ تمت إعادة الرصيد"
+      };
+      const statusLabel=names[order.status]||"حالة غير معروفة";
+      const final=["completed","rejected","refunded"].includes(order.status);
+      // Display only the next actionable step as the order progresses.
+      const nextStep:Record<string,{action:string;label:string}>={
+        paid_pending_fulfillment:{action:"accept",label:"1️⃣ 🔵 تم القبول"},
+        approved:{action:"process",label:"2️⃣ 🟣 قيد المعالجة"},
+        processing:{action:"fulfill",label:"3️⃣ 🟠 قيد التنفيذ"},
+        fulfilling:{action:"done",label:"4️⃣ ✅ تم التنفيذ"}
+      };
+      const next=nextStep[order.status];
+      const controls={inline_keyboard:next?[
+        [{text:next.label,callback_data:"po:"+next.action+":"+orderId}],
+        [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+orderId}]
+      ]:[]};
+      if(cb.message?.message_id){
+        const oldText=String(cb.message.text||"🛍️ طلب شراء — L1017n\n🆔 رقم الطلب: "+orderId);
+        const statusText=/📋 الحالة:[^\n]*/.test(oldText)
+          ?oldText.replace(/📋 الحالة:[^\n]*/,"📋 الحالة: "+statusLabel)
+          :oldText+"\n\n📋 الحالة: "+statusLabel;
+        const following=final?(order.status==="completed"?"✅ انتهت المراحل بنجاح":"⛔ الطلب مغلق"):
+          (next?.label||"بانتظار المراجعة");
+        const updatedText=/➡️ الخطوة التالية:[^\n]*/.test(statusText)
+          ?statusText.replace(/➡️ الخطوة التالية:[^\n]*/,"➡️ الخطوة التالية: "+following)
+          :statusText+"\n➡️ الخطوة التالية: "+following;
         await notify("editMessageText",{
           chat_id:adminChat,message_id:cb.message.message_id,
           text:updatedText.slice(0,3900),
-          reply_markup:{inline_keyboard:[]}
+          reply_markup:final?{inline_keyboard:[]}:controls
         });
       }
       await notify("answerCallbackQuery",{
         callback_query_id:cb.id,
-        text: statusLabel,
-        show_alert:false
+        text:refunded?"تم رفض الطلب وإرجاع المبلغ إلى محفظة الزبون":changed?statusLabel:("الحالة الحالية: "+statusLabel),
+        show_alert:refunded
       });
       return json({ok:true});
     }
@@ -270,13 +307,68 @@ Deno.serve(async (request: Request) => {
     };
     const databaseUrl=Deno.env.get("SUPABASE_URL")||"";
     const serviceKey=serviceRoleKey();
-    if(!databaseUrl||!serviceKey) return json({error:"database_not_configured"},503);
+    if(!databaseUrl||!serviceKey){
+      console.error("telegram_wallet_review_unconfigured");
+      await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"خدمة مراجعة الشحن غير مهيأة حاليًا. لم يتغير الرصيد.",show_alert:true});
+      return json({ok:true});
+    }
     const db=createClient(databaseUrl,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
     const approve=choice[1]==="a";
-    const {data,error}=await db.rpc("telegram_review_topup_request",{p_request_id:choice[2],p_approve:approve});
+    if(approve){
+      // Do not present a payment-approval button as a retryable network error
+      // when a shared sender's independent carrier SMS has not arrived.
+      const {data:requestRow,error:lookupError}=await db.from("topup_requests")
+        .select("status,transfer_reference").eq("id",choice[2]).maybeSingle();
+      if(lookupError){
+        console.error("telegram_wallet_review_lookup_failed",String(lookupError.code||""),String(lookupError.message||"").slice(0,120));
+        await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر قراءة طلب الشحن. لم يُضف أي رصيد؛ حاول /topups.",show_alert:true});
+        return json({ok:true});
+      }
+      if(!requestRow){
+        await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"طلب الشحن غير موجود. لم يُضف رصيد.",show_alert:true});
+        return json({ok:true});
+      }
+      if(requestRow.status!=="pending"){
+        await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"تمت مراجعة هذا الطلب سابقًا. لا يمكن اعتماد المبلغ مرتين.",show_alert:true});
+        return json({ok:true});
+      }
+      if(String(requestRow.transfer_reference||"").startsWith("ussd-intent:external:shared:")){
+        // Match an already received SMS before reviewing; never invent one.
+        const {error:matchError}=await db.rpc("sms_match_pending_receipts");
+        if(matchError){
+          console.error("telegram_wallet_sms_match_failed",String(matchError.code||""),String(matchError.message||"").slice(0,120));
+          await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر فحص رسائل ليبيانا حاليًا. لم يُضف الرصيد؛ افحص /sms.",show_alert:true});
+          return json({ok:true});
+        }
+        const {data:receipt,error:receiptError}=await db.from("sms_topup_receipts")
+          .select("id").eq("request_id",choice[2]).eq("status","matched").maybeSingle();
+        if(receiptError){
+          console.error("telegram_wallet_receipt_lookup_failed",String(receiptError.code||""),String(receiptError.message||"").slice(0,120));
+          await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:"تعذر فحص رسالة التحويل. لم يُضف رصيد؛ جرّب /sms.",show_alert:true});
+          return json({ok:true});
+        }
+        if(!receipt){
+          await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,
+            text:"لم تصل رسالة تحويل ليبيانا مطابقة لهذا الطلب. تأكد من وصول التحويل فعليًا، ثم افحص /sms. لم يُضف رصيد.",
+            show_alert:true});
+          return json({ok:true});
+        }
+      }
+    }
+    const {error}=await db.rpc("telegram_review_topup_request",{p_request_id:choice[2],p_approve:approve});
     if(error){
-      const already=String(error.message||"").includes("request_already_reviewed");
-      await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:already?"هذا الطلب تمت مراجعته سابقًا.":"تعذر تنفيذ القرار، جرّب لاحقًا.",show_alert:!already});
+      const reason=String(error.message||"");
+      console.error("telegram_wallet_review_failed",String(error.code||""),reason.slice(0,160));
+      const already=/request_already_reviewed|topup_already_reviewed/.test(reason);
+      const notice=already?"تمت مراجعة هذا الطلب سابقًا؛ لا يمكن تكرار القرار.":
+        /shared_sender_receipt_not_verified/.test(reason)
+          ?"لم يصل إشعار SMS مطابق لرقم المحوّل والمبلغ. لا يمكن إضافة الرصيد الآن؛ افحص /sms.":
+        /request_not_found|topup_not_found/.test(reason)
+          ?"طلب الشحن غير موجود. لم يُضف رصيد.":
+        /not_authorized/.test(reason)
+          ?"حساب الإدارة غير مخوّل بمراجعة هذا الطلب.":
+          "تعذرت مراجعة طلب الشحن. لم يُضف أي رصيد؛ راجع /topups ثم حاول مرة ثانية.";
+      await callTelegram("answerCallbackQuery",{callback_query_id:cb.id,text:notice,show_alert:!already});
       return json({ok:true});
     }
     const label=approve?"✅ تمت الموافقة وإضافة الرصيد":"❌ تم رفض الطلب";
@@ -287,7 +379,8 @@ Deno.serve(async (request: Request) => {
   const message = update?.message;
   const chatId = message?.chat?.id;
   const senderId = message?.from?.id;
-  const text = message?.text?.trim() ?? "";
+  const rawText = message?.text?.trim() ?? "";
+  const text = BUTTONS[rawText] ?? rawText;
   if (message?.chat?.type !== "private" || !Number.isSafeInteger(chatId) ||
       !Number.isSafeInteger(senderId) || !text) return json({ ok: true });
 
@@ -312,6 +405,22 @@ Deno.serve(async (request: Request) => {
   try {
     let reply = "";
     let deleteSensitiveMessage = false;
+    if (BUTTONS[rawText] && !["✅ نعم، تأكيد","❌ إلغاء"].includes(rawText) || command==="start" || command==="help") {
+      const {error}=await db.from("telegram_admin_dialog").delete().eq("chat_id",chatId);if(error)reportError(error);
+    }
+    if(command==="check"||/^(تحقق|افحص)(?:\s|$)/.test(text)){
+      const query=command==="check"?payload:text.replace(/^(تحقق|افحص)\s*/,"");
+      await telegramMessage(token,chatId!,await auditCommand(db,query));
+      return json({ok:true});
+    }
+    if(command==="sms"||command==="orders"){
+      await activityMenu(db,token,chatId!,command);
+      return json({ok:true});
+    }
+    if(command==="wallets"){
+      await walletMenu(db,token,chatId!);
+      return json({ok:true});
+    }
     if (command === "topups") {
       // Private admin-only recovery for requests created before notifications
       // were enabled, or when the customer's browser never returned.
@@ -347,7 +456,7 @@ Deno.serve(async (request: Request) => {
             method:"POST",headers:{"content-type":"application/json"},
             body:JSON.stringify({
               chat_id:Number(adminId),text,
-              reply_markup:{inline_keyboard:[[
+              reply_markup:{inline_keyboard:[[{text:"🔎 فحص التحويل والمحفظة",callback_data:"ta:"+requestRow.id}],[
                 {text:"✅ قبول بعد التحقق",callback_data:"wt:a:"+requestRow.id},
                 {text:"❌ رفض",callback_data:"wt:r:"+requestRow.id}
               ]]}
@@ -371,7 +480,7 @@ Deno.serve(async (request: Request) => {
           "📦 "+String(o.product_name||"طلب").slice(0,90)
           +" — "+Number(o.total_amount).toFixed(2)+" د.ل"
           +"\n🎮 @"+String(o.roblox_username||"—").slice(0,40)
-          +"\n"+(o.status==="completed"?"✅ تم التنفيذ":o.status==="paid_pending_fulfillment"?"⏳ لم يُنفذ بعد":o.status==="rejected"?"❌ رُفض وأُرجع الرصيد":"↩️ تم إرجاع الرصيد")
+          +"\n"+(o.status==="completed"?"✅ تم التنفيذ":o.status==="approved"?"🔵 تم القبول":o.status==="processing"?"🟣 قيد المعالجة":o.status==="fulfilling"?"🟠 قيد التنفيذ":o.status==="paid_pending_fulfillment"?"⏳ قيد الانتظار":o.status==="rejected"?"❌ رُفض وأُرجع الرصيد":"↩️ تم إرجاع الرصيد")
           +"\n🆔 "+o.id
         ).join("\n\n");
     } else if (command === "smsauto") {
@@ -395,19 +504,19 @@ Deno.serve(async (request: Request) => {
             ?"⚠️ آخر رسالة SMS مسجلة منذ "+(ageMinutes<60?ageMinutes+" دقيقة":Math.floor(ageMinutes/60)+" ساعة")+" تقريبًا. إذا حدث تحويل أحدث، تحقق من تشغيل تطبيق تحويل الرسائل وصلاحياته والويبهوك."
             :"📨 آخر إشعار SMS مسجل منذ "+ageMinutes+" دقيقة.";
         reply = "📨 استقبال طلبات شحن ليبيانا: " + (cfg?.enabled ? "✅ مفعّل" : "⏸️ متوقف") +
-          "\n🧾 اعتماد الرصيد: " + (cfg?.approval_mode==="manual" ? "يدوي — أنت تضغط قبول أو رفض من تيليجرام لكل مبلغ" : "آلي للتحويلات المؤهلة حتى 10 د.ل") +
-          "\n🛡️ القفل المالي: الشحن التلقائي يتطلب تأكيد تحصيل رسميًا مستقلاً من ليبيانا، ولم يتم ربط هذه الخدمة بعد. SMS وحدها لا تضيف رصيدًا." +
+          "\n🧾 اعتماد الرصيد: " + (cfg?.approval_mode==="manual" ? "يدوي — أنت تضغط قبول أو رفض من تيليجرام لكل مبلغ" : "آلي عند مطابقة اسم المرسل ورقم المحوّل والمبلغ") +
+          "\n🔎 يعتمد الشحن الآلي على SMS مع توثيق الرقم ومنع التكرار؛ وليس تأكيد تحصيل رسميًا من الشركة." +
           "\n⚠️ لقبول الطلب يدويًا تأكد بنفسك من وصول المبلغ؛ إنشاء الطلب أو وصول SMS ليس إثباتًا كافيًا." +
           "\n"+flowState+
           "\n⏳ طلبات ليبيانا المعلقة في آخر 24 ساعة: "+String(pendingCount||0)+
-          "\nللإيقاف: /smsauto off  |  للتشغيل: /smsauto on";
+          "\nاستخدم زري التشغيل والإيقاف من القائمة.";
       } else if (action === "on" || action === "off") {
         const { error: setError } = await db.from("sms_auto_credit_settings")
           .update({enabled:action==="on",activated_at:new Date().toISOString()}).eq("id",1);
         if (setError) reportError(setError);
         reply = action === "on"
-          ? "✅ فعلت استقبال طلبات الشحن، وليس القبول المالي التلقائي. القبول يدوي حتى يتوفر تأكيد رسمي مستقل من المشغل."
-          : "⏸️ أوقفت استقبال طلبات الشحن الجديدة. الطلبات المعلقة تبقى متاحة للمراجعة.";
+          ? "✅ تم تشغيل معالجة الشحن حسب وضع الاعتماد المضبوط. اضغط «حالة الشحن الآلي» لعرضه."
+          : "⏸️ أوقفت الشحن الآلي. الطلبات والرسائل تبقى متاحة للمراجعة.";
       } else reply = "الصيغة: /smsauto status أو /smsauto on أو /smsauto off";
     } else if (command === "sms") {
       const { error: matchError } = await db.rpc("sms_match_pending_receipts");
@@ -645,7 +754,7 @@ Deno.serve(async (request: Request) => {
         });
       } catch { /* deletion is best-effort */ }
     }
-    await telegramMessage(token, chatId!, reply);
+    await telegramMessage(token, chatId!, reply, await dialogKeyboard(db,chatId!));
     return json({ ok: true });
   } catch (error) {
     // Never log the Telegram message, codes, API keys, or customer data.
@@ -655,3 +764,4 @@ Deno.serve(async (request: Request) => {
     return json({ error: "operation_failed" }, 500);
   }
 });
+

@@ -1025,8 +1025,27 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="topup-interface-fresh.css?v=mobile-topup-refresh-20261108-1">
 <link rel="stylesheet" href="orders-animated.css?v=order-status-box-20261108-1">
 <link rel="stylesheet" href="card-topup-modern.css?v=pink-card-amount-grid-20261108-1">
-<link rel="stylesheet" href="nav-bubble.css?v=white-nav-source-20261108-4">
+<link rel="stylesheet" href="nav-bubble.css?v=bottom-order-rtl-20261108-7">
 
+
+<style id="l1017n-bottom-tab-order-v7">
+/* Fallback embedded in HTML so old external theme files cannot shuffle tabs. */
+@media(max-width:850px){
+ html body nav.mobile-nav{
+   display:flex!important;flex-direction:row!important;direction:rtl!important;
+   justify-content:space-around!important;align-items:stretch!important;
+ }
+ html body nav.mobile-nav>button[data-view]{
+   flex:1 1 20%!important;min-width:0!important;max-width:20%!important;
+ }
+ html body nav.mobile-nav>button[data-view="home"]{order:1!important}
+ html body nav.mobile-nav>button[data-view="orders"]{order:2!important}
+ html body nav.mobile-nav>button[data-view="leaderboard"]{order:3!important}
+ html body nav.mobile-nav>button[data-view="wallet"]{order:4!important}
+ html body nav.mobile-nav>button[data-view="account"]{order:5!important}
+ html body nav.mobile-nav>.nav-follow-bubble{display:none!important}
+}
+</style>
 <style id="l1017n-nav-white-direct">
 /* Inline failsafe: active tab is white even if remote stylesheets are cached. */
 body nav.mobile-nav > button[data-view].l1017-nav-white-selected,

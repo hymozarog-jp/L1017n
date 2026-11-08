@@ -137,6 +137,13 @@
     }
     result.hidden=false;
     result.dataset.state=state;
+    const submit=document.getElementById('dtConfirm');
+    if(submit && state==='approved'){
+      // Prevent a second tap from generating a duplicate payment request.
+      submit.disabled=true;
+      const label=submit.querySelector('span');
+      if(label)label.textContent='تم الشحن ✓';
+    }
     const symbol=el('span','dt-inline-credit-symbol',
       state==='approved'?'✓':state==='rejected'?'!':state==='delayed'?'!':'⋯');
     symbol.setAttribute('aria-hidden','true');

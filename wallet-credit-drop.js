@@ -88,7 +88,7 @@
    if(open)return {element:value,card:card};
    const chip=document.getElementById('customerWalletChip');
    const amount=document.getElementById('customerHeaderBalance');
-   if(chip&&amount&&!chip.classList.contains('hidden')&&amount.getClientRects().length)return {element:amount,card:chip};
+   if(chip&&amount&&chip.dataset.walletCarrier!=='madar'&&!chip.classList.contains('hidden')&&amount.getClientRects().length)return {element:amount,card:chip};
    return null;
  }
  function creditLabel(amount){return '+'+Number(amount).toFixed(3)+' د.ل'}
@@ -109,8 +109,27 @@
    card.classList.add('l1017n-credit-landed');
    window.setTimeout(()=>card.classList.remove('l1017n-credit-landed'),1100);
  }
+ async function celebrate(entry){
+   const host=document.createElement('div');
+   host.className='l1017n-credit-success';
+   host.setAttribute('role','status');host.setAttribute('aria-live','polite');
+   const mark=document.createElement('div');mark.className='l1017n-success-mark';
+   mark.setAttribute('aria-hidden','true');
+   mark.innerHTML='<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="23"/><path d="m15 26 8 8 15-16"/></svg>';
+   const title=document.createElement('strong');title.textContent='تم شحن محفظتك بنجاح';
+   const sum=document.createElement('b');sum.textContent=creditLabel(entry.amount);
+   host.append(mark,title,sum);document.body.appendChild(host);
+   try{
+     await new Promise(resolve=>setTimeout(resolve,reduce()?1600:1900));
+     host.classList.add('is-leaving');
+     await new Promise(resolve=>setTimeout(resolve,reduce()?0:220));
+   }finally{host.remove()}
+ }
  async function fly(entry){
    await waitForApprovedDialog();
+   if(activeUser!==entry.user_id)return;
+   await celebrate(entry);
+   if(activeUser!==entry.user_id)return;
    const found=target();
    const amount=Number(entry.amount);
    if(!found){
@@ -225,7 +244,7 @@
        return;
      }
      // Oldest first: two approved transactions get two distinct effects.
-     entries.slice().reverse().forEach(enqueue);
+     entries.slice().reverse().forEach(entry=>enqueue(entry,false));
    }catch(e){console.warn('[wallet-credit] Could not check approved credits',e)}
    finally{polling=false}
  }

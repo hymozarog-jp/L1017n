@@ -439,7 +439,7 @@ function mountRobuxQuantityCalculator(modal,robux){
    .filter(p=>Number.isSafeInteger(p.amount)&&p.amount>0&&Number.isFinite(p.price)&&p.price>0)
    .sort((a,b)=>a.amount-b.amount||a.price-b.price);
  const anchor=modal.querySelector('.robux-reference-section');
- if(!anchor||!offers.length)return;
+ if(!anchor)return;
  const firstAmount=robuxUnlimited?100:Math.min(100,Math.max(1,robuxAvailable));
  const section=document.createElement('section');
  section.className='robux-quantity-calculator';
@@ -465,6 +465,12 @@ function mountRobuxQuantityCalculator(modal,robux){
    +'<p id="robuxQuantityFeedback" class="rqc-feedback" aria-live="polite"></p>'
    +'<button type="button" class="rqc-select" disabled><span class="rqc-cta-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span><span class="rqc-cta-text">جاري حساب السعر…</span></button>';
  anchor.before(section);
+ // No fixed packs or preset amounts in the customer-facing Robux flow.
+ section.querySelector('.rqc-quick-label')?.remove();
+ section.querySelector('.rqc-quick-amounts')?.remove();
+ const stockHint=document.createElement('p');
+ stockHint.className='rqc-stock-hint';
+ section.querySelector('.rqc-picker')?.after(stockHint);
  const input=section.querySelector('#robuxCustomQuantity');
  const priceEl=section.querySelector('#robuxQuantityPrice');
  const selectedEl=section.querySelector('#robuxQuantitySelected');
@@ -510,6 +516,10 @@ function mountRobuxQuantityCalculator(modal,robux){
    const typed=normalize(input.value),valid=/^[0-9]{1,6}$/.test(typed);
    const quantity=valid?Number(typed):NaN;
    const limit=maxQuantity();
+   stockHint.textContent=robuxUnlimited
+     ? 'اكتب الكمية اللي تبيها (حد الطلب: 100,000 روبوكس).'
+     : limit>0?'المتاح للطلب حاليًا: حتى '+limit.toLocaleString('en-US')+' روبوكس.'
+       :'شحن الروبوكس غير متوفر حاليًا.';
    const allowed=Number.isSafeInteger(quantity)&&quantity>=1&&quantity<=limit;
    selectedEl.textContent=valid?String(quantity):'—';
    plus.disabled=!Number.isSafeInteger(quantity)||quantity>=limit;
@@ -595,10 +605,10 @@ function mountRobuxQuantityCalculator(modal,robux){
  modal.addEventListener('robux-inventory-updated',update);
  update();
 }
-function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=products.filter(p=>String(p.game||'').toLowerCase()==='roblox' && ((Number.isInteger(Number(p.amount)) && Number(p.amount)>=100 && Number(p.amount)<500 && Number(p.amount)%100===0 && Number(p.amount)!==300) || String(p.product_key||'').startsWith('robux-promo-'))).sort((a,b)=>Number(a.amount)-Number(b.amount));let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">◆ شحن روبوكس</span></div><div class="robux-reference-features">'
+function openRobuxPackages(){document.getElementById('robuxPurchaseScreen')?.remove();const robux=[];let modal=$('#robuxModal');if(!modal){modal=document.createElement('div');modal.id='robuxModal';modal.className='package-modal robux-full-page hidden';document.body.appendChild(modal)}modal.classList.remove('robux-checkout-mode');modal.innerHTML='<div class="package-box robux-store-box"><button class="package-close" data-close-packages aria-label="رجوع">➜</button><div class="robux-reference-hero"><div class="robux-reference-logo"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></div><h1>Roblox</h1><span class="robux-reference-tag">◆ شحن روبوكس</span></div><div class="robux-reference-features">'
 +'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6.5v5.3c0 4.6 3.2 7.6 7.5 9.2 4.3-1.6 7.5-4.6 7.5-9.2V6.5L12 3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><small>طلب موثّق</small></span>'
 +'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg><small>محفظة آمنة</small></span>'
-+'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="12" width="4" height="7" rx="2"/><rect x="17.5" y="12" width="4" height="7" rx="2"/><path d="M19 19c0 1.4-2 2-5 2h-2"/></svg><small>دعم للطلبات</small></span></div><h2 class="robux-reference-section">باقات وعروض الروبوكس</h2><p class="robux-packages-help">اختار الباقة أو العرض، وتأكد من اسم حساب Roblox قبل الدفع. الهدية محسوبة ضمن إجمالي الروبوكس.</p><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxUnlimited||robuxAvailable>=Number(p.amount||0);const promo=String(p.product_key||'').startsWith('robux-promo-');const giftMatch=String(p.name||'').match(/\+\s*(\d{1,5})\s*هدية/);const gift=giftMatch?Number(giftMatch[1]):0;return '<button class="robux-package'+(promo?' robux-promo':'')+'" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><img class="robux-display-art" src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" aria-hidden="true" loading="eager" decoding="async"><span class="robux-plus">＋</span>'+(promo&&gift?'<b class="robux-promo-ribbon">+'+gift+' هدية</b>':'')+'<span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?(robuxUnlimited?'متاح للطلب':'متوفر'):'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.add('robux-single-offer');modal.classList.remove('hidden');const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
++'<span class="rqc-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="12" width="4" height="7" rx="2"/><rect x="17.5" y="12" width="4" height="7" rx="2"/><path d="M19 19c0 1.4-2 2-5 2h-2"/></svg><small>دعم للطلبات</small></span></div><h2 class="robux-reference-section">شحن روبوكس حسب الكمية</h2><p class="robux-packages-help">اكتب عدد الروبوكس اللي تبيه، وراجع سعره وحسابك قبل الدفع.</p><div class="package-grid">'+robux.map(p=>(()=>{const available=robuxUnlimited||robuxAvailable>=Number(p.amount||0);const promo=String(p.product_key||'').startsWith('robux-promo-');const giftMatch=String(p.name||'').match(/\+\s*(\d{1,5})\s*هدية/);const gift=giftMatch?Number(giftMatch[1]):0;return '<button class="robux-package'+(promo?' robux-promo':'')+'" data-robux="'+p.id+'" '+(available?'':'disabled aria-disabled="true"')+'><span class="robux-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"></span><img class="robux-display-art" src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" aria-hidden="true" loading="eager" decoding="async"><span class="robux-plus">＋</span>'+(promo&&gift?'<b class="robux-promo-ribbon">+'+gift+' هدية</b>':'')+'<span><strong>'+escapeHtml(p.name)+'</strong><small>'+Number(p.price).toFixed(2)+' د.ل</small><small class="stock-label">'+(available?(robuxUnlimited?'متاح للطلب':'متوفر'):'غير متوفر')+'</small></span></button>'})()).join('')+'</div><div id="purchaseBox"></div></div>';modal.classList.remove('robux-single-offer');modal.classList.add('robux-custom-only');modal.classList.remove('hidden');mountRobuxQuantityCalculator(modal,robux);const walletButton=modal.querySelector('[data-open-wallet]');if(walletButton)walletButton.onclick=()=>{closeRobuxPackages();switchView('wallet')};
 // The page and its image are already visible. Refresh stock without delaying navigation.
 requestAnimationFrame(()=>{
   supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()

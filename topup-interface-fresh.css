@@ -1,0 +1,286 @@
+/* L1017N / Libyana wallet top-up visual refresh.
+   Scoped styles: existing payment flow, destination and phone validation stay unchanged. */
+#topupDedicatedPage{
+  --topup-glow:#7785ff;
+  --topup-blue:#208cfa;
+  --topup-border:rgba(157,172,230,.20);
+  background:
+    radial-gradient(ellipse 95% 340px at 100% -90px,rgba(81,57,168,.24),transparent 85%),
+    radial-gradient(ellipse 70% 260px at -22% 40%,rgba(22,94,172,.14),transparent 90%),
+    linear-gradient(155deg,#090e21 0%,#0b1325 55%,#080e1b 100%)!important;
+  padding:calc(15px + env(safe-area-inset-top)) clamp(13px,3.9vw,24px)
+          calc(42px + env(safe-area-inset-bottom))!important;
+  overscroll-behavior-y:contain;
+  color:#f6f8ff!important;
+}
+#topupDedicatedPage .tp-dedicated-heading{
+  display:flex!important;align-items:center!important;
+  justify-content:space-between!important;flex-wrap:nowrap!important;
+  gap:9px!important;
+  max-width:580px!important;
+  margin:0 auto 19px!important;
+  min-height:44px!important;
+}
+#topupDedicatedPage .topup-dedicated-back,
+#topupDedicatedPage #topupDedicatedCardEntry{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  width:auto;min-width:0;min-height:43px!important;
+  margin:0!important;padding:9px clamp(11px,3.4vw,17px)!important;
+  border:1px solid rgba(161,179,226,.27)!important;
+  border-radius:15px!important;
+  background:rgba(28,38,70,.68)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+  color:#e9eeff!important;
+  font:700 clamp(11px,3.2vw,13px)/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  white-space:nowrap;cursor:pointer;
+  transition:background .2s ease,transform .2s ease,border-color .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+#topupDedicatedPage #topupDedicatedCardEntry{
+  background:linear-gradient(130deg,#173650,#24324e)!important;
+  border-color:rgba(107,177,233,.37)!important;
+  color:#d3edff!important;
+}
+#topupDedicatedPage .topup-dedicated-back:active,
+#topupDedicatedPage #topupDedicatedCardEntry:active{transform:scale(.97)}
+#topupDedicatedPage .tp-clean-header{
+  width:100%!important;max-width:580px!important;
+  margin:0 auto 19px!important;padding:0 3px!important;
+  display:block!important;text-align:right!important;
+}
+#topupDedicatedPage .tp-clean-header::before{
+  content:"L1017N   •   LIBYANA";
+  display:inline-flex!important;align-items:center;justify-content:center;
+  width:max-content;min-height:28px;
+  padding:5px 13px!important;margin:0 0 9px!important;
+  border-radius:999px;border:1px solid rgba(122,189,255,.34);
+  color:#bce0ff;background:rgba(43,95,160,.16);
+  font:800 10px/1.2 system-ui,sans-serif;letter-spacing:1.15px;
+}
+#topupDedicatedPage .tp-clean-header::after{
+  content:"اشحن رصيدك بسهولة عبر تحويل ليبيانا";
+  display:block;margin-top:3px;
+  color:#9caac7;font-size:13px;line-height:1.7;
+}
+#topupDedicatedPage .topup-dedicated-title{
+  color:#fff!important;
+  font-size:clamp(28px,7.5vw,38px)!important;
+  font-weight:900!important;
+  letter-spacing:-.45px!important;
+  line-height:1.3!important;
+  text-shadow:none!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled{
+  display:block!important;
+  width:100%!important;max-width:580px!important;
+  margin:0 auto!important;
+  padding:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-home{
+  display:grid!important;gap:13px!important;
+  width:100%!important;max-width:100%;
+  direction:rtl;text-align:right;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card{
+  position:relative;isolation:isolate;
+  border:1px solid var(--topup-border)!important;
+  border-radius:23px!important;
+  background:linear-gradient(145deg,#121c30,#0e1728 83%)!important;
+  padding:19px!important;margin:0!important;
+  box-shadow:0 9px 25px rgba(2,5,18,.26),inset 0 1px 0 #ffffff0a!important;
+  overflow:hidden;
+  animation:topupFreshCardEnter .36s cubic-bezier(.2,.8,.2,1) both;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2){animation-delay:.055s}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3){animation-delay:.11s}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:first-child{
+  border-color:rgba(94,143,235,.36)!important;
+  border-radius:27px!important;
+  background:
+    radial-gradient(ellipse 75% 60% at 108% -6%,rgba(49,107,214,.22),transparent),
+    linear-gradient(140deg,#152541,#0c1628 80%)!important;
+  padding:21px 19px 19px!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:first-child::after{
+  content:"";position:absolute;z-index:-1;
+  top:-62px;left:-70px;width:175px;height:175px;border-radius:50%;
+  background:rgba(81,119,234,.08);filter:blur(35px);pointer-events:none;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-heading{
+  display:flex;gap:12px;align-items:center;
+  margin:0 0 14px!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-heading h2,
+#topupDedicatedPage #topupForm.dt-enabled .dt-card h3{
+  margin:0!important;color:#fff!important;
+  font-size:clamp(17px,4.3vw,20px)!important;
+  font-weight:850!important;line-height:1.5!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card p{
+  margin:4px 0 13px!important;
+  color:#9eafc9!important;
+  line-height:1.7!important;font-size:clamp(11px,3vw,13px)!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-icon{
+  display:grid;place-items:center;flex:0 0 44px;
+  width:44px;height:44px;border-radius:15px;
+  background:linear-gradient(145deg,#194b83,#162d53);
+  color:#84cdff;border:1px solid rgba(121,191,255,.13);
+  box-shadow:0 7px 18px rgba(10,46,97,.24);
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-icon svg{width:23px;height:23px}
+#topupDedicatedPage #topupForm.dt-enabled .dt-number{
+  position:relative;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;
+  margin:16px 0 13px!important;
+  padding:32px 13px 13px!important;min-height:91px;
+  border-radius:17px!important;border:1px solid rgba(117,150,210,.23)!important;
+  background:linear-gradient(110deg,#182942,#111f37)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  overflow:hidden;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-number::before{
+  content:"رقم المتجر للتحويل";
+  position:absolute;right:14px;top:9px;pointer-events:none;
+  color:#95a9ca;font-size:11px;font-weight:650;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-number b{
+  min-width:0;font:850 clamp(21px,6.2vw,32px)/1.25 system-ui,sans-serif!important;
+  color:#fff!important;letter-spacing:1.15px!important;
+  font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;user-select:all;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-copy{
+  display:grid;place-items:center;flex:0 0 46px;
+  width:46px!important;height:46px!important;
+  padding:0;margin:0;border-radius:13px!important;border:1px solid #ffffff13;
+  color:#edf3ff!important;background:#253c5c!important;
+  font-size:27px!important;line-height:1;
+  transition:transform .18s ease,background .18s ease;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-copy:active{transform:scale(.92);background:#335780!important}
+#topupDedicatedPage #topupForm.dt-enabled .dt-copy-status{
+  color:#9fdbff!important;font-size:12px!important;
+  margin:-4px 0 10px!important;min-height:0;line-height:1.6;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-copy-status:empty{display:none}
+#topupDedicatedPage #topupForm.dt-enabled .dt-open{
+  display:flex!important;gap:10px!important;
+  width:100%!important;min-height:54px!important;
+  padding:12px 16px!important;border-radius:16px!important;
+  border:1px solid rgba(172,220,255,.19)!important;
+  background:linear-gradient(110deg,#2581ff,#128cf4 55%,#2670e4)!important;
+  color:#fff!important;
+  font:850 clamp(14px,4vw,17px)/1.6 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  box-shadow:0 9px 21px rgba(18,118,245,.23),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  transition:transform .18s ease,filter .18s ease;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-open:active{transform:scale(.985);filter:brightness(1.1)}
+#topupDedicatedPage #topupForm.dt-enabled .dt-open svg{width:20px;height:20px}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2),
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3){
+  padding:18px!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2)::before,
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3)::before{
+  position:absolute;left:17px;top:18px;
+  color:#8ca4cb;border:1px solid rgba(141,157,198,.2);
+  border-radius:9px;padding:4px 8px;font:800 11px system-ui,sans-serif;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2)::before{content:"02"}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3)::before{content:"03"}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2) h3,
+#topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3) h3{padding-left:36px}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card label{
+  margin:9px 0 6px!important;
+  color:#afc4e1;font-size:12px!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled #dtSender{
+  display:block;width:100%!important;
+  min-height:51px!important;padding:11px 15px!important;
+  font:650 18px/1.4 system-ui,sans-serif!important;
+  text-align:right!important;direction:ltr!important;
+  color:#fff!important;
+  background:#1a2741!important;border:1px solid rgba(122,151,205,.26)!important;
+  border-radius:14px!important;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.08)!important;
+  outline:none;
+}
+#topupDedicatedPage #topupForm.dt-enabled #dtSender:focus{
+  border-color:#66afff!important;box-shadow:0 0 0 3px #2487ed27!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-phone-status{
+  display:block;color:#b1d6fb!important;font-size:11px;line-height:1.6;
+  margin:7px 0 0;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-phone-status:empty{display:none}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card ol{
+  display:grid;gap:12px!important;
+  margin:12px 0 0!important;padding:0!important;list-style:none;
+  counter-reset:steps;
+  color:#b7c6df!important;
+  font-size:clamp(11px,2.9vw,13px)!important;line-height:1.65!important;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card li{
+  position:relative;display:flex;align-items:center;
+  gap:11px!important;min-height:28px;counter-increment:steps;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card li::before{
+  display:grid;place-items:center;flex:0 0 29px;
+  width:29px!important;height:29px!important;
+  border-radius:10px!important;
+  color:#d8edff!important;border:1px solid rgba(123,171,252,.27);
+  background:#253c5b!important;
+  font:800 12px/1 system-ui,sans-serif;
+}
+#topupDedicatedPage #topupForm.dt-enabled .dt-card li:not(:last-child)::after{
+  content:"";position:absolute;right:14px;top:29px;height:calc(100% - 18px);
+  width:1px;border-right:1px dashed rgba(115,157,224,.26);pointer-events:none;
+}
+/* The amount entry is a native modal driven by the original JS and RPC. */
+#dtDialog{
+  background:linear-gradient(160deg,#15223b,#0b162b)!important;
+  border:1px solid rgba(130,165,221,.3)!important;
+  color:#f1f6ff!important;
+  box-shadow:0 24px 90px rgba(0,0,0,.75)!important;
+}
+#dtDialog .dt-icon{background:#1a4676;color:#a5d5ff}
+#dtDialog #dtAmount{
+  background:#1c2a46!important;border:1px solid rgba(140,166,216,.3)!important;
+  color:#fff!important;border-radius:14px!important;
+}
+#dtDialog .dt-call{background:linear-gradient(110deg,#2288fb,#0c6fe5)!important;color:#fff!important}
+#dtDialog .dt-cancel{color:#aacdff!important}
+#dtDialog .dt-fallback{color:#9cccff!important}
+#topupDedicatedPage button:focus-visible,#dtDialog button:focus-visible{
+  outline:2px solid #d7ebff!important;outline-offset:3px!important;
+}
+@keyframes topupFreshCardEnter{
+  from{opacity:.5;transform:translateY(11px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:420px){
+  #topupDedicatedPage .tp-dedicated-heading{margin-bottom:15px!important}
+  #topupDedicatedPage .tp-clean-header{margin-bottom:15px!important}
+  #topupDedicatedPage #topupForm.dt-enabled .dt-home{gap:11px!important}
+  #topupDedicatedPage #topupForm.dt-enabled .dt-card:first-child{padding:19px 15px 16px!important}
+  #topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(2),
+  #topupDedicatedPage #topupForm.dt-enabled .dt-card:nth-child(3){padding:16px 14px!important}
+  #topupDedicatedPage #topupForm.dt-enabled .dt-number{margin:13px 0 11px!important}
+}
+@media(max-width:350px){
+ #topupDedicatedPage .topup-dedicated-back,
+ #topupDedicatedPage #topupDedicatedCardEntry{padding:8px 9px!important;font-size:10px!important}
+ #topupDedicatedPage #topupForm.dt-enabled .dt-number b{font-size:21px!important}
+ #topupDedicatedPage #topupForm.dt-enabled .dt-copy{width:42px!important;height:42px!important;flex-basis:42px}
+}
+@media(prefers-reduced-motion:reduce){
+ #topupDedicatedPage #topupForm.dt-enabled .dt-card{
+   animation:none!important;
+ }
+ #topupDedicatedPage #topupForm.dt-enabled .dt-open,
+ #topupDedicatedPage #topupForm.dt-enabled .dt-copy{
+   transition:none!important;
+ }
+}

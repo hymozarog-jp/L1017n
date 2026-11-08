@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cmtxsjlehjworqypbxjz.supabase.co" crossorigin>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style id="l1017-entry-splash-style">
+/* Lightweight, CSS-only animated store entry. Only the brand name is textual. */
+#l1017EntrySplash::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,#41265a60,transparent 55%),radial-gradient(ellipse at 85% 85%,#14595245,transparent 55%);pointer-events:none}
+#l1017EntrySplash .l1017-entry-emblem{position:relative;display:grid;place-items:center;width:94px;height:94px;margin-bottom:4px;border-radius:28px;background:linear-gradient(145deg,#322747,#141c2c);border:1px solid #c5a8ee55;box-shadow:inset 0 1px #ffffff25,0 20px 65px #995cf130;color:#e8d6ff;transform:rotate(-8deg)}
+#l1017EntrySplash .l1017-entry-emblem svg{width:46px;height:46px;transform:rotate(8deg)}
+#l1017EntrySplash .l1017-entry-emblem::after{content:"";position:absolute;inset:-12px;border:1px solid #b295d932;border-top-color:#c8a3ff;border-bottom-color:#82dfbe;border-radius:36px;animation:l1017-orbit 3s linear infinite}
+#l1017EntrySplash .l1017-entry-dots{display:flex;gap:7px;direction:ltr}
+#l1017EntrySplash .l1017-entry-dots i{width:5px;height:5px;border-radius:50%;background:#c7a9ef;animation:l1017-dot 1.2s ease-in-out infinite}
+#l1017EntrySplash .l1017-entry-dots i:nth-child(2){animation-delay:.16s}
+#l1017EntrySplash .l1017-entry-dots i:nth-child(3){animation-delay:.32s}
+@keyframes l1017-orbit{to{transform:rotate(360deg)}}
+@keyframes l1017-dot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+
+#l1017EntrySplash{
+  position:fixed!important;inset:0!important;z-index:2147483647!important;
+  display:grid!important;place-items:center!important;
+  width:100%!important;height:100vh!important;height:100dvh!important;
+  background:#080f1c!important;color:#f8fbff!important;
+  pointer-events:auto!important;overflow:hidden!important;
+  opacity:1;visibility:visible;
+  transition:opacity .28s ease,visibility .28s ease;
+}
+#l1017EntrySplash .l1017-entry-stage{
+  position:relative;isolation:isolate;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;min-width:min(75vw,290px);padding:32px 20px;
+  animation:l1017-stage-float 2s ease-in-out 0.65s infinite alternate;
+}
+#l1017EntrySplash .l1017-entry-halo{
+  position:absolute;z-index:-1;top:50%;left:50%;
+  width:min(68vw,280px);height:min(68vw,280px);border-radius:50%;
+  background:radial-gradient(circle,rgba(93,157,252,.19) 0%,rgba(80,96,242,.07) 41%,transparent 70%);
+  transform:translate(-50%,-50%) scale(.83);
+  pointer-events:none;
+  animation:l1017-halo-breathe 1.8s ease-in-out infinite alternate;
+}
+#l1017EntrySplash .l1017-entry-name{
+  display:block;position:relative;z-index:1;
+  direction:ltr;unicode-bidi:isolate;white-space:nowrap;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:clamp(44px,12vw,80px);font-weight:850;letter-spacing:1.8px;
+  line-height:1.18;text-align:center;
+  color:#f7fbff;
+  text-shadow:0 0 28px rgba(128,181,255,.23);
+  animation:l1017-entry-reveal .72s cubic-bezier(.22,1,.36,1) both;
+}
+#l1017EntrySplash .l1017-entry-track{
+  position:relative;z-index:1;
+  display:block;width:clamp(100px,32vw,170px);height:3px;
+  overflow:hidden;border-radius:100px;
+  background:rgba(147,178,242,.18);
+  animation:l1017-track-reveal .55s ease-out .15s both;
+}
+#l1017EntrySplash .l1017-entry-status{
+  display:block;min-height:22px;max-width:min(82vw,340px);
+  color:#b9cce9;font:600 13px/1.7 'IBM Plex Sans Arabic',system-ui,sans-serif;
+  text-align:center;letter-spacing:0;direction:rtl;
+}
+#l1017EntrySplash .l1017-entry-track::after{
+  content:"";display:block;width:46%;height:100%;border-radius:100px;
+  background:linear-gradient(90deg,#67b9ff,#e0ecff,#9e88ff);
+  box-shadow:0 0 12px #87b9ff;
+  animation:l1017-track-travel 1.05s cubic-bezier(.45,0,.55,1) infinite alternate;
+}
+@keyframes l1017-entry-reveal{
+  from{opacity:0;transform:translateY(12px) scale(.91);filter:blur(5px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@keyframes l1017-stage-float{
+  from{transform:translateY(0)}
+  to{transform:translateY(-4px)}
+}
+@keyframes l1017-halo-breathe{
+  from{opacity:.55;transform:translate(-50%,-50%) scale(.83)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+}
+@keyframes l1017-track-reveal{
+  from{opacity:0;transform:scaleX(.6)}
+  to{opacity:1;transform:scaleX(1)}
+}
+@keyframes l1017-track-travel{
+  from{transform:translateX(-10%)}
+  to{transform:translateX(129%)}
+}
+#l1017EntrySplash.l1017-entry-done{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+  #l1017EntrySplash,#l1017EntrySplash *,
+  #l1017EntrySplash *::before,#l1017EntrySplash *::after{
+    animation:none!important;transition:none!important;filter:none!important;
+  }
+}
+</style>
+<meta name="theme-color" content="#08120e">
+<meta name="description" content="L1017n متجر شحن الألعاب في ليبيا. تسوّق روبوكس وMM2 وفيبوكس وببجي، وتابع طلباتك بسهولة.">
+<link rel="canonical" href="https://hymozarog-jp.github.io/L1017n/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_LY">
+<meta property="og:site_name" content="L1017n">
+<meta property="og:url" content="https://hymozarog-jp.github.io/L1017n/">
+<meta property="og:title" content="L1017n | متجر شحن الألعاب في ليبيا">
+<meta property="og:description" content="روبوكس، MM2، فيبوكس وببجي في متجر L1017n. تصفّح الباقات وتابع طلباتك.">
+<meta property="og:image" content="https://hymozarog-jp.github.io/L1017n/social-preview.jpg">
+<meta property="og:image:secure_url" content="https://hymozarog-jp.github.io/L1017n/social-preview.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="L1017n — متجر شحن الألعاب: روبوكس وMM2 وفيبوكس">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="L1017n | متجر شحن الألعاب">
+<meta name="twitter:description" content="شحن روبوكس، MM2 وفيبوكس وببجي من متجر L1017n في ليبيا.">
+<meta name="twitter:image" content="https://hymozarog-jp.github.io/L1017n/social-preview.jpg">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="gameboxly-build" content="bottom-nav-order-runtime-v8-20261108">
+<meta name="robots" content="noindex,follow">
+<title>L1017n | متجر شحن الألعاب في ليبيا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=white-nav-source-20261108-4"><link rel="stylesheet" href="packages.css?v=5">
+<link rel="stylesheet" href="auth-design.css?v=google-signin1">
+<link rel="stylesheet" href="game-cover-layout.css?v=3">
+
+<link rel="stylesheet" href="robux-packages-theme.css?v=1">
+<link rel="stylesheet" href="robux-portrait-cards.css?v=1">
+<link rel="stylesheet" href="robux-fullscreen.css?v=1">
+<link rel="stylesheet" href="robux-page-fix.css?v=2">
+<link rel="stylesheet" href="robux-spacing-arrow.css?v=1">
+<link rel="stylesheet" href="smooth-motion.css?v=1">
+<link rel="stylesheet" href="robux-reference-design.css?v=1">
+<link rel="stylesheet" href="robux-ios-fix.css?v=1">
+<link rel="stylesheet" href="robux-compact-header.css?v=1">
+<link rel="stylesheet" href="robux-checkout-bar.css?v=1">
+<link rel="stylesheet" href="robux-checkout-screen.css?v=1">
+<link rel="stylesheet" href="robux-purchase-overlay.css?v=1">
+<link rel="stylesheet" href="robux-quantity-calculator.css?v=robux-art-redesign6">
+<link rel="stylesheet" href="game-transitions.css?v=square4">
+<link rel="stylesheet" href="leaderboard-gold.css?v=money-meter1-violet2">
+<link rel="stylesheet" href="gamebox-loading.css?v=loading-studio1">
+<script src="personal-premium.js?v=unified-ui-icons-20261103-1" defer></script>
+<script src="auth-design.js?v=20261028-violet-1" defer></script>
+<style id="google-profile-avatar-style">
+/* Signed-in Google profile photo, at the far-right edge of the RTL topbar. */
+.topbar .google-profile-button{width:46px;height:46px;flex:0 0 46px;padding:2px;margin:0;display:grid;place-items:center;overflow:hidden;border-radius:50%;border:2px solid #a8f36b;background:#163024;color:#f4ffef;box-shadow:0 0 0 3px #a8f36b21;cursor:pointer}
+.topbar .google-profile-button img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.topbar .google-profile-button .google-profile-fallback{display:none;width:100%;height:100%;place-items:center;font-size:20px;font-weight:800;line-height:1}
+.topbar .google-profile-button.no-image img{display:none}
+.topbar .google-profile-button.no-image .google-profile-fallback{display:grid}
+.topbar .google-profile-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:600px){.topbar .google-profile-button{width:42px;height:42px;flex-basis:42px}}
+/* Keep the Google photo and greeting, remove the extra L logo beside them. */
+.topbar .brand-mark{display:none!important}
+.topbar .google-welcome{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0;max-width:min(25vw,220px);color:#e8fceb;line-height:1.3;text-align:right;flex:0 1 auto}
+.topbar .google-welcome .google-welcome-label{font-size:11px;font-weight:500;white-space:nowrap;color:#b3d8be}
+.topbar .google-welcome strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-weight:750;color:#fff}
+@media(max-width:600px){.topbar .google-welcome{max-width:35vw}.topbar .google-welcome strong{font-size:13px}.topbar:has(.google-profile-button:not(.hidden)){gap:9px}.topbar:has(.google-profile-button:not(.hidden)) .brand small{display:none}}
+
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&amp;display=swap">
+<script src="delivery-policy.js?v=delivery-policy-20261103-1" defer></script>
+</head>
+<body>
+<svg class="l1017-icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" focusable="false"><defs><symbol id="l1017-icon-package" viewBox="0 0 24 24"><path d="m12 2 9 4.8v10.4L12 22 3 17.2V6.8zM3.5 7 12 11.6 20.5 7M12 11.5V22"/></symbol><symbol id="l1017-icon-trophy" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0V4zM8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 4h8m-6-4h4"/></symbol><symbol id="l1017-icon-shield-check" viewBox="0 0 24 24"><path d="M12 2 4.5 5.5v6c0 5 3 8.5 7.5 10.5 4.5-2 7.5-5.5 7.5-10.5v-6zM9 12l2 2 4-4"/></symbol><symbol id="l1017-icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.3 1A7 7 0 0 0 14 5.4L13.7 3h-3.4L10 5.4a7 7 0 0 0-2.6 1.4l-2.3-1-2 3.5 2 1.5a7 7 0 0 0 0 2.4l-2 1.5 2 3.5 2.3-1A7 7 0 0 0 10 18.6l.3 2.4h3.4l.3-2.4a7 7 0 0 0 2.6-1.4l2.3 1 2-3.5-2-1.5A7 7 0 0 0 19 12z"/></symbol><symbol id="l1017-icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol><symbol id="l1017-icon-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 8l12-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="18" cy="16" rx="3" ry="2"/></symbol><symbol id="l1017-icon-check" viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></symbol><symbol id="l1017-icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-5"/></symbol><symbol id="l1017-icon-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol><symbol id="l1017-icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol><symbol id="l1017-icon-phone" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a14 14 0 0 1-7-7l3-2z"/></symbol><symbol id="l1017-icon-smartphone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></symbol><symbol id="l1017-icon-gamepad" viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.7 4l.7 4a3 3 0 0 1-5.1 2.7l-2.5-2H9.2l-2.5 2A3 3 0 0 1 1.6 16l.7-4A5 5 0 0 1 7 8zM6.5 12h4M8.5 10v4"/><circle cx="16" cy="12" r=".6"/><circle cx="18.5" cy="14" r=".6"/></symbol><symbol id="l1017-icon-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9 2 2-2 2-2-2-2 2 2 2-3 3"/></symbol><symbol id="l1017-icon-coins" viewBox="0 0 24 24"><circle cx="9" cy="10" r="6"/><path d="M11 15a6 6 0 1 0 3-11M9 7v6M7 9h3m3 8v2m-3-2h6"/></symbol><symbol id="l1017-icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.6a2 2 0 0 1 3.4 0L22 19a1.8 1.8 0 0 1-1.6 2H3.6A1.8 1.8 0 0 1 2 19zM12 9v5M12 18h.01"/></symbol><symbol id="l1017-icon-mail" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></symbol><symbol id="l1017-icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="l1017-icon-sparkles" viewBox="0 0 24 24"><path d="m12 2 2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2zM19 18l.7 2 .6.8.7-2 2-.6-2-.7-.7-2z"/></symbol><symbol id="l1017-icon-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol><symbol id="l1017-icon-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol><symbol id="l1017-icon-gift" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M2 6h20v4H2zM12 6v15M12 6c-2-3-5.5-5-7.3-2.3C3.8 6.2 7 7 12 6zM12 6c2-3 5.5-5 7.3-2.3C20.2 6.2 17 7 12 6z"/></symbol><symbol id="l1017-icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol><symbol id="l1017-icon-link" viewBox="0 0 24 24"><path d="M10 13.5a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2M14 10.5a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"/></symbol><symbol id="l1017-icon-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/></symbol></defs></svg>
+<div id="l1017EntrySplash" role="status" aria-label="جاري تجهيز متجر L1017n" aria-live="polite"><div class="l1017-entry-stage"><span class="l1017-entry-halo" aria-hidden="true"></span><span class="l1017-entry-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l2 11H4L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13l2 2 4-4"/></svg></span><span class="l1017-entry-name" aria-hidden="true">L1017n</span><span class="l1017-entry-track" aria-hidden="true"></span><span class="l1017-entry-status" id="l1017EntryStatus">جاري تجهيز المتجر…</span><span class="l1017-entry-dots" aria-hidden="true"><i></i><i></i><i></i></span></div></div>
+<script>
+/* Show useful startup feedback while catalog/auth scripts load, never block indefinitely. */
+(function(){
+  'use strict';
+  var splash=document.getElementById('l1017EntrySplash');
+  if(!splash)return;
+  var status=document.getElementById('l1017EntryStatus');
+  var started=Date.now(),closed=false,watch=0,hardStop=0;
+  var minShow=1550,maxShow=6000;
+  function close(){
+    if(closed)return;
+    closed=true;
+    clearTimeout(watch);
+    clearTimeout(hardStop);
+    window.removeEventListener('l1017n:storefront-ready',readyCheck);
+    splash.classList.add('l1017-entry-done');
+    setTimeout(function(){if(splash.parentNode)splash.parentNode.removeChild(splash);},330);
+  }
+  function readyCheck(){
+    if(closed)return;
+    clearTimeout(watch);
+    var elapsed=Date.now()-started;
+    var catalogReady=window.L1017nStorefrontReady===true;
+    var shellReady=!!document.getElementById('llLanding');
+    var loadingError=!!document.getElementById('site-load-error');
+    if(elapsed>=minShow&&(catalogReady||loadingError||(shellReady&&elapsed>=3500))){
+      close();return;
+    }
+    if(status&&elapsed>=1700&&!catalogReady){
+      status.textContent=loadingError?'جاري فتح الصفحة…':'جاري تحميل بيانات المتجر…';
+    }
+    if(elapsed>=maxShow){close();return}
+    watch=setTimeout(readyCheck,120);
+  }
+  // Always let the customer browse or see the real error, even on a bad network.
+  hardStop=setTimeout(close,maxShow);
+  window.addEventListener('l1017n:storefront-ready',readyCheck);
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',readyCheck,{once:true});
+  }else readyCheck();
+  window.addEventListener('pageshow',function(e){if(e.persisted)close();},{once:true});
+})();
+</script>
+<header class="topbar"><div id="headerAccountCluster" class="header-account-cluster" dir="ltr"><button type="button" id="googleProfileButton" class="google-profile-button hidden no-image" data-view="account" aria-label="فتح حسابي" title="حسابي"><img id="googleProfileImage" alt="صورة حساب Google" referrerpolicy="no-referrer" loading="eager"><span id="googleProfileFallback" class="google-profile-fallback" aria-hidden="true">م</span></button><button type="button" id="headerNotificationBell" class="header-notification-button hidden" data-account-action="notifications" aria-label="الإشعارات والتنبيهات" title="الإشعارات والتنبيهات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span id="headerNotificationCount" class="header-notification-count" hidden aria-hidden="true"></span></button><div class="account-wallet-group"><div class="customer-wallet-chip gb-libyana-wallet-chip hidden" id="customerWalletChip" role="group" aria-label="محفظة المتجر وشحنها عبر ليبيانا"><span class="gb-libyana-badge" title="شحن عبر ليبيانا"><img id="gbLibyanaHeaderLogo" alt="شعار ليبيانا" decoding="async"><span class="gb-libyana-fallback" aria-hidden="true">Li</span></span><span class="gb-wallet-balance-content"><span class="customer-wallet-label">رصيد المحفظة</span><strong id="customerHeaderBalance" dir="rtl">— د.ل</strong></span><button type="button" id="customerTopupShortcut" aria-label="شحن المحفظة" title="شحن المحفظة"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg></button></div><button class="btn btn-outline" id="accountBtn">حسابي ↗</button></div></div><span id="googleWelcome" class="google-welcome hidden" aria-live="polite"><span class="google-welcome-label">أهلاً بيك <svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-user"></use></svg></span><strong id="googleWelcomeName"></strong></span><nav class="desktop-nav"><button data-view="home" class="nav-link active">الرئيسية</button><button data-view="store" class="nav-link">المتجر</button><button data-view="wallet" class="nav-link"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg>المحفظة</button><button data-view="orders" class="nav-link">طلباتي</button><button data-view="leaderboard" class="nav-link"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg>التصنيف</button></nav></header>
+<main id="app">
+<section class="section" id="storeView" aria-label="أقسام روبلوكس"><div class="section-head"><div><h2>أقسام روبلوكس</h2><p>روبوكس، MM2، وماب السرقة — كل قسم مستقل.</p></div></div><div class="product-grid" id="productGrid" aria-live="polite"><div class="game-tiles"><article class="game-tile"><button type="button" class="game-tile-btn" data-game-open="roblox">روبوكس</button></article><article class="game-tile"><button type="button" class="game-tile-btn" data-game-open="mm2">MM2</button></article><article class="game-tile"><button type="button" class="game-tile-btn" data-game-open="steal-a-brainrot">ماب السرقة</button></article></div></div><div id="storePurchaseBox"></div><section id="l1017nFaqInline" class="l1017-inline-faq" aria-labelledby="l1017nFaqInlineTitle" dir="rtl">
+ <div class="l1017-inline-faq-head">
+   <div><span class="l1017-inline-faq-tag">مركز المساعدة · L1017n</span><h2 id="l1017nFaqInlineTitle">الأسئلة الشائعة</h2><p>إجابات سريعة عن الشحن والشراء وحالة الطلبات.</p></div>
+   <div class="l1017-faq-art" aria-hidden="true">
+ <svg viewBox="0 0 348 258" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs>
+   <linearGradient id="lfaqPhone" x1="103" y1="12" x2="262" y2="237"><stop stop-color="#6851B5"/><stop offset=".5" stop-color="#343362"/><stop offset="1" stop-color="#222647"/></linearGradient>
+   <linearGradient id="lfaqScreen" x1="152" y1="32" x2="229" y2="207"><stop stop-color="#242D59"/><stop offset="1" stop-color="#131A30"/></linearGradient>
+   <linearGradient id="lfaqCard" x1="41" y1="119" x2="160" y2="177"><stop stop-color="#8F6CEA"/><stop offset="1" stop-color="#523A99"/></linearGradient>
+   <linearGradient id="lfaqPackage" x1="238" y1="90" x2="316" y2="159"><stop stop-color="#60E2B2"/><stop offset="1" stop-color="#238E90"/></linearGradient>
+   <filter id="lfaqGlow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <circle cx="166" cy="128" r="113" fill="#6C4CC0" opacity=".12"/>
+  <circle cx="159" cy="129" r="84" stroke="#9574FF" stroke-opacity=".23" stroke-width="1.5" stroke-dasharray="4 9"/>
+  <circle cx="165" cy="142" r="76" fill="#9C66FF" opacity=".16" filter="url(#lfaqGlow)"/>
+  <path d="M27 43v13m-6-7h13M299 203v14m-7-7h14" stroke="#C5A8FF" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="m290 42 3.5 8.5 8.5 3.5-8.5 3.5-3.5 8.5-3.5-8.5-8.5-3.5 8.5-3.5 3.5-8.5Z" fill="#F3D480" opacity=".88"/>
+  <circle cx="46" cy="207" r="3" fill="#79DDBF"/><circle cx="319" cy="104" r="3.5" fill="#AE9CFF"/>
+  <g transform="rotate(-9 185 123)">
+   <rect x="119" y="13" width="134" height="224" rx="26" fill="#121527" stroke="#8677D1" stroke-width="3.5"/>
+   <rect x="126" y="22" width="120" height="205" rx="21" fill="url(#lfaqPhone)"/>
+   <rect x="136" y="40" width="100" height="171" rx="13" fill="url(#lfaqScreen)" stroke="#A18BE5" stroke-opacity=".3"/>
+   <rect x="157" y="26" width="57" height="8" rx="4" fill="#14182D"/>
+   <rect x="148" y="54" width="78" height="9" rx="4.5" fill="#8D7DBB" opacity=".38"/>
+   <rect x="148" y="70" width="51" height="6" rx="3" fill="#7C7B9C" opacity=".24"/>
+   <rect x="148" y="87" width="75" height="65" rx="13" fill="#32345D" stroke="#7872B8" stroke-opacity=".5"/>
+   <rect x="161" y="102" width="48" height="35" rx="9" fill="#4B427C"/>
+   <path d="m185 106 8 5v10l-8 5-8-5v-10l8-5ZM177 111l8 5 8-5M185 116v10" stroke="#D4C4FF" stroke-width="2" stroke-linejoin="round"/>
+   <rect x="148" y="161" width="75" height="8" rx="4" fill="#4D5280"/>
+   <rect x="148" y="177" width="57" height="7" rx="3.5" fill="#353B65"/>
+   <rect x="160" y="195" width="50" height="6" rx="3" fill="#6DD6BD" opacity=".8"/>
+  </g>
+  <g transform="rotate(9 94 144)">
+   <rect x="22" y="111" width="141" height="76" rx="18" fill="#241B50" stroke="#A48FFB" stroke-width="2"/>
+   <rect x="28" y="118" width="129" height="62" rx="13" fill="url(#lfaqCard)"/>
+   <rect x="41" y="133" width="28" height="20" rx="5" fill="#EED9FF" opacity=".84"/>
+   <path d="M41 140h28m-19-7v20" stroke="#9B80D8" stroke-width="1.7"/>
+   <rect x="82" y="139" width="52" height="6" rx="3" fill="#E6D4FF" opacity=".88"/>
+   <rect x="82" y="151" width="38" height="5" rx="2.5" fill="#DCC6FF" opacity=".64"/>
+   <circle cx="133" cy="165" r="5" fill="#94E8CA"/>
+  </g>
+  <g transform="rotate(10 274 112)">
+   <rect x="240" y="77" width="78" height="79" rx="18" fill="#174A53" stroke="#8AEFD0" stroke-width="2"/>
+   <rect x="247" y="84" width="64" height="65" rx="13" fill="url(#lfaqPackage)"/>
+   <path d="m258 101 21-10 21 10v24l-21 12-21-12v-24Z" stroke="#F0FFF8" stroke-width="2.7" stroke-linejoin="round"/>
+   <path d="m258 101 21 11 21-11M279 112v25" stroke="#F0FFF8" stroke-width="2.7" stroke-linejoin="round"/>
+   <path d="m271 96 19 10" stroke="#F0FFF8" stroke-width="2" opacity=".7"/>
+  </g>
+  <g transform="rotate(-11 270 195)">
+   <circle cx="270" cy="195" r="22" fill="#27395B" stroke="#91D9F4" stroke-width="2.2"/>
+   <path d="m258 195 7 7 15-16" stroke="#A3FAD6" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+ </svg>
+</div>
+ </div>
+ <div class="l1017-inline-faq-list">
+   <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg></span><span>كيف أطلب روبوكس أو سلاح MM2؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>سجّل دخولك ووثّق رقم الهاتف إذا طُلب منك، ثم اختر المنتج والباقة وأكد الشراء من المحفظة. تابع الطلب من «طلباتي».</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="mint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="15" rx="3"/><path d="M3 10h18"/><path d="M14 13h8v5h-8a2.5 2.5 0 0 1 0-5Z"/><circle cx="16" cy="15.5" r=".7" fill="currentColor" stroke="none"/></svg></span><span>كيف أشحن رصيدي في المحفظة؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>افتح «المحفظة»، اختر المبلغ والطريقة المتاحة واتبع تعليمات التحويل. يُضاف الرصيد بعد التحقق من التحويل واعتماده فقط.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6m-6 4h6m-6 4h3"/><circle cx="17" cy="17" r="4" fill="#1d2538"/><path d="m15.5 17 1 1 2-2"/></svg></span><span>كيف أتابع حالة طلبي؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>افتح «طلباتي» واضغط على بطاقة الطلب، فتظهر تفاصيله فورًا في نافذة. اضغط «تحديث الحالة» للحصول على آخر تحديث.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="amber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/><path d="M7.5 12h2m5 0h2"/><path d="M4 5h16M4 19h16" opacity=".35"/></svg></span><span>شن معناها «تم القبول» و«قيد التنفيذ»؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>«تم القبول» يعني أن الطلب تمت الموافقة عليه، وليس أنه وصل. «قيد المعالجة» يعني التجهيز، و«قيد التنفيذ» يعني أن التسليم جارٍ. «تم التنفيذ» يعني اكتماله.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/><path d="M18.5 5.5 20 4" /></svg></span><span>كم يستغرق وصول الروبوكس أو أغراض الألعاب؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>ما فيش مدة ثابتة مضمونة حاليًا للطلبات اليدوية؛ يتم التنفيذ بعد مراجعة الطلب، وتقدر تتابع مراحله من «طلباتي».</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="mint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v6h-6"/><path d="M20 13a8 8 0 1 0-3 6"/><path d="m9 12 2 2 4-4"/></svg></span><span>لو انرفض طلب الشراء، هل يرجع المبلغ؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>نعم، عند رفض طلب شراء لم يكتمل يُرجع المبلغ إلى محفظتك داخل المتجر. هذا لا يعني إرجاعه إلى رصيد الهاتف أو حساب بنكي.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="15" rx="3"/><path d="M3 10h18"/><path d="M14 13h8v5h-8a2.5 2.5 0 0 1 0-5Z"/><circle cx="16" cy="15.5" r=".7" fill="currentColor" stroke="none"/></svg></span><span>حوّلت رصيد ليبيانا وما ظهر في المحفظة، شنسوي؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>راجع حالة الشحن في «طلباتي» ولا تكرر التحويل. إذا انخصم رصيد هاتفك وما أضيف للمحفظة، تواصل مع الدعم واذكر رقم الطلب ووقت التحويل.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4m-3 13.5h2"/><path d="m9 12 2 2 4-4"/></svg></span><span>كيف أوثّق رقم هاتفي؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>افتح «حسابي» ثم «توثيق رقم الهاتف»، واتبع الخطوات باستخدام رمز SMS. لا تشارك رمز التحقق مع أي شخص.</p></details>
+  <details class="l1017-inline-faq-item"><summary><span class="l1017-inline-faq-index" data-tint="mint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0v5c0 1.5-1 2.5-2.5 2.5H15"/><rect x="2.5" y="12" width="4" height="6" rx="2"/><rect x="17.5" y="12" width="4" height="6" rx="2"/><path d="M10 20h4"/></svg></span><span>كيف أتواصل مع الدعم؟</span><span class="l1017-inline-faq-arrow" aria-hidden="true"></span></summary><p>من «طلباتي» افتح الطلب واضغط «تقديم شكوى عبر واتساب». اذكر رقم طلبك ووصف المشكلة، ولا ترسل كلمة مرورك أو رمز التحقق.</p></details>
+ </div>
+ <div class="l1017-inline-faq-more"><span>ما لقيتش سؤالك؟</span><button type="button" data-faq-open>عرض جميع الأسئلة <span aria-hidden="true">‹</span></button></div>
+</section>
+<section id="storeRecentPurchases" class="recent-purchases-section" aria-labelledby="recentPurchasesHeading" dir="rtl">
+ <div class="recent-purchase-shell">
+  <header class="recent-purchase-header">
+   <div class="recent-purchase-heading">
+    <span class="recent-purchase-eyebrow">L1017N · REAL PURCHASES</span>
+    <h2 id="recentPurchasesHeading">آخر المشتريات</h2>
+    <p>مشتريات حقيقية من المتجر، بالقيمة وحالة الطلب. أسماء العملاء تظهر بموافقتهم فقط.</p>
+   </div>
+   <div class="recent-purchase-tools">
+    <span class="recent-purchase-live" aria-label="القسم يتحدث باستمرار">LIVE</span>
+    <button type="button" id="recentPurchaseRefresh" class="recent-purchase-refresh" aria-label="تحديث المشتريات" title="تحديث المشتريات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.4 9A8 8 0 0 1 19.2 6L20 7M4 17l.8 1A8 8 0 0 0 18.6 15"/></svg></button>
+   </div>
+  </header>
+  <div id="storeRecentPurchaseList" class="recent-purchase-list" aria-live="polite"><p class="recent-purchase-empty">جاري تحميل المشتريات الحقيقية…</p></div>
+  <div class="recent-purchase-bottom"><button type="button" id="recentPurchaseMore" aria-expanded="false" hidden>عرض المزيد من المشتريات</button><span id="recentPurchaseUpdated">جاري التحديث…</span><span id="recentPurchaseCount">آخر المشتريات</span></div>
+  <p class="recent-purchase-disclaimer">العمليات المدفوعة فقط. أي طلب مرفوض أو مبلغ شحن محفظة لا يظهر هنا، ولا تُعرض أرقام الهواتف أو معرفات الطلبات.</p>
+ </div>
+</section>
+</section>
+<section class="section hidden subs-page" id="subscriptionsView" aria-label="الاشتراكات الرقمية">
+  <div class="subs-banner">
+    <div class="subs-copy">
+      <span class="subs-kicker"><i aria-hidden="true"></i> L1017N / DIGITAL SUBSCRIPTIONS</span>
+      <h1>اشتراكاتك الرقمية <span>بطابع مختلف.</span></h1>
+      <p>صفحتك الجديدة لخدمات الترفيه والموسيقى. تابع توفر الباقات الجديدة أولًا بأول، وخلّ كل اشتراكاتك في مكان واحد.</p>
+      <div class="subs-banner-actions">
+        <a class="subs-cta" href="#subscriptionServices">اكتشف الخدمات <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></a>
+        <button class="subs-back" type="button" data-view="home">ارجع للألعاب</button>
+      </div>
+    </div>
+    <div class="subs-art" aria-hidden="true">
+      <div class="subs-glass subs-glass-back"></div>
+      <div class="subs-glass subs-glass-mid"></div>
+      <div class="subs-glass subs-glass-main">
+        <div class="subs-glass-top"><span>L1017N</span><span class="subs-glass-dot"></span></div>
+        <div class="subs-play"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 13c0-3 3-4 6-2l29 19c2 1 2 4 0 5L28 54c-3 2-6 1-6-2V13z"/></svg></div>
+        <div class="subs-glass-footer"><span>STREAM PLUS</span><small>SUBSCRIPTIONS</small></div>
+      </div>
+      <span class="subs-art-badge">PREMIUM EXPERIENCE</span>
+    </div>
+  </div>
+  <div class="subs-title-row" id="subscriptionServices">
+    <div><small>EXPLORE SERVICES</small><h2>اختر اشتراكك المفضل</h2><p>نجهز الباقات قريبًا، ولما تتوفر بنعرض أسعارها الحقيقية.</p></div>
+    <span class="subs-coming-badge">قريبًا</span>
+  </div>
+  <div class="subs-grid" aria-label="خدمات الاشتراكات القادمة">
+    <article class="subs-service" data-service="netflix"><div class="subs-service-head"><span class="subs-service-logo" aria-hidden="true">N</span><span class="subs-service-status">قريبًا</span></div><h3>Netflix</h3><p>أفلام ومسلسلات وترفيه.</p><div class="subs-service-foot"><span>الباقات قيد التجهيز</span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></div></article>
+    <article class="subs-service" data-service="shahid"><div class="subs-service-head"><span class="subs-service-logo" aria-hidden="true">S</span><span class="subs-service-status">قريبًا</span></div><h3>Shahid</h3><p>مسلسلات وبرامج عربية.</p><div class="subs-service-foot"><span>الباقات قيد التجهيز</span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></div></article>
+    <article class="subs-service" data-service="spotify"><div class="subs-service-head"><span class="subs-service-logo" aria-hidden="true"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-music"></use></svg></span><span class="subs-service-status">قريبًا</span></div><h3>Spotify</h3><p>موسيقى وبودكاست.</p><div class="subs-service-foot"><span>الباقات قيد التجهيز</span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></div></article>
+    <article class="subs-service" data-service="youtube"><div class="subs-service-head"><span class="subs-service-logo" aria-hidden="true">▶</span><span class="subs-service-status">قريبًا</span></div><h3>YouTube Premium</h3><p>اشتراكات ومزايا المشاهدة.</p><div class="subs-service-foot"><span>الباقات قيد التجهيز</span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></div></article>
+  </div>
+  <div class="subs-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v1"/></svg><p>القسم للعرض حاليًا، ولا توجد اشتراكات مفعّلة للشراء بعد. بنعرض الأسعار والتوفر عند إضافة منتجات حقيقية. أسماء المنصات علامات تجارية لأصحابها، ومتجر L1017N غير تابع لها.</p></div>
+</section>
+<section class="wallet-promo home-balance"><div><span class="eyebrow">L1017n WALLET</span><h2>رصيدك الحالي</h2><p>رصيد محفظتك وشحنها متاحين من قسم المحفظة.</p><button class="btn btn-primary" data-view="wallet">افتح المحفظة ←</button></div><div class="wallet-visual"><div class="wallet-chip">L</div><span>WALLET BALANCE</span><strong>•••• ••••</strong><div class="wallet-visual-bottom"><b>L1017n</b><span>LYD · ليبيا</span></div></div></section>
+<section class="section steps-section"><div class="section-head"><div><span class="eyebrow">سهل وواضح</span><h2>كيف تطلب؟</h2></div></div><div class="steps"><article><span>01</span><h3>اختار اللي تبيه</h3><p>تصفح المنتجات وحدد الباقة المناسبة.</p></article><article><span>02</span><h3>اشحن أو ادفع</h3><p>اشحن محفظتك ثم ادفع من رصيدك.</p></article><article><span>03</span><h3>تابع طلبك</h3><p>تظهر لك حالة الطلب ورقم المتابعة.</p></article></div></section>
+<section class="section hidden" id="walletView"><div class="section-head"><div><span class="eyebrow">L1017n WALLET</span><h2>المحفظة</h2></div></div><div class="wallet-showcase"><p class="wallet-subtitle">كل رصيد محفوظ في محفظتك الخاصة حسب العملة</p><div class="wallet-carousel" aria-label="محفظة ليبيانا ومحفظة المدار"><div class="wallet-hero"><div class="wallet-hero-top"><div><span class="wallet-hero-icon libyana-brand-mark"><img src="data:image/webp;base64,UklGRuAEAABXRUJQVlA4INQEAABwFgCdASpQAFAAPsFSn0qnpKKhrhXeQPAYCWwAv62u3R6Bdqvs73LtZXi/6N6gP9Vus/MB5xfpE/0fpwdSb+qvVUf9v9u/iIwBbsgx085MMDsazLFYE0TyM2RrcMLUUp72qjLrQ11BDkvm5tJR25g1fwcNNCnlDeuWXOGOVJ5SRQJbwG6WaxRqgIFJpnAt/l6+aq3BIkKl+eyHsL073/YI24qRQbsh6NV2H1mZqiwW0eqaEn83LzTT2KHKAAD+oILT+CBwY3rSv8zRxZwdzKMSZZ5Ycyx3dFvUsosw0d1LKUS9wlKpSSbGYddXPZWltJdXqsbZzpcEmwFGCKQYOKVCh1a/k+SwQeXGEO5YooCnb0ogrxFadiLgsU8RWnYeT/IxaGz5jXcB83gfkWrSwFHOdCmiQvq+pE2t7ABFUXLuFVypKrzQ3yQyIW4oh0E/9A/7mFV7zOBfWFxx3qlhCu7zrRPK0csGGJxzNooR8Pjup1WnFDJPvqH2M4txkPKlacKjhjcHgwVcp+RD5dMr3/MktKFj3nr/mUcSp4ObVY3TFR+UtsxlLfAL/1nUpcfnWdv8Y84uHrILJ9TwwyRnbmsnnFK9pFr7nduXcjheypzWCLbYHWmakSgLRIiv2PSPKjWX7APLYIrKsRJQtNKY94C47163Fqt2ZIjoWi0FMq6D3AEPd2s+VFYAarwTSdGH2MRP0GxYVFOe0itDqZwGmfX+j4WmxiSDnnNp/qxpWYQGGOLX31GlzL9QDxTAN+mrhWJimp8qjIxv6ADXEou6XfEbqh00oiDdLRi6pFKIQ0187uysN60UteyLygMjJHmN+i896Iu0T+4s95CUTHwA7B17/Gbinx8siKCMRdZlr9ASOWy8/8xEPJP0+eCBb3elrg+rioKR988X3IvqSXdxEFtM2J8z1DdbZ9X5YTmpJKJg8igVK4oJB3HriSe0WFPvai0YyYmTnE+BtMRTX0maLwVpe/F6g7nQGgR1cJqWdjR5Fp7269Od7H+e64OQIvvFt4nRUkLMDfXp3xfbLhQTCu9hDH5ZDjFV9nWdvyd7+nYubEyZTdQRhnYgXFFyJhxEP1v6EI07pWm3PzNboB1RyM56wS1olbHSpQsQxhDOf3W0887H0j9q8mRBA8kTuJS6kkWsXt9MrpK2qWjvZD4sLxQmeWuH60NXSj8ulqyMV0L5yrQwY1Crf1fsJ+c7SZG5Y8GmgBOAZu1fWT9gA7S/KrYktNOiABsqk4HMSC5IMgXtvhtAlsXH18TQ//bzFHbTjZA7pFfDHURoPG99ZdS7kijHDnLHjLqIC7cuyq5VZoNs78D5uQ0wvPzV8TpfxmwHAA5bSVcVWUkVe32fYz4j2zZT2mYLnWFoBa6BcXKkFrNKtcqbJ73sdDDsY4zRsCHxx2RkG8t/AzefEQotN7uMV3DAFpLenqTRP2zYxxbkUp3zL56c50G2lQlftCJzBITmTKbqKbfIHdPI/t6JbluJJiXLdY6UfLQOGeVSuaJ8NQKPgjxMpLbYbKHq4/Vy+hUzS8kRjM+WF9aWydRT8iwTkQHn/8pO6KTIaK3PTy/7n20KqDQ7lZZe8NIk8urv/hFiX8f0RcRGtUqvLKE3W0Sb+ZQ86U/dRO9UHlXYBSlFyvHmw7aAAAA=" alt="شعار ليبيانا الرسمي" loading="lazy"></span></div><div class="wallet-provider-heading"><span class="wallet-primary-badge">ليبيانا</span><button type="button" class="wallet-independent-tag wallet-primary-toggle" data-wallet-primary="libyana" aria-pressed="false" title="اجعل ليبيانا المحفظة الأساسية">اجعلها أساسية</button></div></div><div class="wallet-hero-balance"><span>الرصيد المتاح</span><div><strong id="walletShowcaseBalance">0.000</strong><b>د.ل</b></div></div></div><div class="madar-wallet-card" aria-label="محفظة المدار الجديد">
+  <div class="wallet-hero-top">
+    <div><span class="wallet-hero-icon madar-brand-mark">
+      <span class="madar-logo-fallback" aria-hidden="true">المدار</span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Almadar_Aljadid_Logo.png"
+           alt="شعار المدار الجديد" loading="lazy" onerror="this.remove()">
+    </span></div>
+    <div class="wallet-provider-heading"><span class="wallet-primary-badge">المدار</span><button type="button" class="wallet-independent-tag wallet-primary-toggle" data-wallet-primary="madar" aria-pressed="false" title="اجعل المدار المحفظة الأساسية">اجعلها أساسية</button></div>
+  </div>
+  <div class="wallet-hero-balance">
+    <span>الرصيد المتاح</span>
+    <div><strong id="madarWalletBalance">0.000</strong><b>د.ل</b></div>
+  </div>
+  <span class="madar-candy-status" role="note">شحن المدار قريبًا</span>
+  <span class="wallet-candy-gain" role="status" aria-live="polite"></span>
+</div></div><div class="wallet-carousel-dots"><span class="active"></span><span></span></div><a class="wallet-madar-logo-credit" href="https://commons.wikimedia.org/wiki/File:Almadar_Aljadid_Logo.png" target="_blank" rel="noopener noreferrer">شعار المدار الجديد: ILibya10 · CC BY-SA 4.0 · مقتطع للبطاقة</a><div class="wallet-actions" aria-label="خيارات المحفظة"><button type="button" class="wallet-action" id="walletActionTopup"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b>شحن</b></button><button type="button" class="wallet-action" id="walletActionTransfer"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14l-4-4M21 7l-4 4"/><path d="M17 17H3l4 4M3 17l4-4"/></svg></span><b>تحويل</b></button><button type="button" class="wallet-action" id="walletActionSend" aria-haspopup="dialog" aria-controls="walletSendSheet"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></span><b>إرسال</b></button><button type="button" class="wallet-action" id="walletActionPrimary" aria-pressed="false" aria-label="تعيين المحفظة المعروضة كأساسية" title="الأساسية للمحفظة المعروضة"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><b>اجعلها أساسية</b></button></div><button type="button" id="walletActionCard" class="wallet-card-topup-entry" aria-label="شحن المحفظة بالكروت"><span class="ct-wallet-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h5"/></svg></span><span><b>شحن المحفظة بالكروت</b><small>أدخل رقم كرت ليبيانا وقيمته أو أضف عدة كروت</small></span><span class="ct-wallet-arrow">‹</span></button><div class="wallet-recent-head"><h3>آخر المعاملات</h3><div class="wallet-filter-tabs"><button type="button" class="active" data-wallet-filter="all">الكل</button><button type="button" data-wallet-filter="approved">إيداع</button><button type="button" data-wallet-filter="pending">معلق</button><button type="button" data-wallet-filter="rejected">مرفوض</button></div></div></div><div class="wallet-layout"><div class="panel balance-panel"><div class="balance-top"><span>الرصيد الحالي</span><span class="balance-icon">◈</span></div><div class="balance-amount"><strong id="balanceAmount">0.00</strong><span>د.ل</span></div><div class="balance-line"></div><div class="balance-foot"><span>الحساب</span><b id="walletUserState"><i></i> غير مسجل</b></div></div><div id="topupForm" class="panel topup-form" aria-label="شحن المحفظة من ليبيانا">
+  <nav class="tp-progress" aria-label="خطوات الشحن">
+    <button type="button" data-tp-step="1" aria-current="step"><b>1</b><span>المبلغ</span></button>
+    <i aria-hidden="true"></i><button type="button" data-tp-step="2"><b>2</b><span>رقم المحوّل</span></button>
+    <i aria-hidden="true"></i><button type="button" data-tp-step="3"><b>3</b><span>مراجعة</span></button>
+  </nav>
+  <section class="tp-providers" aria-label="طريقة الشحن">
+    <button type="button" class="tp-change-provider" aria-expanded="false">تغيير ⇄</button>
+    <div class="tp-provider-grid">
+      <div class="tp-provider-card is-selected" aria-current="true"><span class="tp-provider-logo tp-libyana-logo">Li<span><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></span><strong>ليبيانا</strong><small>رصيد خطك</small></div>
+      <div class="tp-provider-card is-disabled" aria-label="المدار غير متاح حاليًا"><span class="tp-provider-logo tp-madar-logo">المدار</span><strong>المدار</strong><small>قريبًا</small></div>
+      <div class="tp-provider-card is-disabled" aria-label="التحويل البنكي غير متاح حاليًا"><span class="tp-provider-logo tp-bank-logo">▥</span><strong>المصرف</strong><small>قريبًا</small></div>
+    </div>
+  </section>
+  <section class="tp-panel tp-amount-panel">
+    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" focusable="false"><ellipse cx="8" cy="7" rx="5.5" ry="2.5"/><path d="M2.5 7v5c0 1.5 2.5 2.5 5.5 2.5s5.5-1 5.5-2.5V7"/><path d="M2.5 10c0 1.5 2.5 2.5 5.5 2.5s5.5-1 5.5-2.5"/><ellipse cx="16.5" cy="14" rx="5" ry="2.5"/><path d="M11.5 14v5c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-5"/><path d="M11.5 17c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5"/></svg></span> المبلغ</h3><span>د.ل</span></div>
+    <label for="topupAmount" class="tp-visually-hidden">قيمة الشحن بالدينار</label>
+    <input id="topupAmount" type="number" min="1" step="1" placeholder="اكتب القيمة بالدينار" inputmode="numeric" required>
+    <div class="quick-amounts" aria-label="مبالغ الشحن السريعة">
+      <button type="button" data-amount="1">1</button>
+      <button type="button" data-amount="5">5</button>
+      <button type="button" data-amount="10">10</button>
+      <button type="button" data-amount="20">20</button>
+      <button type="button" data-amount="30">30</button>
+      <button type="button" data-amount="50">50</button>
+    </div>
+  </section>
+  <section class="tp-panel tp-phone-panel">
+    <div class="tp-panel-heading"><h3><span class="tp-step-bubble" aria-hidden="true">⌕</span> رقم المحوّل</h3></div>
+    <div class="tp-number-row"><span id="topupVerifiedNumber" dir="ltr" aria-live="polite">جاري التحقق…</span><span id="topupPhoneState" class="tp-phone-state">فحص التوثيق</span></div>
+  </section>
+  <button id="topupProceed" type="button" class="tp-proceed">متابعة <span aria-hidden="true">←</span></button>
+  <div class="transfer-instructions" id="transferInstructions" aria-live="polite">اختار المبلغ واضغط متابعة لعرض كود التحويل.</div>
+</div></div><div class="panel history-panel"><div class="history-head"><h3>طلبات الشحن الأخيرة</h3><span class="muted">حسابك</span></div><div id="topupHistory" class="history-list"></div></div></section>
+<section class="section hidden" id="ordersView"><div class="section-head"><div><span class="eyebrow">ORDER TRACKING</span><h2>طلباتي</h2><p>طلبات الشراء والشحن المرتبطة بحسابك.</p></div></div><div id="ordersList" class="panel history-panel"></div></section>
+<section class="section hidden auth-guest" id="accountView" aria-label="حسابي">
+  <div class="auth-decoration" aria-hidden="true"><i></i><i></i><i></i></div>
+  <button type="button" class="auth-back" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>العودة للمتجر</button>
+  <div class="panel account-panel">
+    <div class="auth-hero">
+      <div class="auth-site-logo" role="img" aria-label="شعار متجر L1017n">
+        <span class="auth-site-logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 24.5h30c5.8 0 9.3 4 10.1 9.6l2.1 14.2c.6 4-3.7 6.4-6.7 3.8l-9.5-8.3H21l-9.5 8.3c-3 2.6-7.3.2-6.7-3.8l2.1-14.2c.8-5.6 4.3-9.6 10.1-9.6Z" fill="url(#authPadFill)" stroke="#D4B7FF" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M22 31v12m-6-6h12" stroke="#F7FFF7" stroke-width="3.7" stroke-linecap="round"/>
+            <circle cx="43.5" cy="33.5" r="3.3" fill="#85E6AC"/>
+            <circle cx="49.5" cy="40.5" r="3.3" fill="#E4BAFF"/>
+            <path d="M25 24.5c-.5-7.5 1.6-12 7-12s7.5 4.5 7 12" stroke="#93EDB4" stroke-width="3" stroke-linecap="round"/>
+            <defs><linearGradient id="authPadFill" x1="11" y1="22" x2="56" y2="49"><stop stop-color="#6F2FC7"/><stop offset=".52" stop-color="#47339C"/><stop offset="1" stop-color="#125D50"/></linearGradient></defs>
+          </svg>
+        </span>
+        <span class="auth-site-logo-name" dir="ltr">L1017n</span>
+      </div>
+      <h1 id="authHeading">تسجيل الدخول</h1>
+      <p id="authIntro" class="auth-subheading">أهلاً بيك في المتجر</p>
+    </div>
+    <div class="account-avatar">L</div><h3 id="accountTitle">أهلاً بيك في L1017n</h3><p id="accountText">سجّل دخولك عبر Google بسهولة، أو استخدم البريد وكلمة المرور. رقم الهاتف خاص بحساب واحد فقط.</p>
+    <form id="authForm">
+      <div class="auth-mode-switch" role="group" aria-label="نوع الحساب">
+        <button id="authModeLogin" class="btn btn-soft active" type="button" aria-pressed="true">تسجيل الدخول</button>
+        <button id="authModeSignup" class="btn btn-soft" type="button" aria-pressed="false">إنشاء حساب</button>
+      </div>
+      <div class="auth-google-wrap">
+        <button id="googleSignInBtn" class="auth-google-button" type="button" aria-label="المتابعة باستخدام حساب Google">
+          <span class="auth-google-letter" aria-hidden="true">G</span>
+          <span class="auth-google-label">المتابعة باستخدام Google</span>
+        </button>
+        
+        <div class="auth-returning-tip" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 5 3 7 8 9 5-2 8-4 8-9V7l-8-4Z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 13 2 2 4-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>زرتنا قبل؟ إذا جلستك ما زالت صالحة بندخلك تلقائيًا. وإذا لا، اضغط Google واختار نفس حسابك القديم عشان ترجع طلباتك ورصيدك.</span></div>
+        <div class="auth-google-divider" aria-hidden="true"><span>أو باستخدام البريد الإلكتروني</span></div>
+      </div>
+      <div class="auth-field"><label for="authEmail">البريد الإلكتروني</label><div class="auth-input-wrap">
+        <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+        <input id="authEmail" name="email" type="email" dir="ltr" placeholder="name@example.com" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+      </div></div>
+      <div id="authPublicProfileSignup" class="hidden">
+        <div class="auth-field"><label for="authPublicName">اسمك في المتجر</label><div class="auth-input-wrap">
+          <input id="authPublicName" name="public_name" type="text" maxlength="40" minlength="2" autocomplete="nickname" placeholder="اكتب الاسم اللي تبي يظهر في حسابك">
+        </div></div>
+        <label class="gb-share-check" for="authPublicIdentity"><input type="checkbox" id="authPublicIdentity" checked>
+          <span>إظهار اسمي وصورتي في التصنيف</span>
+        </label>
+      </div>
+      <div class="auth-field"><label for="authPhone">رقم الهاتف</label><div class="auth-input-wrap">
+        <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.7 19.7 0 0 1 11.2 19a19.4 19.4 0 0 1-6-6A19.7 19.7 0 0 1 2.1 4.3 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 2.9a2 2 0 0 1-.6 1.8L7.2 10a16 16 0 0 0 6.8 6.8l1.7-1.8a2 2 0 0 1 1.8-.6l2.9.5a2 2 0 0 1 1.6 2Z"/></svg>
+        <input id="authPhone" name="phone" type="tel" dir="ltr" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="tel-national" minlength="9" maxlength="18" required>
+      </div><small class="form-note">رقم واحد لكل حساب، والتوثيق برسالة SMS.</small></div>
+      <div class="auth-field"><label for="authPassword">كلمة المرور</label><div class="auth-input-wrap">
+        <input id="authPassword" name="password" type="password" dir="ltr" placeholder="••••••••" minlength="6" autocomplete="current-password" aria-describedby="authStatus" required>
+        <button type="button" id="authPasswordToggle" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="auth-eye-slash" d="m4 4 16 16"/></svg></button>
+      </div></div>
+      <button id="forgotPassword" class="text-button" type="button">نسيت كلمة المرور؟</button>
+      <p id="authStatus" class="form-note" role="status" aria-live="polite"></p>
+      <button id="authSubmit" class="btn btn-primary full-width" type="submit">تسجيل الدخول</button>
+      <p class="auth-minimal-privacy" role="note">قد يظهر اسمك وصورتك في التصنيف. تقدر تخفيهما من إعدادات حسابك.</p>
+      <div class="auth-alternate"><p id="authAlternateText">ليس لديك حساب؟</p><button type="button" id="authAlternate">إنشاء حساب</button></div>
+    </form>
+    <div id="accountModern" class="hidden">
+      <button type="button" class="l1017-account-referral-link" data-view="referrals" aria-label="فتح صفحة شارك واربح">
+        <svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-gift"></use></svg>
+        <span><strong>شارك واربح</strong><small>شارك رابطك واربح 1 د.ل عند تسجيل دخول صديقك بحساب مؤكّد</small></span>
+        <svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-share"></use></svg>
+      </button>
+      <div class="account-id-card">
+        <span class="account-gold-crown" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4L2 7Z"/></svg></span>
+        <div class="account-id-top">
+          <div class="account-id-portrait">
+            <div class="account-id-avatar" id="accountModernAvatar" aria-label="الصورة الشخصية">L</div>
+            <span class="account-google-badge" id="accountGoogleBadge" aria-label="حساب Google" hidden>G</span>
+          </div>
+          <div class="account-id-details">
+            <strong id="accountModernName">L1017n</strong>
+            <span id="accountModernEmail"></span>
+            <small>نشط</small>
+          </div>
+        </div>
+        <div class="account-id-reference">
+          <button type="button" id="accountCopyId" aria-label="نسخ معرّف الحساب" title="نسخ المعرّف"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="2"/><path d="M16 4V3a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v12a1 1 0 0 0 1 1h1"/></svg></button>
+          <code id="accountModernId" dir="ltr">—</code>
+          <span class="account-id-label">معرّف حسابك</span>
+          <span class="account-id-reference-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M3 9h18M7 14h4M7 17h7"/></svg></span>
+        </div>
+        <span id="accountMemberSince" hidden></span>
+      </div>
+      <section class="account-balance-summary" aria-label="ملخص الرصيد والإنفاق">
+        <div class="account-balance-tile account-balance-current">
+          <div class="account-balance-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 9V6a3 3 0 0 1 3-3h12"/><path d="M14 13h7v4h-7a2 2 0 0 1 0-4Z"/></svg></div>
+          <div class="account-balance-details"><span>رصيدك الحالي</span><strong><b id="accountCurrentBalance" dir="ltr">—</b><small>د.ل</small></strong></div>
+        </div>
+        <div class="account-balance-tile account-balance-spent">
+          <div class="account-balance-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="m7 15 4-5 4 3 5-6"/><path d="M16 7h4v4"/></svg></div>
+          <div class="account-balance-details"><span>الرصيد المنفق</span><strong><b id="accountSpentBalance" dir="ltr">—</b><small>د.ل</small></strong></div>
+        </div>
+      </section>
+      <h3 class="account-group-title">الحساب</h3>
+      <div class="account-settings-list account-core-settings">
+        <a id="accountReportsAdminLink" class="hidden" hidden href="./admin.html" aria-label="فتح لوحة إدارة المتجر وتقارير المبيعات والأرباح" aria-hidden="true"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 16v-4m5 4V8m5 8V6"/></svg></span><span class="account-core-copy"><b>لوحة الإدارة</b><small>الطلبات · المبيعات والأرباح · محافظ الزبائن</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></a>
+        <button type="button" id="accountCardAdminButton" hidden aria-label="مراجعة كروت شحن المحفظة من حساب المسؤول"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18m-13 5h6"/></svg></span><span class="account-core-copy"><b>مراجعة كروت المحفظة</b><small>أرقام مشفّرة · للمسؤول المعتمد فقط</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="personal"><span class="account-row-icon account-icon-personal" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20v-2.1a6.5 6.5 0 0 1 13 0V20"/><path d="M3 20h18"/></svg></span><span class="account-core-copy"><b>المعلومات الشخصية</b><small>الاسم وبيانات الحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>توثيق رقم الهاتف</b><small>تأكيد الرقم برمز SMS</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="ranking-privacy" aria-label="خصوصية التصنيف وإظهار الاسم والصورة الشخصية"><span class="account-row-icon account-icon-ranking-privacy" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5.2-3.5 8.5-8 10-4.5-1.5-8-4.8-8-10V7l8-4Z"/><path d="M9 12.3l2.1 2.1 4.1-4.4"/></svg></span><span class="account-core-copy"><b>خصوصية التصنيف</b><small>إظهار أو إخفاء اسمك وصورتك وترتيبك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" id="accountPurchasePrivacyButton" data-account-action="purchase-privacy" aria-label="التحكم في ظهور اسمي في قائمة آخر المشتريات"><span class="account-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M5 3h14v18H5z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span><span class="account-core-copy"><b>خصوصية المشتريات</b><small>إظهار أو إخفاء اسمك بجانب مشترياتك العامة</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="history" aria-label="عرض سجل الشحن والمدفوعات"><span class="account-row-icon account-icon-history" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 13h5M7 16h3M16 13h2"/></svg></span><span class="account-core-copy"><b>سجل الشحن والمدفوعات</b><small>تابع شحن محفظتك ومشترياتك وحالة كل عملية</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="notifications"><span class="account-row-icon account-icon-notifications" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="account-core-copy"><b>الإشعارات والتنبيهات</b><small>متابعة حالة طلباتك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+      </div>
+      <h3 class="account-group-title">تواصل معنا</h3>
+      <div class="account-settings-list account-contact-options">
+        <button type="button" data-account-action="help" aria-label="المساعدة والدعم، فتح واتساب مباشرة"><span class="account-row-icon account-help-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.7-2.5 2.1-2.5 3.8"/><path d="M12 17h.01" stroke-width="2.7"/></svg></span><span class="account-contact-text"><b>المساعدة والدعم</b><small>تواصل مباشرة عبر واتساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+        <button type="button" data-account-action="faq" aria-label="فتح الأسئلة الشائعة"><span class="account-row-icon account-faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9a2.7 2.7 0 0 1 5.4.3c0 1.9-2.7 2.2-2.7 4"/><path d="M12 17.5h.01"/></svg></span><span class="account-contact-text"><b>الأسئلة الشائعة</b><small>الشحن والشراء ومتابعة الطلبات</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
+         <a class="account-tiktok-link" href="https://www.tiktok.com/@l1017n" target="_blank" rel="noopener noreferrer" aria-label="افتح حساب L1017n على تيك توك"><span class="account-row-icon account-tiktok-icon"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><path fill="#25F4EE" d="M15.5 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3a9.3 9.3 0 0 1-6.5-2.4v7.6c0 4.2-3.2 7.3-7.2 7.3-2 0-3.8-.8-5.1-2.2a7.2 7.2 0 0 1 6.3-11.9v3.5a3.8 3.8 0 0 0-3.9 3.7 3.7 0 0 0 3.7 3.7c2 0 3.4-1.5 3.4-3.8V2z" transform="translate(-1 1)"/><path fill="#FE2C55" d="M16.3 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3a9.3 9.3 0 0 1-6.5-2.4v7.6c0 4.2-3.2 7.3-7.2 7.3-2 0-3.8-.8-5.1-2.2a7.2 7.2 0 0 1 6.3-11.9v3.5a3.8 3.8 0 0 0-3.9 3.7 3.7 0 0 0 3.7 3.7c2 0 3.4-1.5 3.4-3.8V2z" transform="translate(1 -1)"/><path fill="#fff" d="M16 2h3.1c.2 2.2 1.5 3.5 3.4 3.8v3.3A9.3 9.3 0 0 1 16 6.7v7.6c0 4.2-3.2 7.3-7.2 7.3a7.2 7.2 0 0 1 0-14.4v3.5a3.7 3.7 0 1 0 3.7 3.7V2z"/></svg></span><b>تيك توك</b><small>@l1017n</small><span class="account-row-arrow">‹</span></a>
+      </div>
+      <div id="accountSettingsDetail" class="account-settings-detail hidden" aria-live="polite"></div>
+    </div>
+    <button class="btn btn-primary hidden" id="openAdminDashboard" type="button">لوحة الإدارة <svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-settings"></use></svg></button>
+    <button class="btn btn-soft hidden" id="logoutBtn" type="button">تسجيل الخروج</button>
+    <button class="btn btn-soft account-wallet-link" data-view="wallet">افتح المحفظة</button>
+  </div>
+</section>
+
+<section class="section hidden" id="adminView">
+  <div class="section-head"><div><span class="eyebrow">ADMIN CONTROL</span><h2>لوحة إدارة المتجر</h2><p>إدارة طلبات الشحن والشراء والمنتجات.</p></div><button class="btn btn-soft" id="refreshAdmin" type="button">تحديث البيانات ↻</button></div>
+  <div id="adminStatus" class="panel"><p class="muted">جاري التحقق من صلاحيات الإدارة…</p></div>
+  <div id="adminContent" class="hidden">
+    <section class="admin-dashboard"><div class="section-head"><div><h3>إدارة طلبات الروبوكس</h3><p>يمكن استقبال طلبات روبوكس دون حد مخزون مسجّل، بينما يبقى التنفيذ والتسليم بعد مراجعة الطلب. لا يعني ذلك امتلاك روبوكس غير محدودة فعليًا.</p></div></div><p id="adminRobuxStockMode" class="form-note" role="status">جاري التحقق من وضع المخزون…</p><div class="admin-stock-control"><label for="adminRobuxStock">كمية Robux المرجعية</label><input id="adminRobuxStock" type="number" min="0" step="1" value="1000"><button class="btn btn-primary" id="saveAdminRobuxStock" type="button">حفظ المخزون</button></div></section>
+    <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشحن</h3><p>اعتماد الطلب يضيف الرصيد مرة واحدة فقط.</p></div></div><div id="adminTopups"><p class="muted">جاري التحميل…</p></div></section>
+    <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشراء</h3><p>رفض الطلب يرجّع المبلغ للمحفظة تلقائياً.</p></div></div><div id="adminPurchases"><p class="muted">جاري التحميل…</p></div></section>
+    <section class="admin-dashboard"><div class="section-head"><div><h3>المنتجات والباقات</h3><p>إضافة المنتجات وتعديل الأسعار أو إخفاء الباقات.</p></div></div>
+      <form id="adminProductForm" class="topup-form">
+        <input id="adminProductId" type="hidden">
+        <label for="adminProductKey">معرّف المنتج (product_key)</label><input id="adminProductKey" type="text" maxlength="100" required placeholder="roblox-100">
+        <label for="adminProductName">اسم المنتج</label><input id="adminProductName" type="text" maxlength="160" required placeholder="100 Robux">
+        <label for="adminProductGame">اللعبة</label><input id="adminProductGame" type="text" maxlength="80" placeholder="roblox">
+        <label for="adminProductAmount">الكمية</label><input id="adminProductAmount" type="number" min="1" step="1" required>
+        <label for="adminProductPrice">السعر بالدينار الليبي</label><input id="adminProductPrice" type="number" min="0.01" step="0.01" required>
+        <label for="adminProductSort">ترتيب العرض</label><input id="adminProductSort" type="number" step="1" value="0">
+        <label for="adminProductDescription">الوصف</label><textarea id="adminProductDescription" rows="2" maxlength="1000" placeholder="وصف مختصر للباقة"></textarea>
+        <label class="transfer-confirm"><input id="adminProductActive" type="checkbox" checked><span>المنتج ظاهر في المتجر</span></label>
+        <div class="admin-request-actions"><button class="btn btn-primary" type="submit">حفظ المنتج</button><button class="btn btn-soft" id="cancelAdminProductEdit" type="button">تفريغ النموذج</button></div>
+      </form>
+      <div id="adminProducts" style="margin-top:18px"><p class="muted">جاري التحميل…</p></div>
+    </section>
+  </div>
+</section>
+
+</main>
+<section class="section leaderboard-section hidden" id="leaderboardView" aria-label="تصنيف المتسوقين">
+  <h1 class="lb-glass-title"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 9 7 5 6-10 6 10 7-5-3 16H6L3 9Zm3 18h20v3H6z"/></svg>التصنيف</h1>
+  <div id="lbMyRank" class="lb-self hidden" aria-live="polite"></div>
+  <div class="lb-section-label"><h2><span class="lb-gold-icon" aria-hidden="true"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-trophy"></use></svg></span> المتصدرين الثلاثة</h2><button class="lb-refresh" id="refreshLeaderboard" type="button">↻ تحديث</button></div>
+  <div id="leaderboardList" aria-live="polite"><p class="lb-empty-message">جاري تحميل الترتيب…</p></div>
+  <div class="lb-prize"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-trophy"></use></svg> جائزة المركز الأول: <strong>100 روبوكس</strong></div>
+  <p class="leaderboard-privacy">يمكن للمتسوقين إظهار الاسم والصورة الشخصية في التصنيف سواء سجلوا بالبريد أو Google. تحكم في ظهور هويتك أو ترتيبك من «حسابي ← خصوصية التصنيف». البريد ورقم الهاتف وتفاصيل الطلبات تظل خاصة.</p>
+</section>
+<section class="section hidden" id="referralsView" aria-label="دعوة صديق ومكافآت الدعوات" dir="rtl">
+  <div class="l1017-ref-page-top">
+    <button class="l1017-ref-page-back" type="button" data-view="account" aria-label="الرجوع إلى حسابي"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg><span>سوّق واربح</span></button>
+  </div>
+</section>
+<footer><a class="brand" href="#"><span class="brand-mark">L</span><span><b>L1017n</b><small>متجرك الرقمي</small></span></a><span>© <span id="year"></span> L1017n. صنع بحب في ليبيا.</span><button type="button" class="footer-faq-link" data-faq-open aria-label="فتح صفحة الأسئلة الشائعة">الأسئلة الشائعة</button><span class="footer-status"><a class="footer-track-link" href="#orders" data-view="orders" aria-label="متابعة طلباتك من صفحة طلباتي"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-package"></use></svg><span>تابع طلباتك من «طلباتي»</span></a></span></footer>
+<nav class="mobile-nav" aria-label="التنقل السفلي"><button data-view="home" class="active" style="background:#fff!important;color:#172130!important;border:1px solid #fff!important;border-radius:17px!important;box-shadow:0 4px 14px #0005!important;" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button><button data-view="orders"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10M7 8h10M7 12h10M7 16h6"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg><span>طلباتي</span></button><button data-view="leaderboard"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg><span>التصنيف</span></button><button data-view="wallet"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg><span>المحفظة</span></button><button data-view="account"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>حسابي</span></button></nav>
+<div class="topup-modal hidden" id="topupModal" role="dialog" aria-modal="true" aria-labelledby="topupModalTitle" dir="rtl"><div class="topup-modal-sheet"><div class="topup-modal-heading"><button type="button" id="topupModalClose" class="topup-modal-close" aria-label="إغلاق"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-x"></use></svg></button><span class="topup-modal-tag">L1017n WALLET</span></div><div class="topup-modal-hero"><div class="topup-modal-symbol">＋</div><h2 id="topupModalTitle">شحن المحفظة</h2><p>الشحن الآلي متاح لرقم ليبيانا المفعّل في حسابك.</p></div><div class="topup-modal-content"><h3>طريقة الشحن الآلي</h3><button type="button" class="topup-modal-provider selected" data-modal-provider="libyana"><span class="topup-modal-provider-logo libyana">L</span><span><strong>ليبيانا</strong><small>شحن رصيد المحفظة عبر ليبيانا</small></span><span class="topup-modal-check"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></button><div class="topup-modal-info"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-lock"></use></svg> اختار المبلغ، افتح كود USSD وأكد التحويل من ليبيانا. إذا وصل إشعار ليبيانا مطابق للطلب والرقم الموثّق، يُعتمد الشحن المؤهّل تلقائيًا. العمليات غير المطابقة أو الكبيرة تحتاج مراجعة.</div><button type="button" id="topupModalContinue" class="topup-modal-continue">متابعة للشحن الآلي <span>←</span></button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="gamebox-loading.js?v=entry-splash-20261102-1"></script>
+<script>
+(function(){
+  function showError(text){
+    var box=document.getElementById('site-load-error');
+    if(!box){box=document.createElement('div');box.id='site-load-error';box.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:16px;background:#401818;color:white;border-radius:12px;text-align:center;font:16px sans-serif';document.body.appendChild(box)}
+    box.textContent=text;
+  }
+  window.addEventListener('error',function(e){
+    var message=String(e.message||'');
+    // Browser layout notification, not a failed checkout or an application
+    // exception. Never cover the MM2 quantity/checkout interface with it.
+    if(/^ResizeObserver loop (?:limit exceeded|completed with undelivered notifications)\.?$/i.test(message)){
+      if(typeof e.preventDefault==='function')e.preventDefault();
+      return;
+    }
+    showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));
+  });
+  window.addEventListener('unhandledrejection',function(e){
+    var reason=e.reason;console.error('[L1017N] Unhandled async error:',reason&&reason.stack||reason);showError('خطأ أثناء تشغيل المتجر: '+(reason&&reason.message?reason.message:String(reason||'غير معروف')));
+  });
+  function startApp(){
+    if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
+    try{
+      var s=document.createElement('script');s.src='app.js?v=animated-order-cards-20261108-1&account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1';
+      s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
+      s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
+      document.body.appendChild(s);
+    }catch(e){showError('خطأ أثناء تشغيل المتجر: '+(e.message||e))}
+  }
+  var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload=startApp;s.onerror=function(){showError('تعذر الاتصال بمكتبة المتجر. جرّب شبكة أخرى أو افتح الموقع في Safari/Chrome.')};
+  document.head.appendChild(s);
+})();
+</script>
+<script src="game-transitions.js?v=roblox-only1"></script>
+<script src="order-handover.js?v=delivery-policy-20261103-1"></script>
+<script src="store-menu.js?v=mm2-phantom-40-20261107-1"></script>
+<script src="brainrot-store.js?v=garama-four-stock-20261105-1" defer></script>
+<!-- Legacy duplicate Libyana phone form removed; accountPhoneGate and Resala OTP remain active. -->
+<script src="resala-otp.js?v=remove-unverified-phone-20261105-1"></script>
+<script src="phone-verification-page.js?v=edit-number-inline-20261105-1"></script>
+<script src="phone-change-page.js?v=change-phone-verified-20261105-1" defer></script>
+<script src="card-topup-page.js?v=pink-card-amount-grid-20261108-1" defer></script>
+<script src="card-topup-admin.js?v=audited-private-view-20261105-1" defer></script>
+<script src="recent-purchases.js?v=recent-real-orders-20261105-1" defer></script>
+<script src="purchase-phone.js?v=unified-ui-icons-20261103-1"></script>
+<script src="instant-code.js?v=clipboard-fix-20261103-1"></script>
+<script src="nav-bubble.js?v=account-recovery9"></script>
+<script>
+/* Reliable checkout navigation: capture Continue before legacy click handlers. */
+document.addEventListener('click',async function(e){
+  var next=e.target.closest('#robuxModal .robux-checkout-next');
+  if(!next)return;
+  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+  var modal=document.getElementById('robuxModal');
+  var selected=modal&&modal.querySelector('.robux-package.selected');
+  if(!selected)return;
+  var box=modal.querySelector('#purchaseBox');
+  if(!box)return;
+  try{
+    if(typeof selectPackage==='function')await selectPackage(selected.getAttribute('data-robux'));
+    if(!box.querySelector('#purchaseForm')){
+      alert('تعذر تحميل نموذج الطلب. حدّث الصفحة وجرب مرة ثانية.');
+      return;
+    }
+    document.getElementById('robuxPurchaseScreen')?.remove();
+    var screen=document.createElement('div');
+    screen.id='robuxPurchaseScreen';
+    screen.dir='rtl';
+    screen.style.cssText='position:fixed!important;inset:0!important;z-index:2147483647!important;overflow:auto!important;display:block!important;background:#0a1428!important;color:white!important;padding:65px 18px 40px!important;box-sizing:border-box!important';
+    var back=document.createElement('button');
+    back.type='button';back.textContent='→ رجوع للباقات';
+    back.style.cssText='padding:12px 18px;border-radius:12px;background:#253c61;color:white;border:1px solid #526c94;margin-bottom:25px';
+    var title=document.createElement('h2');title.textContent='إكمال طلب روبلوكس';
+    screen.append(back,title,box);
+    box.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;max-width:600px;margin:25px auto';
+    back.onclick=function(){modal.querySelector('.robux-store-box').appendChild(box);box.style.display='none';screen.remove()};
+    document.body.appendChild(screen);
+    document.querySelector('#robuxModal .robux-checkout-bar')?.classList.remove('visible');
+  }catch(err){alert('تعذر فتح الطلب: '+(err.message||err))}
+},true);
+</script>
+<style>
+#walletView #topupForm{display:none!important}
+/* Prevent stale customer-journey scripts from showing the old big green guide. */
+#topupDedicatedPage #gbWalletGuide,#walletView #gbWalletGuide,#topupDedicatedPage .tp-steps{display:none!important}
+#topupDedicatedPage{position:fixed!important;inset:0!important;z-index:999990!important;background:#0b1510!important;overflow-y:auto!important;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top)) 16px calc(45px + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;direction:rtl}
+#topupDedicatedPage #topupForm{display:block!important;width:100%!important;max-width:680px!important;margin:20px auto!important;box-sizing:border-box!important}
+#topupDedicatedPage .topup-dedicated-back{background:#23392b;color:#d8ffc1;border:1px solid #54775a;border-radius:14px;padding:12px 18px;font:inherit}
+#topupDedicatedPage .topup-dedicated-title{font-size:25px;color:#f3fff0;margin:22px 0 12px}
+</style>
+<script>
+(function(){
+function openDedicatedTopup(e){
+  if(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}
+  var form=document.getElementById('topupForm');
+  if(!form)return;
+  var page=document.getElementById('topupDedicatedPage');
+  if(page){page.scrollTop=0;return}
+  page=document.createElement('div');page.id='topupDedicatedPage';
+  var back=document.createElement('button');back.type='button';back.className='topup-dedicated-back';back.textContent='→ رجوع للمحفظة';
+  var title=document.createElement('h2');title.className='topup-dedicated-title';title.textContent='شحن المحفظة';
+  var marker=document.createComment('topup-form-original-position');form.parentNode.insertBefore(marker,form);
+  var heading=document.createElement('div');heading.className='tp-dedicated-heading';heading.append(title,back);
+  var hero=document.createElement('div');hero.className='tp-clean-header';
+  var heroCopy=document.createElement('div');heroCopy.className='tp-clean-copy';
+  heroCopy.appendChild(title);hero.appendChild(heroCopy);
+  page.append(heading,hero,form);document.body.appendChild(page);
+  var cardShortcut=document.createElement('button');cardShortcut.type='button';cardShortcut.id='topupDedicatedCardEntry';cardShortcut.textContent='شحن بالكروت';
+  cardShortcut.addEventListener('click',function(){if(typeof window.openCardTopupPage==='function')window.openCardTopupPage()});
+  heading.appendChild(cardShortcut);
+  var walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
+  var topupLogo=page.querySelector('.tp-libyana-logo');
+  if(walletLogo&&topupLogo){topupLogo.textContent='';topupLogo.appendChild(walletLogo.cloneNode(false))}
+  if(typeof window.renderTopupPhoneStatus==='function')window.renderTopupPhoneStatus();
+  back.onclick=function(){marker.parentNode.insertBefore(form,marker);marker.remove();page.remove()};
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('#walletActionTopup'))openDedicatedTopup(e);
+},true);
+window.openDedicatedTopup=openDedicatedTopup;
+})();
+</script>
+<style>
+.madar-wallet-card{background:linear-gradient(145deg,#153a2d,#0d201a);border:1px solid #4d9574;border-radius:22px;padding:22px;margin:18px 0;color:#f0fff7;box-shadow:0 10px 28px #0002}
+.madar-wallet-card-top{display:flex;align-items:center;gap:14px}.madar-wallet-logo{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:#348f63;color:#fff;font-size:29px;font-weight:800}.madar-wallet-card strong{display:block;font-size:20px}.madar-wallet-card small{display:block;color:#b5d5c4;margin-top:4px}.madar-wallet-card p{color:#bdd0c4;font-size:13px;margin:18px 0}.madar-wallet-card button{width:100%;background:#77d59e;color:#092118;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:800}
+</style>
+<script>
+document.addEventListener('click',function(e){var btn=e.target.closest('#madarWalletTopup');if(!btn)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();var radio=document.querySelector('#topupForm input[name="provider"][value="madar"]');if(radio){radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}))}}},true);
+</script>
+<style>
+/* Wallet reference-inspired mobile design */
+#walletView{background:#070d19!important;color:#eef3ff!important;padding-bottom:110px!important}
+#walletView>.section-head{padding:26px 8px 20px!important}
+#walletView>.section-head .eyebrow{display:none!important}
+#walletView>.section-head h2{font-size:36px!important;font-weight:800!important;color:#f2f5ff!important}
+#walletView .wallet-subtitle{color:#8997b3!important;font-size:15px!important;margin-bottom:22px!important}
+#walletView .wallet-carousel{display:flex!important;gap:15px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;scrollbar-width:none!important;padding:3px 2px 14px!important}
+#walletView .wallet-carousel::-webkit-scrollbar{display:none}
+#walletView .wallet-carousel>.wallet-hero,#walletView .wallet-carousel>.madar-wallet-card{flex:0 0 92%!important;min-width:0!important;scroll-snap-align:center!important;box-sizing:border-box!important;height:235px!important;margin:0!important;border-radius:26px!important;position:relative!important;overflow:hidden!important}
+#walletView .wallet-hero{background:radial-gradient(circle at 8% 8%,#ca72ca 0%,transparent 39%),linear-gradient(130deg,#b953b4,#93208f)!important;border:0!important;padding:25px 22px!important;box-shadow:0 12px 30px #4c13504d!important}
+#walletView .wallet-hero:after{content:'L';position:absolute;bottom:-70px;left:-14px;font-size:220px;font-weight:900;color:#ffffff12;pointer-events:none}
+#walletView .wallet-hero-top strong{color:white!important;font-size:21px!important}
+#walletView .wallet-hero-top small{color:#f5d8f1!important;font-size:13px!important}
+#walletView .wallet-primary-badge{background:#ffffff25!important;border:1px solid #ffffff75!important;color:white!important;border-radius:40px!important;padding:9px!important}
+#walletView .wallet-hero-balance{position:absolute!important;bottom:25px!important;right:22px!important;left:auto!important;text-align:right!important}
+#walletView .wallet-hero-balance span{color:#ffe8ff!important}
+#walletView .wallet-hero-balance strong{font-size:34px!important;color:white!important}
+#walletView .wallet-hero-balance b{color:white!important}
+#walletView .madar-wallet-card{background:radial-gradient(circle at 10% 15%,#449cf4,transparent 45%),linear-gradient(140deg,#147ae8,#0754ba)!important;border:0!important;padding:25px 22px!important;box-shadow:0 12px 30px #073e8a55!important}
+#walletView .madar-wallet-card p{color:#d3e7ff!important}
+#walletView .madar-wallet-card button{background:#ffffff2c!important;border:1px solid #ffffff70!important;color:white!important}
+#walletView .wallet-carousel-dots{display:flex;justify-content:center;gap:8px;margin:8px 0 24px}
+#walletView .wallet-carousel-dots span{width:9px;height:9px;background:#263653;border-radius:10px}
+#walletView .wallet-carousel-dots .active{width:28px;background:#a532a5}
+#walletView .wallet-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;background:#0e172a!important;border:1px solid #263652!important;border-radius:24px!important;padding:22px 12px!important;margin:0 0 34px!important}
+#walletView .wallet-action{display:flex!important;flex-direction:column!important;align-items:center!important;gap:10px!important;background:transparent!important;border:0!important;color:#f1f3ff!important;padding:0!important}
+#walletView .wallet-action-icon{width:55px!important;height:55px!important;display:grid!important;place-items:center!important;border-radius:18px!important;background:#24172f!important;color:#b83bb5!important;font-size:30px!important}
+#walletView #walletActionTopup .wallet-action-icon{background:#922591!important;color:white!important}
+#walletView #walletActionPrimary .wallet-action-icon{background:#113438!important;color:#36d5a0!important}
+#walletView .wallet-recent-head h3{font-size:24px!important;color:#f0f3ff!important}
+#walletView .wallet-filter-tabs{display:flex!important;gap:7px!important;overflow-x:auto!important}
+#walletView .wallet-filter-tabs button{border-radius:30px!important;white-space:nowrap!important;background:#0e1729!important;color:#d8e0f3!important;border:1px solid #273753!important}
+#walletView .wallet-filter-tabs button.active{background:#edf3ff!important;color:#09162b!important}
+#walletView .balance-panel{display:none!important}
+</style>
+<style>
+/* Compact wallet cards for small iPhone screens */
+@media(max-width:600px){
+#walletView{padding-inline:12px!important}
+#walletView>.section-head{padding:12px 4px 8px!important}
+#walletView>.section-head h2{font-size:27px!important;margin:0!important}
+#walletView .wallet-subtitle{font-size:12px!important;margin:5px 0 12px!important}
+#walletView .wallet-carousel{gap:10px!important;padding-bottom:8px!important}
+#walletView .wallet-carousel>.wallet-hero,#walletView .wallet-carousel>.madar-wallet-card{flex-basis:84%!important;height:176px!important;border-radius:20px!important;padding:17px!important}
+#walletView .wallet-hero-top strong{font-size:17px!important}
+#walletView .wallet-hero-top small{font-size:11px!important}
+#walletView .wallet-primary-badge{font-size:11px!important;padding:6px!important}
+#walletView .wallet-hero-balance{bottom:15px!important;right:17px!important}
+#walletView .wallet-hero-balance strong{font-size:28px!important}
+#walletView .madar-wallet-card strong{font-size:16px!important}
+#walletView .madar-wallet-card p{font-size:11px!important;margin:10px 0!important}
+#walletView .madar-wallet-card button{padding:9px!important;font-size:12px!important}
+#walletView .wallet-carousel-dots{margin:4px 0 14px!important}
+#walletView .wallet-actions{padding:14px 8px!important;border-radius:19px!important;margin-bottom:22px!important}
+#walletView .wallet-action-icon{width:46px!important;height:46px!important;font-size:25px!important;border-radius:14px!important}
+#walletView .wallet-action b{font-size:12px!important}
+#walletView .wallet-recent-head h3{font-size:19px!important}
+}
+</style>
+<style>
+/* Keep full card width, reduce only height; same sizing for both wallets */
+@media(max-width:600px){
+#walletView .wallet-carousel>.wallet-hero,
+#walletView .wallet-carousel>.madar-wallet-card{
+ flex:0 0 92%!important;
+ width:92%!important;
+ height:155px!important;
+ min-height:155px!important;
+ max-height:155px!important;
+ padding:15px 18px!important;
+ border-radius:20px!important;
+}
+#walletView .wallet-hero-balance{bottom:12px!important;right:18px!important}
+#walletView .wallet-hero-balance strong{font-size:27px!important}
+#walletView .madar-wallet-card-top{gap:10px!important}
+#walletView .madar-wallet-logo{width:43px!important;height:43px!important;font-size:23px!important}
+#walletView .madar-wallet-card p{margin:7px 0!important}
+#walletView .madar-wallet-card button{padding:7px!important}
+}
+</style>
+<style>
+/* Wallet cards matching requested visual reference */
+#walletView .wallet-carousel>.wallet-hero,#walletView .wallet-carousel>.madar-wallet-card{height:195px!important;min-height:195px!important;max-height:195px!important;flex:0 0 92%!important;width:92%!important;border-radius:23px!important;padding:20px!important;isolation:isolate}
+#walletView .wallet-hero{background:radial-gradient(circle at 10% 4%,#cb78cb 0%,transparent 44%),linear-gradient(125deg,#b44cb2,#922096)!important}
+#walletView .wallet-hero:before,#walletView .madar-wallet-card:before{content:'';position:absolute;top:-75px;left:-65px;width:200px;height:200px;border-radius:50%;background:#ffffff17;pointer-events:none;z-index:-1}
+#walletView .wallet-hero:after{content:'لي';font-size:115px;bottom:-43px;left:9px;color:#ffffff12}
+#walletView .wallet-hero-top{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:8px!important}
+#walletView .wallet-hero-top>div{display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;column-gap:10px!important;align-items:center!important}
+#walletView .wallet-hero-top .wallet-hero-icon{grid-row:span 2!important;width:46px!important;height:46px!important;display:grid!important;place-items:center!important;background:#ffffff35!important;border-radius:13px!important;font-size:22px!important;color:#fff!important}
+#walletView .libyana-brand-mark span{display:block!important;font-size:23px!important;font-weight:900!important;font-style:italic!important;color:white!important;line-height:1!important}
+#walletView .wallet-hero-top strong{font-size:17px!important;white-space:nowrap!important}
+#walletView .wallet-hero-top small{font-size:11px!important}
+#walletView .wallet-primary-badge{white-space:nowrap!important;font-size:11px!important;padding:7px!important}
+#walletView .wallet-hero-balance{bottom:20px!important;right:20px!important}
+#walletView .wallet-hero-balance strong{font-size:30px!important}
+#walletView .madar-wallet-card{background:radial-gradient(circle at 12% 10%,#3bb888,transparent 45%),linear-gradient(130deg,#118c69,#075a48)!important;border:0!important;box-shadow:0 12px 30px #064d3c4d!important}
+#walletView .madar-wallet-card-top{display:flex!important;align-items:center!important;gap:10px!important}
+#walletView .madar-wallet-logo{width:48px!important;height:48px!important;flex-shrink:0!important;border-radius:14px!important;background:#ffffff27!important;font-size:29px!important}
+#walletView .madar-wallet-card strong{font-size:17px!important}
+#walletView .madar-wallet-card small{font-size:11px!important;color:#e0fff1!important}
+#walletView .madar-wallet-card p{font-size:11px!important;color:#d8f9e9!important;margin:12px 0 9px!important}
+#walletView .madar-wallet-card button{padding:9px!important;background:#ffffff27!important;border:1px solid #ffffff65!important;color:white!important;border-radius:12px!important}
+#walletView .wallet-actions{background:#0e182b!important;border:1px solid #263654!important}
+#walletView .wallet-recent-head{margin-top:14px!important}
+@media(max-width:390px){
+#walletView .wallet-carousel>.wallet-hero,#walletView .wallet-carousel>.madar-wallet-card{height:180px!important;min-height:180px!important;max-height:180px!important;padding:16px!important}
+#walletView .wallet-hero-top strong,#walletView .madar-wallet-card strong{font-size:15px!important}
+#walletView .wallet-hero-top small{font-size:10px!important}
+}
+</style>
+<script>
+(function(){var track=document.querySelector('#walletView .wallet-carousel');var dots=document.querySelectorAll('#walletView .wallet-carousel-dots span');if(!track||!dots.length)return;track.addEventListener('scroll',function(){var cards=track.children;if(cards.length<2)return;var index=Math.abs(cards[1].getBoundingClientRect().left-track.getBoundingClientRect().left)<Math.abs(cards[0].getBoundingClientRect().left-track.getBoundingClientRect().left)?1:0;dots.forEach(function(d,i){d.classList.toggle('active',i===index)})},{passive:true})})();
+</script>
+<style>#walletView .wallet-hero-top .wallet-hero-icon.libyana-brand-mark{background:#fff!important;overflow:hidden!important;padding:4px!important;box-sizing:border-box!important}#walletView .libyana-brand-mark img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}</style><style>#walletView .wallet-hero-top>div{display:block!important}#walletView .wallet-hero-top .wallet-hero-icon.libyana-brand-mark{display:flex!important;width:112px!important;height:54px!important;padding:5px!important;border-radius:13px!important;background:#fff!important}#walletView .libyana-brand-mark img{width:100%!important;height:100%!important;object-fit:contain!important}#walletView .wallet-hero:after{content:none!important}</style><style>#walletView .wallet-hero-top .wallet-hero-icon.libyana-brand-mark{width:64px!important;height:64px!important;padding:0!important;background:transparent!important}#walletView .libyana-brand-mark img{border-radius:12px!important;object-fit:cover!important}</style><style>#walletView .madar-wallet-card{position:relative!important}#walletView .madar-wallet-card-top{justify-content:flex-start!important}#walletView .madar-wallet-logo{width:65px!important;height:65px!important;display:grid!important;place-items:center!important;background:#67b43f!important;overflow:hidden!important}#walletView .madar-wallet-logo img{width:100%!important;height:100%!important;object-fit:contain!important}#walletView .madar-wallet-balance{position:absolute!important;right:20px!important;bottom:44px!important;display:flex!important;flex-direction:column!important;gap:5px!important;color:white!important}#walletView .madar-wallet-balance span{font-size:12px!important;opacity:.9!important}#walletView .madar-wallet-balance strong{font-size:20px!important}#walletView .madar-wallet-card button{position:absolute!important;left:15px!important;bottom:13px!important;width:auto!important;font-size:11px!important}</style><style>
+#walletView .primary-wallet-card{position:relative;overflow:hidden;min-height:178px;padding:20px 22px;border-radius:24px;background:radial-gradient(circle at 15% -25%,#3157a6 0%,transparent 48%),linear-gradient(125deg,#19366c,#0c1a39 75%);border:1px solid #3266bc;box-shadow:0 10px 30px #0004;color:#fff;margin:12px 0 17px}
+#walletView .primary-wallet-card:before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;background:#4480ff15;bottom:-115px;right:-40px}
+#walletView .primary-wallet-top{display:flex;align-items:center;justify-content:space-between;flex-direction:row-reverse}
+#walletView .primary-wallet-title{border:1px solid #ffbd2f;color:#ffc53e;border-radius:30px;padding:8px 14px;font-weight:800;font-size:15px}
+#walletView .primary-wallet-symbol{display:grid;place-items:center;width:62px;height:62px;border-radius:17px;background:linear-gradient(135deg,#337ce1,#122e70);font-size:35px;color:#82b8ff}
+#walletView .primary-wallet-amount{display:flex;flex-direction:column;gap:5px;margin-top:5px;align-items:flex-end}
+#walletView .primary-wallet-amount small{font-size:13px;color:#d3e1ff}
+#walletView .primary-wallet-amount strong{font-size:30px;color:#fff;direction:ltr}
+#walletView .wallet-primary-badge{font-size:12px!important}
+@media(max-width:600px){#walletView .primary-wallet-card{min-height:158px;padding:16px 18px;margin:10px 0 15px}#walletView .primary-wallet-symbol{width:53px;height:53px;font-size:30px}#walletView .primary-wallet-amount strong{font-size:26px}}
+</style><style>
+/* Refined signed-in account screen */
+#accountView:not(.hidden){padding-bottom:115px!important}
+#accountView .account-panel{max-width:600px!important;margin:14px auto 25px!important;padding:22px 18px!important;border-radius:26px!important;background:linear-gradient(155deg,#10261c,#0a1812)!important;border:1px solid #365642!important;box-shadow:0 15px 45px #0004!important}
+#accountView .account-avatar{width:74px!important;height:74px!important;border-radius:22px!important;margin:0 auto 14px!important;background:#a6f467!important;color:#102114!important;font-size:42px!important;display:grid!important;place-items:center!important;font-weight:900!important}
+#accountView #accountTitle{text-align:center!important;font-size:23px!important;line-height:1.45!important;margin:5px 0 9px!important;color:#f5fff4!important}
+#accountView #accountText{text-align:center!important;color:#a6baa9!important;font-size:13px!important;line-height:1.8!important;margin:12px 0 20px!important}
+#accountView #signedInProfile{display:flex!important;align-items:center!important;gap:13px!important;text-align:right!important;padding:16px!important;margin:14px 0!important;border:1px solid #355742!important;border-radius:20px!important;background:#172c20!important;min-width:0!important}
+#accountView #signedInProfile.hidden{display:none!important}
+#accountView #signedInProfile>div:last-child{min-width:0!important;flex:1!important}
+#accountView #signedInProfile strong{font-size:17px!important;color:#f3fff0!important;overflow-wrap:anywhere!important}
+#accountView #signedInProfile span{font-size:13px!important;color:#c1d4c4!important;overflow-wrap:anywhere!important;direction:ltr!important;text-align:right!important;line-height:1.6!important}
+#accountView #signedInProfile small{display:inline-block!important;margin-top:7px!important;color:#8deb9d!important;font-size:12px!important}
+#accountView #openAdminDashboard{display:block;margin:17px auto!important;min-height:49px!important;padding:11px 23px!important;border-radius:15px!important;font-size:16px!important;font-weight:800!important}
+#accountView #openAdminDashboard.hidden{display:none!important}
+#accountView #logoutBtn{margin:15px auto!important;border-radius:15px!important}
+#accountView .account-wallet-link{border-radius:15px!important}
+#accountView .account-panel:has(#signedInProfile:not(.hidden)){padding-top:23px!important}
+@media(max-width:600px){
+#accountView{padding-inline:13px!important}
+#accountView .account-panel{padding:19px 15px!important}
+#accountView #signedInProfile{padding:13px!important;gap:11px!important}
+#accountView #signedInProfile img,#accountView #signedInProfile>div:first-child{width:52px!important;height:52px!important;flex-shrink:0!important}
+#accountView #accountTitle{font-size:21px!important}
+}
+</style><style>.mobile-nav button[data-view="account"] .nav-icon{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}</style><style>@media(max-width:650px){.mobile-nav{display:flex!important;justify-content:space-around!important;gap:0!important}.mobile-nav>button{flex:1 1 20%!important;min-width:0!important;padding-inline:2px!important}.mobile-nav>button span{font-size:10px!important}.mobile-nav .nav-icon{width:22px!important;height:22px!important}}</style><style>
+#accountView:has(#accountModern:not(.hidden)) .auth-hero,#accountView:has(#accountModern:not(.hidden)) .auth-back,#accountView:has(#accountModern:not(.hidden)) .account-avatar,#accountView:has(#accountModern:not(.hidden)) #accountTitle,#accountView:has(#accountModern:not(.hidden)) #accountText,#accountView:has(#accountModern:not(.hidden)) #signedInProfile{display:none!important}
+#accountView:has(#accountModern:not(.hidden)) .account-panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;max-width:680px!important}
+#accountView:has(#accountModern:not(.hidden)){background:#070d1d!important}
+#accountModern{direction:rtl;color:#f6f8ff;padding:0 4px 35px}
+#accountModern .account-id-card{position:relative;overflow:hidden;background:radial-gradient(circle at 4% 0%,#62caff70,transparent 55%),linear-gradient(120deg,#41b6f4,#1479d8 72%,#1967c8);border-radius:27px;padding:22px 19px 20px;box-shadow:0 14px 34px #0869d34a;margin:14px 0 23px}
+#accountModern .account-id-card:before{content:'L';position:absolute;left:25px;top:-35px;font-size:210px;color:#ffffff0d;font-weight:900;pointer-events:none}
+#accountModern .account-id-top{display:flex;align-items:center;gap:14px;min-height:100px}
+#accountModern .account-id-avatar{width:68px;height:68px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;border:3px solid #ffffff90;background:#ffffff27;font-size:29px;font-weight:800}
+#accountModern .account-id-details{min-width:0;display:flex;flex-direction:column;gap:6px}
+#accountModern .account-id-details strong{font-size:23px;overflow-wrap:anywhere}
+#accountModern .account-id-details span{font-size:13px;color:#e2f2ff;overflow-wrap:anywhere}
+#accountModern .account-id-details small{align-self:flex-start;border-radius:30px;background:#ffffff24;padding:5px 12px;font-size:12px}
+#accountModern .account-edit-name{position:absolute;left:17px;top:22px;border:1px solid #ffffff70;background:#ffffff22;color:#fff;width:41px;height:41px;border-radius:13px;font-size:23px;z-index:2}
+#accountModern .account-id-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #ffffff65;border-radius:17px;margin-top:12px;padding:14px 4px;background:#ffffff12}
+#accountModern .account-id-stats>div{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;border-left:1px solid #ffffff55}
+#accountModern .account-id-stats>div:last-child{border:0}
+#accountModern .account-id-stats span{font-size:12px;color:#e4efff}
+#accountModern .account-id-stats b{font-size:15px}
+#accountModern .account-group-title{font-size:15px;color:#91a0bb;margin:23px 8px 13px}
+#accountModern .account-settings-list{border:1px solid #263453;border-radius:22px;background:#10192d;overflow:hidden}
+#accountView #accountReportsAdminLink{width:100%;min-height:74px;display:flex;align-items:center;gap:13px;text-align:right;background:linear-gradient(105deg,#28402d,#1a2830);color:#eaffdf;border:0;border-bottom:1px solid #547f5366;padding:13px 15px;text-decoration:none;box-sizing:border-box}
+#accountView #accountReportsAdminLink[hidden],#accountView #accountReportsAdminLink.hidden{display:none!important}
+#accountView #accountReportsAdminLink .account-row-icon{background:#436b41;color:#d5ffba}
+#accountView #accountReportsAdminLink:focus-visible{outline:2px solid #a8f36b;outline-offset:-3px}
+#accountModern .account-settings-list button{width:100%;min-height:74px;display:flex;align-items:center;gap:13px;text-align:right;background:transparent;color:#f2f5ff;border:0;border-bottom:1px solid #283654;padding:13px 15px;cursor:pointer}
+#accountModern .account-settings-list button:last-child{border-bottom:0}
+#accountModern .account-settings-list b{flex:1;font-size:15px}
+#accountModern .account-settings-list small{color:#9aaac8;font-size:11px}
+#accountModern .account-row-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#19263f;color:#9caed0;font-size:25px}
+#accountModern .account-row-arrow{font-size:29px;color:#9cabc6}
+#accountModern .account-settings-detail{margin:17px 0;padding:16px;background:#14233b;border:1px solid #375277;border-radius:18px;line-height:1.8}
+#accountModern .account-settings-detail button{border:0;border-radius:11px;background:#a6f467;color:#0a2112;padding:9px 16px;font-weight:800;margin:8px}
+#accountModern .account-settings-detail input{max-width:100%;background:#0b1426;border:1px solid #526b94;color:#fff;border-radius:10px;padding:10px}
+@media(max-width:600px){#accountModern .account-id-details strong{font-size:20px}#accountModern .account-id-avatar{width:60px;height:60px}#accountModern .account-settings-list button{min-height:67px}}
+</style><style>#accountView:has(#accountModern:not(.hidden)) .account-panel{display:block!important}#accountView #accountModern:not(.hidden){display:block!important;visibility:visible!important;opacity:1!important}#accountView:has(#accountModern:not(.hidden)) .auth-hero,#accountView:has(#accountModern:not(.hidden)) .auth-decoration{display:none!important}</style><style>
+#personalDetailsPage{display:none;position:fixed;inset:0;z-index:99999;background:#060d1b;color:#eef4ff;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 23px) 22px calc(env(safe-area-inset-bottom) + 35px);direction:rtl;font-family:inherit}
+#personalDetailsPage.visible{display:block}
+#personalDetailsPage .personal-page-header{display:flex;align-items:center;gap:16px;max-width:620px;margin:0 auto 43px}
+#personalDetailsPage .personal-page-header button{border:0;background:transparent;color:#eaf2ff;font-size:28px;padding:5px 0}
+#personalDetailsPage .personal-page-header h2{font-size:22px;margin:0;font-weight:800}
+#personalDetailsPage .personal-page-user{max-width:620px;margin:0 auto 30px;display:flex;align-items:center;gap:14px}
+#personalDetailsPage .personal-page-avatar{display:grid;place-items:center;width:65px;height:65px;border-radius:50%;background:#132b4a;border:3px solid #295d91;color:#61b6ff;font-size:27px;font-weight:800;flex-shrink:0}
+#personalDetailsPage .personal-page-user>div:last-child{display:flex;flex-direction:column;gap:8px;min-width:0}
+#personalDetailsPage .personal-page-user strong{font-size:20px;overflow-wrap:anywhere}
+#personalDetailsPage .personal-page-user span{color:#8194b2;font-size:14px;overflow-wrap:anywhere}
+#personalDetailsPage form{max-width:620px;margin:auto}
+#personalDetailsPage .personal-page-fields{border:1px solid #253657;background:#0e182c;border-radius:23px;padding:17px;display:flex;flex-direction:column;gap:14px}
+#personalDetailsPage .personal-page-fields label,#personalDetailsPage .personal-page-phone{display:flex;flex-direction:column;gap:9px;border-radius:17px;background:#16233b;padding:16px}
+#personalDetailsPage .personal-page-fields span{color:#a7b7d0;font-size:14px}
+#personalDetailsPage .personal-page-fields input{width:100%;border:0!important;outline:none;background:transparent!important;color:#eef4ff!important;font-size:19px;padding:0!important;text-align:right}
+#personalDetailsPage .personal-page-phone strong{font-size:19px;font-weight:500;text-align:right;color:#e7efff}
+#personalDetailsPage .personal-page-phone small{font-size:12px;color:#8b9cb8}
+#personalDetailsPage .personal-save{display:block;width:100%;margin-top:24px;padding:16px;border:0;border-radius:17px;background:#1479e5;color:#fff;font-size:19px;font-weight:800}
+#personalDetailsPage #personalSaveStatus{color:#95e5ad;text-align:center;margin-top:12px}
+</style><style>
+/* Keep only the small wallet chip beside the signed-in profile; the extra account shortcut stays hidden. */
+.topbar .account-wallet-group #accountBtn{display:none!important}
+</style><style>#accountModern .account-settings-list .account-tiktok-link{display:flex;align-items:center;gap:13px;text-align:right;color:#f2f5ff;text-decoration:none;min-height:74px;padding:13px 15px}#accountModern .account-settings-list .account-tiktok-link b{flex:1;font-size:15px}#accountModern .account-tiktok-link .account-row-icon{color:#fff;background:linear-gradient(135deg,#17c9d6,#ee3265);font-weight:900}</style><style>#accountModern .account-tiktok-link .account-tiktok-icon{background:#050505!important;border:1px solid #273047;border-radius:13px}</style><style>
+/* Direct-to-catalog homepage: no intro, wallet balance, or international-card teaser */
+#homeView,.wallet-promo.home-balance,.steps-section{display:none!important}
+#storeView{padding-top:18px}
+#storeView .section-head{margin-bottom:15px}
+</style><style>#storeView{display:block!important;visibility:visible!important;min-height:70vh;padding-top:22px}#storeView.hidden{display:none!important}#homeView,.wallet-promo.home-balance,.steps-section{display:none!important}</style><style>
+#pubgCategoryPage{display:none;position:fixed;inset:0;z-index:99990;overflow-y:auto;background:radial-gradient(ellipse at 50% -10%,#236b9a 0%,#283441 25%,#070d19 57%);color:#f3f6ff;padding:calc(env(safe-area-inset-top) + 28px) 20px 80px;direction:rtl;font-family:inherit}
+#pubgCategoryPage.visible{display:block}
+#pubgCategoryPage .pubg-back{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:#0d192c;color:#fff;font-size:27px;cursor:pointer}
+#pubgCategoryPage .pubg-hero{text-align:center;padding-top:75px}
+#pubgCategoryPage .pubg-hero img{width:122px;height:122px;object-fit:cover;border-radius:30px;border:5px solid #0b1729;box-shadow:0 14px 36px #0007}
+#pubgCategoryPage .pubg-hero h1{font-size:29px;margin:17px 0 12px;direction:ltr}
+#pubgCategoryPage .pubg-badge{display:inline-block;border-radius:25px;background:#20334c;color:#65b9ff;padding:8px 15px;font-size:14px}
+#pubgCategoryPage .pubg-features{display:flex;justify-content:space-around;align-items:center;border:1px solid #233451;border-radius:22px;background:#0f1a2e;margin:25px 0 32px;padding:14px 0}
+#pubgCategoryPage .pubg-features span{display:flex;flex:1;flex-direction:column;align-items:center;gap:4px;color:#59b6ff;font-size:23px;border-left:1px solid #263954}
+#pubgCategoryPage .pubg-features span:last-child{border:0}
+#pubgCategoryPage .pubg-features small{color:#a0aec5;font-size:12px}
+#pubgCategoryPage h2{font-size:21px;margin:24px 0 18px}
+#pubgCategoryPage .pubg-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#pubgCategoryPage .pubg-category{border:0;background:transparent;color:#f4f6ff;min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:16px;cursor:pointer}
+#pubgCategoryPage .pubg-category img{width:100%;aspect-ratio:1/1.25;object-fit:cover;border:4px solid #1e2c46;border-radius:20px}
+#pubgCategoryPage .pubg-category strong{font-size:15px}
+#pubgCategoryPage #pubgCategoryResults{margin-top:30px;padding:17px;background:#101b2e;border:1px solid #263b5a;border-radius:19px}
+#pubgCategoryPage .pubg-item{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:13px;border-bottom:1px solid #30415d}
+#pubgCategoryPage .pubg-item small{flex-basis:100%;color:#93a7c4}
+#pubgCategoryPage .pubg-empty{color:#9eaec6}
+</style>
+<!-- Premium storefront styling loaded last to override older inline theme rules -->
+<link rel="stylesheet" href="premium-home.css?v=roblox-only2">
+<script src="premium-home.js?v=invite-page-20261103-1" defer></script>
+<link rel="stylesheet" href="personal-phone.css?v=personal-phone-inline-edit-20261105-1">
+<link rel="stylesheet" href="phone-verification-page.css?v=edit-number-inline-20261105-1">
+<link rel="stylesheet" href="phone-change-page.css?v=change-phone-verified-20261105-1">
+<link rel="stylesheet" href="card-topup-page.css?v=libyana-cards-20261105-1">
+<link rel="stylesheet" href="card-topup-admin.css?v=audited-private-view-20261105-1">
+<link rel="stylesheet" href="recent-purchases.css?v=below-faq-20261105-1">
+<link rel="stylesheet" href="storefront-polish.css?v=navback-gameboxly2">
+<link rel="stylesheet" href="brainrot-store.css?v=garama-four-stock-20261105-1">
+<link rel="stylesheet" href="pubg-premium.css?v=restore-safe-pubg1">
+<script src="pubg-premium.js?v=unified-ui-icons-20261103-1" defer></script>
+<!-- Mobile-first landing: real products and existing checkout, not demo purchases -->
+<link rel="stylesheet" href="live-mobile.css?v=roblox-only2">
+<link rel="stylesheet" href="subscriptions.css?v=subs-premium-1">
+<link rel="stylesheet" href="account-contact.css?v=compact-help1">
+<link rel="stylesheet" href="account-settings-fast.css?v=account-quick3&rank-identity-settings=1">
+<link rel="stylesheet" href="account-history.css?v=compact-signed-20261104-1">
+<script src="account-history.js?v=compact-signed-20261104-1" defer></script>
+<link rel="stylesheet" href="order-handover.css?v=manual-delivery2">
+<link rel="stylesheet" href="topup-reference.css?v=steps-v3-20261101">
+<link rel="stylesheet" href="topup-return.css?v=compact-verification-20261108&verification-live2">
+<link rel="stylesheet" href="wallet-luxe.css?v=wallet-luxe3-candy15-v1">
+<link rel="stylesheet" href="wallet-transfer.css?v=internal-transfers1">
+<link rel="stylesheet" href="wallet-transactions.css?v=wallet-row1">
+<link rel="stylesheet" href="personal-premium.css?v=profile-glow2">
+<link rel="stylesheet" href="orders-premium.css?v=orders-prime1">
+<link rel="stylesheet" href="orders-product-art.css?v=libyana-drawn-phone-20261103">
+<link rel="stylesheet" href="wallet-credit-drop.css?v=credit-polish-20261108">
+<script src="wallet-luxe.js?v=arrival-verify-20261108&two-primary-wallets-1" defer></script>
+<script src="wallet-primary-toggle.js?v=unified-ui-icons-20261103-1" defer></script>
+<script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
+<script src="live-mobile.js?v=robux-sold-out-20261107-1" defer></script>
+<link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
+<link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
+<link rel="stylesheet" href="ranking-room.css?v=navback-gameboxly2">
+<link rel="stylesheet" href="libyana-header-chip.css?v=full-balance-fit-20261105-1">
+<link rel="stylesheet" href="email-profile.css?v=email-profile1">
+<script defer src="email-profile.js?v=email-profile1"></script>
+<script defer src="ranking-room.js?v=no-back-leaderboard-20261106-1"></script>
+<link rel="stylesheet" href="wallet-madar-match.css?v=madar-green-20261031-1">
+<link rel="stylesheet" href="wallet-primary-toggle.css?v=header-logo-sync-3">
+<!-- Final Robux layout override: keep pricing and checkout scripts unchanged -->
+<link rel="stylesheet" href="robux-organized.css?v=20261031-1">
+<link rel="stylesheet" href="auth-minimal-green.css?v=login-logo-controller1">
+<link rel="stylesheet" href="robux-only-100.css?v=robux-card-image2">
+<!-- Shared direct-open menus for all available product packages -->
+<link rel="stylesheet" href="gamebox-all-package-menus.css?v=all-packs2">
+<script src="gamebox-all-package-menus.js?v=all-packs1"></script>
+<link rel="stylesheet" href="robux-direct-menu.css?v=open-menu2">
+<script src="robux-direct-menu.js?v=unified-ui-icons-20261103-1"></script>
+<script>
+(function(){
+  const form=document.getElementById('topupForm');
+  if(!form)return;
+  const stages=form.querySelectorAll('[data-tp-step]');
+  function mark(n){stages.forEach(b=>{if(b.dataset.tpStep===String(n))b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')})}
+  const targets={1:'.tp-amount-panel',2:'.tp-phone-panel',3:'#topupProceed'};
+  stages.forEach(b=>b.addEventListener('click',()=>{mark(b.dataset.tpStep);form.querySelector(targets[b.dataset.tpStep])?.scrollIntoView({block:'center',behavior:'smooth'})}));
+  form.querySelector('.tp-change-provider')?.addEventListener('click',function(){const expanded=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',String(expanded));form.querySelector('.tp-providers').classList.toggle('is-expanded',expanded)});
+  form.addEventListener('input',e=>{if(e.target.id==='topupAmount')mark(1)});
+  form.addEventListener('click',e=>{if(e.target.closest('[data-amount]'))mark(1);else if(e.target.closest('.tp-phone-panel'))mark(2)});
+  const instructions=document.getElementById('transferInstructions');
+  new MutationObserver(()=>{if(instructions.querySelector('.auto-topup-transfer'))mark(3)}).observe(instructions,{childList:true,subtree:true});
+})();
+</script>
+<link rel="stylesheet" href="package-grid-three.css?v=category-portrait-3x4-20261102">
+<link rel="stylesheet" href="notifications-page.css?v=verified-status-messages-20261104-1">
+<link rel="stylesheet" href="customer-journey.css?v=1">
+<link rel="stylesheet" href="home-compact.css?v=2-hide-header-promos">
+<link rel="stylesheet" href="leaderboard-royal.css?v=rank-colors-line-20261104-1">
+<script src="notifications-page.js?v=unread-bell-20261104-1"></script>
+<script src="customer-journey.js?v=fix-wallet-guide-reference-20261104-1" defer></script>
+<script src="leaderboard-royal.js?v=only-compact-rank-20261104-1" defer></script>
+<link rel="stylesheet" href="homepage-game-covers.css?v=tall-cover-185-yellow-1">
+<link rel="stylesheet" href="roblox-category-pages.css?v=roblox-3-methods-20261102-1">
+<link rel="stylesheet" href="robux-compact-catalog.css?v=robux-all-packages-20261103-1">
+<link rel="stylesheet" href="mm2-original-background.css?v=uncropped-blades-20261104-2">
+<link rel="stylesheet" href="unified-ui-icons.css?v=customer-icons-20261103-1">
+<link rel="stylesheet" href="delivery-policy.css?v=delivery-policy-20261103-1">
+<link rel="stylesheet" href="store-referrals.css?v=purchase-cash-missions-20261104-1">
+
+<script src="roblox-methods.js?v=roblox-3-methods-20261102-1" defer></script>
+
+<script src="store-referrals.js?v=purchase-cash-missions-20261104-1" defer></script>
+<script src="responsive-4k-images.js?v=fix-resizeobserver-mm2-20261102-1" defer></script>
+<link rel="stylesheet" href="order-status-reference.css?v=order-popup-modal-20261103-1">
+<link rel="stylesheet" href="faq-page.css?v=pro-vector-art-20261103-1">
+<script src="faq-page.js?v=pro-vector-art-20261103-1"></script>
+<!-- Final monochrome design system; last stylesheet wins. -->
+<link rel="stylesheet" href="midnight-unified.css?v=white-nav-source-20261108-4">
+<link rel="stylesheet" href="header-notification-bell.css?v=balanced-wallet-font-20261105-1">
+<link rel="stylesheet" href="ui-motion.css?v=global-taps-20261104-1">
+<script src="ui-motion.js?v=global-taps-20261104-1" defer></script>
+<link rel="stylesheet" href="topup-step-wizard.css?v=manual-without-otp-20261104-1">
+<link rel="stylesheet" href="topup-premium-illustrated.css?v=wider-mobile-topup-20261104-1">
+<link rel="stylesheet" href="wallet-compact-counter.css?v=compact-balanced-20261106-1">
+<link rel="stylesheet" href="leaderboard-friends.css?v=bigger-tabs-no-back-20261106-1">
+
+<script src="topup-step-wizard.js?v=mobile-topup-refresh-20261108-2&shared-sender-review-20261104-1" defer></script>
+<script src="leaderboard-friends.js?v=inline-header-tabs-20261106-1" defer></script>
+<link rel="stylesheet" href="direct-transfer.css?v=compact-bottom-sheet-3">
+<link rel="stylesheet" href="topup-interface-fresh.css?v=mobile-topup-refresh-20261108-1">
+<link rel="stylesheet" href="orders-animated.css?v=order-status-box-20261108-1">
+<link rel="stylesheet" href="card-topup-modern.css?v=pink-card-amount-grid-20261108-1">
+<link rel="stylesheet" href="nav-bubble.css?v=bottom-order-rtl-20261108-7">
+
+
+<style id="l1017n-bottom-tab-order-v7">
+/* Fallback embedded in HTML so old external theme files cannot shuffle tabs. */
+@media(max-width:850px){
+ html body nav.mobile-nav{
+   display:flex!important;flex-direction:row!important;direction:rtl!important;
+   justify-content:space-around!important;align-items:stretch!important;
+ }
+ html body nav.mobile-nav>button[data-view]{
+   flex:1 1 20%!important;min-width:0!important;max-width:20%!important;
+ }
+ html body nav.mobile-nav>button[data-view="home"]{order:1!important}
+ html body nav.mobile-nav>button[data-view="orders"]{order:2!important}
+ html body nav.mobile-nav>button[data-view="leaderboard"]{order:3!important}
+ html body nav.mobile-nav>button[data-view="wallet"]{order:4!important}
+ html body nav.mobile-nav>button[data-view="account"]{order:5!important}
+ html body nav.mobile-nav>.nav-follow-bubble{display:none!important}
+}
+</style>
+<style id="l1017n-nav-white-direct">
+/* Inline failsafe: active tab is white even if remote stylesheets are cached. */
+body nav.mobile-nav > button[data-view].l1017-nav-white-selected,
+body nav.mobile-nav > button[data-view].active {
+  background:#fff!important;
+  background-color:#fff!important;
+  color:#172130!important;
+  border:1px solid #fff!important;
+  border-radius:17px!important;
+  box-shadow:0 4px 14px #0005!important;
+}
+body nav.mobile-nav > button[data-view].l1017-nav-white-selected > *,
+body nav.mobile-nav > button[data-view].active > *,
+body nav.mobile-nav > button[data-view].l1017-nav-white-selected svg,
+body nav.mobile-nav > button[data-view].active svg{
+  color:#172130!important;
+  stroke:currentColor!important;
+}
+body nav.mobile-nav > button[data-view].l1017-nav-white-selected span,
+body nav.mobile-nav > button[data-view].active span{color:#172130!important}
+body nav.mobile-nav > button[data-view]:not(.l1017-nav-white-selected):not(.active):not([aria-current="page"]){
+  background:transparent!important;box-shadow:none!important;border-color:transparent!important
+}
+@media(prefers-reduced-motion:reduce){body nav.mobile-nav > button[data-view]{animation:none!important;transition:none!important}}
+</style>
+<script id="l1017n-nav-white-direct-script">
+(function(){
+  "use strict";
+  function init(){
+    var nav=document.querySelector('nav.mobile-nav');
+    if(!nav)return;
+    var orderedViews=['home','orders','leaderboard','wallet','account'];
+    orderedViews.forEach(function(view,index){
+      var item=nav.querySelector('button[data-view="'+view+'"]');
+      if(item){nav.appendChild(item);item.style.setProperty('order',String(index+1),'important');}
+    });
+    nav.style.setProperty('direction','rtl','important');
+    nav.style.setProperty('flex-direction','row','important');
+    nav.setAttribute('data-nav-version','8');
+    var buttons=Array.prototype.slice.call(nav.querySelectorAll('button[data-view]'));
+    if(!buttons.length)return;
+    var selected=null;
+    function paint(target){
+      buttons.forEach(function(button){
+        var active=button===target;
+        // Inline !important wins over legacy stylesheets and other color themes.
+        button.style.setProperty('background',active?'#fff':'transparent','important');
+        button.style.setProperty('background-color',active?'#fff':'transparent','important');
+        button.style.setProperty('color',active?'#172130':'#bfc5d3','important');
+        button.style.setProperty('border',active?'1px solid #fff':'1px solid transparent','important');
+        button.style.setProperty('border-radius','17px','important');
+        button.style.setProperty('box-shadow',active?'0 4px 14px #0005':'none','important');
+        var nodes=button.querySelectorAll('svg,span');
+        Array.prototype.forEach.call(nodes,function(node){
+          if(active){
+            node.style.setProperty('color','#172130','important');
+            if(node.tagName.toLowerCase()==='svg')node.style.setProperty('stroke','#172130','important');
+          } else {
+            node.style.removeProperty('color');
+            if(node.tagName.toLowerCase()==='svg')node.style.removeProperty('stroke');
+          }
+        });
+        button.classList.toggle('l1017-nav-white-selected',active);
+        if(active)button.setAttribute('aria-current','page');
+        else button.removeAttribute('aria-current');
+      });
+      selected=target;
+    }
+    function sync(){
+      var next=nav.querySelector('button[data-view].active');
+      // When another page removes all .active classes, do not falsely mark Home.
+      if(next!==selected)paint(next||null);
+    }
+    nav.addEventListener('click',function(e){
+      var button=e.target.closest('button[data-view]');
+      if(button&&nav.contains(button)){
+        paint(button);
+        // The app changes .active in its own navigation handler.
+        queueMicrotask(sync);
+      }
+    },true);
+    new MutationObserver(sync).observe(nav,{attributes:true,attributeFilter:['class'],subtree:true});
+    paint(nav.querySelector('button[data-view].active')||buttons[0]);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<div id="l1017n-nav-fresh-version" aria-label="نسخة حديثة" style="position:fixed;z-index:214748100;left:10px;bottom:calc(94px + env(safe-area-inset-bottom));padding:4px 9px;border:1px solid #fff5;border-radius:999px;background:#263043;color:#fff;font:700 10px/1.5 system-ui,sans-serif;pointer-events:none;opacity:.85">ترتيب جديد ✓</div>
+</body></html>

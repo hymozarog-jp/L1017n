@@ -272,6 +272,7 @@
       bar.appendChild(searchButton);
     }
     document.body.classList.add("l1017-live-ui");
+    enableScrollMotion(nav);
     bindEvents(container, nav);
     renderCatalog();
     reveal([...container.querySelectorAll(".ll-reveal")]);
@@ -287,6 +288,55 @@
       renderCatalog();
       if (catalog().length || ++attempts >= 16) clearInterval(timer);
     }, 500);
+  }
+  // Scroll-aware visible mobile bar: down = tuck away, up = return.
+  // This operates on the *actual* #llBottomNav, not the hidden legacy bar.
+  function enableScrollMotion(nav){
+    if(!nav||nav.dataset.scrollMotionReady==='1')return;
+    nav.dataset.scrollMotionReady='1';
+    const mobile=window.matchMedia('(max-width:680px)');
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let lastY=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
+    let travel=0,lastDirection=0,queued=false;
+    function reveal(){
+      nav.classList.remove('ll-nav-scroll-away');
+      nav.dataset.scrollMotion='visible';
+    }
+    function sync(){
+      queued=false;
+      const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
+      const delta=y-lastY;
+      lastY=y;
+      if(!mobile.matches||reduced.matches||y<64){
+        travel=0;lastDirection=0;reveal();return;
+      }
+      if(Math.abs(delta)<2)return; // iOS viewport bounce and tiny scroll jitter
+      const direction=Math.sign(delta);
+      if(direction!==lastDirection){travel=0;lastDirection=direction;}
+      travel+=Math.abs(delta);
+      if(direction>0&&y>115&&travel>20){
+        nav.classList.add('ll-nav-scroll-away');
+        nav.dataset.scrollMotion='hidden';
+        travel=0;
+      }else if(direction<0&&travel>12){
+        reveal();travel=0;
+      }
+    }
+    window.addEventListener('scroll',()=>{
+      if(queued)return;
+      queued=true;
+      requestAnimationFrame(sync);
+    },{passive:true});
+    window.addEventListener('resize',()=>{
+      lastY=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
+      travel=0;lastDirection=0;reveal();
+    },{passive:true});
+    nav.addEventListener('click',()=>{travel=0;lastDirection=0;reveal()});
+    nav.addEventListener('focusin',reveal);
+    document.addEventListener('visibilitychange',()=>{
+      if(!document.hidden){lastY=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);reveal();}
+    });
+    reveal();
   }
   function bindEvents(container, nav) {
     const search = q("#llSearch");

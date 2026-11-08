@@ -52,3 +52,30 @@ body .mobile-nav>button[data-view]:focus-visible{
    animation:none!important;transition:none!important;
  }
 }
+
+
+/* Stable bottom tab ordering on all supported iPhones:
+   visual RTL from right to left: Home, Orders, Leaderboard, Wallet, Account.
+   Explicit CSS order survives other scripts inserting/reordering nodes. */
+@media(max-width:850px){
+  html body nav.mobile-nav{
+    display:flex!important;
+    flex-direction:row!important;
+    direction:rtl!important;
+    justify-content:space-around!important;
+    align-items:stretch!important;
+  }
+  html body nav.mobile-nav > button[data-view]{
+    flex:1 1 20%!important;
+    min-width:0!important;
+    max-width:20%!important;
+    box-sizing:border-box!important;
+    position:relative!important;
+  }
+  html body nav.mobile-nav > button[data-view="home"]{order:1!important}
+  html body nav.mobile-nav > button[data-view="orders"]{order:2!important}
+  html body nav.mobile-nav > button[data-view="leaderboard"]{order:3!important}
+  html body nav.mobile-nav > button[data-view="wallet"]{order:4!important}
+  html body nav.mobile-nav > button[data-view="account"]{order:5!important}
+  html body nav.mobile-nav > .nav-follow-bubble{display:none!important}
+}

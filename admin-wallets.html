@@ -148,7 +148,7 @@ function resetDebitPanel(){
 function updateDebitPreview(){
  var w=selectedWallet(),amount=Number($("debitAmount").value),available=Number(w&&w.balance||0);
  if(!w||!$("debitAmount").value){$("debitPreview").textContent="اكتب المبلغ لعرض الرصيد بعد الخصم.";return;}
- if(!Number.isFinite(amount)||amount<=0||Math.round(amount*1000)!==amount*1000||amount>available){
+ if(!Number.isFinite(amount)||amount<=0||Math.abs(amount*1000-Math.round(amount*1000))>0.0000001||amount>available){
   $("debitPreview").textContent="المبلغ يجب أن يكون موجبًا وبحد 3 خانات عشرية، ولا يتجاوز الرصيد الحالي ("+fmt(available)+" د.ل).";
   return;
  }
@@ -254,7 +254,7 @@ $("debitForm").addEventListener("submit",async function(event){
  if(debitBusy)return;
  var w=selectedWallet();if(!w){debitMessage("اختر زبونًا أولًا.",false);return;}
  var amount=Number($("debitAmount").value),available=Number(w.balance||0),reason=$("debitReason").value.trim();
- if(!Number.isFinite(amount)||amount<=0||Math.round(amount*1000)!==amount*1000){
+ if(!Number.isFinite(amount)||amount<=0||Math.abs(amount*1000-Math.round(amount*1000))>0.0000001){
   debitMessage("اكتب مبلغًا موجبًا بثلاث خانات عشرية كحد أقصى.",false);return;
  }
  if(amount>available){debitMessage("لا يمكن خصم مبلغ أكبر من الرصيد الحالي.",false);return;}
@@ -277,9 +277,16 @@ $("debitForm").addEventListener("submit",async function(event){
   if(response.error)throw response.error;
   if(!response.data||!response.data.applied)throw new Error("لم يؤكّد الخادم تنفيذ الخصم.");
   debitRequestKey=null;
-  await overview();
-  await selectCustomer(customerId);
-  showStatus("تم خصم "+fmt(amount)+" د.ل من المحفظة وتسجيل السبب والحركة في السجل. الرصيد الجديد: "+fmt(response.data.balance_after)+" د.ل.",false);
+  var successText="تم خصم "+fmt(amount)+" د.ل من المحفظة وتسجيل السبب والحركة في السجل. الرصيد الجديد: "+fmt(response.data.balance_after)+" د.ل.";
+  showStatus(successText,false);
+  try{
+   await overview();
+   await selectCustomer(customerId);
+   showStatus(successText,false);
+  }catch(refreshError){
+   debitMessage(successText+" لكن تعذّر تحديث القائمة. اضغط «تحديث الأرصدة» ولا تكرّر الخصم.",true);
+   showStatus(successText+" تعذّر تحديث العرض فقط؛ العملية تمّت.",false);
+  }
  }catch(error){
   var raw=String(error&&error.message||"تعذّر تنفيذ الخصم");
   var friendly=raw.includes("balance_changed_refresh_required")?"تغيّر رصيد الزبون. اضغط تحديث الأرصدة وراجع المبلغ قبل المحاولة مجددًا.":

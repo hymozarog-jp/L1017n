@@ -436,3 +436,69 @@
 @media(prefers-reduced-motion:reduce){
  #topupDedicatedPage .dt-purple-submit{transition:none!important;transform:none!important}
 }
+
+/* Inline payment recognition. Never display the old full-screen verification. */
+#topupDedicatedPage .dt-purple-form .dt-inline-credit{
+ display:flex!important;
+ flex-direction:row!important;
+ direction:rtl!important;
+ align-items:center!important;
+ gap:10px!important;
+ min-height:54px!important;
+ padding:10px 12px!important;
+ margin:7px 0 12px!important;
+ border:1px solid rgba(172,142,255,.46)!important;
+ border-radius:14px!important;
+ background:linear-gradient(115deg,#362456aa,#211d40bb)!important;
+ color:#f0e4ff!important;
+ font-family:'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.06)!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit[hidden]{display:none!important}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit-symbol{
+ display:grid!important;
+ place-items:center!important;
+ flex:0 0 32px!important;
+ width:32px!important;
+ height:32px!important;
+ border:1px solid rgba(164,134,238,.4)!important;
+ border-radius:50%!important;
+ background:#3d2a67!important;
+ color:#e4ccff!important;
+ font:850 22px/1 system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit-copy{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ min-width:0!important;
+ gap:3px!important;
+ text-align:right!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit-copy strong{
+ color:inherit!important;
+ font:850 14px/1.45 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit-copy small{
+ color:inherit!important;
+ opacity:.8!important;
+ font:550 11px/1.6 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit[data-state="approved"]{
+ border-color:rgba(109,230,164,.68)!important;
+ background:linear-gradient(115deg,#163e32,#17342d)!important;
+ color:#dcffe7!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit[data-state="approved"] .dt-inline-credit-symbol{
+ border-color:#87eab5!important;background:#216544!important;color:#d9ffeb!important;
+}
+#topupDedicatedPage .dt-purple-form .dt-inline-credit[data-state="rejected"],
+#topupDedicatedPage .dt-purple-form .dt-inline-credit[data-state="delayed"]{
+ border-color:#dd8c8175!important;
+ background:linear-gradient(115deg,#513332,#30223a)!important;
+ color:#ffe7df!important;
+}
+#topupDedicatedPage .dt-purple-form:has(.dt-inline-credit:not([hidden])) #dtPhoneStatus{
+ display:none!important;
+}
+#topupForm #tpReturnVerify{display:none!important;position:static!important}

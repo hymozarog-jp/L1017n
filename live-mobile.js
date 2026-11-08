@@ -246,9 +246,9 @@
     nav.setAttribute("aria-label", "التنقل الرئيسي");
     nav.innerHTML = [
       ["home", "الرئيسية", "home"],
+      ["orders", "طلباتي", "orders"],
       ["leaderboard", "التصنيف", "leaderboard"],
       ["wallet", "المحفظة", "wallet"],
-      ["orders", "طلباتي", "orders"],
       ["account", "حسابي", "profile"]
     ].map(([key, label, icon], index) =>
       '<button type="button" data-ll-nav="' + key + '" class="' + (index === 0 ? "active" : "") + '" aria-label="' + label + '" aria-current="' + (index === 0 ? "page" : "false") + '">'

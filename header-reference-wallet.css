@@ -1,3 +1,4 @@
+/* Compact reference-scale header: avatar on far left, bell and wallet smaller. */
 /* L1017N reference header: profile image on far left, bell, real balance.
    The user's wallet balance and notification count remain dynamically supplied. */
 @media (max-width:900px) {
@@ -12,7 +13,7 @@
     direction:ltr!important;
     align-items:center!important;
     justify-content:flex-start!important;
-    gap:clamp(5px,1.5vw,9px)!important;
+    gap:clamp(4px,1.2vw,7px)!important;
     margin:0!important;
     padding:0!important;
     width:max-content!important;
@@ -24,10 +25,10 @@
   html body.l1017-live-ui .topbar #headerAccountCluster > #googleProfileButton:not(.hidden){
     order:0!important;
     position:relative!important;
-    width:clamp(35px,9.7vw,42px)!important;
-    height:clamp(35px,9.7vw,42px)!important;
+    width:clamp(31px,8.7vw,36px)!important;
+    height:clamp(31px,8.7vw,36px)!important;
     min-width:0!important;
-    flex:0 0 clamp(35px,9.7vw,42px)!important;
+    flex:0 0 clamp(31px,8.7vw,36px)!important;
     margin:0!important;
     overflow:hidden!important;
     border-radius:50%!important;
@@ -44,23 +45,23 @@
     position:relative!important;
     display:grid!important;
     place-items:center!important;
-    flex:0 0 clamp(42px,11.4vw,51px)!important;
-    width:clamp(42px,11.4vw,51px)!important;
-    height:clamp(42px,11.4vw,51px)!important;
+    flex:0 0 clamp(37px,10vw,42px)!important;
+    width:clamp(37px,10vw,42px)!important;
+    height:clamp(37px,10vw,42px)!important;
     min-width:0!important;
     min-height:0!important;
     padding:0!important;
     margin:0!important;
     border:2px solid #32343f!important;
-    border-radius:18px!important;
+    border-radius:14px!important;
     background:#1a1a23!important;
     color:#bebdc7!important;
     box-shadow:none!important;
     transform:none;
   }
   html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden) svg{
-    width:clamp(23px,6.7vw,28px)!important;
-    height:clamp(23px,6.7vw,28px)!important;
+    width:clamp(20px,5.7vw,24px)!important;
+    height:clamp(20px,5.7vw,24px)!important;
     stroke:currentColor!important;
     stroke-width:1.85!important;
     animation:none!important;
@@ -85,22 +86,22 @@
   html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
     box-sizing:border-box!important;
     display:grid!important;
-    grid-template-columns:clamp(29px,8.6vw,39px) minmax(0,1fr) clamp(45px,12vw,57px)!important;
+    grid-template-columns:clamp(25px,7vw,29px) minmax(0,1fr) clamp(43px,11vw,49px)!important;
     direction:rtl!important;
     align-items:center!important;
     justify-items:stretch!important;
-    gap:clamp(3px,1.1vw,7px)!important;
+    gap:clamp(2px,.8vw,5px)!important;
     flex:0 0 auto!important;
-    width:clamp(164px,51vw,220px)!important;
-    max-width:220px!important;
+    width:clamp(145px,42vw,172px)!important;
+    max-width:172px!important;
     min-width:0!important;
-    height:clamp(51px,13.7vw,60px)!important;
-    min-height:clamp(51px,13.7vw,60px)!important;
-    padding:5px clamp(8px,2vw,12px)!important;
+    height:clamp(41px,10.8vw,46px)!important;
+    min-height:clamp(41px,10.8vw,46px)!important;
+    padding:4px clamp(6px,1.6vw,9px)!important;
     margin:0!important;
     overflow:hidden!important;
     border:2px solid #34343e!important;
-    border-radius:clamp(24px,7vw,31px)!important;
+    border-radius:clamp(21px,5.8vw,25px)!important;
     background:#1b1b23!important;
     box-shadow:none!important;
     color:#f6f6fa!important;
@@ -112,7 +113,7 @@
     grid-row:1!important;
     align-self:center!important;
     justify-self:center!important;
-    font:650 clamp(12px,3.7vw,16px)/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+    font:650 clamp(11px,3.2vw,14px)/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
     white-space:nowrap!important;
     color:#9d9ba7!important;
     letter-spacing:0!important;
@@ -167,8 +168,8 @@
     justify-self:center!important;
     align-self:center!important;
     flex:0 0 auto!important;
-    width:clamp(27px,8.6vw,35px)!important;
-    height:clamp(27px,8.6vw,35px)!important;
+    width:clamp(24px,7.2vw,30px)!important;
+    height:clamp(24px,7.2vw,30px)!important;
     min-width:0!important;
     min-height:0!important;
     padding:0!important;
@@ -181,8 +182,8 @@
   }
   html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut svg{
     display:block!important;
-    width:clamp(25px,8.2vw,33px)!important;
-    height:clamp(25px,8.2vw,33px)!important;
+    width:clamp(22px,6.8vw,28px)!important;
+    height:clamp(22px,6.8vw,28px)!important;
     fill:none!important;
     stroke:currentColor!important;
     stroke-width:1.9!important;
@@ -193,21 +194,22 @@
     transform:scale(.92)!important;
   }
   html body.l1017-live-ui .topbar:has(#headerAccountCluster #customerWalletChip:not(.hidden)){
-    min-height:68px!important;
-    padding-left:clamp(225px,65vw,318px)!important;
+    min-height:61px!important;
+    height:61px!important;
+    padding-left:clamp(235px,68vw,282px)!important;
   }
 }
 @media(max-width:380px){
-  html body.l1017-live-ui .topbar #headerAccountCluster{gap:4px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster{gap:3px!important}
   html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
-    width:clamp(156px,48vw,187px)!important;
+    width:clamp(144px,42vw,159px)!important;
     padding-inline:6px!important;
-    grid-template-columns:27px minmax(0,1fr) 43px!important;
+    grid-template-columns:24px minmax(0,1fr) 42px!important;
   }
-  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden)::after{font-size:12px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden)::after{font-size:11px!important}
 }
 @media(max-width:340px){
-  html body.l1017-live-ui .topbar #headerAccountCluster #googleProfileButton:not(.hidden){width:33px!important;height:33px!important;flex-basis:33px!important}
-  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){width:39px!important;height:44px!important;flex-basis:39px!important}
-  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:155px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster #googleProfileButton:not(.hidden){width:30px!important;height:30px!important;flex-basis:30px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){width:37px!important;height:38px!important;flex-basis:37px!important}
+  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:144px!important}
 }

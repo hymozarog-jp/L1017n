@@ -200,6 +200,21 @@ async function renderOrders(){
      product_key:product?.product_key||''
    });
    const contact=manual?'<div class="orders-manual-handover"><p>لتستلم الغرض داخل الماب، لازم تكلم المتجر عبر واتساب أو تيليجرام وتذكر رقم الطلب.</p><button type="button" data-order-contact="'+escapeHtml(x.id)+'">تواصل لاستلام الغرض</button></div>':'';
+   // Motion is presentation-only; the server's real status remains authoritative.
+   const visualState=['approved','completed'].includes(x.status)?'success'
+     :['rejected','refunded'].includes(x.status)?'rejected'
+     :['processing','fulfilling','in_processing','in_progress'].includes(x.status)?'working':'waiting';
+   const stateIcon=visualState==='success'
+     ?'<svg class="orders-animated-check" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="11" class="orders-check-circle"/><path class="orders-check-path" d="m8 14 4 4 8-9"/></svg>'
+     :visualState==='rejected'
+     ?'<svg class="orders-animated-x" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="11"/><path d="m10 10 8 8m0-8-8 8"/></svg>'
+     :visualState==='working'
+     ?'<svg class="orders-animated-gear" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect x="6" y="7" width="16" height="15" rx="3"/><path d="M6 12h16M10 7l4 5 4-5"/></svg>'
+     :'<svg class="orders-animated-wait" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M14 8v6l4 3"/></svg>';
+   const stateEmblem='<span class="orders-state-emblem orders-state-'+visualState+'" aria-hidden="true">'+stateIcon+'</span>';
+   const parcelChip=x.kind==='purchase'
+     ?'<span class="orders-parcel-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7 12 2l9 5v10l-9 5-9-5V7Z"/><path d="m3 7 9 5 9-5m-9 5v10M8 4.5l9 5"/></svg></span>'
+     :'';
    const art=orderArt(x);
    const libyanaDrawing='<svg class="orders-topup-illustration" viewBox="0 0 56 56" role="img" aria-label="شحن ليبيانا" xmlns="http://www.w3.org/2000/svg">'
      +'<circle cx="28" cy="28" r="23" fill="#914bc2" opacity=".15"/>'
@@ -212,7 +227,7 @@ async function renderOrders(){
      +'</svg>';
    const orderImage=x.kind==='topup'&&x.method==='libyana'?libyanaDrawing
      :art?'<img class="orders-product-art" src="'+art.src+'" alt="'+art.name+'" loading="lazy" decoding="async" width="56" height="56">':icon(x);
-   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'" data-order-phase="'+(x.status==='approved'?'approved':g==='completed'?'delivered':g==='refunded'?'closed':'waiting')+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+(g==='completed'?uiIcon('check')+' ':g==='refunded'?'↶ ':'◷ ')+status(x)+'</span></div>'+contact+'</article>';
+   return '<article class="orders-modern-card" data-order-id="'+escapeHtml(x.id)+'" data-order-status="'+g+'" data-visual-state="'+visualState+'" data-order-phase="'+(x.status==='approved'?'approved':g==='completed'?'delivered':g==='refunded'?'closed':'waiting')+'"><div class="orders-game-icon '+(x.kind==='topup'?'orders-icon-topup ':'')+(art?art.style:'')+'">'+orderImage+parcelChip+'</div><div class="orders-card-main"><div class="orders-card-title">'+title+'</div><div class="orders-card-meta">'+date(x)+' · '+escapeHtml(orderTime(x))+' · '+details+'</div><div class="orders-card-id">#'+escapeHtml(x.id.slice(0,8).toUpperCase())+'</div>'+note+(codeMap.has(x.id)?'<button type="button" class="btn btn-soft" data-order-code="'+escapeHtml(x.id)+'">'+uiIcon('key')+' عرض الكود</button>':'')+'</div><div class="orders-card-side"><strong>'+amount+' <small>د.ل</small></strong><span class="orders-status orders-status-'+g+'">'+stateEmblem+'<span class="orders-status-label">'+escapeHtml(status(x))+'</span></span></div>'+contact+'</article>';
  }).join('');
  // Close any visible native dialog before regenerating the list on status refresh.
  root.querySelectorAll('.orders-view-dialog[open]').forEach(dialog=>dialog.close());
@@ -253,6 +268,7 @@ async function renderOrders(){
    const hourglass='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3v4l5 5-5 5v4m10-18v4l-5 5 5 5v4"/></svg>';
    const check='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 12 5 5L20 6"/></svg>';
    const clock='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+   const decline='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>';
    const refresh='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 5.4M20 4v7h-7"/></svg>';
    const complaintText='مرحباً، أريد تقديم شكوى بشأن طلبي في متجر L1017n.'
      +'\nرقم الطلب: '+order.id
@@ -260,9 +276,9 @@ async function renderOrders(){
      +'\nتفاصيل الشكوى: ';
    // Same WhatsApp contact already configured for post-purchase handover.
    const whatsapp='https://wa.me/218925620538?text='+encodeURIComponent(complaintText);
-   const tracker='<div class="orders-track-panel" data-progress-state="'+(order.status==='approved'?'approved':state)+'">'
+   const tracker='<div class="orders-track-panel" data-visual-state="'+(order.status==='approved'||state==='completed'?'success':state==='refunded'?'rejected':['processing','fulfilling'].includes(order.status)?'working':'waiting')+'" data-progress-state="'+(order.status==='approved'?'approved':state)+'">'
      +'<div class="orders-track-head"><span class="orders-track-symbol">'
-     +(state==='completed'?check:state==='refunded'?clock:hourglass)
+     +(order.status==='approved'||state==='completed'?check:state==='refunded'?(order.status==='rejected'?decline:clock):hourglass)
      +'</span><div class="orders-track-heading"><span class="orders-track-eyebrow">حالة الطلب</span>'
      +'<strong class="orders-track-title">'+escapeHtml(headline)+'</strong></div></div>'
      +'<p class="orders-track-note">'+escapeHtml(caption)+'</p>'

@@ -680,14 +680,8 @@ function fitCustomerHeaderBalance(){
  if(!amount||!content||!content.clientWidth)return;
  const compact=window.matchMedia?.('(max-width:430px)').matches===true;
  const narrow=window.matchMedia?.('(max-width:350px)').matches===true;
- // Match the reference's bold iOS number style, without ever changing the amount.
- // Normal 3-decimal balances get the largest numerals; long values scale to fit.
- const characters=String(amount.textContent||'').trim().length;
- let size=narrow?23:compact?26:28;
- if(characters>7)size-=2;
- if(characters>10)size-=2;
- const minSize=narrow?18:19;
- const available=Math.max(20,content.clientWidth-2);
+ let size=narrow?17:compact?19:21;
+ const available=Math.max(20,content.clientWidth-4);
  // scrollWidth is at least the full element width, even for a short balance.
  // Measure the rendered TEXT itself so "5.000" stays large instead of
  // shrinking to the minimum on every visit.
@@ -696,7 +690,7 @@ function fitCustomerHeaderBalance(){
  const textWidth=()=>range.getBoundingClientRect().width;
  amount.style.setProperty('--l1017-header-balance-scale','1');
  amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
- while(size>minSize&&textWidth()>available){
+ while(size>16&&textWidth()>available){
   size-=.5;
   amount.style.setProperty('--l1017-header-balance-font-size',size+'px');
  }

@@ -267,3 +267,18 @@ html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>#admi
 #adminView #adminHubWallets>.admin-hub-screen-header{flex:0 0 auto!important;margin:0!important;padding-left:16px!important;padding-right:16px!important}
 #adminView #adminHubWallets>p,#adminView #adminHubWallets>.admin-hub-frame-open{display:none!important}
 #adminView #adminHubWallets>.admin-hub-embedded-frame{flex:1 1 0%!important;min-height:0!important;height:0!important;width:100%!important;border:0!important;border-radius:0!important;display:block!important;background:#0c1220!important}
+
+/* Purchase orders share the compact top-up presentation. */
+#adminPurchases{display:grid;gap:12px;margin-top:20px}
+#adminPurchases .compact-purchase{display:block!important;width:100%;min-width:0;padding:16px;border:1px solid #ffffff1b;border-radius:16px;background:#ffffff03}
+#adminPurchases .compact-topup-identity{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#adminPurchases .compact-topup-identity b{font-size:15px;overflow-wrap:anywhere}
+#adminPurchases .compact-topup-identity>span{font-size:14px;color:#c7bedc;overflow-wrap:anywhere;user-select:all}
+#adminPurchases .compact-topup-details{margin-top:10px}
+#adminPurchases .compact-topup-details summary{cursor:pointer;color:#a8afc2;font-size:12px;padding:5px 0;width:fit-content}
+#adminPurchases .compact-topup-info{display:flex;flex-wrap:wrap;align-items:center;gap:15px;margin:12px 0;color:#e4ddf4;font-size:13px}
+#adminPurchases .purchase-product-name{margin-top:12px;font-size:14px;overflow-wrap:anywhere}
+#adminPurchases .purchase-reference,#adminPurchases .purchase-note{font-size:12px;color:#aab7cf;line-height:1.8;overflow-wrap:anywhere}
+#adminPurchases .purchase-reference b{display:inline-block;user-select:all}
+#adminPurchases .admin-request-actions{margin-top:14px;gap:9px}
+#adminPurchases .admin-request-actions button{min-height:44px}

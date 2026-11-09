@@ -1394,7 +1394,7 @@ function clearAdminProductForm(){
 }
 function validateAdminProductImage(file){
  if(!file)return '';
- if(!['image/png','image/jpeg','image/webp'].includes(file.type))return 'اختر صورة PNG أو JPG أو WebP فقط.';
+ if(!['image/png','image/jpeg','image/webp','image/heic','image/heif'].includes(file.type))return 'اختر صورة PNG أو JPG أو WebP أو HEIC فقط.';
  if(file.size>9*1024*1024)return 'حجم الصورة الأصلية كبير. الحد الأقصى 9 ميجابايت.';
  if(!file.size)return 'ملف الصورة فارغ.';
  return '';

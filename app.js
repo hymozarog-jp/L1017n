@@ -18,12 +18,12 @@
     document.body.appendChild(visitorCounter);
     var loadUnifiedAdminHub=function(){
       var hub=document.createElement('script');
-      hub.src='admin-hub.js?v=robux-profit-sync-20261109-1';
+      hub.src='admin-hub.js?v=unified-finance-20261110-1&robux-profit-sync-20261109-1';
       hub.onerror=function(){console.warn('[admin] Unified administration interface unavailable')};
       document.body.appendChild(hub);
     };
     var extras=document.createElement('script');
-    extras.src='store-business-extras.js?v=completion-rating-20261110-1&robux-cost-calculator-20261109-1';
+    extras.src='store-business-extras.js?v=unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1';
     extras.onload=loadUnifiedAdminHub;
     extras.onerror=function(){
       console.warn('[store] Rewards and reviews unavailable');

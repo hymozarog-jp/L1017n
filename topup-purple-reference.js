@@ -27,15 +27,15 @@
       '<button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>التحويل مباشرة</span></button>'+
       '<a class="dt-purple-fallback" id="dtFallback" hidden>التحويل مباشرة</a>'+
     '</section>'+
-    '<section class="dt-card dt-purple-guide" aria-labelledby="dtPurpleGuideTitle">'+
-      '<h3 id="dtPurpleGuideTitle"><span class="dt-purple-guide-icon">⚡</span> طريقة الشحن</h3>'+
-      '<div class="dt-purple-steps">'+
-        '<div><span class="dt-purple-step-icon">'+svg('user')+'<b>1</b></span><strong>اكتب بياناتك</strong><small>رقمك والمبلغ</small></div>'+
-        '<i aria-hidden="true">←</i>'+
-        '<div><span class="dt-purple-step-icon">'+svg('exchange')+'<b>2</b></span><strong>أكّد التحويل</strong><small>من هاتف ليبيانا</small></div>'+
-        '<i aria-hidden="true">←</i>'+
-        '<div><span class="dt-purple-step-icon">'+svg('check')+'<b>3</b></span><strong>تابع التحقق</strong><small>الشحن بعد الاعتماد</small></div>'+
-      '</div>'+
+    '<section class="dt-card dt-purple-guide dt-recharge-guide" aria-labelledby="dtPurpleGuideTitle">'+
+      '<div class="dt-recharge-head"><span class="dt-recharge-head-icon" aria-hidden="true">'+svg('wallet')+'</span><div><h3 id="dtPurpleGuideTitle">طريقة الشحن</h3><p>اتبع الخطوات بالترتيب لشحن محفظتك بليبيانا</p></div><span class="dt-recharge-count">4 خطوات</span></div>'+
+      '<ol class="dt-recharge-timeline">'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اكتب رقمك والمبلغ</strong><small>أدخل رقم ليبيانا اللي بتحوّل منه، وحدّد المبلغ بالدينار.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">2</span><div class="dt-recharge-copy"><strong>اضغط «التحويل مباشرة»</strong><small>الموقع يجهّز لك تحويل الرصيد إلى رقم المتجر بالمبلغ اللي اخترته.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">3</span><div class="dt-recharge-copy"><strong>أكمل التحويل من ليبيانا</strong><small>أكّد عملية التحويل من شريحتك في شاشة ليبيانا؛ الضغط على الزر وحده ما ينقلش الرصيد.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">4</span><div class="dt-recharge-copy"><strong>انتظر التحقق التلقائي</strong><small>الموقع يطابق التحويل مع رقمك والمبلغ، ويضيف الرصيد بعد اعتماده فعليًا.</small></div></li>'+
+      '</ol>'+
+      '<p class="dt-recharge-hint">'+svg('check')+'<span>لو تأخّر التأكيد، ما تعاودش التحويل. تابع حالة الطلب في المحفظة.</span></p>'+
     '</section>';
   form.appendChild(panel);
   form.classList.add('dt-enabled');

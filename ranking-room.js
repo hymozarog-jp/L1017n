@@ -20,8 +20,10 @@
     var privacy=document.createElement('button');
     privacy.type='button';privacy.className='l1017-rank-settings-link';
     privacy.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3 8-8 10-5-2-8-5-8-10V7l8-4Z"/><path d="M9 12l2.2 2.2 4.5-4.5"/></svg> تحكم في خصوصية التصنيف';
+    var privacyGroup=page.querySelector('#leaderboardPrivacyActions');
     var privacyHint=page.querySelector('.leaderboard-privacy');
-    if(privacyHint)privacyHint.parentNode.insertBefore(privacy,privacyHint);
+    if(privacyGroup)privacyGroup.prepend(privacy);
+    else if(privacyHint)privacyHint.parentNode.insertBefore(privacy,privacyHint);
     var previous='home';
     function selectedView(){
       var mobile=document.querySelector('#llBottomNav [data-ll-nav].active');

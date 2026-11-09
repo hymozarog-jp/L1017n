@@ -18,6 +18,13 @@ let adminRobuxStockWatcher=null;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
+const PRODUCT_IMAGE_PREFIX=SUPABASE_URL+'/storage/v1/object/public/l1017n-product-images/products/';
+function safeProductImageUrl(value){
+ const image=String(value||'').trim();
+ const relative=image.startsWith(PRODUCT_IMAGE_PREFIX)?image.slice(PRODUCT_IMAGE_PREFIX.length):'';
+ return /^[a-zA-Z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(relative)?image:'';
+}
+window.L1017nSafeProductImageUrl=safeProductImageUrl;
 
 // Coalesce simultaneous server-validated user lookups on page load. This cache
 // lasts only while a request is in flight; it never replaces authorization or RLS.

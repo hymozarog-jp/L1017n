@@ -1,0 +1,54 @@
+/* Unified admin workspace: one entrance, one section visible per action. */
+#adminView{max-width:1180px!important;width:min(96%,1180px)!important;margin:0 auto!important;padding:12px 0 100px!important;direction:rtl}
+#adminView .admin-hub-top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 0 17px}
+#adminView .admin-hub-top .admin-hub-back{display:inline-flex;align-items:center;gap:7px;background:#1b2941!important;border:1px solid #455779!important;color:#e7efff!important;border-radius:14px!important;padding:11px 15px!important;font-size:12px;font-weight:850;min-height:42px}
+#adminView .admin-hub-top .admin-hub-back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+#adminView .admin-hub-top .admin-hub-topline{font-size:11px;letter-spacing:1.8px;color:#adc7e8}
+#adminView .admin-hub-banner{border:1px solid #7b85c04b;border-radius:24px;background:radial-gradient(circle at 80% 0,#6656b138,transparent 45%),linear-gradient(137deg,#202e4b,#101829 76%);box-shadow:0 12px 31px #0003;padding:22px 19px;margin:9px 0 18px}
+#adminView .admin-hub-banner h2{margin:2px 0 6px;color:#f7f8ff;font-size:clamp(21px,5vw,31px);font-weight:900}
+#adminView .admin-hub-banner p{font-size:12px;color:#b6c8df;line-height:1.8;margin:0}
+#adminView #adminStatus{padding:12px 15px!important;margin:0 0 13px!important;border:1px solid #455573!important;border-radius:14px!important;background:#152039!important;color:#cdd8eb!important;font-size:12px!important}
+#adminView #adminStatus p{margin:0}
+#adminView #adminHubMenu{border-radius:21px;background:linear-gradient(155deg,#101d33,#111a2c);border:1px solid #334365;padding:15px 12px;margin:0 0 18px;box-shadow:0 7px 23px #0002}
+#adminView .admin-hub-menu-caption{display:flex;align-items:center;justify-content:space-between;gap:7px;padding:0 6px;margin:0 0 12px}
+#adminView .admin-hub-menu-caption strong{font-size:14px;color:#eff3ff;font-weight:900}
+#adminView .admin-hub-menu-caption small{color:#91a9cd;font-size:10px}
+#adminView .admin-hub-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#adminView .admin-hub-tab{position:relative;isolation:isolate;min-height:103px;border:1px solid #344662!important;border-radius:17px!important;background:#ffffff08!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;text-align:right!important;gap:6px!important;min-width:0;padding:14px!important;cursor:pointer!important;color:#cad7ee!important;box-shadow:none!important;transition:border-color .18s,background .18s,transform .18s!important}
+#adminView .admin-hub-tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:#a8bdde}
+#adminView .admin-hub-tab b{font-size:13px;color:#f4f5ff;line-height:1.3}
+#adminView .admin-hub-tab small{font-size:10px;color:#94a7c4;line-height:1.5}
+#adminView .admin-hub-tab.is-active{background:linear-gradient(135deg,#efeefe,#d6d8f6)!important;border-color:#ffffff!important;box-shadow:0 7px 21px #0004!important;color:#1d2a45!important}
+#adminView .admin-hub-tab.is-active svg,#adminView .admin-hub-tab.is-active b{color:#1b2948!important}
+#adminView .admin-hub-tab.is-active small{color:#465978!important}
+#adminView .admin-hub-tab:focus-visible{outline:2px solid #aab1ff;outline-offset:3px}
+#adminView .admin-hub-tab:active{transform:scale(.975)}
+#adminView .admin-hub-current{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 3px 11px;margin:0 0 8px;border-bottom:1px solid #40516c}
+#adminView .admin-hub-current .admin-hub-current-name{font-size:18px;color:#fff;font-weight:900}
+#adminView .admin-hub-current .admin-hub-current-sub{font-size:11px;color:#aabedc;margin:3px 0 0;line-height:1.55}
+#adminView .admin-hub-menu-shortcut{border-radius:11px;background:#1c2c49;border:1px solid #425675;color:#dbe5fa;font-size:12px;padding:9px 12px;min-height:36px;cursor:pointer}
+#adminView .admin-hub-pane:not(.admin-hub-active){display:none!important}
+#adminView .admin-hub-pane.admin-hub-active{display:block!important}
+#adminView .admin-hub-pane{animation:adminHubEnter .2s ease-out both;max-width:100%;min-width:0}
+#adminView .admin-hub-pane.admin-dashboard{margin:8px 0 20px!important;background:linear-gradient(145deg,#131f35,#10192a)!important;border:1px solid #334968!important;border-radius:20px!important;padding:clamp(13px,3vw,23px)!important}
+#adminView #l1017BusinessPanel.admin-hub-pane{margin:8px 0 20px}
+#adminView .admin-hub-embed-panel{margin:0 0 20px;padding:12px;border-radius:19px;border:1px solid #314869;background:#101b2f}
+#adminView .admin-hub-embed-panel p{color:#aabbd7;font-size:12px;line-height:1.8;padding:0 5px}
+#adminView .admin-hub-embedded-frame{display:block;width:100%;height:min(77dvh,940px);min-height:560px;border:1px solid #40536c;border-radius:17px;background:#091327}
+#adminView .admin-hub-frame-open{display:inline-flex;align-items:center;gap:7px;color:#e0e8ff;border:1px solid #66799a;background:#263955;padding:10px 15px;border-radius:12px;font-size:12px;text-decoration:none;margin:7px 0}
+#adminView #adminHubReviews .e-review-list{margin-top:15px}
+#adminView #adminHubReviews .admin-hub-empty{color:#acc1da;line-height:1.75}
+body.l1017-admin-open #llBottomNav,body.l1017-admin-open nav.mobile-nav{display:none!important}
+@keyframes adminHubEnter{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(min-width:1000px){#adminView .admin-hub-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:680px){
+ #adminView{padding:8px 9px 70px!important;width:100%!important}
+ #adminView .admin-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #adminView .admin-hub-tab{min-height:91px!important;padding:12px!important}
+ #adminView .admin-hub-tab b{font-size:12px}
+ #adminView .admin-hub-banner{padding:18px 14px;border-radius:19px}
+ #adminView .admin-hub-current .admin-hub-current-name{font-size:17px}
+ #adminView .admin-hub-pane.admin-dashboard{padding:14px!important}
+ #adminView .admin-hub-embedded-frame{min-height:540px;height:76dvh}
+}
+@media(prefers-reduced-motion:reduce){#adminView .admin-hub-pane{animation:none!important}#adminView .admin-hub-tab{transition:none!important}}

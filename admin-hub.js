@@ -78,6 +78,22 @@
      const button=e.target.closest('[data-admin-hub-tab]');
      if(button){show(button.dataset.adminHubTab,true);}
    });
+   menu.addEventListener('keydown',e=>{
+     const button=e.target.closest('[data-admin-hub-tab]');
+     if(!button)return;
+     const controls=[...menu.querySelectorAll('[data-admin-hub-tab]')];
+     const i=controls.indexOf(button);
+     let next=-1;
+     if(e.key==='ArrowLeft')next=(i+1)%controls.length;
+     if(e.key==='ArrowRight')next=(i+controls.length-1)%controls.length;
+     if(e.key==='Home')next=0;
+     if(e.key==='End')next=controls.length-1;
+     if(next>=0){
+       e.preventDefault();
+       controls[next].focus();
+       show(controls[next].dataset.adminHubTab,false);
+     }
+   });
    $('#adminContent').prepend(menu);
    nav=menu;
    const current=document.createElement('div');
@@ -157,7 +173,10 @@
      'عرض المحافظ، البحث عن الزبائن ومراجعة المعاملات من نفس إدارة المتجر.');
    panes.reports=addFramePanel('adminHubReports','./admin-reports.html','التقارير المتقدمة',
      'رسوم المبيعات وتقارير أكثر تفصيلًا؛ لا تحتاج لوحة إدارة ثانية.');
-   Object.values(panes).forEach(node=>node.classList.add('admin-hub-pane'));
+   Object.entries(panes).forEach(([key,node])=>{
+     if(!node.id)node.id='adminHubPane-'+key;
+     node.classList.add('admin-hub-pane');
+   });
    makeMenu();
    // A single canonical admin entry and a visible return to the storefront.
    const top=view.querySelector(':scope > .section-head');

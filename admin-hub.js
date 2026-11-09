@@ -20,10 +20,9 @@
   ['topups','طلبات الشحن','التحويلات والمراجعة'],
   ['stock','مخزون الروبوكس','الكمية المتوفرة'],
   ['products','المنتجات','الأسعار والباقات'],
-  ['finance','الأرباح','المبيعات والتكاليف'],
+  ['finance','الأرباح والمبيعات','ملخص واضح وتكاليف الشراء'],
   ['reviews','التقييمات','آراء المشترين'],
   ['wallets','محافظ الزبائن','الأرصدة والمعاملات'],
-  ['reports','تقارير متقدمة','الجداول والتحليلات']
  ];
  let active=null,nav=null,header=null,panes={},lastVisible=false;
  function sectionOf(selector){return $(selector)?.closest('section')||null}
@@ -120,6 +119,7 @@
  }
  // A full-screen page, not an accordion inside the dashboard.
  function openScreen(key,pushHistory){
+   if(key==='reports')key='finance';
    if(!Object.prototype.hasOwnProperty.call(panes,key))return;
    active=key;
    const view=$('#adminView');
@@ -193,7 +193,7 @@
      lastVisible=visible;
      if(visible){
        const requested=new URLSearchParams(location.search).get('section');
-       if(requested&&panes[requested])openScreen(requested,false);
+       if(requested==='reports'||requested&&panes[requested])openScreen(requested,false);
        else showMenu();
      }else showMenu();
    }
@@ -242,8 +242,10 @@
    panes.reviews=addReviewPanel();
    panes.wallets=addFramePanel('adminHubWallets','./admin-wallets.html','محافظ الزبائن',
      'عرض المحافظ، البحث عن الزبائن ومراجعة المعاملات من نفس إدارة المتجر.');
-   panes.reports=addFramePanel('adminHubReports','./admin-reports.html','التقارير المتقدمة',
-     'رسوم المبيعات وتقارير أكثر تفصيلًا؛ لا تحتاج لوحة إدارة ثانية.');
+   const reports=document.createElement('details');reports.className='finance-reports-details';
+   reports.innerHTML='<summary>تفاصيل المبيعات والرسوم البيانية</summary><p>تصفّح المبيعات حسب الشهر واليوم والقسم. حساب الأرباح وإدخال التكاليف من الملخص أعلاه.</p><iframe class="admin-hub-embedded-frame" title="تفاصيل المبيعات" loading="lazy"></iframe>';
+   reports.addEventListener('toggle',()=>{const frame=reports.querySelector('iframe');if(reports.open&&!frame.getAttribute('src'))frame.src='./admin-reports.html?embedded=1&sales-only=1&v=unified-finance-1';});
+   panes.finance.appendChild(reports);
    Object.entries(panes).forEach(([key,node])=>{
      if(!node.id)node.id='adminHubPane-'+key;
      node.classList.add('admin-hub-pane');
@@ -256,7 +258,7 @@
      if(!adminIsVisible())return;
      const key=event.state?.l1017AdminScreen||
        new URLSearchParams(location.search).get('section');
-     if(key&&panes[key])openScreen(key,false);
+     if(key==='reports'||key&&panes[key])openScreen(key,false);
      else showMenu();
    });
    document.addEventListener('keydown',event=>{

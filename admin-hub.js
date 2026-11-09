@@ -284,8 +284,8 @@
    nav.classList.add('admin-hub-nav');
    const obs=new MutationObserver(toggleAdminBody);
    obs.observe(view,{attributes:true,attributeFilter:['class']});
-   toggleAdminBody();
    showMenu();
+   toggleAdminBody();
    window.L1017nAdminHub={show:(key)=>openScreen(key,true),back:returnToMenu,home:showMenu};
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});

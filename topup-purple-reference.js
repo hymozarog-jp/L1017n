@@ -23,9 +23,9 @@
       '<div class="dt-purple-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16" aria-describedby="dtPhoneStatus"></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
-      '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «تأكيد الشحن» لفتح اتصال ليبيانا، وبعد التحويل سنتحقق من وصول الرصيد.</p>'+
-      '<button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>تأكيد الشحن</span></button>'+
-      '<a class="dt-purple-fallback" id="dtFallback" hidden>فتح الاتصال يدويًا إذا لم يعمل تلقائيًا</a>'+
+      '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.</p>'+
+      '<button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>التحويل مباشرة</span></button>'+
+      '<a class="dt-purple-fallback" id="dtFallback" hidden>التحويل مباشرة</a>'+
     '</section>'+
     '<section class="dt-card dt-purple-guide" aria-labelledby="dtPurpleGuideTitle">'+
       '<h3 id="dtPurpleGuideTitle"><span class="dt-purple-guide-icon">⚡</span> طريقة الشحن</h3>'+
@@ -113,19 +113,19 @@
     if(confirm.disabled){
       confirm.disabled=false;
       const label=confirm.querySelector('span');
-      if(label)label.textContent='تأكيد الشحن';
+      if(label)label.textContent='التحويل مباشرة';
     }
   }
   sender.addEventListener('input',()=>{
     prepared=null;fallback.hidden=true;
     resetApprovedPresentation();
     if(shopNumber()&&normalize(sender.value)===shopNumber())message('هذا رقم المتجر؛ أدخل رقم ليبيانا الذي ستحوّل منه.','error');
-    else message('اضغط «تأكيد الشحن» لفتح اتصال ليبيانا، وبعد التحويل سنتحقق من وصول الرصيد.','');
+    else message('اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.','');
   });
   enteredAmount.addEventListener('input',()=>{
     prepared=null;fallback.hidden=true;
     resetApprovedPresentation();
-    message('اضغط «تأكيد الشحن» لفتح اتصال ليبيانا، وبعد التحويل سنتحقق من وصول الرصيد.','');
+    message('اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.','');
   });
   copy.addEventListener('click',async()=>{
     const receiver=window.L1017nDirectTransfer?.receiver;
@@ -164,7 +164,7 @@
       return;
     }
     busy=true;confirm.disabled=true;
-    confirm.querySelector('span').textContent='جاري تجهيز الاتصال…';
+    confirm.querySelector('span').textContent='جاري تجهيز التحويل…';
     fallback.hidden=true;
     try{
       legacyAmount.value=String(value);
@@ -190,7 +190,7 @@
       prepared={key,link};
       fallback.href=link.href;fallback.hidden=false;
       fallback.onclick=(e)=>{e.preventDefault();link.click();};
-      message('الكود جاهز. أكّد الاتصال من هاتفك لإرسال التحويل؛ الرصيد يُضاف بعد مطابقته.','success');
+      message('التحويل جاهز. أكّد التحويل عبر خدمة ليبيانا؛ يُضاف الرصيد بعد مطابقته.','success');
       link.click();
     }catch(err){
       hidePreparing();
@@ -205,7 +205,7 @@
         confirm.disabled=false;
         confirm.querySelector('span').textContent=
           state==='pending'||state==='matched'||state==='delayed'
-            ?'فتح الاتصال مرة أخرى':'تأكيد الشحن';
+            ?'التحويل مباشرة':'التحويل مباشرة';
       }
     }
   });

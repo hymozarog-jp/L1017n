@@ -18,7 +18,7 @@
     document.body.appendChild(visitorCounter);
     var loadUnifiedAdminHub=function(){
       var hub=document.createElement('script');
-      hub.src='admin-hub.js?v=unified-finance-20261110-1&robux-profit-sync-20261109-1';
+      hub.src='admin-hub.js?v=wallet-fullscreen-20261110-1&unified-finance-20261110-1&robux-profit-sync-20261109-1';
       hub.onerror=function(){console.warn('[admin] Unified administration interface unavailable')};
       document.body.appendChild(hub);
     };

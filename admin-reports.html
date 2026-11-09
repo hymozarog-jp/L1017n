@@ -370,6 +370,37 @@ html.l1017n-admin-embedded .shell>.columns{
  }
  $("month").addEventListener("change",function(){if(isAdmin)render();});
  $("refresh").addEventListener("click",refresh);
+ $("savedRobuxInput").addEventListener("input",function(){
+   savedInputDirty=true;
+   var raw=this.value.trim();
+   if(/^\d{1,10}$/.test(raw)&&Number(raw)<=1000000000){
+     $("soldReportMessage").textContent="بعد الحفظ سيصبح العدد الإجمالي "+count(Number(raw))+" روبوكس، وتزيده المبيعات الجديدة فقط.";
+   }else $("soldReportMessage").textContent="اكتب عددًا صحيحًا بين 0 و1,000,000,000.";
+ });
+ $("savedRobuxForm").addEventListener("submit",async function(event){
+   event.preventDefault();
+   if(!isAdmin||savingRobuxSales)return;
+   var raw=$("savedRobuxInput").value.trim(),target=Number(raw);
+   if(!/^\d{1,10}$/.test(raw)||!Number.isSafeInteger(target)||target<0||target>1000000000){
+     $("soldReportMessage").textContent="اكتب عددًا صحيحًا بين 0 و1,000,000,000.";
+     $("savedRobuxInput").focus();return;
+   }
+   savingRobuxSales=true;
+   $("savedRobuxSave").disabled=true;
+   $("soldReportMessage").textContent="جاري حفظ عدد الروبوكس في قاعدة البيانات…";
+   try{
+     var result=await client.rpc("admin_set_robux_sales_display",{p_total:target});
+     if(result.error)throw result.error;
+     savedSales=result.data;
+     savedInputDirty=false;
+     renderSavedRobux();
+     $("soldReportMessage").textContent="✅ تم الحفظ: "+count(Number(savedSales.total_sold))+" روبوكس. الربح التقديري تحدّث تلقائيًا.";
+   }catch(error){
+     $("soldReportMessage").textContent="تعذّر الحفظ، لم يتغيّر العدد. "+(error&&error.message?error.message:"حاول مرة ثانية.");
+   }finally{
+     savingRobuxSales=false;$("savedRobuxSave").disabled=false;
+   }
+ });
  $("saveCosts").addEventListener("click",async function(){
    if(!isAdmin)return;
    var a=Number($("robuxRate").value),b=Number($("plusRate").value);

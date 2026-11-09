@@ -84,13 +84,20 @@ function applyWalletTransactionFilter(){
   row.hidden=selected!=='all'&&row.dataset.walletStatus!==selected;
  });
 }
+// Historical approvals may record the administrator's Telegram action.
+ // Keep that audit note in the database, but do not expose it as a required
+ // customer checkout step: new matching top-ups run in automatic mode.
+function visibleCustomerTopupNote(note){
+ const value=String(note||'').trim();
+ return value==='موافقة صاحب المتجر في تيليجرام بعد التحقق من وصول التحويل'?'':value;
+}
 function walletTransactionRows(list){
  if(!list?.length)return '<div class="wallet-transactions-empty">ما عندكش طلبات شحن لحد الآن.</div>';
  const symbol='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V6m0 0L7.5 10.5M12 6l4.5 4.5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>';
  const chevron='<svg class="wallet-tx-chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>';
  return list.map(x=>{
   const state=['approved','rejected'].includes(x.status)?x.status:'pending';
-  const statusDetail=state==='approved'?'تم اعتماد الشحن وإضافة الرصيد':state==='rejected'?'مرفوض':'بانتظار مراجعة الإدارة';
+  const statusDetail=state==='approved'?'تم اعتماد الشحن وإضافة الرصيد':state==='rejected'?'مرفوض':'بانتظار التحقق من وصول التحويل';
   const statusShort=state==='approved'?'مكتمل':state==='rejected'?'مرفوض':'معلّق';
   const step=state==='approved'?'done':state==='rejected'?'stopped':'current';
   const carrier=String(x.transfer_reference||'').startsWith('card-batch:')?'بالكروت':x.method==='libyana'?'ليبيانا':'المدار';
@@ -99,7 +106,8 @@ function walletTransactionRows(list){
   const date=new Date(x.created_at),shownDate=Number.isNaN(date.getTime())?'غير متوفر':date.toLocaleString('ar-LY',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   const tracking=escapeHtml(String(x.id||'').slice(0,8).toUpperCase());
   const reference=x.transfer_reference?escapeHtml(String(x.transfer_reference)):'غير متوفر';
-  const note=x.admin_note?'<p class="wallet-tx-admin-note">ملاحظة الإدارة: '+escapeHtml(String(x.admin_note))+'</p>':'';
+  const customerNote=visibleCustomerTopupNote(x.admin_note);
+   const note=customerNote?'<p class="wallet-tx-admin-note">ملاحظة: '+escapeHtml(customerNote)+'</p>':'';
   return '<details class="wallet-transaction" data-wallet-status="'+state+'">'
    +'<summary class="wallet-transaction-line" aria-label="شحن '+carrier+'، '+amount+' دينار، '+statusShort+'، عرض التفاصيل">'
     +'<span class="wallet-tx-icon wallet-tx-'+provider+'">'+symbol+'</span>'
@@ -201,7 +209,7 @@ async function renderOrders(){
    const g=group(x),title=escapeHtml(label(x)),
      amount=Number(x.kind==='topup'?x.amount:x.total_amount||0).toFixed(3),
      details=escapeHtml(x.kind==='topup'?'شحن محفظة':(x.roblox_username==='DIGITAL_CODE'?'كود رقمي تم تسليمه':(x.roblox_username?'@'+x.roblox_username:'طلب شراء'))),
-     note=x.admin_note?'<p class="orders-card-note">'+escapeHtml(x.admin_note)+'</p>':'';
+     note=(x.kind==='topup'?visibleCustomerTopupNote(x.admin_note):String(x.admin_note||''))?'<p class="orders-card-note">'+escapeHtml(x.kind==='topup'?visibleCustomerTopupNote(x.admin_note):x.admin_note)+'</p>':'';
    const product=categories.get(String(x.product_id))||null;
    const manual=!!(x.kind==='purchase'&&g==='pending'&&x.roblox_username!=='DIGITAL_CODE'&&handover
      && (product?handover.isManualProduct(product.game,product.product_key)

@@ -136,17 +136,52 @@
  // Consent is independent from the leaderboard. No opt-in means anonymous
  // purchase rows; nothing about a user's wallet or purchase identity leaks.
  const privacyButton=document.getElementById("accountPurchasePrivacyButton");
- const detail=document.getElementById("accountSettingsDetail");
+ // Purchase privacy is opened from Ranking, not the account settings panel.
+ // Keep it independent so the ranking screen stays visible on close.
+ function purchasePrivacyPage(){
+   let page=document.getElementById("l1017PurchasePrivacyPage");
+   if(page)return page;
+   page=asEl("section");
+   page.id="l1017PurchasePrivacyPage";
+   page.setAttribute("role","dialog");
+   page.setAttribute("aria-modal","true");
+   page.setAttribute("aria-label","خصوصية المشتريات");
+   page.innerHTML='<div class="purchase-privacy-shell">'+
+     '<header class="purchase-privacy-topbar">'+
+       '<button type="button" class="purchase-privacy-back" aria-label="الرجوع إلى التصنيف">‹ رجوع</button>'+
+       '<strong>خصوصية المشتريات</strong></header>'+
+     '<div class="purchase-privacy-content"></div></div>';
+   document.body.appendChild(page);
+   const close=()=>{
+     page.classList.remove("is-visible");
+     document.body.classList.remove("l1017-purchase-privacy-open");
+     if(privacyButton?.isConnected)privacyButton.focus({preventScroll:true});
+   };
+   page.querySelector(".purchase-privacy-back").addEventListener("click",close);
+   page.addEventListener("keydown",event=>{
+     if(event.key==="Escape"){event.preventDefault();close()}
+   });
+   return page;
+ }
  function setPrivacyStatus(node,message,isError=false){node.textContent=message;node.dataset.error=String(isError)}
  async function openPrivacy(){
-   if(!detail)return;
    const db=storeClient();
    if(!db)return;
    const {data:session,error:sessionError}=await db.auth.getUser();
-   if(sessionError||!session?.user){return}
+   if(sessionError||!session?.user){
+     const login=document.querySelector('#llBottomNav [data-ll-nav="account"]')||
+       document.querySelector('.mobile-nav [data-view="account"]');
+     login?.click();
+     return;
+   }
    const user=session.user;
+   const page=purchasePrivacyPage();
+   const detail=page.querySelector(".purchase-privacy-content");
    detail.replaceChildren();
-   detail.classList.remove("hidden");
+   page.classList.add("is-visible");
+   document.body.classList.add("l1017-purchase-privacy-open");
+   page.scrollTop=0;
+   page.querySelector(".purchase-privacy-back").focus({preventScroll:true});
    const title=asEl("h3","","خصوصية آخر المشتريات");
    const description=asEl("p","","كل عملية شراء مدفوعة تظهر في القسم العام بالمنتج والقيمة والحالة. اسم المشتري مخفي افتراضيًا؛ إذا وافقت، يظهر اسم حسابك بجانب مشترياتك.");
    const box=asEl("label","recent-purchase-privacy-label");
@@ -160,7 +195,7 @@
    const status=asEl("p","recent-purchase-privacy-status","جاري تحميل إعدادات الخصوصية…");
    status.setAttribute("role","status");status.setAttribute("aria-live","polite");
    detail.append(title,description,box,note,status);
-   detail.scrollIntoView({block:"nearest",behavior:"smooth"});
+
    try{
      const {data,error}=await db.from("leaderboard_profiles")
        .select("nickname,public_visible,share_google_profile,show_in_purchase_feed")

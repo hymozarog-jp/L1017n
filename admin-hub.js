@@ -71,7 +71,7 @@
    menu.setAttribute('aria-label','أقسام إدارة المتجر');
    menu.innerHTML='<div class="admin-hub-menu-caption"><strong>أقسام الإدارة</strong><small>اختار القسم اللي تبيه</small></div>'+
      '<div class="admin-hub-grid" role="tablist" aria-label="التنقل بين أقسام الإدارة">'+
-     tabs.map(([id,label,desc])=>'<button class="admin-hub-tab" type="button" role="tab" data-admin-hub-tab="'+id+
+     tabs.map(([id,label,desc])=>'<button class="admin-hub-tab" type="button" role="tab" id="adminHubTab-'+id+'" data-admin-hub-tab="'+id+
        '" aria-selected="false" aria-controls="'+panes[id].id+'">'+icon(id)+'<b>'+label+'</b><small>'+desc+'</small></button>').join('')+
      '</div>';
    menu.addEventListener('click',e=>{
@@ -176,6 +176,8 @@
    Object.entries(panes).forEach(([key,node])=>{
      if(!node.id)node.id='adminHubPane-'+key;
      node.classList.add('admin-hub-pane');
+     node.setAttribute('role','tabpanel');
+     node.setAttribute('aria-labelledby','adminHubTab-'+key);
    });
    makeMenu();
    // A single canonical admin entry and a visible return to the storefront.

@@ -1351,30 +1351,177 @@ async function reviewPurchase(id,decision){
   await loadAdminDashboard();
 }
 async function saveAdminRobuxStock(){const input=$('#adminRobuxStock');const stock=Number(input.value);if(!Number.isInteger(stock)||stock<0){toast('اكتب كمية صحيحة من صفر أو أكثر');return}const btn=$('#saveAdminRobuxStock');btn.disabled=true;btn.textContent='جاري الحفظ…';const {error}=await supabaseClient.rpc('admin_set_robux_stock',{p_stock:stock});btn.disabled=false;btn.textContent='حفظ المخزون';if(error){toast('تعذر حفظ المخزون: '+error.message);return}robuxAvailable=stock;toast('تم تحديث مخزون الروبوكس المتوفر للبيع: '+stock);await loadProducts();await loadAdminDashboard()}
+let adminProductOriginalImage='';
+let adminProductRemoveImage=false;
+let adminProductPreviewObjectUrl='';
+function adminProductImagePreviewUrl(){
+ const file=$('#adminProductImageFile')?.files?.[0];
+ if(file)return adminProductPreviewObjectUrl;
+ return adminProductRemoveImage?'':adminProductOriginalImage;
+}
+function updateAdminProductPreview(){
+ const name=$('#adminProductName')?.value.trim()||'اسم المنتج';
+ const game=$('#adminProductGame')?.value.trim()||'المنتج';
+ const description=$('#adminProductDescription')?.value.trim()||'تفاصيل المنتج تظهر هنا';
+ const price=Number($('#adminProductPrice')?.value)||0;
+ const preview=$('#adminProductPreviewImage');
+ const url=adminProductImagePreviewUrl();
+ $('#adminProductPreviewName').textContent=name;
+ $('#adminProductPreviewGame').textContent=game;
+ $('#adminProductPreviewDescription').textContent=description;
+ $('#adminProductPreviewPrice').textContent=price.toFixed(2)+' د.ل';
+ if(preview){
+   if(url){preview.src=url;preview.hidden=false;}
+   else{preview.hidden=true;preview.removeAttribute('src');}
+ }
+ $('#adminProductPreviewFallback').hidden=!!url;
+}
+function revokeAdminProductPreviewUrl(){
+ if(adminProductPreviewObjectUrl){URL.revokeObjectURL(adminProductPreviewObjectUrl);adminProductPreviewObjectUrl='';}
+}
 function clearAdminProductForm(){
-  $('#adminProductForm').reset();$('#adminProductId').value='';$('#adminProductSort').value='0';$('#adminProductActive').checked=true;
+ revokeAdminProductPreviewUrl();
+ adminProductOriginalImage='';
+ adminProductRemoveImage=false;
+ const form=$('#adminProductForm');
+ form.reset();
+ $('#adminProductId').value='';
+ $('#adminProductSort').value='0';
+ $('#adminProductActive').checked=true;
+ $('#adminProductImageFile').value='';
+ $('#adminProductImageStatus').textContent='';
+ updateAdminProductPreview();
+}
+function validateAdminProductImage(file){
+ if(!file)return '';
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type))return 'اختر صورة PNG أو JPG أو WebP فقط.';
+ if(file.size>9*1024*1024)return 'حجم الصورة الأصلية كبير. الحد الأقصى 9 ميجابايت.';
+ if(!file.size)return 'ملف الصورة فارغ.';
+ return '';
+}
+function adminProductFileChanged(){
+ const file=$('#adminProductImageFile')?.files?.[0];
+ const status=$('#adminProductImageStatus');
+ revokeAdminProductPreviewUrl();
+ if(file){
+   const error=validateAdminProductImage(file);
+   if(error){status.textContent=error;$('#adminProductImageFile').value='';}
+   else{
+     adminProductRemoveImage=false;
+     adminProductPreviewObjectUrl=URL.createObjectURL(file);
+     status.textContent='الصورة جاهزة للمعاينة. سيتم رفعها عند حفظ المنتج.';
+   }
+ }else status.textContent='';
+ updateAdminProductPreview();
+}
+function loadProductImageElement(file){
+ return new Promise((resolve,reject)=>{
+   const objectUrl=URL.createObjectURL(file);
+   const image=new Image();
+   image.onload=()=>{URL.revokeObjectURL(objectUrl);resolve(image);};
+   image.onerror=()=>{URL.revokeObjectURL(objectUrl);reject(Error('تعذر قراءة الصورة. جرّب JPG أو PNG آخر.'));};
+   image.src=objectUrl;
+ });
+}
+async function optimizeProductImage(file){
+ const error=validateAdminProductImage(file);if(error)throw Error(error);
+ const image=await loadProductImageElement(file);
+ const w=image.naturalWidth,h=image.naturalHeight;
+ if(!w||!h||w*h>45000000)throw Error('أبعاد الصورة كبيرة جدًا. اختر صورة أقل دقة.');
+ const factor=Math.min(1,1200/Math.max(w,h));
+ const canvas=document.createElement('canvas');
+ canvas.width=Math.max(1,Math.round(w*factor));
+ canvas.height=Math.max(1,Math.round(h*factor));
+ const context=canvas.getContext('2d');
+ if(!context)throw Error('تعذر معالجة الصورة على جهازك.');
+ context.imageSmoothingEnabled=true;
+ context.imageSmoothingQuality='high';
+ context.drawImage(image,0,0,canvas.width,canvas.height);
+ const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.84));
+ canvas.width=0;canvas.height=0;
+ if(!blob)throw Error('تعذر تجهيز الصورة للرفع.');
+ const mime=blob.type==='image/webp'?'image/webp':blob.type==='image/png'?'image/png':'';
+ if(!mime)throw Error('صيغة الصورة غير مدعومة. جرّب صورة JPG أو PNG.');
+ if(blob.size>3*1024*1024)throw Error('الصورة بعد التجهيز أكبر من 3 ميجابايت. اختر صورة أصغر.');
+ return {blob,extension:mime==='image/webp'?'webp':'png'};
 }
 async function saveAdminProduct(e){
-  e.preventDefault();
-  const id=$('#adminProductId').value;
-  const item={product_key:$('#adminProductKey').value.trim(),name:$('#adminProductName').value.trim(),game:$('#adminProductGame').value.trim()||null,amount:Number($('#adminProductAmount').value),price:Number($('#adminProductPrice').value),sort_order:Number($('#adminProductSort').value||0),description:$('#adminProductDescription').value.trim()||null,active:$('#adminProductActive').checked};
-  if(!item.product_key||!item.name||!Number.isFinite(item.amount)||item.amount<1||!Number.isFinite(item.price)||item.price<=0){toast('راجع اسم المنتج والكمية والسعر');return}
-  const query=id?supabaseClient.from('products').update(item).eq('id',id):supabaseClient.from('products').insert(item);
-  const {error}=await query;
-  if(error){toast('تعذر حفظ المنتج: '+error.message);return}
-  toast('تم حفظ المنتج بنجاح');clearAdminProductForm();await loadProducts();await loadAdminDashboard();
+ e.preventDefault();
+ const id=$('#adminProductId').value;
+ const form=$('#adminProductForm');
+ const submit=form.querySelector('button[type="submit"]');
+ const imageStatus=$('#adminProductImageStatus');
+ const imageFile=$('#adminProductImageFile').files?.[0]||null;
+ const item={product_key:$('#adminProductKey').value.trim(),name:$('#adminProductName').value.trim(),game:$('#adminProductGame').value.trim()||null,amount:Number($('#adminProductAmount').value),price:Number($('#adminProductPrice').value),sort_order:Number($('#adminProductSort').value||0),description:$('#adminProductDescription').value.trim()||null,active:$('#adminProductActive').checked};
+ if(!item.product_key||!item.name||!item.game||!Number.isInteger(item.amount)||item.amount<1||!Number.isFinite(item.price)||item.price<=0){toast('راجع اسم المنتج واللعبة والكمية والسعر');return}
+ if(imageFile){
+   const error=validateAdminProductImage(imageFile);
+   if(error){imageStatus.textContent=error;toast(error);return;}
+ }
+ submit.disabled=true;
+ submit.textContent='جاري حفظ المنتج…';
+ let uploadedPath='';
+ try{
+   if(imageFile){
+     imageStatus.textContent='جاري تجهيز ورفع الصورة…';
+     const {blob,extension}=await optimizeProductImage(imageFile);
+     const user=await currentUser();
+     if(!user)throw Error('سجّل دخول الإدارة قبل رفع الصورة.');
+     const random=window.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2);
+     uploadedPath='products/'+user.id+'/'+random+'.'+extension;
+     const result=await supabaseClient.storage.from('l1017n-product-images').upload(uploadedPath,blob,{contentType:blob.type,cacheControl:'31536000',upsert:false});
+     if(result.error)throw Error('تعذر رفع الصورة: '+result.error.message);
+     const link=supabaseClient.storage.from('l1017n-product-images').getPublicUrl(uploadedPath).data?.publicUrl||'';
+     if(!safeProductImageUrl(link))throw Error('تعذر التحقق من رابط الصورة بعد رفعها.');
+     item.image_url=link;
+   }else if(adminProductRemoveImage){
+     item.image_url=null;
+   }
+   const query=id?supabaseClient.from('products').update(item).eq('id',id):supabaseClient.from('products').insert(item);
+   const {error}=await query;
+   if(error)throw Error('تعذر حفظ المنتج: '+error.message);
+   imageStatus.textContent='تم حفظ المنتج والصورة بنجاح.';
+   toast('تم حفظ المنتج بنجاح');
+   clearAdminProductForm();
+   await loadProducts();
+   await loadAdminDashboard();
+ }catch(error){
+   if(uploadedPath){
+     const cleanup=await supabaseClient.storage.from('l1017n-product-images').remove([uploadedPath]);
+     if(cleanup.error)console.warn('[admin/product-image] Failed to clean unattached upload');
+   }
+   imageStatus.textContent=String(error?.message||'تعذر حفظ المنتج');
+   toast('فشل الحفظ. راجع رسالة الصورة والبيانات.');
+ }finally{
+   submit.disabled=false;submit.textContent='حفظ المنتج';
+ }
 }
 function editAdminProduct(id){
-  const btn=$('[data-product-edit="'+CSS.escape(id)+'"]');if(!btn)return;
-  const cards=[...$('#adminProducts').querySelectorAll('[data-product-edit]')];
-  const index=cards.findIndex(b=>b.dataset.productEdit===id);
-  if(index<0)return;
-  supabaseClient.from('products').select('*').eq('id',id).single().then(({data,error})=>{
-    if(error||!data){toast('تعذر تحميل المنتج');return}
-    $('#adminProductId').value=data.id;$('#adminProductKey').value=data.product_key||'';$('#adminProductName').value=data.name||'';$('#adminProductGame').value=data.game||'';$('#adminProductAmount').value=data.amount||1;$('#adminProductPrice').value=data.price||'';$('#adminProductSort').value=data.sort_order||0;$('#adminProductDescription').value=data.description||'';$('#adminProductActive').checked=!!data.active;
-    $('#adminProductForm').scrollIntoView({behavior:'smooth',block:'center'});
-  });
+ const btn=$('[data-product-edit="'+CSS.escape(id)+'"]');if(!btn)return;
+ supabaseClient.from('products').select('*').eq('id',id).single().then(({data,error})=>{
+   if(error||!data){toast('تعذر تحميل المنتج');return}
+   revokeAdminProductPreviewUrl();
+   adminProductOriginalImage=safeProductImageUrl(data.image_url);
+   adminProductRemoveImage=false;
+   $('#adminProductImageFile').value='';
+   $('#adminProductImageStatus').textContent=adminProductOriginalImage?'الصورة الحالية محفوظة؛ اختر صورة جديدة لاستبدالها.':'المنتج ما عنده صورة مضافة بعد.';
+   $('#adminProductId').value=data.id;$('#adminProductKey').value=data.product_key||'';$('#adminProductName').value=data.name||'';$('#adminProductGame').value=data.game||'';$('#adminProductAmount').value=data.amount||1;$('#adminProductPrice').value=data.price||'';$('#adminProductSort').value=data.sort_order||0;$('#adminProductDescription').value=data.description||'';$('#adminProductActive').checked=!!data.active;
+   updateAdminProductPreview();
+   $('#adminProductForm').scrollIntoView({behavior:'smooth',block:'center'});
+ });
 }
+$('#adminProductImageFile')?.addEventListener('change',adminProductFileChanged);
+$('#adminProductImageRemove')?.addEventListener('click',()=>{
+  $('#adminProductImageFile').value='';
+  revokeAdminProductPreviewUrl();
+  adminProductRemoveImage=true;
+  $('#adminProductImageStatus').textContent='سيتم إزالة الصورة عند حفظ المنتج.';
+  updateAdminProductPreview();
+});
+['adminProductName','adminProductGame','adminProductPrice','adminProductDescription'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',updateAdminProductPreview);
+});
+updateAdminProductPreview();
 $('#openAdminDashboard')?.addEventListener('click',openAdminDashboard);
 $('#refreshAdmin')?.addEventListener('click',loadAdminDashboard);
 $('#refreshTraffic')?.addEventListener('click',loadStoreTrafficStats);

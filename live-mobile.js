@@ -189,18 +189,19 @@
     });
     renderCatalog();
   }
-  // One white circle glides between the icons. Measuring its position against
+  // One translucent rounded rectangle glides between the white active icons. Measuring its position against
   // the real nav means it stays aligned in RTL, on all iPhones and on resize.
   function moveNavigationGlider(nav) {
     if (!nav) return;
     const glider = nav.querySelector(".ll-nav-glider");
     const icon = nav.querySelector('button[data-ll-nav].active .ll-nav-icon');
-    if (!glider || !icon) return;
+    if (!glider) return;
+    if (!icon) { glider.classList.remove("is-ready"); return; }
     const rect = icon.getBoundingClientRect();
     const base = nav.getBoundingClientRect();
     if (!rect.width || !base.width) return;
-    const x = Math.round(rect.left - base.left + (rect.width - 40) / 2);
-    const y = Math.round(rect.top - base.top + (rect.height - 40) / 2);
+    const x = Math.round(rect.left - base.left + (rect.width - glider.offsetWidth) / 2);
+    const y = Math.round(rect.top - base.top + (rect.height - glider.offsetHeight) / 2);
     glider.style.transform = "translate3d(" + x + "px," + y + "px,0)";
     glider.classList.add("is-ready");
   }

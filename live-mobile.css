@@ -462,10 +462,10 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active .ll-nav-icon{
     background:transparent!important;
     box-shadow:none!important;
-    color:#171e2b!important;
+    color:#fff!important;
   }
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active svg{
-    color:#171e2b!important;
+    color:#fff!important;
     stroke:currentColor!important;
   }
   html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#f4f0ff!important}
@@ -475,21 +475,21 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
     position:absolute!important;
     top:0!important;
     left:0!important;
-    width:40px!important;
-    height:40px!important;
+    width:48px!important;
+    height:36px!important;
     display:block!important;
     flex:none!important;
-    border-radius:50%!important;
-    background:#fff!important;
-    border:1px solid #fff!important;
+    border-radius:13px!important;
+    background:rgba(255,255,255,.11)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
     box-sizing:border-box!important;
-    box-shadow:0 3px 14px #0004,0 0 0 3px #ffffff12!important;
+    box-shadow:inset 0 1px 0 #ffffff0d!important;
     opacity:0!important;
     visibility:visible!important;
     pointer-events:none!important;
     z-index:0!important;
     will-change:transform;
-    transition:transform .43s cubic-bezier(.23,1.22,.34,1),
+    transition:transform .34s cubic-bezier(.22,.8,.24,1),
                opacity .15s ease!important;
   }
   html body.l1017-live-ui #llBottomNav>.ll-nav-glider.is-ready{opacity:1!important}
@@ -546,3 +546,12 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 @media(prefers-reduced-motion:reduce){
   #llBottomNav>.ll-nav-glider{transition:none!important}
 }
+
+/* The selected symbol itself lights up; the follower stays translucent. */
+@media(max-width:680px){
+ html body.l1017-live-ui #llBottomNav>button[data-ll-nav] svg{transition:color .2s ease,stroke .2s ease,fill .2s ease!important}
+ html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active svg{color:#fff!important;stroke:#fff!important;fill:rgba(255,255,255,.12)!important}
+ html body.l1017-live-ui #llBottomNav>button[data-ll-nav]:not(.active) svg{color:#9299a9!important;stroke:currentColor!important;fill:none!important}
+ html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#fff!important}
+}
+@media(prefers-reduced-motion:reduce){html body.l1017-live-ui #llBottomNav>button[data-ll-nav] svg{transition:none!important}}

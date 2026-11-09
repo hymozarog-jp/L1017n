@@ -328,7 +328,8 @@
       const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
       const delta=y-lastY;
       lastY=y;
-      if(!mobile.matches||reduced.matches||y<64){
+      const atBottom=y+window.innerHeight>=document.documentElement.scrollHeight-24;
+      if(!mobile.matches||reduced.matches||y<64||atBottom){
         travel=0;lastDirection=0;reveal();return;
       }
       if(Math.abs(delta)<2)return; // iOS viewport bounce and tiny scroll jitter

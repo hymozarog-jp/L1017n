@@ -1232,6 +1232,52 @@ function watchAdminRobuxStock(){
     }).catch(()=>{});
  },8000);
 }
+let trafficStatsTimer=null;
+let trafficStatsLoading=false;
+async function loadStoreTrafficStats(){
+  const section=$('#adminTraffic');
+  if(!section||$('#adminView')?.classList.contains('hidden')||trafficStatsLoading)return;
+  trafficStatsLoading=true;
+  const status=$('#trafficStatus');
+  const button=$('#refreshTraffic');
+  if(button)button.disabled=true;
+  try{
+    const {data,error}=await supabaseClient.rpc('get_store_traffic_summary');
+    if(error)throw error;
+    if(!data||typeof data!=='object')throw new Error('invalid_traffic_stats');
+    const num=n=>Math.max(0,Number(n)||0).toLocaleString('en-US');
+    const fields=[
+      ['#trafficToday',data.today_visitors],
+      ['#trafficWeek',data.week_visitors],
+      ['#trafficAllVisits',data.total_visits],
+      ['#trafficPurchases',data.purchases_total]
+    ];
+    for(const [selector,value] of fields){
+      const el=$(selector);
+      if(el)el.textContent=num(value);
+    }
+    const sub=$('#trafficPurchaseSub');
+    if(sub)sub.textContent=num(data.purchases_today)+' طلب شراء اليوم · لا تشمل الطلبات الملغاة';
+    if(status)status.textContent='منذ التفعيل فقط · '+num(data.all_time_visitors)+
+      ' متصفح مميز إجمالًا · آخر تحديث: '+new Date().toLocaleTimeString('ar-LY',{hour:'2-digit',minute:'2-digit'})+
+      ' · التقديرات بحسب المتصفح وليست عدد الأشخاص بالضرورة.';
+  }catch(e){
+    if(status)status.textContent='تعذر تحميل إحصائيات الزوار. اضغط تحديث وحاول مرة ثانية.';
+    console.warn('[traffic] Admin summary unavailable',e);
+  }finally{
+    trafficStatsLoading=false;
+    if(button)button.disabled=false;
+  }
+}
+function watchStoreTrafficStats(){
+  if(trafficStatsTimer)return;
+  trafficStatsTimer=setInterval(()=>{
+    const view=$('#adminView');
+    if(view&&!view.classList.contains('hidden')&&document.visibilityState==='visible'){
+      void loadStoreTrafficStats();
+    }
+  },60000);
+}
 async function loadAdminDashboard(){
   $('#adminStatus').innerHTML='<p class="muted">جاري التحقق من صلاحيات الإدارة…</p>';
   const user=await currentUser();
@@ -1241,6 +1287,8 @@ async function loadAdminDashboard(){
   $('#adminStatus').innerHTML='<p>تم التحقق من صلاحيات الإدارة للحساب: <b>'+escapeHtml(user.email)+'</b></p>';
   $('#adminContent').classList.remove('hidden');
   watchAdminRobuxStock();
+  watchStoreTrafficStats();
+  void loadStoreTrafficStats();
   const [topups,orders,productResult,inventoryResult]=await Promise.all([
     supabaseClient.from('topup_requests').select('id,user_id,amount,method,phone,transfer_reference,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('purchase_orders').select('id,user_id,product_name,total_amount,roblox_username,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
@@ -1305,6 +1353,7 @@ function editAdminProduct(id){
 }
 $('#openAdminDashboard')?.addEventListener('click',openAdminDashboard);
 $('#refreshAdmin')?.addEventListener('click',loadAdminDashboard);
+$('#refreshTraffic')?.addEventListener('click',loadStoreTrafficStats);
 $('#saveAdminRobuxStock')?.addEventListener('click',saveAdminRobuxStock);
 $('#cancelAdminProductEdit')?.addEventListener('click',clearAdminProductForm);
 $('#adminProductForm')?.addEventListener('submit',saveAdminProduct);

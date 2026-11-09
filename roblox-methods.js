@@ -71,7 +71,7 @@
       }
       try{
         const result=await db.from('products')
-          .select('id,product_key,name,game,price,active')
+          .select('id,product_key,name,game,price,active,image_url')
           .eq('active',true)
           .limit(200);
         if(!page.isConnected)return;
@@ -96,6 +96,13 @@
             // The server-side buy_instant_code RPC is the only payment and code-stock authority.
             void window.openInstantCodeCheckout(p.id,p.name,p.price);
           });
+          const url=typeof window.L1017nSafeProductImageUrl==='function'?window.L1017nSafeProductImageUrl(p.image_url):'';
+          if(url){
+            const picture=document.createElement('img');
+            picture.className='l1017n-code-image';
+            picture.src=url;picture.alt=p.name;picture.loading='lazy';picture.decoding='async';
+            card.append(picture);
+          }
           card.append(details,cost,buy);list.appendChild(card);
         });
       }catch(err){

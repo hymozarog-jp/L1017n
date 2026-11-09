@@ -1216,6 +1216,13 @@ async function refreshAdminAccess(){
     reportsLink.setAttribute('aria-hidden',allowed?'false':'true');
   }
 }
+function compactAdminTopup(x,name){
+ const id=escapeHtml(String(x.id));
+ const pending=x.status==='pending';
+ return '<article class="history-item admin-request compact-topup"><div class="compact-topup-identity"><b>'+escapeHtml(name||'اسم الحساب غير متاح')+'</b><span dir="ltr">'+escapeHtml(x.phone||'الرقم غير متاح')+'</span></div>'+
+ '<details class="compact-topup-details"><summary>التفاصيل</summary><div class="compact-topup-info"><b>'+Number(x.amount||0).toFixed(2)+' د.ل</b><span>'+escapeHtml(statusText[x.status]||x.status)+'</span></div>'+
+ (pending?'<div class="admin-request-actions"><button class="btn btn-primary" data-topup-action="approved" data-id="'+id+'">موافقة</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+id+'">رفض</button></div>':'')+'</details></article>';
+}
 function adminItem(title,sub,amount,id,status,actions,note){
   return '<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(title)+'</b><small>'+escapeHtml(sub)+'</small><small>رقم الطلب: '+escapeHtml(String(id).slice(0,8).toUpperCase())+(note?' · ملاحظة: '+escapeHtml(note):'')+'</small><div class="admin-request-actions">'+actions+'</div></div><div><b>'+Number(amount||0).toFixed(2)+' د.ل</b><div><span class="status '+(status==='pending'||status==='paid_pending_fulfillment'||status==='processing'||status==='fulfilling'?'pending':status==='approved'||status==='completed'?'approved':'rejected')+'">'+escapeHtml(statusText[status]||orderStatusText[status]||status)+'</span></div></div></article>'
 }
@@ -1289,12 +1296,14 @@ async function loadAdminDashboard(){
   watchAdminRobuxStock();
   watchStoreTrafficStats();
   void loadStoreTrafficStats();
-  const [topups,orders,productResult,inventoryResult]=await Promise.all([
+  const [topups,orders,productResult,inventoryResult,customerNames]=await Promise.all([
     supabaseClient.from('topup_requests').select('id,user_id,amount,method,phone,transfer_reference,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('purchase_orders').select('id,user_id,product_name,total_amount,roblox_username,status,created_at,admin_note').order('created_at',{ascending:false}).limit(100),
     supabaseClient.from('products').select('*').order('sort_order'),
-    supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle()
+    supabaseClient.from('store_inventory').select('robux_available,robux_unlimited').eq('id',true).maybeSingle(),
+    supabaseClient.rpc('admin_customer_wallet_overview').select('customer_id,customer_name')
   ]);
+  const topupNames=new Map((customerNames.data||[]).map(row=>[row.customer_id,row.customer_name]));
   if(!inventoryResult.error&&inventoryResult.data){
     $('#adminRobuxStock').value=Number(inventoryResult.data.robux_available)||0;
     const currentStock=$('#adminRobuxStockLive');
@@ -1305,7 +1314,7 @@ async function loadAdminDashboard(){
       : 'المخزون محدود. كل طلب مدفوع يحجز الكمية تلقائيًا؛ تظل مخصومة عند اكتمال الطلب وترجع إذا رُفض.';
   }
   if(topups.error)$('#adminTopups').innerHTML='<p class="muted">تعذر تحميل طلبات الشحن: '+escapeHtml(topups.error.message)+'</p>';
-  else $('#adminTopups').innerHTML=topups.data?.length?topups.data.map(x=>adminItem('شحن '+(x.method==='libyana'?'ليبيانا':'المدار')+' · '+x.amount+' د.ل','الهاتف: '+(x.phone||'—')+' · رقم العملية: '+(x.transfer_reference||'—')+' · المستخدم: '+x.user_id,x.amount,x.id,x.status,x.status==='pending'?'<button class="btn btn-primary" data-topup-action="approved" data-id="'+x.id+'">موافقة وإضافة الرصيد</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+x.id+'">رفض الطلب</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شحن.</p>';
+  else $('#adminTopups').innerHTML=topups.data?.length?topups.data.map(x=>compactAdminTopup(x,topupNames.get(x.user_id))).join(''):'<p class="muted">لا توجد طلبات شحن.</p>';
   if(orders.error)$('#adminPurchases').innerHTML='<p class="muted">تعذر تحميل طلبات الشراء: '+escapeHtml(orders.error.message)+'</p>';
   else $('#adminPurchases').innerHTML=orders.data?.length?orders.data.map(x=>adminItem(x.product_name+' · '+x.total_amount+' د.ل','Roblox: @'+x.roblox_username+' · المستخدم: '+x.user_id,x.total_amount,x.id,x.status,['paid_pending_fulfillment','approved','processing','fulfilling'].includes(x.status)?'<button class="btn btn-primary" data-order-action="completed" data-id="'+x.id+'">تأكيد التنفيذ</button><button class="btn btn-soft" data-order-action="rejected" data-id="'+x.id+'">رفض وإرجاع الرصيد</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شراء.</p>';
   if(productResult.error)$('#adminProducts').innerHTML='<p class="muted">تعذر تحميل المنتجات: '+escapeHtml(productResult.error.message)+'</p>';

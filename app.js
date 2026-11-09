@@ -32,7 +32,7 @@
     document.body.appendChild(extras);
     // Independent admin-only Robux sales counter; does not touch wallet/inventory.
     var soldTracker=document.createElement('script');
-    soldTracker.src='admin-robux-sales.js?v=sold-counter-20261109-1';
+    soldTracker.src='admin-robux-sales.js?v=sold-counter-20261109-2-direct-total';
     soldTracker.onerror=function(){console.warn('[admin] Robux sales tracker unavailable')};
     document.body.appendChild(soldTracker);
   };

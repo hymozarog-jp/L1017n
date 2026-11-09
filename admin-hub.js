@@ -150,7 +150,9 @@
    if(key==='wallets'||key==='reports'){
      const frame=pane.querySelector('iframe[data-admin-frame]');
      if(frame&&!frame.getAttribute('src')){
-       frame.setAttribute('src',frame.dataset.adminFrame+'?embedded=1');
+       // Reports use a fresh full-screen layout; wallet iframe stays unchanged.
+       const params=key==='reports'?'?embedded=1&full-screen=1':'?embedded=1';
+       frame.setAttribute('src',frame.dataset.adminFrame+params);
      }
    }
    pane.scrollTop=0;

@@ -118,7 +118,9 @@
     const price = Number(product.price) || 0;
     overlay.innerHTML = '<div class="pubg-account-checkout">' +
       '<button type="button" class="pubg-account-close" aria-label="إغلاق طلب الشحن">×</button>' +
-      '<div class="pubg-account-icon" aria-hidden="true">UC</div>' +
+      (productImageSrc(product.image_url)
+        ? '<img class="pubg-checkout-product-image l1017n-catalog-image" src="'+safe(productImageSrc(product.image_url))+'" alt="'+safe(product.name)+'" loading="eager">'
+        :'<div class="pubg-account-icon" aria-hidden="true">UC</div>') +
       '<span class="pubg-eyebrow">PUBG MOBILE / ACCOUNT TOP-UP</span>' +
       '<h2 id="pubgCheckoutTitle">شحن ' + Math.trunc(amount) + ' شدة</h2>' +
       '<p class="pubg-account-explainer">اكتب معرف اللاعب (UID) في ببجي بدقة. بعد الدفع من رصيد محفظتك يوصل الطلب للإدارة، ويتم شحن حسابك بعد تنفيذ الطلب.</p>' +

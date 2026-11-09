@@ -1239,6 +1239,20 @@ function compactAdminTopup(x,name){
  '<details class="compact-topup-details"><summary>التفاصيل</summary><div class="compact-topup-info"><b>'+Number(x.amount||0).toFixed(2)+' د.ل</b><span>'+escapeHtml(statusText[x.status]||x.status)+'</span></div>'+
  (pending?'<div class="admin-request-actions"><button class="btn btn-primary" data-topup-action="approved" data-id="'+id+'">موافقة</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+id+'">رفض</button></div>':'')+'</details></article>';
 }
+function compactAdminPurchase(x,name){
+ const id=escapeHtml(String(x.id));
+ const actionable=['paid_pending_fulfillment','approved','processing','fulfilling'].includes(x.status);
+ const state=x.status==='completed'?'approved':['rejected','refunded'].includes(x.status)?'rejected':'pending';
+ const username=String(x.roblox_username||'').replace(/^@/,'');
+ return '<article class="history-item admin-request compact-topup compact-purchase"><div class="compact-topup-identity"><b>'+escapeHtml(name||'اسم الحساب غير متاح')+'</b>'+
+ (username?'<span dir="ltr">@'+escapeHtml(username)+'</span>':'')+'</div>'+
+ '<details class="compact-topup-details"><summary>التفاصيل</summary><div class="purchase-product-name">'+escapeHtml(x.product_name||'طلب شراء')+'</div>'+
+ '<div class="compact-topup-info"><b>'+Number(x.total_amount||0).toFixed(2)+' د.ل</b><span class="status '+state+'">'+escapeHtml(orderStatusText[x.status]||x.status)+'</span></div>'+
+ '<div class="purchase-reference">رقم الطلب: <b dir="ltr">'+escapeHtml(String(x.id).slice(0,8).toUpperCase())+'</b></div>'+
+ (x.admin_note?'<p class="purchase-note">'+escapeHtml(x.admin_note)+'</p>':'')+
+ (actionable?'<div class="admin-request-actions"><button type="button" class="btn btn-primary" data-order-action="completed" data-id="'+id+'">تأكيد التنفيذ</button><button type="button" class="btn btn-soft" data-order-action="rejected" data-id="'+id+'">رفض وإرجاع الرصيد</button></div>':'')+
+ '</details></article>';
+}
 function adminItem(title,sub,amount,id,status,actions,note){
   return '<article class="history-item admin-request"><div class="admin-request-details"><b>'+escapeHtml(title)+'</b><small>'+escapeHtml(sub)+'</small><small>رقم الطلب: '+escapeHtml(String(id).slice(0,8).toUpperCase())+(note?' · ملاحظة: '+escapeHtml(note):'')+'</small><div class="admin-request-actions">'+actions+'</div></div><div><b>'+Number(amount||0).toFixed(2)+' د.ل</b><div><span class="status '+(status==='pending'||status==='paid_pending_fulfillment'||status==='processing'||status==='fulfilling'?'pending':status==='approved'||status==='completed'?'approved':'rejected')+'">'+escapeHtml(statusText[status]||orderStatusText[status]||status)+'</span></div></div></article>'
 }
@@ -1332,7 +1346,7 @@ async function loadAdminDashboard(){
   if(topups.error)$('#adminTopups').innerHTML='<p class="muted">تعذر تحميل طلبات الشحن: '+escapeHtml(topups.error.message)+'</p>';
   else $('#adminTopups').innerHTML=topups.data?.length?topups.data.map(x=>compactAdminTopup(x,topupNames.get(x.user_id))).join(''):'<p class="muted">لا توجد طلبات شحن.</p>';
   if(orders.error)$('#adminPurchases').innerHTML='<p class="muted">تعذر تحميل طلبات الشراء: '+escapeHtml(orders.error.message)+'</p>';
-  else $('#adminPurchases').innerHTML=orders.data?.length?orders.data.map(x=>adminItem(x.product_name+' · '+x.total_amount+' د.ل','Roblox: @'+x.roblox_username+' · المستخدم: '+x.user_id,x.total_amount,x.id,x.status,['paid_pending_fulfillment','approved','processing','fulfilling'].includes(x.status)?'<button class="btn btn-primary" data-order-action="completed" data-id="'+x.id+'">تأكيد التنفيذ</button><button class="btn btn-soft" data-order-action="rejected" data-id="'+x.id+'">رفض وإرجاع الرصيد</button>':'',x.admin_note)).join(''):'<p class="muted">لا توجد طلبات شراء.</p>';
+  else $('#adminPurchases').innerHTML=orders.data?.length?orders.data.map(x=>compactAdminPurchase(x,topupNames.get(x.user_id))).join(''):'<p class="muted">لا توجد طلبات شراء.</p>';
   if(productResult.error)$('#adminProducts').innerHTML='<p class="muted">تعذر تحميل المنتجات: '+escapeHtml(productResult.error.message)+'</p>';
   else $('#adminProducts').innerHTML=productResult.data?.length?productResult.data.map(p=>{const img=safeProductImageUrl(p.image_url);return '<article class="history-item admin-request admin-product-row"><div class="admin-product-thumbnail">'+(img?'<img src="'+escapeHtml(img)+'" alt="" loading="lazy" decoding="async">':'<span class="admin-product-no-image">بدون صورة</span>')+'</div><div class="admin-request-details"><b>'+escapeHtml(p.name)+'</b><small>المعرّف: '+escapeHtml(p.product_key)+' · اللعبة: '+escapeHtml(p.game||'—')+' · الكمية: '+Number(p.amount||0)+'</small><small>'+(p.active?'ظاهر في المتجر':'مخفي')+' · الترتيب: '+Number(p.sort_order||0)+'</small><div class="admin-request-actions"><button class="btn btn-soft" data-product-edit="'+p.id+'">تعديل</button></div></div><b>'+Number(p.price||0).toFixed(2)+' د.ل</b></article>'}).join(''):'<p class="muted">ما فيش منتجات حالياً.</p>';
 }

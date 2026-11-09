@@ -38,7 +38,7 @@
 #adminView .admin-hub-frame-open{display:inline-flex;align-items:center;gap:7px;color:#e0e8ff;border:1px solid #66799a;background:#263955;padding:10px 15px;border-radius:12px;font-size:12px;text-decoration:none;margin:7px 0}
 #adminView #adminHubReviews .e-review-list{margin-top:15px}
 #adminView #adminHubReviews .admin-hub-empty{color:#acc1da;line-height:1.75}
-body.l1017-admin-open #llBottomNav,body.l1017-admin-open nav.mobile-nav{display:none!important}
+html body.l1017-live-ui.l1017-admin-open #llBottomNav,html body.l1017-live-ui.l1017-admin-open nav.mobile-nav,html body.l1017-admin-open #llBottomNav,html body.l1017-admin-open nav.mobile-nav{display:none!important}
 @keyframes adminHubEnter{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(min-width:1000px){#adminView .admin-hub-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:680px){

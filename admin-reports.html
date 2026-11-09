@@ -220,6 +220,7 @@ html.l1017n-admin-embedded .shell>.columns{
  var client=null;
  var orders=[],topupRows=[],products=[],walletRows=[],stock=null;
  var costs={robux_cost_per_1000:121,plus_cost_per_month:70};
+ var savedSales=null,savedInputDirty=false,savingRobuxSales=false;
  var isAdmin=false;
  var $=function(id){return document.getElementById(id);};
  var money=function(n){return Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})+" د.ل";};
@@ -256,6 +257,38 @@ html.l1017n-admin-embedded .shell>.columns{
    if(game==="pubg"||name.includes("pubg")||name.includes("شدة"))return "ببجي";
    if(game.includes("brainrot")||name.includes("سرقة"))return "ماب السرقة";
    return "منتجات أخرى";
+ }
+ function recordedRobuxOrder(order){
+   var product=products.find(function(p){return p.id===order.product_id;});
+   return /(robux|روبوكس)/i.test(String(order.product_name||"")) ||
+     String((product&&product.product_key)||"").indexOf("robux-")===0;
+ }
+ function renderSavedRobux(){
+   if(!savedSales){
+     ["savedRobuxCount","savedRobuxRevenue","savedRobuxCost","savedRobuxPlus","savedRobuxProfit"].forEach(function(id){$(id).textContent="—";});
+     return;
+   }
+   var total=Number(savedSales.total_sold);
+   if(!Number.isSafeInteger(total)||total<0)return;
+   $("savedRobuxCount").textContent=count(total)+" روبوكس";
+   if(!savedInputDirty)$("savedRobuxInput").value=String(total);
+   var recorded=orders.filter(function(o){return o.status==="completed"&&recordedRobuxOrder(o)&&Number(o.amount)>0;});
+   var sold=recorded.reduce(function(a,o){return a+Number(o.amount||0);},0);
+   var revenue=recorded.reduce(function(a,o){return a+Number(o.total_amount||0);},0);
+   var rate=Number(costs.robux_cost_per_1000||0),plus=Number(costs.plus_cost_per_month||0);
+   var quantityCost=total*rate/1000,fee=total>0?plus:0;
+   $("savedRobuxCost").textContent=money(quantityCost);
+   $("savedRobuxPlus").textContent=money(fee);
+   if(sold===0&&total>0){
+     $("savedRobuxRevenue").textContent="لا توجد مبيعات فعلية لحساب المتوسط";
+     $("savedRobuxProfit").textContent="—";
+     return;
+   }
+   var assumedRevenue=sold>0?(revenue/sold)*total:0;
+   var estimatedNet=assumedRevenue-quantityCost-fee;
+   $("savedRobuxRevenue").textContent=money(assumedRevenue);
+   $("savedRobuxProfit").textContent=money(estimatedNet);
+   $("savedRobuxProfit").style.color=estimatedNet<0?"var(--red)":"var(--bright)";
  }
  function render(){
    var month=$("month").value||currentMonth();
@@ -296,6 +329,7 @@ html.l1017n-admin-embedded .shell>.columns{
    $("robuxCost").textContent=money(cost);$("plusCost").textContent=money(fee);
    $("profitText").textContent=money(profit);
    $("profitLarge").textContent=money(profit);$("profitLarge").classList.toggle("negative",profit<0);
+   renderSavedRobux();
    var latest=selected.slice().sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);}).slice(0,24);
    $("ordersRows").innerHTML=latest.length?latest.map(function(o){var kind=o.status==="completed"?"good":pending(o.status)?"pending":"bad";return '<tr><td>'+escapeHtml(o.product_name)+'</td><td>'+money(o.total_amount)+'</td><td dir="ltr">'+escapeHtml(localDay(o.created_at))+'</td><td><span class="status-tag '+kind+'">'+escapeHtml(statusText(o.status))+'</span></td></tr>';}).join(""):'<tr><td colspan="4" class="empty">ما فيش طلبات للشهر المختار.</td></tr>';
  }
@@ -310,7 +344,8 @@ html.l1017n-admin-embedded .shell>.columns{
        allRows("products","id,product_key,game,active,price,amount,sort_order","sort_order"),
        client.rpc("admin_customer_wallet_overview"),
        client.from("store_finance_settings").select("robux_cost_per_1000,plus_cost_per_month,updated_at").eq("id",1).single(),
-       client.from("store_inventory").select("robux_available,robux_unlimited").eq("id",true).single()
+       client.from("store_inventory").select("robux_available,robux_unlimited").eq("id",true).single(),
+       client.rpc("get_admin_robux_sales_display")
      ]);
      if(result[3].error)throw result[3].error;
      if(result[4].error)throw result[4].error;
@@ -318,6 +353,13 @@ html.l1017n-admin-embedded .shell>.columns{
      orders=result[0];topupRows=result[1];products=result[2];
      walletRows=result[3].data||[];stock=result[5].data;
      costs=result[4].data||costs;
+     if(result[6].error){
+       savedSales=null;
+       $("soldReportMessage").textContent="تعذّر تحميل عداد الروبوكس المحفوظ. تأكد من صلاحية الإدارة واضغط تحديث.";
+     }else{
+       savedSales=result[6].data;
+       $("soldReportMessage").textContent=savedInputDirty?"لديك تعديل لم تحفظه بعد.":"✅ العدد محفوظ في قاعدة البيانات. أي طلب روبوكس مكتمل جديد يزيده تلقائيًا.";
+     }
      $("robuxRate").value=Number(costs.robux_cost_per_1000);
      $("plusRate").value=Number(costs.plus_cost_per_month);
      $("saveInfo").textContent="آخر تحديث للتكاليف: "+new Date(costs.updated_at).toLocaleDateString("ar-LY");

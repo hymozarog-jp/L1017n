@@ -1209,7 +1209,7 @@ async function refreshAdminAccess(){
       allowed=!error&&!!data;
     }
   }catch(error){allowed=false}
-  if(btn){btn.classList.toggle('hidden',!allowed);if(allowed)btn.onclick=openAdminDashboard;}
+  if(btn){btn.classList.toggle('hidden',!allowed);btn.setAttribute('aria-hidden',allowed?'false':'true');}
   if(reportsLink){
     reportsLink.hidden=!allowed;
     reportsLink.classList.toggle('hidden',!allowed);
@@ -1364,6 +1364,29 @@ $('#adminView')?.addEventListener('click',e=>{
 });
 supabaseClient.auth.onAuthStateChange(()=>{setTimeout(refreshAdminAccess,0)});
 setTimeout(refreshAdminAccess,0);
+
+// Old admin.html and returning advanced reports link to this one protected hub.
+(function restoreUnifiedAdminRoute(){
+  if(new URLSearchParams(location.search).get('admin')!=='1')return;
+  let opened=false;
+  async function enter(){
+    if(opened)return;
+    try{
+      const user=await currentUser();
+      if(!user){switchView('account');return;}
+      const {data,error}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
+      if(error||!data){switchView('account');return;}
+      opened=true;
+      await openAdminDashboard();
+    }catch(e){console.warn('[admin] Could not open unified management',e)}
+  }
+  setTimeout(()=>void enter(),400);
+  supabaseClient.auth.onAuthStateChange((event)=>{
+    if(event==='SIGNED_IN'||event==='INITIAL_SESSION'){
+      setTimeout(()=>void enter(),600);
+    }
+  });
+})();
 
 /* Account settings interactions */
 (function(){

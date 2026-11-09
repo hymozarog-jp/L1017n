@@ -100,6 +100,31 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
   cursor:pointer;margin-top:8px!important;
 }
 #leaderboardView .l1017-rank-settings-link svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+/* Ranking is the single home for both ranking and purchase privacy. */
+#leaderboardView .l1017-rank-privacy-actions{
+ display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:18px auto 5px!important;
+}
+#leaderboardView .l1017-rank-privacy-actions>.l1017-rank-settings-link,
+#leaderboardView .l1017-rank-privacy-actions>button[data-account-action="purchase-privacy"]{
+ flex:1 1 215px;display:flex!important;align-items:center;justify-content:center;gap:10px;
+ margin:0!important;min-height:57px;padding:10px 14px;border-radius:15px;
+ border:1px solid #b48c5188;background:#c69d4b18;color:#f2d7a3;
+ font:800 12px 'IBM Plex Sans Arabic',sans-serif;text-align:right;cursor:pointer;
+}
+#leaderboardView .l1017-rank-privacy-actions>button[data-account-action="purchase-privacy"]{
+ background:#758ed516;border-color:#8598d469;color:#dce7ff
+}
+#leaderboardView .l1017-rank-privacy-actions button:hover{filter:brightness(1.12)}
+#leaderboardView .l1017-rank-privacy-actions button:focus-visible{
+ outline:2px solid #dfc17d;outline-offset:3px
+}
+#leaderboardView .l1017-rank-privacy-actions .account-row-icon{display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px}
+#leaderboardView .l1017-rank-privacy-actions .account-row-icon svg{width:21px;height:21px;stroke:currentColor;fill:none}
+#leaderboardView .l1017-rank-privacy-actions .account-core-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+#leaderboardView .l1017-rank-privacy-actions .account-core-copy b{color:inherit;font-size:13px}
+#leaderboardView .l1017-rank-privacy-actions .account-core-copy small{color:#a7b8d4;font-size:10px;font-weight:500;line-height:1.55}
+#leaderboardView .l1017-rank-privacy-actions .account-row-arrow{display:none!important}
+
 /* Privacy controls open as a full, independent page instead of an inline account card. */
 #l1017RankPrivacyPage{
   display:none;position:fixed;inset:0;z-index:2147482100;

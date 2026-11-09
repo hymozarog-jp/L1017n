@@ -202,3 +202,60 @@ html body.l1017-admin-open #adminView #adminHubReports.admin-hub-active>.admin-h
     padding:calc(8px + env(safe-area-inset-top)) 12px 10px!important;
   }
 }
+
+
+/* Live completed Robux sales + manual offline count; never modifies inventory. */
+#adminView .admin-robux-sold-panel{
+ margin-top:24px;padding:clamp(15px,4vw,23px);
+ border:1px solid #9a76cc8d;border-radius:23px;
+ background:radial-gradient(ellipse at 90% -8%,#8d5ec64a,transparent 62%),linear-gradient(138deg,#1c243b,#111a2e 75%);
+ box-shadow:0 15px 35px #09091742;color:#f8f6ff;
+}
+#adminView .admin-robux-sold-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:17px}
+#adminView .admin-robux-sold-eyebrow{font:800 9px system-ui,sans-serif;letter-spacing:1.8px;color:#c5a3ff}
+#adminView .admin-robux-sold-heading h4{font-size:clamp(17px,4.3vw,23px);margin:5px 0 0;color:#fff}
+#adminView .admin-robux-sold-refresh{
+ border:1px solid #84749c;background:#ffffff15;border-radius:12px;color:#f5eaff;
+ font:800 12px 'IBM Plex Sans Arabic',sans-serif;min-height:38px;padding:7px 11px;cursor:pointer;
+}
+#adminView .admin-robux-sold-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:21px}
+#adminView .admin-robux-sold-metric{
+ display:flex;flex-direction:column;gap:4px;min-width:0;
+ background:#0d1625b8;border:1px solid #59637d80;
+ padding:14px 11px;border-radius:15px;
+}
+#adminView .admin-robux-sold-metric small{font-size:10px;line-height:1.55;color:#bec4df}
+#adminView .admin-robux-sold-metric strong{font:900 clamp(21px,4.2vw,31px) system-ui,sans-serif;color:#eee8ff;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
+#adminView .admin-robux-sold-metric span{color:#a9b1d0;font-size:10px;line-height:1.5}
+#adminView .admin-robux-sold-total{
+ border-color:#c09bff9b;background:linear-gradient(135deg,#43315d,#241d3a);
+ box-shadow:inset 0 1px #eee2ff38;
+}
+#adminView .admin-robux-sold-total strong{color:#fff0a3}
+#adminView .admin-robux-sold-form{border-top:1px solid #ffffff20;padding-top:15px;display:grid;gap:7px}
+#adminView .admin-robux-sold-form label{font-size:14px;font-weight:900;color:#f8edff}
+#adminView .admin-robux-sold-form>p:not(.admin-robux-sold-status){color:#c3c8dd;font-size:12px;line-height:1.85;margin:0 0 6px}
+#adminView .admin-robux-sold-actions{display:flex;gap:9px;align-items:stretch}
+#adminView #adminRobuxSoldInput{
+ flex:1;min-width:0;max-width:320px;min-height:47px;
+ border:1px solid #7c6c9a;border-radius:13px;
+ background:#0c1627;color:#fff;font:800 19px system-ui,sans-serif;
+ padding:10px 14px;direction:ltr;text-align:center;
+}
+#adminView #adminRobuxSoldSave{
+ background:linear-gradient(125deg,#d2aaff,#a982f2);border:0;
+ color:#1c132a;font:900 13px 'IBM Plex Sans Arabic',sans-serif;
+ border-radius:13px;padding:11px 16px;min-height:47px;cursor:pointer;
+}
+#adminView #adminRobuxSoldSave:disabled{opacity:.55;cursor:wait}
+#adminView .admin-robux-sold-status{min-height:19px;color:#dabaff;font-size:12px;line-height:1.75;margin:6px 0 0}
+#adminView .admin-robux-sold-note{display:block;color:#b9bdd1;font-size:10px;line-height:1.8}
+@media(max-width:460px){
+ #adminView .admin-robux-sold-panel{padding:14px 11px;border-radius:19px}
+ #adminView .admin-robux-sold-metrics{gap:6px}
+ #adminView .admin-robux-sold-metric{padding:12px 8px}
+ #adminView .admin-robux-sold-metric small{font-size:9px}
+ #adminView .admin-robux-sold-metric strong{font-size:clamp(17px,5.3vw,26px)}
+ #adminView .admin-robux-sold-actions{gap:7px}
+ #adminView #adminRobuxSoldSave{padding:9px 12px;font-size:12px}
+}

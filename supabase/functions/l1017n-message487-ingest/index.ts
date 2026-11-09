@@ -76,7 +76,7 @@ async function customerLabel(db:any,requestId:string|null,provider:string,phone:
     if(error||!data?.user)return "حساب مسجّل";
     const u=data.user;
     return String(u.user_metadata?.full_name||u.user_metadata?.name||u.email?.split("@")[0]||"زبون")
-      .replace(/[\\r\n\\t]+/g," ").trim().slice(0,65)||"زبون";
+      .replace(/[\r\n\t]+/g," ").trim().slice(0,65)||"زبون";
   }catch{return "حساب مسجّل"}
 }
 async function notifyAdmin(db:any,reviewNumber:number,amount:number,phone:string,matched:boolean,autoCredited:boolean,reason:string,stamp:number,requestId:string|null){
@@ -88,20 +88,48 @@ async function notifyAdmin(db:any,reviewNumber:number,amount:number,phone:string
     timeZone:"Africa/Tripoli",year:"numeric",month:"2-digit",day:"2-digit",
     hour:"2-digit",minute:"2-digit",hour12:true
   });
-  const state=autoCredited?"✅ تم شحن المحفظة تلقائيًا":matched?"⏳ طلب مطابق، يحتاج مراجعتك":"⚠️ لا يوجد طلب شحن مطابق — لم يُضاف رصيد";
+  const money=(value:number)=>Number(value).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:3});
+  const reasons:Record<string,string>={
+    old_or_delayed:"رسالة التحويل متأخرة أو وقتها غير صالح للمطابقة التلقائية.",
+    sender_or_amount:"بيانات المرسل أو مبلغ التحويل تحتاج مراجعة.",
+    intent_mismatch:"بيانات التحويل لا تطابق طلب الشحن.",
+    sender_registered_to_other_account:"رقم المحوّل مرتبط بحساب مختلف.",
+    sender_link_conflict:"يوجد تعارض في ربط رقم المحوّل بالحساب.",
+    possible_duplicate:"يوجد تحويل مشابه؛ أوقفت الإضافة لتجنب التكرار.",
+    admin_review_required:"وضع المراجعة اليدوية مفعّل.",
+    disabled:"الشحن التلقائي متوقف.",
+    server_check_failed:"تعذر إكمال التحقق؛ راجع حالة التحويل قبل الاعتماد.",
+    matching_failed:"تعذرت مطابقة التحويل؛ يحتاج مراجعة.",
+    no_matching_request:"لم نجد حسابًا موثّقًا أو طلب شحن يمكن مطابقته تلقائيًا.",
+    requires_matching_request:"لا يوجد طلب شحن مطابق لهذا التحويل."
+  };
+  let balanceAfter:number|null=null;
+  if(autoCredited&&requestId){
+    try{
+      const {data:ledger,error:ledgerError}=await db.from("wallet_transactions")
+        .select("balance_after").eq("topup_request_id",requestId).eq("transaction_type","topup")
+        .order("created_at",{ascending:false}).limit(1).maybeSingle();
+      if(!ledgerError&&ledger?.balance_after!=null&&Number.isFinite(Number(ledger.balance_after)))balanceAfter=Number(ledger.balance_after);
+    }catch{/* Notification still works if the balance lookup is unavailable. */}
+  }
+  const state=autoCredited?"✅ تمت الإضافة تلقائيًا":"⏳ بانتظار المراجعة";
   const message=[
-    "🟣 L1017n | تحويل ليبيانا",state,
-    "👤 الزبون: "+customer,
-    "📱 رقم المحوّل: 0"+phone,
-    "💰 المبلغ: "+amount.toFixed(3)+" د.ل",
-    "🕒 وقت الرسالة: "+when,
-    "🧾 رقم التحويل: #"+reviewNumber,
-    autoCredited?"أُضيف المبلغ للمحفظة. يمكنك عرض الحساب أو سحب مبلغ هذا الشحن من الأزرار أدناه.":"لم يُضف رصيد آليًا. تحقّق من وصول التحويل قبل القبول."
+    "L1017N | تحويل ليبيانا #"+reviewNumber,
+    "",
+    "📋 الحالة: "+state,
+    "💰 المبلغ: "+money(amount)+" د.ل",
+    "",
+    "الزبون: "+customer,
+    "رقم المحوّل: 0"+phone,
+    ...(balanceAfter===null?[]:["الرصيد بعد هذا التحويل: "+money(balanceAfter)+" د.ل"]),
+    "",
+    "وقت التحويل (ليبيا): "+when,
+    ...(autoCredited?["","تم تسجيل المبلغ في محفظة الزبون مرة واحدة."]:["","سبب الانتظار: "+(reasons[reason]||"التحويل يحتاج مراجعة قبل إضافة الرصيد.")])
   ].join("\n");
   const buttons:any[]=[];
-  if(requestId)buttons.push([{text:"👤 عرض الحساب",callback_data:"sw:account:"+reviewNumber}]);
-  if(autoCredited)buttons.push([{text:"↩️ سحب مبلغ الشحن",callback_data:"sw:undo:"+reviewNumber}]);
-  else buttons.push(matched?[{text:"✅ قبول التحويل",callback_data:"sr:a:"+reviewNumber},{text:"❌ رفض التحويل",callback_data:"sr:r:"+reviewNumber}]:[{text:"❌ رفض الرسالة",callback_data:"sr:r:"+reviewNumber}]);
+  if(requestId)buttons.push([{text:"عرض حساب الزبون",callback_data:"sw:account:"+reviewNumber}]);
+  if(autoCredited)buttons.push([{text:"استرجاع مبلغ هذا الشحن",callback_data:"sw:undo:"+reviewNumber}]);
+  else buttons.push(matched?[{text:"اعتماد وإضافة الرصيد",callback_data:"sr:a:"+reviewNumber},{text:"رفض التحويل",callback_data:"sr:r:"+reviewNumber}]:[{text:"رفض الرسالة",callback_data:"sr:r:"+reviewNumber}]);
   const payload:any={chat_id:Number(owner),text:message,reply_markup:{inline_keyboard:buttons}};
   try{
     const r=await fetch("https://api.telegram.org/bot"+token+"/sendMessage",{

@@ -86,6 +86,22 @@ html.l1017n-admin-embedded header>a.link[href="./admin.html"],
 html.l1017n-admin-embedded header>a.link[href="./admin-wallets.html"]{display:none!important}
 html.l1017n-admin-embedded .shell{width:min(100%,1200px);padding-top:14px}
 </style>
+
+<style id="wallet-admin-premium">
+:root{--bg:#0c1220;--surface:#172238;--line:#ffffff1b;--soft:#a9b5cf;--bright:#c3a5ff;--text:#f1f4ff}
+body{background:radial-gradient(ellipse at 90% 0,#65518b28,transparent 45%),#0c1220;min-height:100dvh}
+.shell,html.l1017n-admin-embedded .shell{width:min(100%,1220px);padding:22px clamp(16px,3vw,32px) calc(32px + env(safe-area-inset-bottom))}
+.header{margin-bottom:18px}.header h1{font-size:25px}.admin-label{color:#c8b5ed;border-color:#a78bda55;background:#a78bda10}
+html.l1017n-admin-embedded .header{display:none}
+.wallet-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;overflow:hidden;border:1px solid #a68aca40;background:linear-gradient(125deg,#282b49,#152337);border-radius:25px;padding:20px 24px;margin-bottom:18px}
+.wallet-hero>div{z-index:1;max-width:65%}.wallet-eyebrow{font-size:11px;color:#bfa5f1}.wallet-hero h2{font-size:clamp(20px,3.6vw,30px);margin:9px 0}.wallet-hero p{font-size:12px;line-height:1.9;color:var(--soft);margin:0}.wallet-hero-art{width:170px;max-width:37%;flex-shrink:0}
+.metrics{gap:12px;margin:0 0 24px}.metric{background:linear-gradient(145deg,#1c2940,#131e30);border-radius:20px;padding:17px;border:1px solid var(--line);box-shadow:0 10px 24px #0002}.metric:first-child{border-color:#b397db5c}.metric strong{font-size:clamp(20px,3vw,30px);letter-spacing:.3px}.metric-icon{display:grid;place-items:center;width:35px;height:35px;margin-bottom:12px;border-radius:11px;background:#b794eb1a;color:#ceb4f7}.metric-icon svg{width:22px;height:22px}.metric:nth-child(2) .metric-icon{color:#9edccb;background:#9edccb15}.metric:nth-child(3) .metric-icon{color:#9bbff5;background:#9bbff515}
+.panel{background:#141f32;border-color:#ffffff1a;border-radius:23px;padding:20px}.panel h2{font-size:20px}.panel-head{gap:12px}.hint{line-height:1.8}.ghost{background:#ffffff08;border-color:#ffffff24;color:#dedaf0;min-height:44px}.search-area{position:relative}.search-icon{position:absolute;width:20px;height:20px;right:15px;top:16px;color:#b4a2d2;pointer-events:none}.search{padding:14px 43px 14px 14px;font-size:16px;border-color:#ffffff20;background:#0d1626;border-radius:15px}.search:focus{border-color:#b59bde;box-shadow:0 0 0 3px #b59bde17}.search::placeholder{color:#8592ac}
+.customer-list{gap:10px}.customer{border:1px solid #ffffff14;background:#1c2a40;border-radius:18px;padding:14px;min-height:82px;touch-action:manipulation}.customer:hover,.customer.active{background:#302c49;border-color:#a687d6}.avatar{width:46px;height:46px;flex-basis:46px;border-radius:15px;background:linear-gradient(135deg,#65528c,#30405f);color:#e3d6ff}.customer-money{color:#dfcef9;font-variant-numeric:tabular-nums}.customer-meta{color:#98a8c4}.customer-money .currency{color:#98a8c4}.balance-line{background:linear-gradient(130deg,#383354,#1e3044);padding:20px;border:1px solid #a08ac44d;border-radius:18px;color:#e0c6ff}.tabs{background:#0b1525;border-color:#ffffff14}.tab.active{background:#bca2ec;color:#17172b}.history-item{background:#1a273c}.detail-prompt{line-height:2.1;background:radial-gradient(circle at center,#67529316,transparent 70%)}.detail-prompt:before{content:'↗';display:grid;place-items:center;width:60px;height:60px;margin:0 auto 18px;border:1px solid #b69adc40;border-radius:20px;color:#c4a5f5;background:#b69adc0d;font-size:32px}.positive{color:#99e0c4}.status{background:#1a2b40;border-color:#6984b144}.status.error{background:#461f2588;border-color:#d04f5555}.detail{scroll-margin-top:18px}.customer:focus-visible,.ghost:focus-visible,.tab:focus-visible{outline:2px solid #c3a5ff;outline-offset:3px}
+@media(max-width:900px){.detail:has(#detailContent[hidden]){display:none}.history{max-height:none}.customer-list{max-height:none}}
+@media(max-width:520px){.wallet-hero{padding:18px 15px;border-radius:21px;gap:5px}.wallet-hero-art{width:115px}.wallet-hero h2{font-size:20px;line-height:1.55}.wallet-hero p{font-size:11px}.metric{padding:13px 10px;border-radius:17px}.metric .label{font-size:10px;min-height:34px;line-height:1.7}.metric strong{font-size:21px}.metric small{display:block}.metrics{gap:8px}.panel{padding:15px}.customer-name{font-size:14px}.customer-money{font-size:15px}.panel-head .ghost{font-size:11px;padding:9px 12px}.wallet-eyebrow{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -96,15 +112,16 @@ html.l1017n-admin-embedded .shell{width:min(100%,1200px);padding-top:14px}
 </header>
 <div id="status" class="status" role="status">جاري التحقق من صلاحية الإدارة وتحميل الأرصدة...</div>
 <main id="app" hidden>
+<section class="wallet-hero"><div><span class="wallet-eyebrow">إدارة أرصدة الزبائن</span><h2>كل المحافظ في مكان واحد</h2><p>شوف الأرصدة، ابحث عن زبون، وتابع حركات محفظته.</p></div><svg class="wallet-hero-art" viewBox="0 0 240 180" fill="none" aria-hidden="true"><defs><linearGradient id="walletBody" x1="60" y1="35" x2="193" y2="156" gradientUnits="userSpaceOnUse"><stop stop-color="#b59af9"/><stop offset="1" stop-color="#6653a5"/></linearGradient></defs><ellipse cx="128" cy="157" rx="85" ry="11" fill="#060a17" opacity=".4"/><circle cx="121" cy="83" r="71" fill="#a18af5" opacity=".07"/><circle cx="121" cy="83" r="63" stroke="#baa3ff" stroke-opacity=".18" stroke-dasharray="3 7"/><g transform="rotate(-8 123 90)"><rect x="67" y="30" width="108" height="70" rx="13" fill="#d3c5fa"/><path d="M77 45h55M77 54h29" stroke="#8870bd" stroke-width="5" stroke-linecap="round"/><rect x="46" y="57" width="150" height="92" rx="22" fill="url(#walletBody)" stroke="#dcc9ff" stroke-width="2"/><rect x="145" y="86" width="62" height="35" rx="12" fill="#30354f" stroke="#c1acef" stroke-width="2"/><circle cx="163" cy="103" r="4" fill="#d7c4ff"/><path d="M62 128h46" stroke="#e2d5ff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/></g><circle cx="56" cy="49" r="21" fill="#e7bd76" stroke="#ffe5b2" stroke-width="2"/><path d="m56 38 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1 3-7Z" fill="#a76d30"/><circle cx="195" cy="139" r="20" fill="#285c59" stroke="#a0dfcb" stroke-width="2"/><path d="m186 139 6 6 11-13" stroke="#bbffe4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M204 40v12m-6-6h12M27 106v8m-4-4h8" stroke="#cbb3ff" stroke-width="2" stroke-linecap="round"/></svg></section>
 <section class="metrics" aria-label="ملخص المحافظ">
-<div class="metric"><span class="label">إجمالي أرصدة المحافظ</span><strong id="totalBalance">0.000</strong><small>د.ل</small></div>
-<div class="metric"><span class="label">محافظ فيها رصيد</span><strong id="fundedCount">0</strong><small>محفظة</small></div>
-<div class="metric"><span class="label">إجمالي الزبائن</span><strong id="customerCount">0</strong><small>حساب</small></div>
+<div class="metric"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="15" rx="4"/><path d="M3 10h18m-4 5h2M6 6V3h11v3"/></svg></span><span class="label">إجمالي أرصدة المحافظ</span><strong id="totalBalance">0.000</strong><small>د.ل</small></div>
+<div class="metric"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 15v-4m5 4V5m5 10V8"/></svg></span><span class="label">محافظ فيها رصيد</span><strong id="fundedCount">0</strong><small>محفظة</small></div>
+<div class="metric"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 6"/></svg></span><span class="label">إجمالي الزبائن</span><strong id="customerCount">0</strong><small>حساب</small></div>
 </section>
 <div class="workspace">
 <section class="panel">
 <div class="panel-head"><div><h2>جميع الزبائن</h2><p class="hint">اضغط على الزبون لعرض الحركات والطلبات</p></div><button class="ghost" type="button" id="refresh">تحديث الأرصدة ↻</button></div>
-<div class="search-area"><input class="search" id="search" type="search" placeholder="ابحث باسم الزبون أو المعرّف" aria-label="البحث عن زبون" autocomplete="off"></div>
+<div class="search-area"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input class="search" id="search" type="search" placeholder="ابحث باسم الزبون أو المعرّف" aria-label="البحث عن زبون" autocomplete="off"></div>
 <div id="resultsCount" class="hint" style="margin-bottom:10px"></div>
 <div id="customerList" class="customer-list"></div>
 </section>
@@ -232,6 +249,7 @@ async function selectCustomer(id){
  resetDebitPanel();
  selectedId=id;currentTab="transactions";renderCustomers();
  $("detailPrompt").hidden=true;$("detailContent").hidden=false;
+ if(window.matchMedia("(max-width:900px)").matches)$("customerDetail").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
  $("detailName").textContent=w.customer_name||"زبون";
  $("detailNickname").textContent="معرّف الحساب: "+String(w.customer_id).slice(0,8)+" · "+Number(w.orders_count||0)+" طلب";
  $("detailBalance").textContent=fmt(w.balance);

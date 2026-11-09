@@ -575,6 +575,24 @@
         <label for="adminProductPrice">السعر بالدينار الليبي</label><input id="adminProductPrice" type="number" min="0.01" step="0.01" required>
         <label for="adminProductSort">ترتيب العرض</label><input id="adminProductSort" type="number" step="1" value="0">
         <label for="adminProductDescription">الوصف</label><textarea id="adminProductDescription" rows="2" maxlength="1000" placeholder="وصف مختصر للباقة"></textarea>
+        <div class="admin-product-image-field">
+          <label for="adminProductImageFile">صورة المنتج (اختياري)</label>
+          <input id="adminProductImageFile" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="adminProductImageHelp adminProductImageStatus">
+          <small id="adminProductImageHelp">اختر صورة JPG أو PNG أو WebP. بنضبط حجمها تلقائيًا بدون قص المنتج، وتظهر للزبون في بطاقة الشراء.</small>
+          <div class="admin-product-image-controls"><button class="btn btn-soft" id="adminProductImageRemove" type="button">إزالة صورة المنتج</button><span id="adminProductImageStatus" role="status" aria-live="polite"></span></div>
+        </div>
+        <aside class="admin-product-preview-panel" aria-label="معاينة بطاقة الشراء">
+          <div class="admin-product-preview-label">معاينة شكل المنتج عند الزبون</div>
+          <article class="admin-product-preview-card">
+            <div class="admin-product-preview-art" id="adminProductPreviewArt"><img id="adminProductPreviewImage" alt="معاينة صورة المنتج" hidden><span id="adminProductPreviewFallback" aria-hidden="true">L1017n</span></div>
+            <div class="admin-product-preview-copy">
+              <small id="adminProductPreviewGame">المنتج</small>
+              <strong id="adminProductPreviewName">اسم المنتج</strong>
+              <p id="adminProductPreviewDescription">تفاصيل المنتج تظهر هنا</p>
+              <div class="admin-product-preview-bottom"><b id="adminProductPreviewPrice">0.00 د.ل</b><span>شراء المنتج</span></div>
+            </div>
+          </article>
+        </aside>
         <label class="transfer-confirm"><input id="adminProductActive" type="checkbox" checked><span>المنتج ظاهر في المتجر</span></label>
         <div class="admin-request-actions"><button class="btn btn-primary" type="submit">حفظ المنتج</button><button class="btn btn-soft" id="cancelAdminProductEdit" type="button">تفريغ النموذج</button></div>
       </form>

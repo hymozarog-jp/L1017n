@@ -454,6 +454,7 @@ async function renderOrders(){
      if(justPlacedId)delete window.L1017nJustPlacedOrderId;
    }
  }
+ window.dispatchEvent(new Event('l1017n:orders-updated'));
 }
 
 /* GameBoxly Robux quantity calculator.

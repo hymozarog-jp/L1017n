@@ -205,7 +205,7 @@
     const delayed=Number.isFinite(ageMs)&&ageMs>=5*60*1000;
     if(data?.sms_status==='matched'){
       inlineTopupStatus('matched','وصل إشعار تحويل مطابق',
-        'الطلب بانتظار الاعتماد؛ سيتم عرض «تم الشحن» فقط بعد إضافة الرصيد.');
+        'ننتظر نتيجة المطابقة الآلية؛ سيظهر «تم الشحن» بعد اعتماد الرصيد فعليًا.');
     }else if(delayed){
       root.dataset.state='delayed';
       inlineTopupStatus('delayed','لم يتم تأكيد التحويل بعد',
@@ -337,7 +337,7 @@
         stopWatcher();forgetVerifier();return;
       }
       if(data.sms_status==='matched'){
-        setIconText(status,'mail','وصل إشعار تحويل مطابق. الطلب الآن قيد المراجعة، لا تكرر التحويل.');
+        setIconText(status,'mail','وصل إشعار تحويل مطابق. جارٍ التحقق النهائي منه، لا تكرر التحويل.');
       }else if(status){
         const ageMs=Date.now()-Date.parse(row.created_at||'');
         const delayed=Number.isFinite(ageMs)&&ageMs>=5*60*1000;
@@ -437,7 +437,7 @@
       currentRequest=intent.request_id;currentAmount=amount;
       // Preparing the USSD request does not notify Telegram; opening the dial code does.
       if(intent.state==='matched'){
-        show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ، وطلبك بانتظار قرار الإدارة. لا تحوّل المبلغ مرة ثانية.');
+        show('ok','وصل إشعار التحويل','وصل إشعار بنفس الرقم والمبلغ، وجاري التحقق منه تلقائيًا. لا تحوّل المبلغ مرة ثانية.');
         const current=host();
         const status=el('div','auto-topup-status');setIconText(status,'clock','بانتظار تأكيد رصيد المحفظة.');
         status.id='ussdTransferStatus';

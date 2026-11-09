@@ -39,11 +39,23 @@ Deno.serve(async(req:Request)=>{
  try{
   const amount=Number(r.amount).toFixed(2);
   const provider=r.method==="libyana"?"ليبيانا":"المدار";
-  const note=isUssd
-    ? "⚠️ الزبون فتح كود الاتصال فقط. هذا ليس إثبات دفع من ليبيانا. تأكد من وصول المبلغ فعليًا قبل القبول."
-    : "⚠️ راجع وصول التحويل الحقيقي قبل القبول. إنشاء الطلب وحده ليس إثبات دفع.";
+  const {data:settings,error:settingsError}=await db.from("sms_auto_credit_settings")
+    .select("enabled,approval_mode").eq("id",1).maybeSingle();
+  if(settingsError)throw Error("topup_settings_unavailable");
+  // Under automatic mode Telegram is an informational alert, not an
+  // approval checkpoint. SMS must still be independently matched to
+  // the authenticated request by the existing server-side credit guards.
+  const automatic=isUssd&&settings?.enabled===true&&settings.approval_mode==="automatic";
+  const note=automatic
+    ? "ℹ️ إشعار بدء التحويل فقط. الاعتماد الآلي يتم عند وصول ومطابقة رسالة التحويل واجتياز فحوص الحماية. فتح الاتصال وحده لا يثبت الدفع."
+    :isUssd
+      ? "⚠️ الزبون فتح كود الاتصال فقط. هذا ليس إثبات دفع من ليبيانا. تأكد من وصول المبلغ فعليًا قبل القبول."
+      : "⚠️ راجع وصول التحويل الحقيقي قبل القبول. إنشاء الطلب وحده ليس إثبات دفع.";
   const msg=(isUssd?"📲 ضغط الزبون كود تحويل ليبيانا":"🔔 طلب شحن محفظة جديد")+"\n\n💰 "+amount+" د.ل\n📱 "+provider+"\n☎️ رقم المحوّل: "+String(r.phone).slice(0,30)+"\n🆔 رقم الطلب: "+id+"\n\n"+note;
-  await api(token,"sendMessage",{chat_id:Number(admin),text:msg,reply_markup:{inline_keyboard:[[{text:"🔎 فحص التحويل والمحفظة",callback_data:"ta:"+id}],[{text:"✅ قبول",callback_data:"wt:a:"+id},{text:"❌ رفض",callback_data:"wt:r:"+id}]]}});
+  const buttons=automatic
+    ? [[{text:"🔎 فحص حالة التحويل",callback_data:"ta:"+id}]]
+    : [[{text:"🔎 فحص التحويل والمحفظة",callback_data:"ta:"+id}],[{text:"✅ قبول",callback_data:"wt:a:"+id},{text:"❌ رفض",callback_data:"wt:r:"+id}]];
+  await api(token,"sendMessage",{chat_id:Number(admin),text:msg,reply_markup:{inline_keyboard:buttons}});
   const {error:markError}=await db.from("topup_requests").update({telegram_notified_at:new Date().toISOString()}).eq("id",id);
   if(markError)console.error("Topup Telegram message sent but marking delivery failed");
   return answer({ok:true,delivery_recorded:!markError});

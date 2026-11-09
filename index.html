@@ -571,7 +571,7 @@
         <input id="adminProductId" type="hidden">
         <label for="adminProductKey">معرّف المنتج (product_key)</label><input id="adminProductKey" type="text" maxlength="100" required placeholder="roblox-100">
         <label for="adminProductName">اسم المنتج</label><input id="adminProductName" type="text" maxlength="160" required placeholder="100 Robux">
-        <label for="adminProductGame">اللعبة</label><input id="adminProductGame" type="text" maxlength="80" placeholder="roblox">
+        <label for="adminProductGame">قسم المنتج</label><input id="adminProductGame" type="text" maxlength="80" required list="adminProductGameOptions" placeholder="مثلاً: mm2" autocomplete="off"><datalist id="adminProductGameOptions"><option value="roblox">روبلوكس / روبوكس</option><option value="mm2">أسلحة MM2</option><option value="steal-a-brainrot">ماب السرقة</option><option value="pubg">ببجي</option><option value="fortnite">فورت نايت</option><option value="freefire">فري فاير</option></datalist>
         <label for="adminProductAmount">الكمية</label><input id="adminProductAmount" type="number" min="1" step="1" required>
         <label for="adminProductPrice">السعر بالدينار الليبي</label><input id="adminProductPrice" type="number" min="0.01" step="0.01" required>
         <label for="adminProductSort">ترتيب العرض</label><input id="adminProductSort" type="number" step="1" value="0">

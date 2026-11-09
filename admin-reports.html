@@ -87,7 +87,33 @@ td:nth-child(2),td:nth-child(3){font-variant-numeric:tabular-nums}
 html.l1017n-admin-embedded .header>a.back[href="./admin.html"],
 html.l1017n-admin-embedded header>a.link[href="./admin.html"],
 html.l1017n-admin-embedded header>a.link[href="./admin-wallets.html"]{display:none!important}
-html.l1017n-admin-embedded .shell{width:min(100%,1200px);padding-top:14px}
+html.l1017n-admin-embedded,
+html.l1017n-admin-embedded body{
+  min-height:100%;
+  width:100%;
+  margin:0;
+  overflow-x:hidden;
+}
+html.l1017n-admin-embedded body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+html.l1017n-admin-embedded .shell{
+  box-sizing:border-box;
+  width:100%;
+  max-width:none;
+  min-height:100dvh;
+  margin:0;
+  padding:clamp(12px,3vw,24px) clamp(12px,3vw,30px) 32px;
+}
+html.l1017n-admin-embedded .shell>.panel,
+html.l1017n-admin-embedded .shell>.metrics,
+html.l1017n-admin-embedded .shell>.columns{
+  max-width:none;
+  min-width:0;
+}
+@media(max-width:600px){
+  html.l1017n-admin-embedded .shell{padding:12px 12px 24px}
+  html.l1017n-admin-embedded .hero{margin-bottom:12px}
+  html.l1017n-admin-embedded .panel{border-radius:17px}
+}
 </style>
 </head>
 <body>

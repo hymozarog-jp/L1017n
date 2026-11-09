@@ -18,7 +18,7 @@
     document.body.appendChild(visitorCounter);
     var loadUnifiedAdminHub=function(){
       var hub=document.createElement('script');
-      hub.src='admin-hub.js?v=fullscreen-admin-pages-20261109-1';
+      hub.src='admin-hub.js?v=reports-fullscreen-20261109-1';
       hub.onerror=function(){console.warn('[admin] Unified administration interface unavailable')};
       document.body.appendChild(hub);
     };

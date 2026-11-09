@@ -3,7 +3,7 @@
  *
  * Auto-credit only a newly matched, timely, authenticated receipt that
  * passes the preexisting restricted database RPC (verified account phone,
- * exact USSD intent, deduplication and guarded small-value limits).
+ * exact USSD intent, freshness and deduplication).
  * The transport SMS is not carrier attestation; anything else stays pending.
  * Legacy SMS Forwarder/HMAC endpoint remains unchanged.
  */
@@ -46,7 +46,7 @@ function parseLibyana(text:string){
   const match=digits(text).trim().match(/^تم\s+تحويل\s+([0-9]+(?:\.[0-9]{1,3})?)\s+دينار(?:اً)?\s+من\s+الرقم\s+(0?9[0-9]{8})\s+إلى\s+رصيدك\s+بنجاح\s*[.!،]?\s*$/u);
   if(!match)return null;
   const amount=Number(match[1]);
-  if(!Number.isFinite(amount)||amount<=0||amount>10000)return null;
+  if(!Number.isFinite(amount)||amount<=0)return null;
   return {provider:"libyana" as const,amount,transfer_phone:match[2].slice(-9)};
 }
 function carrierSender(s:string):boolean{
@@ -76,41 +76,33 @@ async function customerLabel(db:any,requestId:string|null,provider:string,phone:
     if(error||!data?.user)return "حساب مسجّل";
     const u=data.user;
     return String(u.user_metadata?.full_name||u.user_metadata?.name||u.email?.split("@")[0]||"زبون")
-      .replace(/[\\r\\n\\t]+/g," ").trim().slice(0,65)||"زبون";
+      .replace(/[\\r\n\\t]+/g," ").trim().slice(0,65)||"زبون";
   }catch{return "حساب مسجّل"}
 }
 async function notifyAdmin(db:any,reviewNumber:number,amount:number,phone:string,matched:boolean,autoCredited:boolean,reason:string,stamp:number,requestId:string|null){
   const token=Deno.env.get("TG_BOT_TOKEN")||"";
   const owner=Deno.env.get("TG_ADMIN_ID")||"";
-  if(!token||!/^\\d{5,15}$/.test(owner))return;
+  if(!token||!/^\d{5,15}$/.test(owner))return;
   const customer=await customerLabel(db,requestId,"libyana",phone);
   const when=new Date(stamp).toLocaleString("ar-LY",{
     timeZone:"Africa/Tripoli",year:"numeric",month:"2-digit",day:"2-digit",
     hour:"2-digit",minute:"2-digit",hour12:true
   });
-  const state=autoCredited?"✅ تم الشحن تلقائيًا"
-    :matched?(amount>10?"⏳ بانتظار موافقتك — أكثر من 10 د.ل":"⏳ طلب مطابق، يحتاج مراجعتك")
-    :"⚠️ لا يوجد طلب شحن مطابق — لم يُضاف رصيد";
-  const message="🟣 GAMEBOXLY | تحويل ليبيانا\\n"
-    +"━━━━━━━━━━━━━━━━\\n"
-    +"👤 الزبون: "+customer+"\\n"
-    +"📱 رقم المحوّل: ***"+phone.slice(-4)+"\\n"
-    +"💰 المبلغ: "+amount.toFixed(3)+" د.ل\\n"
-    +"🕒 وقت الرسالة: "+when+"\\n"
-    +"🧾 رقم التحويل: #"+reviewNumber+"\\n"
-    +"📋 الحالة: "+state+"\\n\\n"
-    +(autoCredited?"🔒 أُضيف الرصيد مرة واحدة فقط."
-      :matched?"تحقّق من وصول التحويل فعليًا قبل الضغط على قبول."
-      :"لا يمكن قبول رسالة غير مطابقة. راجع الحساب والطلب أولًا.")
-    +(autoCredited?"":"\\nللمراجعة: /sms");
-  const payload:any={chat_id:Number(owner),text:message};
-  if(!autoCredited){
-    const buttons=matched
-      ?[{text:"✅ قبول التحويل",callback_data:"sr:a:"+reviewNumber},
-         {text:"❌ رفض التحويل",callback_data:"sr:r:"+reviewNumber}]
-      :[{text:"❌ رفض الرسالة",callback_data:"sr:r:"+reviewNumber}];
-    payload.reply_markup={inline_keyboard:[buttons]};
-  }
+  const state=autoCredited?"✅ تم شحن المحفظة تلقائيًا":matched?"⏳ طلب مطابق، يحتاج مراجعتك":"⚠️ لا يوجد طلب شحن مطابق — لم يُضاف رصيد";
+  const message=[
+    "🟣 L1017n | تحويل ليبيانا",state,
+    "👤 الزبون: "+customer,
+    "📱 رقم المحوّل: 0"+phone,
+    "💰 المبلغ: "+amount.toFixed(3)+" د.ل",
+    "🕒 وقت الرسالة: "+when,
+    "🧾 رقم التحويل: #"+reviewNumber,
+    autoCredited?"أُضيف المبلغ للمحفظة. يمكنك عرض الحساب أو سحب مبلغ هذا الشحن من الأزرار أدناه.":"لم يُضف رصيد آليًا. تحقّق من وصول التحويل قبل القبول."
+  ].join("\n");
+  const buttons:any[]=[];
+  if(requestId)buttons.push([{text:"👤 عرض الحساب",callback_data:"sw:account:"+reviewNumber}]);
+  if(autoCredited)buttons.push([{text:"↩️ سحب مبلغ الشحن",callback_data:"sw:undo:"+reviewNumber}]);
+  else buttons.push(matched?[{text:"✅ قبول التحويل",callback_data:"sr:a:"+reviewNumber},{text:"❌ رفض التحويل",callback_data:"sr:r:"+reviewNumber}]:[{text:"❌ رفض الرسالة",callback_data:"sr:r:"+reviewNumber}]);
+  const payload:any={chat_id:Number(owner),text:message,reply_markup:{inline_keyboard:buttons}};
   try{
     const r=await fetch("https://api.telegram.org/bot"+token+"/sendMessage",{
       method:"POST",headers:{"content-type":"application/json"},
@@ -182,6 +174,10 @@ Deno.serve(async(req:Request)=>{
       });
       if(retryError)console.error("message487_duplicate_credit_check_failed",retryError.code);
       autoCredited=!retryError&&retry?.credited===true;
+    }
+    if(autoCredited&&existing?.review_number){
+      const {data:credited}=await db.from("sms_topup_receipts").select("request_id").eq("review_number",existing.review_number).maybeSingle();
+      await notifyAdmin(db,existing.review_number,receipt.amount,receipt.transfer_phone,true,true,"credited",stamp,credited?.request_id??null);
     }
     return ack(eventId,{stored:false,duplicate:true,auto_credited:autoCredited});
   }

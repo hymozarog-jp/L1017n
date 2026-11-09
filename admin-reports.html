@@ -60,7 +60,7 @@ button{border:0;border-radius:12px;padding:11px 15px;font-weight:700}
 .profit.negative{color:var(--red)}
 .notice{font-size:12px;line-height:1.85;color:var(--muted);margin:14px 0 0}
 
-.sold-report-controls{margin-top:23px;padding:18px 15px;border:1px solid #a5e57766;border-radius:19px;background:linear-gradient(145deg,#23402f,#101f18 85%);box-shadow:inset 0 1px #c8fa7740}
+.sold-report-controls{margin:3px 0 18px;padding:18px 15px;border:1px solid #a5e57766;border-radius:19px;background:linear-gradient(145deg,#23402f,#101f18 85%);box-shadow:inset 0 1px #c8fa7740}
 .sold-report-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .sold-report-title h3,.sold-report-projection h3{margin:4px 0 0;font-size:17px;color:#f5fff3}
 .sold-report-current{font:900 clamp(23px,5vw,31px) system-ui,sans-serif;color:#bcf584;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -165,13 +165,6 @@ html.l1017n-admin-embedded .shell>.columns{
  <div class="columns">
   <section class="panel">
    <div class="panel-head"><h2>ربح الروبوكس التقديري</h2><span class="status-tag pending">تقدير بالتكلفة المدخلة</span></div>
-   <div class="line"><span>مبيعات روبوكس مكتملة</span><strong id="robuxRevenue">—</strong></div>
-   <div class="line"><span>روبوكس مباعة فعلًا خلال الشهر</span><strong id="robuxAmount">—</strong></div>
-   <div class="line"><span>تكلفة الروبوكس المقدّرة</span><strong id="robuxCost">—</strong></div>
-   <div class="line"><span>اشتراك Plus التقديري للشهر</span><strong id="plusCost">—</strong></div>
-   <div class="line total"><span>صافي تقديري للروبوكس</span><strong id="profitText">—</strong></div>
-   <div id="profitLarge" class="profit">—</div>
-   <p class="notice">هذا تقدير خاص بالروبوكس، وليس ربح المتجر الكلي. يستعمل تكلفة ثابتة لكل 1000 روبوكس واشتراك Plus واحدًا للشهر المختار إذا وُجدت مبيعات روبوكس. لا يشمل تكلفة MM2 أو ببجي أو المصروفات الأخرى، ولا يعني أن الاشتراك دُفع فعلًا في كل شهر.</p>
     <div class="sold-report-controls" id="soldReportControls">
       <div class="sold-report-title">
         <div><span class="minor">عدادك المحفوظ · كل الأشهر</span><h3>تحكّم في الروبوكس المباعة</h3></div>
@@ -194,6 +187,14 @@ html.l1017n-admin-embedded .shell>.columns{
         <p class="notice">هذا الحساب افتراضي: يستخدم متوسط إيراد الروبوكس لكل وحدة من طلبات الموقع المكتملة في جميع الأشهر، وتكلفة 1000 روبوكس وPlus أعلاه. الرقم اليدوي لا يثبت حدوث بيع أو قبض مبلغ، ولا يغيّر الإيرادات الحقيقية أو الطلبات. غيّر تكاليف الشراء إذا اختلفت.</p>
       </div>
     </div>
+   <p class="minor" style="margin:20px 0 3px">بيانات المبيعات المكتملة للشهر المختار (أرقام فعلية)</p>
+   <div class="line"><span>مبيعات روبوكس مكتملة</span><strong id="robuxRevenue">—</strong></div>
+   <div class="line"><span>روبوكس مباعة فعلًا خلال الشهر</span><strong id="robuxAmount">—</strong></div>
+   <div class="line"><span>تكلفة الروبوكس المقدّرة</span><strong id="robuxCost">—</strong></div>
+   <div class="line"><span>اشتراك Plus التقديري للشهر</span><strong id="plusCost">—</strong></div>
+   <div class="line total"><span>صافي تقديري للروبوكس</span><strong id="profitText">—</strong></div>
+   <div id="profitLarge" class="profit">—</div>
+   <p class="notice">هذا تقدير خاص بالروبوكس، وليس ربح المتجر الكلي. يستعمل تكلفة ثابتة لكل 1000 روبوكس واشتراك Plus واحدًا للشهر المختار إذا وُجدت مبيعات روبوكس. لا يشمل تكلفة MM2 أو ببجي أو المصروفات الأخرى، ولا يعني أن الاشتراك دُفع فعلًا في كل شهر.</p>
   </section>
   <section class="panel">
     <div class="panel-head"><h2>إعدادات التكلفة</h2><span class="minor">محفوظة لمدير المتجر فقط</span></div>

@@ -92,3 +92,39 @@ dialog#l1017Loyalty.points-page{position:fixed;inset:0;width:100%;height:100%;he
 #l1017Loyalty .points-guide b{display:grid;place-items:center;flex-shrink:0;width:27px;height:27px;border-radius:9px;background:#ffffff08;color:#bd9edf;font-size:10px}
 #l1017Loyalty button:focus-visible,#openMyPoints:focus-visible{outline:2px solid #d9b8ff;outline-offset:4px}
 @media(max-width:360px){#l1017Loyalty .points-shell{padding-inline:14px}#l1017Loyalty .points-panel{padding:16px}#l1017Loyalty .points-intro h3{font-size:21px}}
+
+/* Illustrated rewards: source-native artwork, no external image requests. */
+#l1017Loyalty .points-intro{text-align:center}
+#l1017Loyalty .points-intro>span{border:1px solid #c5a5f22b;background:#b490ed0b;border-radius:100px;padding:6px 13px;display:inline-block}
+#l1017Loyalty .points-intro h3{margin-top:15px;font-size:25px}
+#l1017Loyalty .points-header{margin-bottom:24px}
+#l1017Loyalty .points-balance{display:grid;grid-template-columns:1fr 1fr;padding:8px 16px 18px;gap:0;background:radial-gradient(ellipse at 0% 0%,#9f71c943,transparent 70%),linear-gradient(130deg,#272338,#171c2d);border-color:#b797d938}
+#l1017Loyalty .points-hero-art{grid-column:2;grid-row:1;min-width:0;align-self:center;direction:ltr}
+#l1017Loyalty .points-reward-art{display:block;width:calc(100% + 35px);max-width:none;height:auto;margin-left:-23px;overflow:visible}
+#l1017Loyalty .points-balance-copy{grid-column:1;grid-row:1;min-width:0;padding:24px 0 16px}
+#l1017Loyalty .points-balance-copy>span{font-size:12px;color:#c3b8d4}
+#l1017Loyalty #loyaltyBalance{display:block;font-size:clamp(35px,10vw,58px);letter-spacing:-1px;overflow-wrap:anywhere}
+#l1017Loyalty .points-balance-copy small{font-size:10px}
+#l1017Loyalty .points-rate{grid-column:1/-1;margin-top:0;padding-top:14px;font-weight:600}
+#l1017Loyalty .points-total{margin:12px 0 18px;padding:14px 16px;border:1px solid #ffffff0d;border-radius:15px;background:#ffffff03}
+#l1017Loyalty .points-panel{background:linear-gradient(135deg,#1d2132,#141b29);box-shadow:0 10px 32px #0002;border-color:#bbb0df25}
+#l1017Loyalty .points-eyebrow{display:block;font-size:10px;color:#a8a1bb;margin-bottom:6px}
+#l1017Loyalty .points-section-heading h3{font-size:19px;line-height:1.5}
+#l1017Loyalty .points-wallet-art{display:block;flex-shrink:0;width:61px;height:61px;transform:rotate(-7deg)}
+#l1017Loyalty .points-wallet-art svg{width:100%;height:100%}
+#l1017Loyalty .points-conversion{padding:14px 12px;border:1px dashed #bda4db38;border-radius:12px;background:#b598d807}
+#l1017Loyalty #loyaltyRedeemBtn{background:linear-gradient(110deg,#ebd9ff,#cba9f0)!important;box-shadow:0 5px 20px #ae7ee620;border-radius:15px!important}
+#l1017Loyalty .points-journey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+#l1017Loyalty .points-journey article{position:relative;min-width:0;text-align:center;border:1px solid #ffffff12;border-radius:17px;background:#ffffff03;padding:15px 6px}
+#l1017Loyalty .points-step-art{width:46px;height:46px;margin:0 auto 10px}
+#l1017Loyalty .points-step-art svg{display:block;width:100%;height:100%}
+#l1017Loyalty .points-journey b{display:block;font-size:13px;color:#e1d7ee}
+#l1017Loyalty .points-journey p{display:block;font-size:10px;line-height:1.7;margin:6px 0 0;color:#a6a8ba}
+#openMyPoints .points-entry-icon{width:50px;height:50px;flex-shrink:0;background:linear-gradient(140deg,#c49bda20,#e6bc7410)}
+#openMyPoints .points-entry-icon svg{width:39px;height:39px}
+#l1017Loyalty[open] .points-art-gift{animation:points-art-float 4.5s ease-in-out infinite;transform-origin:center}
+#l1017Loyalty[open] .points-art-coin{animation:points-art-float 3.5s ease-in-out infinite}
+#l1017Loyalty[open] .points-art-coin-two{animation-delay:-1.7s}
+@keyframes points-art-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){#l1017Loyalty .points-art-gift,#l1017Loyalty .points-art-coin{animation:none!important}}
+@media(max-width:360px){#l1017Loyalty .points-intro h3{font-size:22px}#l1017Loyalty .points-balance{padding-inline:12px}#l1017Loyalty .points-journey{gap:6px}}

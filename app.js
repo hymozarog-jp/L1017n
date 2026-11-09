@@ -23,7 +23,7 @@
       document.body.appendChild(hub);
     };
     var extras=document.createElement('script');
-    extras.src='store-business-extras.js?v=points-page-20261109-2';
+    extras.src='store-business-extras.js?v=points-art-20261109-3';
     extras.onload=loadUnifiedAdminHub;
     extras.onerror=function(){
       console.warn('[store] Rewards and reviews unavailable');

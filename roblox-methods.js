@@ -21,24 +21,13 @@
   function accountPage(root){
     const page=prepare(root,'account','شحن داخل الحساب');
     if(!page)return;
-    page.innerHTML=`
-      <div class="rgp-method-banner">
-        <div class="rgp-method-emblem"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="lazy"></div>
-        <span class="rgp-method-eyebrow">ROBLOX / ACCOUNT</span>
-        <h2>شحن داخل الحساب</h2>
-        <p>تقدر تشتري روبوكس داخل حسابك من موقع Roblox الرسمي باستخدام وسيلة دفع يدعمها Roblox.</p>
-      </div>
-      <div class="rgp-method-status" role="status">
-        <strong>الشحن داخل الحساب غير مفعّل عبر محفظة المتجر حاليًا.</strong>
-        <span>ما يتم خصم أي مبلغ من رصيدك هنا. لا ترسل كلمة مرور Roblox ولا رمز تسجيل الدخول لأي شخص.</span>
-      </div>
-      <div class="rgp-method-instructions">
-        <h3>كيف تشحن من حسابك؟</h3>
-        <p>افتح Roblox الرسمي، سجّل الدخول بنفسك، ثم اختر باقة Robux وأكمل عملية الدفع هناك.</p>
-        <a href="https://www.roblox.com/upgrades/robux" target="_blank" rel="noopener noreferrer" class="rgp-method-cta">فتح Roblox الرسمي <span aria-hidden="true">↗</span></a>
-        <p class="rgp-method-footnote">إذا تبي تشتري من محفظة L1017n، اختار «شحن عبر اليوزر» من القائمة السابقة.</p>
-      </div>`;
+    page.innerHTML='<div class="account-packs-heading"><span>ROBLOX / ACCOUNT</span><h2>شحن داخل الحساب</h2><p>اختار باقتك وتواصل معنا لتأكيد طريقة الشحن. لا يتم الخصم عند اختيار الباقة.</p></div><div class="account-packs-grid">'+
+      Array.from({length:10},(_,i)=>{const quantity=(i+1)*80,price=(i+1)*15;
+        const message='مرحبًا، أريد طلب شحن داخل الحساب من متجر L1017n.\nالباقة: '+quantity+' روبوكس\nالسعر: '+price+' د.ل\nأريد تأكيد طريقة الشحن والتوفر.';
+        return '<article class="account-pack-card"><div class="fixed-pack-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="Roblox"><span class="fixed-pack-symbol" aria-hidden="true">◈</span><b>'+quantity+'</b></div><div class="fixed-pack-info"><h3>'+quantity+' روبوكس</h3><span class="fixed-pack-method">شحن داخل الحساب</span><strong>'+price.toFixed(2)+' <small>د.ل</small></strong><a href="https://wa.me/218925620538?text='+encodeURIComponent(message)+'" target="_blank" rel="noopener noreferrer" class="fixed-pack-order" aria-label="طلب '+quantity+' روبوكس بسعر '+price+' دينار">طلب الباقة <span aria-hidden="true">↗</span></a></div></article>';
+      }).join('')+'</div><p class="account-pack-note">يتم تأكيد التوفر وطريقة التنفيذ مع المتجر قبل الدفع. لا ترسل كلمة مرور حسابك أو رموز التحقق.</p>';
   }
+
   function validCodeProduct(p){
     if(!p||p.active!==true||!(Number(p.price)>0)||!p.id)return false;
     const label=[p.name,p.product_key,p.game].map(v=>String(v||'').toLowerCase()).join(' ');

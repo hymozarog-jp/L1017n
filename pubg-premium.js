@@ -38,7 +38,7 @@
     try {
       if(typeof supabaseClient==="undefined")throw new Error("خدمة المنتجات غير جاهزة");
       const {data,error}=await supabaseClient.from("products")
-        .select("id,product_key,name,description,game,amount,price,active,sort_order")
+        .select("id,product_key,name,description,game,amount,price,active,sort_order,image_url")
         .eq("game","pubg").eq("active",true).order("sort_order");
       if(error)throw error;
       if(requestId!==catalogRequest)return;
@@ -65,6 +65,11 @@
   function categoryProducts(key) {
     return allPubgProducts().filter((p) => categoryFor(p) === key);
   }
+  function productImageSrc(value){
+    const image=String(value||'');
+    const prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
+    return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
+  }
   function countLabel(count) {
     return count ? count + " باقة" : "قريبًا";
   }
@@ -88,7 +93,7 @@
     return '<article class="pubg-pack" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : 'شحن على UID') + '</span>'
       + '<span class="pubg-pack-arrow" aria-hidden="true">↗</span></div>'
-      + '<div class="pubg-coin-wrap"><img class="pubg-uc-art" src="game-covers/pubg-uc.svg" alt="" loading="lazy" decoding="async"></div>'
+      + '<div class="pubg-coin-wrap"><img class="pubg-uc-art l1017n-catalog-image" src="' + safe(productImageSrc(product.image_url)||'game-covers/pubg-uc.svg') + '" alt="' + safe(productImageSrc(product.image_url)?product.name:'') + '" loading="lazy" decoding="async"></div>'
       + '<div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
       + '<h3 class="pubg-pack-name">' + name + '</h3>'
       + (noCodeAvailable ? '<p class="pubg-unavailable-note">كود 60 UC غير متوفر في المخزون حاليًا</p>' : '')

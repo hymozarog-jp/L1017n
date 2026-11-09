@@ -10,7 +10,7 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
 });
 const statusText={pending:'قيد المراجعة',approved:'تمت الموافقة',rejected:'مرفوض'};
-const orderStatusText={paid_pending_fulfillment:'مدفوع — بانتظار القبول',approved:'تم القبول',processing:'قيد المعالجة',fulfilling:'قيد التنفيذ',completed:'تم التنفيذ',rejected:'مرفوض — تم إرجاع الرصيد',refunded:'تم إرجاع الرصيد'};
+const orderStatusText={paid_pending_fulfillment:'مدفوع — بانتظار القبول',approved:'تم القبول',processing:'تم القبول',fulfilling:'تم القبول',completed:'تم التنفيذ',rejected:'مرفوض — تم إرجاع الرصيد',refunded:'تم إرجاع الرصيد'};
 function orderStatusClass(status){return status==='completed'?'approved':(['rejected','refunded'].includes(status)?'rejected':'pending')}
 let toastTimer,products=[],robuxAvailable=0,robuxUnlimited=false,showTopupCode=false;
 let robuxStockPoller=null;
@@ -189,7 +189,9 @@ async function renderOrders(){
    verifiedUssdIds.has(String(x.id)));
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...visibleTopups.map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||(x.kind==='topup'&&x.status==='approved')?'completed':'pending';
- const status=x=>x.status==='approved'?'تم القبول':x.status==='processing'?'قيد المعالجة':x.status==='fulfilling'?'قيد التنفيذ':group(x)==='completed'?'تم التنفيذ':group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع'):x.kind==='topup'?'قيد المراجعة':'قيد الانتظار';
+ const status=x=>group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع')
+   :group(x)==='completed'?'تم التنفيذ'
+   :['approved','processing','in_processing','fulfilling','in_progress'].includes(x.status)?'تم القبول':'تم الاستلام';
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');
  // Show static matching artwork; financial states, totals and transactions are unchanged.
  const orderArt=x=>{
@@ -203,11 +205,9 @@ async function renderOrders(){
  const date=x=>new Date(x.created_at).toLocaleDateString('en-GB',{timeZone:'Africa/Tripoli'});
  const orderTime=x=>new Date(x.created_at).toLocaleTimeString('ar-LY',{timeZone:'Africa/Tripoli',hour:'2-digit',minute:'2-digit'});
  const stageFor=x=>{
-   if(x.kind==='topup')return ['approved','rejected'].includes(x.status)?1:0;
-   if(x.status==='completed')return 4;
-   if(x.status==='approved')return 1;
-   if(['processing','in_processing'].includes(x.status))return 2;
-   if(['fulfilling','in_progress'].includes(x.status))return 3;
+   if(x.kind==='topup')return x.status==='approved'?2:0;
+   if(x.status==='completed')return 2;
+   if(['approved','processing','in_processing','fulfilling','in_progress'].includes(x.status))return 1;
    return 0;
  };
  const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مرفوضة/مسترجعة</button></div>';
@@ -270,10 +270,8 @@ async function renderOrders(){
  [...root.querySelectorAll('.orders-modern-card')].forEach((card,index)=>{
    const order=orders[index],state=group(order),progress=stageFor(order);
    const topup=order.kind==='topup';
-   const headline=order.status==='approved'?'تم القبول':state==='completed'?'تم التنفيذ'
-     :state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
-     :progress===3?'قيد التنفيذ':progress===2?'قيد المعالجة'
-     :topup?'قيد المراجعة':'قيد الانتظار';
+   const headline=state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
+     :progress===2?'تم التنفيذ':progress===1?'تم القبول':'تم الاستلام';
    const caption=order.status==='approved'
      ?(topup?'تم قبول طلب شحن المحفظة وإضافة الرصيد.':'تم قبول طلب الشراء، ولم يتم التسليم بعد.')
      :state==='completed'
@@ -285,10 +283,9 @@ async function renderOrders(){
      :topup?'طلب شحن المحفظة مسجل وقيد التحقق من التحويل.'
        :'طلبك في قائمة الانتظار وسيبدأ التنفيذ بعد مراجعته.';
    // Source statuses only: intermediate phases are not silently assumed to happen.
-   const stageNames=topup?['قيد المراجعة',state==='refunded'?'مرفوض':'تم القبول']
-     :['تم الاستلام','تم القبول','قيد المعالجة','قيد التنفيذ','تم التنفيذ'];
+   const stageNames=['تم الاستلام','تم القبول','تم التنفيذ'];
    const stageCount=stageNames.length;
-   const stageMarkup='<div class="orders-track-steps" data-stage-count="'+stageCount+'" aria-label="مراحل الطلب" style="--track-progress:'+(topup?progress*100:progress*25)+'%">'
+   const stageMarkup='<div class="orders-track-steps" data-stage-count="'+stageCount+'" aria-label="مراحل الطلب" style="--track-progress:'+(progress*50)+'%">'
      +stageNames.map((name,i)=>'<span class="orders-track-step '+(i<=progress?'is-on ':'')+(i===progress?'is-current':'')+'">'
        +'<span class="orders-track-node" aria-hidden="true">'+(i<=progress?'✓':'•')+'</span>'
        +'<span class="orders-track-label">'+name+'</span></span>').join('')+'</div>';

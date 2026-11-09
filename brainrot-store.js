@@ -57,15 +57,22 @@ function getClient(){
     const amount=Number(product?.price);
     return Number.isFinite(amount)&&amount>0?amount.toFixed(2)+" د.ل":"السعر قريبًا";
   }
+  function productImageSrc(value){
+    const image=String(value||'');
+    const prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
+    return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
+  }
   function productCard(item,product){
+    const customImage=productImageSrc(product?.image_url);
+    const productPicture=customImage||item.image||'game-covers/official/mobile/brainrot.webp';
     const limitedStock=product?.product_key==="steal-garama";
     const remaining=Number(product?.stock_quantity);
     const available=!!(product&&product.active&&Number(product.price)>0&&(!limitedStock||(Number.isInteger(remaining)&&remaining>0)));
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
-      +'<div class="sab-card-art">'+(item.emoji
+      +'<div class="sab-card-art">'+(item.emoji&&!customImage
         ?'<span class="sab-character-emoji" role="img" aria-label="'+escapeHtml(item.name)+'">'+escapeHtml(item.emoji)+'</span>'
-        :'<img class="sab-character-image" src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async">')+'<span class="sab-glow" aria-hidden="true"></span></div>'
+        :'<img class="sab-character-image l1017n-catalog-image" src="'+escapeHtml(productPicture)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async">')+'<span class="sab-glow" aria-hidden="true"></span></div>'
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +(limitedStock?'<span class="sab-stock-badge '+(available?'in-stock':'out-of-stock')+'">'+(available?'المتوفر: '+remaining:'نفدت الكمية')+'</span>':'')
@@ -78,7 +85,9 @@ function getClient(){
     const map=new Map((catalog||[]).map(p=>[String(p.product_key),p]));
     const target=section.querySelector("#sabCatalog");
     if(!target)return;
-    target.innerHTML='<div class="sab-products-grid">'+ITEMS.map(item=>productCard(item,map.get(item.key))).join("")+'</div>'
+    const extra=(catalog||[]).filter(p=>!ITEMS.some(item=>item.key===p.product_key))
+      .map((p,index)=>({key:p.product_key,name:p.name,latin:'STEAL A BRAINROT',number:String(ITEMS.length+index+1),image:'game-covers/official/mobile/brainrot.webp'}));
+    target.innerHTML='<div class="sab-products-grid">'+[...ITEMS,...extra].map(item=>productCard(item,map.get(item.key))).join("")+'</div>'
       +'<p class="sab-info">المنتجات التي تحمل علامة «غير متوفر» لا يمكن طلبها حاليًا. عند توفر المنتج، التسليم داخل ماب السرقة يحتاج التواصل بعد الدفع.</p>';
     target.querySelectorAll("[data-steal-buy]").forEach(b=>{
       b.addEventListener("click",()=>{
@@ -96,7 +105,7 @@ function getClient(){
       renderItems(section,[]);
       return;
     }
-    const result=await client.from("products").select("id,product_key,name,game,price,active,stock_quantity").eq("game","steal-a-brainrot").order("sort_order");
+    const result=await client.from("products").select("id,product_key,name,game,price,active,stock_quantity,image_url").eq("game","steal-a-brainrot").order("sort_order");
     if(!section.isConnected)return;
     if(result.error){
       renderItems(section,[]);
@@ -121,6 +130,7 @@ function getClient(){
     box.innerHTML='<div class="sab-dialog">'
       +'<button type="button" class="sab-dialog-close" data-sab-cancel aria-label="إغلاق">×</button>'
       +'<span class="sab-dialog-kicker">STEAL A BRAINROT • L1017N</span>'
+      +(productImageSrc(product.image_url)?'<img class="l1017n-catalog-image sab-checkout-product-image" src="'+escapeHtml(productImageSrc(product.image_url))+'" alt="'+escapeHtml(product.name)+'" loading="eager">':'')
       +'<h2>'+escapeHtml(ITEMS.find(item=>item.key===product.product_key)?.name||product.name)+'</h2>'
       +'<strong class="sab-dialog-price">'+Number(product.price).toFixed(2)+' د.ل</strong>'
       +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'

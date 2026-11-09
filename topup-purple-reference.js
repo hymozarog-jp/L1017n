@@ -61,6 +61,41 @@
     if(msg.dataset.kind!==(kind||''))msg.dataset.kind=kind||'';
   };
   let busy=false,prepared=null;
+  // Preparing a new USSD intent is not a rejection. Keep a visible loading
+  // indicator until the backend either provides the dial link or reports an error.
+  function showPreparing(){
+    let box=document.getElementById('dtInlineTopupStatus');
+    if(!box){
+      box=document.createElement('div');
+      box.className='dt-inline-credit';
+      box.id='dtInlineTopupStatus';
+      box.setAttribute('role','status');
+      box.setAttribute('aria-live','polite');
+      msg.insertAdjacentElement('afterend',box);
+    }
+    box.hidden=false;
+    box.dataset.state='preparing';
+    const dots=document.createElement('span');
+    dots.className='dt-inline-credit-symbol dt-wait-dots';
+    dots.setAttribute('aria-hidden','true');
+    for(let i=0;i<3;i++){
+      const dot=document.createElement('i');
+      dot.className='dt-wait-dot';
+      dots.appendChild(dot);
+    }
+    const text=document.createElement('span');
+    text.className='dt-inline-credit-copy';
+    const title=document.createElement('strong');
+    title.textContent='جاري تجهيز طلب التحويل';
+    const detail=document.createElement('small');
+    detail.textContent='نجهّز الاتصال، وبعد تحويل الرصيد سنتابع التحقق تلقائيًا.';
+    text.append(title,detail);
+    box.replaceChildren(dots,text);
+  }
+  function hidePreparing(){
+    const box=document.getElementById('dtInlineTopupStatus');
+    if(box?.dataset.state==='preparing')box.remove();
+  }
   const shopNumber=()=>normalize(window.L1017nDirectTransfer?.receiver);
   const senderNumber=()=>{
     const candidate=normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent);
@@ -108,7 +143,8 @@
       sender.value='';
       message('رقم المتجر للاستقبال فقط. اكتب رقمك الذي ستحوّل منه.','error');
     }
-    if(document.getElementById('tpReturnVerify')){prepared=null;fallback.hidden=true;}
+    // An active verification marker belongs to the in-progress USSD request.
+    // Do not clear its dial link every time the status DOM updates.
   }
   panel.querySelector('.dt-purple-submit').addEventListener('click',async()=>{
     if(busy)return;
@@ -130,13 +166,24 @@
     busy=true;confirm.disabled=true;
     confirm.querySelector('span').textContent='جاري تجهيز الاتصال…';
     fallback.hidden=true;
+    // Remove an old terminal message so the previous rejected request cannot
+    // be mistaken for the result of this brand-new attempt.
+    showPreparing();
     message('جاري تجهيز طلب التحويل والتحقق من بياناته…','');
     try{
       legacyAmount.value=String(value);
       legacyAmount.dispatchEvent(new Event('input',{bubbles:true}));
       const link=await transfer.prepare();
-      if(document.getElementById('tpReturnVerify')){prepared=null;return;}
+      // auto-topup now starts watching the request BEFORE returning the link.
+      // The presence of tpReturnVerify therefore indicates progress, NOT
+      // an error and NOT a reason to skip opening the native Phone app.
       if(!link||!link.href){
+        const state=document.getElementById('tpReturnVerify')?.dataset.state;
+        if(state==='pending'||state==='delayed'){
+          message('طلبك قيد التحقق. لا تكرر التحويل إذا سبق أن حوّلت الرصيد.','');
+          return;
+        }
+        hidePreparing();
         message(document.getElementById('transferInstructions')?.textContent?.trim()||'تعذر تجهيز التحويل. حاول مرة ثانية.','error');
         return;
       }
@@ -146,10 +193,20 @@
       message('الكود جاهز. أكّد الاتصال من هاتفك لإرسال التحويل؛ الرصيد يُضاف بعد مطابقته.','success');
       link.click();
     }catch(err){
+      hidePreparing();
       message('تعذّر تجهيز التحويل. تحقق من الاتصال ثم حاول مرة ثانية.','error');
     }finally{
-      busy=false;confirm.disabled=false;
-      confirm.querySelector('span').textContent='تأكيد الشحن';
+      busy=false;
+      const state=document.getElementById('dtInlineTopupStatus')?.dataset.state;
+      if(state==='approved'){
+        confirm.disabled=true;
+        confirm.querySelector('span').textContent='تم الشحن ✓';
+      }else{
+        confirm.disabled=false;
+        confirm.querySelector('span').textContent=
+          state==='pending'||state==='matched'||state==='delayed'
+            ?'فتح الاتصال مرة أخرى':'تأكيد الشحن';
+      }
     }
   });
   new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});

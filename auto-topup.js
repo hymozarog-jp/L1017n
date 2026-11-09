@@ -433,11 +433,12 @@
         return;
       }
       const area=show('ok','تم تجهيز طلب شحن '+amount+' د.ل',
-        'فتح الكود وحده ما يشحنش رصيد. بعد وصول رسالة ليبيانا المطابقة لرقم المحوّل والمبلغ، يُضاف الرصيد تلقائيًا إذا اجتاز التحويل فحوص الأمان.');
+        'تقدر تفتح تطبيق المكالمات من الزر أو تنسخ كود التحويل وتطلبه بنفسك. سنتابع طلبك تلقائيًا، ويظهر الشحن بعد اعتماد وصول الرصيد الحقيقي إلى المتجر.');
       if(!area)return;
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
       panel.append(el('div','','رقم المحوّل: '+sender));
+      panel.append(el('p','auto-topup-note','الطلب مربوط بالرقم والمبلغ أعلاه. لازم تحوّل من نفس الرقم بالضبط، سواء من التطبيق أو عبر زر الاتصال.'));
       if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب فقط. إذا كان رقم شخص آخر، لازم موافقته ومطابقة تحويله قبل شحن محفظتك.'));
       const dialHref='tel:'+codeFor(amount).replace('#','%23');
       const onDialCode=()=>{
@@ -456,24 +457,18 @@
       dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا من رقم المحوّل المحدّد');
       dial.addEventListener('click',onDialCode);
       panel.append(dial);
-      const copy=el('button','btn btn-soft full-width','نسخ كود USSD');
+      const copy=el('button','btn btn-soft full-width','نسخ الكود للتحويل من تطبيق المكالمات');
       copy.type='button';
       copy.addEventListener('click',async()=>{
         try{
           await navigator.clipboard.writeText(codeFor(amount));
           armDialHandoff(intent.request_id,amount);
-          setIconText(copy,'check','تم نسخ الكود');
+          showVerifier(intent.request_id,amount);
+          setIconText(copy,'check','تم نسخ الكود — افتح تطبيق المكالمات');
         }
         catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
       panel.append(copy);
-      const confirm=el('button','btn btn-primary full-width','حوّلت الرصيد — متابعة التحقق');
-      confirm.type='button';
-      confirm.addEventListener('click',()=>{
-        clearDialHandoff();
-        showVerifier(intent.request_id,amount);
-      });
-      panel.append(confirm);
       const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. فتح كود الاتصال ينبه الإدارة ببدء المحاولة، وليس بإتمام الدفع.');
       status.id='ussdTransferStatus';
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
@@ -482,9 +477,11 @@
         showVerifier(intent.request_id,amount);
       });
       panel.append(status,refresh);
-      panel.append(el('p','auto-topup-note','مهم: فتح الاتصال وحده لا يعني وصول المبلغ. بعد التحويل اضغط «حوّلت الرصيد — متابعة التحقق»؛ سيصلك قرار الإدارة في حالة الطلب. لا تكرر التحويل.'));
+      panel.append(el('p','auto-topup-note','تقدر تحول من تطبيق المكالمات مباشرة بالكود الظاهر، حتى لو كتبته يدويًا، بعد تجهيز هذا الطلب. مش محتاج تضغط «تم التحويل»؛ سنتابع وصول التحويل تلقائيًا. فتح الاتصال وحده لا يثبت الدفع، ولا تكرر التحويل إذا تأخر التأكيد.'));
       area.append(panel);
-      refreshRequest(intent.request_id);
+      // Monitor the existing intent before the customer switches to the native dialer.
+      // A prepared intent alone never grants credit; only authenticated approval does.
+      showVerifier(intent.request_id,amount);
     }catch(err){
       if(run!==generation)return;
       console.warn('USSD transfer preparation failed',err);

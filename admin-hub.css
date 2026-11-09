@@ -56,6 +56,8 @@ html body.l1017-live-ui.l1017-admin-open #llBottomNav,html body.l1017-live-ui.l1
 /* Every administration action opens a genuine full-viewport page.
    Only the admin home shows the category tiles. */
 html body.l1017-admin-open{overflow:hidden!important;overscroll-behavior:none!important}
+html body.l1017-admin-open #toast{position:fixed!important;z-index:2147483540!important}
+
 html body.l1017-admin-open #adminView:not(.hidden){
   position:fixed!important;inset:0!important;top:0!important;bottom:0!important;
   z-index:2147482300!important;box-sizing:border-box!important;

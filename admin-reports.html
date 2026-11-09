@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07100d">
-<title>تقارير وأرباح المتجر | L1017N</title>
+<title>تفاصيل مبيعات المتجر | L1017N</title>
+<script>
+if(!new URLSearchParams(location.search).has('embedded'))location.replace('./index.html?admin=1&section=finance');
+document.documentElement.classList.add('unified-sales-report');
+</script>
+<style>.unified-sales-report .columns:has(#profitLarge){display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">

@@ -547,19 +547,19 @@
           <button type="button" id="adminRobuxSoldRefresh" class="admin-robux-sold-refresh" aria-label="تحديث عدد الروبوكس المباعة">تحديث ↻</button>
         </div>
         <div class="admin-robux-sold-metrics" aria-live="polite">
-          <div class="admin-robux-sold-metric admin-robux-sold-total"><small>الإجمالي</small><strong id="adminRobuxSoldTotal">—</strong><span>روبوكس</span></div>
-          <div class="admin-robux-sold-metric"><small>مبيعات الموقع التلقائية</small><strong id="adminRobuxSoldWebsite">—</strong><span>طلبات مكتملة فقط</span></div>
-          <div class="admin-robux-sold-metric"><small>المبيعات المُدخلة يدويًا</small><strong id="adminRobuxSoldManual">—</strong><span>تقدر تغيّرها</span></div>
+          <div class="admin-robux-sold-metric admin-robux-sold-total"><small>العدد الإجمالي الذي تتحكم فيه</small><strong id="adminRobuxSoldTotal">—</strong><span>روبوكس</span></div>
+          <div class="admin-robux-sold-metric"><small>مبيعات الموقع الفعلية</small><strong id="adminRobuxSoldWebsite">—</strong><span>طلبات مكتملة فقط</span></div>
+          <div class="admin-robux-sold-metric"><small>الزيادة التلقائية</small><strong id="adminRobuxSoldManual">—</strong><span>منذ آخر تعديل للعدد</span></div>
         </div>
         <div class="admin-robux-sold-form">
-          <label for="adminRobuxSoldInput">كم روبوكس بعتها خارج الموقع؟</label>
-          <p>اكتب العدد اللي تبي تسجّله يدويًا. مبيعات الموقع تنضاف له تلقائيًا لما الطلب يصير «مكتمل».</p>
+          <label for="adminRobuxSoldInput">عدّل العدد الإجمالي الظاهر إلى أي رقم</label>
+          <p>اكتب العدد النهائي اللي تبي يظهر، مثل 500، واضغط حفظ. بعد ذلك كل طلب روبوكس جديد «مكتمل» يزيده تلقائيًا.</p>
           <div class="admin-robux-sold-actions">
-            <input id="adminRobuxSoldInput" type="number" inputmode="numeric" min="0" max="1000000000" step="1" value="500" placeholder="مثال: 500" aria-describedby="adminRobuxSoldStatus">
+            <input id="adminRobuxSoldInput" type="number" inputmode="numeric" min="0" max="1000000000" step="1" placeholder="مثال: 500" aria-describedby="adminRobuxSoldStatus">
             <button id="adminRobuxSoldSave" type="button">حفظ العدد</button>
           </div>
           <p id="adminRobuxSoldStatus" class="admin-robux-sold-status" role="status" aria-live="polite">جاري تحميل الإحصائيات…</p>
-          <small class="admin-robux-sold-note">هذا عدّاد إحصائي فقط، ولا يغيّر المخزون أو رصيد أي زبون أو سجلات الطلبات الحقيقية.</small>
+          <small class="admin-robux-sold-note">العدد المعروض قابل للتعديل، لكن خانة مبيعات الموقع الفعلية تبقى كما هي للتوثيق. لا يتغيّر المخزون أو رصيد الزبائن أو سجلات الطلبات.</small>
         </div>
       </div>
     </section>

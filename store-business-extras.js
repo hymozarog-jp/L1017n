@@ -75,10 +75,10 @@
    }
    if(admin&&!q("#l1017BusinessPanel")){
      const section=document.createElement("section");section.id="l1017BusinessPanel";section.className="l1017-extra";
-     section.innerHTML='<div class="l1017-extra-head"><h3>◈ لوحة الأرباح والمبيعات</h3><button type="button" class="e-button e-secondary" id="refreshBusiness">تحديث ↻</button></div>'
-       +'<p>تقارير المبيعات المكتملة، والربح التقديري بناءً على تكلفة شراء المنتجات اللي تحددها.</p>'
-       +'<div class="e-grid" id="businessPeriodCards"></div><p id="businessSummaryStatus" class="e-status">جاري تحميل التقرير…</p>'
-       +'<div class="e-divider"></div><h4>إدخال تكاليف الشراء</h4>'
+     section.innerHTML='<div class="l1017-extra-head"><h3>الأرباح والمبيعات</h3><button type="button" class="e-button e-secondary" id="refreshBusiness">تحديث ↻</button></div>'
+       +'<p>تابع المبالغ الناتجة عن الطلبات المكتملة وتكلفة شرائها، ثم شوف الربح التقديري بعد خصم التكلفة.</p>'
+       +'<div class="finance-periods" role="group" aria-label="فترة التقرير"><button type="button" data-finance-period="today" aria-pressed="false">اليوم</button><button type="button" data-finance-period="week" aria-pressed="false">7 أيام</button><button type="button" data-finance-period="month" aria-pressed="true">30 يوم</button><button type="button" data-finance-period="all" aria-pressed="false">كل الفترة</button></div><div class="e-grid finance-metrics" id="businessPeriodCards" aria-live="polite"></div><p id="businessSummaryStatus" class="e-status">جاري تحميل التقرير…</p>'
+       +'<details class="finance-cost-details"><summary>ضبط تكلفة الشراء</summary>'
        +'<p class="e-legend">تكلفة الروبوكس تُحسب لكل 100 روبوكس، أما المنتجات الأخرى فتُحسب تكلفة بيع الباقة أو القطعة كاملة. تعديل التكلفة يعيد حساب الربح التقديري تاريخيًا، ولا يغير رصيد الزبائن.</p>'
        +'<section class="robux-cost-calculator"><h4>حاسبة تكلفة الروبوكس</h4><p>كل 1,000 روبوكس = 121 د.ل · بلس 70 د.ل لكل 10,000 أو جزء منها.</p>'
        +'<label for="businessRobuxQuantity">كمية الروبوكس</label><input id="businessRobuxQuantity" type="text" inputmode="numeric" autocomplete="off" placeholder="مثال: 10000" aria-describedby="businessRobuxCalcStatus">'
@@ -89,7 +89,7 @@
        +'<button class="e-button" type="button" id="saveRobuxBusinessCost" disabled>حفظ التكلفة لحساب الأرباح</button><p class="e-sub">الحفظ يحدّث تكلفة حساب الأرباح التقديرية، بما فيها الطلبات السابقة. لا يغيّر سعر البيع للزبائن.</p></section>'
        +'<label for="businessProductSelect">تكلفة بقية المنتجات</label><select id="businessProductSelect"></select>'
        +'<div class="e-row"><input id="businessProductCost" type="number" min="0" max="100000" step="0.01" placeholder="سعر شراء الباقة بالدينار"><button type="button" class="e-button" id="saveProductBusinessCost">حفظ تكلفة المنتج</button></div>'
-       +'<p class="e-status" id="businessCostStatus"></p>'
+       +'<p class="e-status" id="businessCostStatus" role="status"></p></details>'
        +'<div class="e-divider"></div><h4>المنتجات الأكثر مبيعًا</h4><div id="businessTopProducts" class="e-review-list"></div>'
        +'<div class="e-divider"></div><h4>إدارة تقييمات الزبائن</h4><div id="businessReviews" class="e-review-list"></div>';
      admin.insertBefore(section,admin.firstChild);
@@ -215,14 +215,22 @@
    }catch(e){setMessage("#publicReviewsStatus","تعذر تحميل التقييمات حاليًا.","warning")}
  }
  let adminData=null;
- function financeCard(name,row){
-   const r=row||{revenue:0,orders:0,missing_cost_orders:0,estimated_profit:0};
-   const profit=r.estimated_profit;
-   return '<article class="e-metric"><span>'+name+' · '+qty(r.orders||0)+' طلب</span>'+
-     '<strong>'+cash(r.revenue)+'</strong><small>المبيعات المكتملة</small>'+
-     '<p>الربح: <b>'+((profit===null||profit===undefined)?'غير محسوب':cash(profit))+'</b></p>'+
-     ((r.missing_cost_orders||0)>0?'<small class="e-warning">تنقص تكلفة '+qty(r.missing_cost_orders)+' طلب</small>':'')+
-     '</article>';
+ let financePeriod='month';
+ function renderFinanceSummary(){
+   const r=adminData?.finance?.[financePeriod];
+   const root=q('#businessPeriodCards');if(!root)return;
+   if(!r){root.innerHTML='<p>بيانات هذه الفترة غير متاحة.</p>';return;}
+   const missing=Number(r.missing_cost_orders)||0;
+   const known=r.estimated_profit!==null&&r.estimated_profit!==undefined&&Number.isFinite(Number(r.estimated_profit));
+   const complete=missing===0&&known;
+   const profit=Number(r.estimated_profit);
+   const metric=(label,value,note,extra='')=>'<article class="e-metric '+extra+'"><span>'+label+'</span><strong>'+value+'</strong><small>'+note+'</small></article>';
+   root.innerHTML=metric('إجمالي المبيعات',cash(r.revenue),'طلبات مكتملة فقط')+
+     metric('تكلفة الشراء',complete?cash(Number(r.revenue)-profit):'غير مكتملة','وفق التكاليف المحفوظة')+
+     metric('الربح التقديري',complete?cash(profit):'أكمل التكاليف',complete?'المبيعات − تكلفة الشراء':'لا يُحسب بدقة قبل إدخال التكلفة',complete&&profit<0?'finance-loss':'finance-profit')+
+     metric('عدد الطلبات',qty(r.orders),'طلب مكتمل في الفترة المختارة');
+   q('#l1017BusinessPanel').querySelectorAll('[data-finance-period]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.financePeriod===financePeriod)));
+   setMessage('#businessSummaryStatus',missing?'تنقص تكلفة '+qty(missing)+' طلب. افتح «ضبط تكلفة الشراء» لإكمالها.':'الربح تقديري حسب تكلفة الشراء الحالية. شحن المحافظ لا يُحسب مبيعات، والمصاريف الأخرى غير مشمولة.',missing?'warning':null);
  }
  function updateCostSelection(){
    if(!adminData)return;
@@ -240,9 +248,7 @@
      if(!d||typeof d!=="object")throw Error("invalid_admin_data");
      adminData=d;
      const fin=d.finance||{};
-     q("#businessPeriodCards").innerHTML=financeCard("اليوم",fin.today)+financeCard("آخر 7 أيام",fin.week)+
-       financeCard("آخر 30 يوم",fin.month)+financeCard("كل الفترة",fin.all);
-     setMessage("#businessSummaryStatus","صافي الربح تقديري وفق تكاليف الشراء الحالية، والمبيعات تشمل الطلبات المكتملة فقط. اضبط كل التكاليف ليظهر الربح بدقة أكبر.");
+     renderFinanceSummary();
      updateRobuxCostCalculator();
      const select=q("#businessProductSelect"),old=select.value;
      const items=Array.isArray(d.product_costs)?d.product_costs:[];
@@ -311,6 +317,8 @@
    finally{if(button)button.disabled=false}
  }
  function wire(){
+   q('#l1017BusinessPanel')?.addEventListener('click',e=>{const b=e.target.closest('[data-finance-period]');if(b){financePeriod=b.dataset.financePeriod;renderFinanceSummary();}});
+
    q("#refreshLoyalty")?.addEventListener("click",()=>void loadLoyalty());
    q("#loyaltyRedeemBtn")?.addEventListener("click",()=>void redeemLoyalty());
    q("#refreshReviewable")?.addEventListener("click",()=>void loadReviewable());

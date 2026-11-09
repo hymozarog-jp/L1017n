@@ -1,0 +1,49 @@
+/* L1017N Business Extras — scoped loyalty, reviews and finance UI */
+#l1017Loyalty,#l1017CustomerReviews,#l1017PublicReviews,#l1017BusinessPanel{direction:rtl;color:#e7eefd;font-family:inherit}
+.l1017-extra{background:linear-gradient(140deg,#17223a,#101b30);border:1px solid #ffffff1b;border-radius:19px;padding:16px;margin:16px 0;box-shadow:0 7px 24px #0002}
+.l1017-extra-head{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:11px}
+.l1017-extra h3,.l1017-extra h4{margin:0;color:#f7f8ff;font-size:17px;font-weight:900}
+.l1017-extra h4{font-size:14px}
+.l1017-extra p{margin:7px 0;font-size:12px;line-height:1.8;color:#bdcce5}
+.l1017-extra .e-sub{color:#9aaecb;font-size:11px}
+.l1017-extra .e-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.l1017-extra .e-metric{border:1px solid #ffffff20;border-radius:14px;background:#ffffff09;padding:12px;min-width:0}
+.l1017-extra .e-metric span{display:block;font-size:11px;color:#b8c8e6}
+.l1017-extra .e-metric strong{display:block;font-size:clamp(19px,5vw,28px);margin:6px 0;color:#fff;font-variant-numeric:tabular-nums}
+.l1017-extra .e-metric small{display:block;font-size:10px;color:#96acc8}
+.l1017-extra button.e-button{background:#e8e5ff!important;border:0!important;color:#222044!important;border-radius:12px!important;padding:10px 14px!important;min-height:39px;font-weight:800;font-size:12px;cursor:pointer}
+.l1017-extra button.e-button:disabled{opacity:.5;cursor:not-allowed}
+.l1017-extra button.e-secondary{background:#263750!important;color:#f4f6ff!important;border:1px solid #ffffff30!important}
+.l1017-extra input,.l1017-extra select,.l1017-extra textarea{
+  width:100%;box-sizing:border-box;padding:11px;border-radius:12px;
+  background:#0a1428!important;color:#f1f5ff!important;border:1px solid #516486!important;font-family:inherit;font-size:13px}
+.l1017-extra input:focus,.l1017-extra select:focus,.l1017-extra textarea:focus{outline:2px solid #a6abff;outline-offset:2px}
+.l1017-extra label{display:block;font-size:12px;color:#dce6fa;margin:7px 0 5px}
+.l1017-extra .e-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px}
+.l1017-extra .e-row>*{min-width:0}
+.l1017-extra .e-row input{flex:1 1 110px}
+.l1017-extra .e-status{color:#b7d3ee;font-size:11px;line-height:1.65;margin-top:10px}
+.l1017-extra .e-warning{color:#ffd4a4}
+.l1017-extra .e-success{color:#a7ebc9}
+.l1017-extra .e-progress{margin:13px 0 3px;height:7px;border-radius:9px;background:#ffffff20;overflow:hidden}
+.l1017-extra .e-progress>i{display:block;height:100%;background:linear-gradient(90deg,#a3e7fd,#a78bff);border-radius:9px;transition:width .3s}
+.l1017-extra .e-stars{display:flex;gap:4px;direction:ltr;justify-content:flex-end}
+.l1017-extra .e-star{border:0!important;background:transparent!important;color:#657187!important;font-size:30px!important;line-height:1!important;padding:2px 3px!important;cursor:pointer}
+.l1017-extra .e-star.is-on{color:#ffcd60!important}
+.l1017-extra .e-star[aria-pressed="true"]{transform:scale(1.08)}
+.l1017-extra .e-review-list{display:grid;gap:10px;margin-top:12px}
+.l1017-extra .e-review{padding:12px;border-radius:13px;background:#ffffff08;border:1px solid #ffffff15}
+.l1017-extra .e-review .e-review-top{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.l1017-extra .e-review b{font-size:12px;color:#f1f6ff}
+.l1017-extra .e-review .e-rating{color:#ffcf71;letter-spacing:2px;font-size:15px;white-space:nowrap}
+.l1017-extra .e-review p{color:#cbd6ed;white-space:pre-wrap;overflow-wrap:anywhere}
+.l1017-extra .e-product-cost-list{display:grid;gap:8px}
+.l1017-extra .e-cost-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff17}
+.l1017-extra .e-cost-item b{font-size:12px;color:#f3f5ff}
+.l1017-extra .e-cost-item small{display:block;color:#9db1cf;font-size:10px}
+.l1017-extra .e-divider{height:1px;background:#ffffff20;margin:16px 0}
+.l1017-extra .e-legend{font-size:11px;color:#b2c3df;line-height:1.8}
+.l1017-extra [hidden]{display:none!important}
+@media(min-width:850px){#l1017BusinessPanel .e-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:380px){.l1017-extra{padding:12px}.l1017-extra .e-row{gap:6px}.l1017-extra .e-metric{padding:10px}.l1017-extra .e-cost-item{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.l1017-extra .e-progress>i,.l1017-extra .e-star{transition:none!important;transform:none!important}}

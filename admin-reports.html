@@ -73,6 +73,22 @@ td:nth-child(2),td:nth-child(3){font-variant-numeric:tabular-nums}
 @media(max-width:850px){.columns{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.metrics{gap:9px}.metric{padding:14px;min-height:118px}.metric-label{font-size:11px}.metric-num{font-size:22px}.metric-small{font-size:11px}.panel{padding:16px}.hero h2{font-size:20px}header .pill{order:5}.costs{grid-template-columns:1fr}.daily-chart{gap:3px}}
 </style>
+<script id="l1017n-admin-embed-detection">
+(function(){
+ if(new URLSearchParams(location.search).get('embedded')==='1'){
+  document.documentElement.classList.add('l1017n-admin-embedded');
+  document.addEventListener('DOMContentLoaded',function(){
+   document.querySelectorAll('a[href="./admin.html"]').forEach(function(a){a.target='_top'});
+  },{once:true});
+ }
+})();
+</script>
+<style>
+html.l1017n-admin-embedded .header>a.back[href="./admin.html"],
+html.l1017n-admin-embedded header>a.link[href="./admin.html"],
+html.l1017n-admin-embedded header>a.link[href="./admin-wallets.html"]{display:none!important}
+html.l1017n-admin-embedded .shell{width:min(100%,1200px);padding-top:14px}
+</style>
 </head>
 <body>
 <div class="shell">

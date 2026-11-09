@@ -540,7 +540,29 @@
       </div>
       <p id="trafficStatus" role="status" aria-live="polite">جاري تحميل الإحصائيات…</p>
     </section>
-    <section class="admin-dashboard"><div class="section-head"><div><h3>إدارة مخزون الروبوكس</h3><p>حدد كمية الروبوكس المتوفرة للبيع. كل طلب مدفوع يحجز كميته تلقائيًا، وإذا اكتمل الطلب تبقى مخصومة. إذا انرفض ترجع للمخزون.</p></div></div><p id="adminRobuxStockMode" class="form-note" role="status">جاري التحقق من وضع المخزون…</p><div class="admin-stock-control"><span id="adminRobuxStockLive" class="form-note" role="status" aria-live="polite">جاري تحميل المخزون المتوفر…</span><label for="adminRobuxStock">كمية الروبوكس المتوفرة للبيع</label><input id="adminRobuxStock" type="number" min="0" step="1" placeholder="اكتب المخزون المتوفر"><button class="btn btn-primary" id="saveAdminRobuxStock" type="button">حفظ المخزون</button></div></section>
+    <section class="admin-dashboard"><div class="section-head"><div><h3>إدارة مخزون الروبوكس</h3><p>حدد كمية الروبوكس المتوفرة للبيع. كل طلب مدفوع يحجز كميته تلقائيًا، وإذا اكتمل الطلب تبقى مخصومة. إذا انرفض ترجع للمخزون.</p></div></div><p id="adminRobuxStockMode" class="form-note" role="status">جاري التحقق من وضع المخزون…</p><div class="admin-stock-control"><span id="adminRobuxStockLive" class="form-note" role="status" aria-live="polite">جاري تحميل المخزون المتوفر…</span><label for="adminRobuxStock">كمية الروبوكس المتوفرة للبيع</label><input id="adminRobuxStock" type="number" min="0" step="1" placeholder="اكتب المخزون المتوفر"><button class="btn btn-primary" id="saveAdminRobuxStock" type="button">حفظ المخزون</button></div>
+      <div id="adminRobuxSoldPanel" class="admin-robux-sold-panel" aria-label="متابعة الروبوكس المباعة">
+        <div class="admin-robux-sold-heading">
+          <div><span class="admin-robux-sold-eyebrow">ROBUX SALES TRACKER</span><h4>عداد الروبوكس المباعة</h4></div>
+          <button type="button" id="adminRobuxSoldRefresh" class="admin-robux-sold-refresh" aria-label="تحديث عدد الروبوكس المباعة">تحديث ↻</button>
+        </div>
+        <div class="admin-robux-sold-metrics" aria-live="polite">
+          <div class="admin-robux-sold-metric admin-robux-sold-total"><small>الإجمالي</small><strong id="adminRobuxSoldTotal">—</strong><span>روبوكس</span></div>
+          <div class="admin-robux-sold-metric"><small>مبيعات الموقع التلقائية</small><strong id="adminRobuxSoldWebsite">—</strong><span>طلبات مكتملة فقط</span></div>
+          <div class="admin-robux-sold-metric"><small>المبيعات المُدخلة يدويًا</small><strong id="adminRobuxSoldManual">—</strong><span>تقدر تغيّرها</span></div>
+        </div>
+        <div class="admin-robux-sold-form">
+          <label for="adminRobuxSoldInput">كم روبوكس بعتها خارج الموقع؟</label>
+          <p>اكتب العدد اللي تبي تسجّله يدويًا. مبيعات الموقع تنضاف له تلقائيًا لما الطلب يصير «مكتمل».</p>
+          <div class="admin-robux-sold-actions">
+            <input id="adminRobuxSoldInput" type="number" inputmode="numeric" min="0" max="1000000000" step="1" value="500" placeholder="مثال: 500" aria-describedby="adminRobuxSoldStatus">
+            <button id="adminRobuxSoldSave" type="button">حفظ العدد</button>
+          </div>
+          <p id="adminRobuxSoldStatus" class="admin-robux-sold-status" role="status" aria-live="polite">جاري تحميل الإحصائيات…</p>
+          <small class="admin-robux-sold-note">هذا عدّاد إحصائي فقط، ولا يغيّر المخزون أو رصيد أي زبون أو سجلات الطلبات الحقيقية.</small>
+        </div>
+      </div>
+    </section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشحن</h3></div></div><div id="adminTopups"><p class="muted">جاري التحميل…</p></div></section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>طلبات الشراء</h3><p>رفض الطلب يرجّع المبلغ للمحفظة تلقائياً.</p></div></div><div id="adminPurchases"><p class="muted">جاري التحميل…</p></div></section>
     <section class="admin-dashboard"><div class="section-head"><div><h3>المنتجات والباقات</h3><p>إضافة المنتجات وتعديل الأسعار أو إخفاء الباقات.</p></div></div>

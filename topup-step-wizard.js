@@ -5,7 +5,7 @@
  if(!form||!amount)return;
  const icon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a14 14 0 0 1-7-7l3-2z"/><path d="M16 3h5v5m0-5-6 6"/></svg>';
  const panel=document.createElement('section');panel.className='dt-home';
- panel.innerHTML='<article class="dt-card"><div class="dt-heading"><span class="dt-icon">'+icon+'</span><div><h2>حوّل إلى رقم المتجر</h2><p>اشحن محفظتك بتحويل رصيد ليبيانا</p></div></div><div class="dt-number"><b dir="ltr" class="dt-receiver">—</b><button type="button" class="dt-copy" aria-label="نسخ رقم المتجر" title="نسخ رقم المتجر">⧉</button></div><small class="dt-copy-status" role="status" aria-live="polite"></small><button type="button" class="dt-primary dt-open">'+icon+' تحويل الآن</button></article><article class="dt-card"><h3>رقم المحوّل</h3><p>استخدم رقم ليبيانا الذي ستُجري منه التحويل، وليس رقم المتجر.</p><label for="dtSender">رقم الهاتف</label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16"><small class="dt-phone-status" role="status"></small></article><article class="dt-card"><h3>طريقة شحن المحفظة</h3><ol><li>أدخل رقم ليبيانا الذي سيحوّل الرصيد.</li><li>اضغط «تحويل الآن» واكتب المبلغ.</li><li>اضغط «اتصال» وأكّد التحويل من هاتفك.</li><li>تابع التحقق؛ يُضاف الرصيد بعد اعتماد التحويل.</li></ol></article>';
+ panel.innerHTML='<article class="dt-card"><div class="dt-heading"><span class="dt-icon">'+icon+'</span><div><h2>حوّل إلى رقم المتجر</h2><p>اشحن محفظتك بتحويل رصيد ليبيانا</p></div></div><div class="dt-number"><b dir="ltr" class="dt-receiver">—</b><button type="button" class="dt-copy" aria-label="نسخ رقم المتجر" title="نسخ رقم المتجر">⧉</button></div><small class="dt-copy-status" role="status" aria-live="polite"></small><button type="button" class="dt-primary dt-open">'+icon+' التحويل مباشرة</button></article><article class="dt-card"><h3>رقم المحوّل</h3><p>استخدم رقم ليبيانا الذي ستُجري منه التحويل، وليس رقم المتجر.</p><label for="dtSender">رقم الهاتف</label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16"><small class="dt-phone-status" role="status"></small></article><article class="dt-card"><h3>طريقة شحن المحفظة</h3><ol><li>أدخل رقم ليبيانا الذي سيحوّل الرصيد.</li><li>اضغط «تحويل الآن» واكتب المبلغ.</li><li>اضغط «اتصال» وأكّد التحويل من هاتفك.</li><li>تابع التحقق؛ يُضاف الرصيد بعد اعتماد التحويل.</li></ol></article>';
  form.append(panel);form.classList.add('dt-enabled');
  // Keep legacy controls available to payment code, but out of the visible UI.
  for(const child of form.children){if(child!==panel){child.hidden=true;child.style.setProperty('display','none','important');}}
@@ -18,7 +18,7 @@
  },reset:()=>{}};
  const modal=document.createElement('dialog');modal.id='dtDialog';modal.dir='rtl';
  modal.setAttribute('aria-labelledby','dtTitle');
- modal.innerHTML='<div class="dt-heading"><span class="dt-icon">'+icon+'</span><h2 id="dtTitle">تحويل الآن</h2></div><form method="dialog" id="dtTransferForm"><label class="dt-sr" for="dtAmount">قيمة التحويل بالدينار</label><input id="dtAmount" inputmode="numeric" type="text" placeholder="قيمة التحويل" autocomplete="off" maxlength="5"><p class="dt-error" role="status" aria-live="polite"></p><div class="dt-actions"><button type="button" class="dt-cancel">إلغاء</button><button type="submit" class="dt-primary dt-call">'+icon+'<span>اتصال</span></button></div><a class="dt-fallback" hidden>اضغط هنا إذا لم يفتح تطبيق الهاتف</a></form>';
+ modal.innerHTML='<div class="dt-heading"><span class="dt-icon">'+icon+'</span><h2 id="dtTitle">التحويل مباشرة</h2></div><form method="dialog" id="dtTransferForm"><label class="dt-sr" for="dtAmount">قيمة التحويل بالدينار</label><input id="dtAmount" inputmode="numeric" type="text" placeholder="قيمة التحويل" autocomplete="off" maxlength="5"><p class="dt-error" role="status" aria-live="polite"></p><div class="dt-actions"><button type="button" class="dt-cancel">إلغاء</button><button type="submit" class="dt-primary dt-call">'+icon+'<span>التحويل مباشرة</span></button></div><a class="dt-fallback" hidden>اضغط هنا إذا لم يفتح تطبيق الهاتف</a></form>';
  document.body.append(modal);
  const input=modal.querySelector('#dtAmount'),error=modal.querySelector('.dt-error'),call=modal.querySelector('.dt-call'),fallback=modal.querySelector('.dt-fallback');
  let busy=false,prepared=null,lastFocus=null;
@@ -49,10 +49,10 @@
      if(!link){error.textContent=document.getElementById('transferInstructions')?.textContent||'تعذر تجهيز التحويل. حاول مرة أخرى.';return}
      prepared={key,link};fallback.href=link.href;fallback.hidden=false;
      fallback.onclick=event=>{event.preventDefault();link.click()};
-     error.textContent='الكود جاهز. أكّد الاتصال من هاتفك لإتمام التحويل.';
+     error.textContent='التحويل جاهز. أكّد عملية التحويل من ليبيانا لإتمامها.';
      link.click();
    }catch(_){error.textContent='تعذر تجهيز التحويل. تحقق من اتصالك وحاول مجددًا.'}
-   finally{busy=false;call.disabled=false;input.disabled=false;modal.querySelector('.dt-cancel').disabled=false;call.querySelector('span').textContent='اتصال'}
+   finally{busy=false;call.disabled=false;input.disabled=false;modal.querySelector('.dt-cancel').disabled=false;call.querySelector('span').textContent='التحويل مباشرة'}
  });
  panel.querySelector('.dt-copy').onclick=async()=>{const receiver=window.L1017nDirectTransfer?.receiver;if(!receiver)return;try{await navigator.clipboard.writeText(receiver);panel.querySelector('.dt-copy-status').textContent='تم نسخ رقم المتجر بنجاح'}catch(_){panel.querySelector('.dt-copy-status').textContent='اضغط مطولًا على الرقم لنسخه'}};
  function sync(){

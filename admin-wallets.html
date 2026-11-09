@@ -70,6 +70,22 @@
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.detail{position:static}.customer-list{max-height:none}}
 @media(max-width:520px){.shell{width:94%;padding-top:15px}.panel{padding:14px;border-radius:17px}.metrics{gap:7px}.metric{padding:12px;border-radius:13px}.metric small{display:block;padding:0}.header{gap:10px}.header h1{font-size:22px}.admin-label{font-size:10px;padding:6px 9px}.customer-money{font-size:14px}.tab{font-size:11px}}
 </style>
+<script id="l1017n-admin-embed-detection">
+(function(){
+ if(new URLSearchParams(location.search).get('embedded')==='1'){
+  document.documentElement.classList.add('l1017n-admin-embedded');
+  document.addEventListener('DOMContentLoaded',function(){
+   document.querySelectorAll('a[href="./admin.html"]').forEach(function(a){a.target='_top'});
+  },{once:true});
+ }
+})();
+</script>
+<style>
+html.l1017n-admin-embedded .header>a.back[href="./admin.html"],
+html.l1017n-admin-embedded header>a.link[href="./admin.html"],
+html.l1017n-admin-embedded header>a.link[href="./admin-wallets.html"]{display:none!important}
+html.l1017n-admin-embedded .shell{width:min(100%,1200px);padding-top:14px}
+</style>
 </head>
 <body>
 <div class="shell">

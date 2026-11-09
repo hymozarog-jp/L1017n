@@ -13,6 +13,9 @@
   var mm2PixelKnifeImage='game-covers/mm2-pixel-owner.svg?v=pixel-knife-owner-20261106-2';
   var mm2PhantomImage='game-covers/mm2-phantom.svg?v=phantom-20261107-1';
   function mm2Artwork(product){
+    var custom=String(product&&product.image_url||'');
+    var prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
+    if(custom.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(custom.slice(prefix.length)))return custom;
     var key=String(product&&product.product_key||'');
     if(key==='mm2-minty-gun')return mm2MintyImage;
     if(key==='mm2-deathshard')return mm2DeathshardImage;
@@ -216,11 +219,17 @@ var styleId='robloxGamePageStyles';
       var r=await client.rpc('get_mm2_product_stock');
       if(r.error)throw r.error;
       var list=r.data||[];
+      // Preserve the existing stock RPC; image URLs are read from public products.
+      var images=await client.from('products').select('id,image_url').eq('game','mm2').eq('active',true);
+      if(!images.error){
+        var urls=new Map((images.data||[]).map(function(p){return [String(p.id),p.image_url]}));
+        list=list.map(function(p){return Object.assign({},p,{image_url:urls.get(String(p.id))||null})});
+      }
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var image=mm2Artwork(x);
         var art=image
-          ? '<span class="mm2-item-art"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+image+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
+          ? '<span class="mm2-item-art"><img class="l1017n-catalog-image" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+escapeHtml(image)+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
         var priced=Number(x.price)>0;
         var available=x.active===true&&priced;
@@ -245,7 +254,7 @@ var styleId='robloxGamePageStyles';
     overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
     overlay.setAttribute('aria-label','طلب سلاح MM2');
     var checkoutArt=mm2Artwork(product);
-    overlay.innerHTML='<div class="mm2-checkout-box">'+(checkoutArt?'<img loading="eager" referrerpolicy="no-referrer" src="'+checkoutArt+'" alt="سلاح '+escapeHtml(product.name)+'">':'')+
+    overlay.innerHTML='<div class="mm2-checkout-box">'+(checkoutArt?'<img class="l1017n-catalog-image" loading="eager" referrerpolicy="no-referrer" src="'+escapeHtml(checkoutArt)+'" alt="سلاح '+escapeHtml(product.name)+'">':'')+
       '<h2 style="margin:14px 0 7px">'+escapeHtml(product.name)+'</h2>'+
       '<p style="color:#92e8a9;font-size:22px;font-weight:800;margin:0 0 12px">'+Number(product.price).toFixed(2)+' د.ل</p>'+
       '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox. بعد إتمام الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام السلاح داخل MM2.</p>'+

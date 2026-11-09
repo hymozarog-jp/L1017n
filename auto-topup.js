@@ -36,7 +36,13 @@
     '#topupForm .auto-topup-transfer .btn{display:flex;justify-content:center;align-items:center;min-height:48px;text-align:center}',
     '#topupForm .auto-topup-transfer button{cursor:pointer}',
     '#topupForm .auto-topup-note{font-size:12px;color:#bdc9c1;line-height:1.85;margin:6px 0}',
-    '#topupForm .auto-topup-status-title{font-weight:750;font-size:15px;margin-bottom:5px}'
+    '#topupForm .auto-topup-status-title{font-weight:750;font-size:15px;margin-bottom:5px}',
+    '#topupForm .dt-inline-credit-symbol.dt-wait-dots{display:inline-flex;align-items:center;justify-content:center;gap:4px;width:31px;min-width:31px;height:25px;flex-shrink:0;background:none;color:inherit;line-height:1}',
+    '#topupForm .dt-wait-dot{width:6px;height:6px;display:block;border-radius:50%;background:#c5a9ff;animation:l1017n-wait-dot 1.05s ease-in-out infinite}',
+    '#topupForm .dt-wait-dot:nth-child(2){animation-delay:.15s}',
+    '#topupForm .dt-wait-dot:nth-child(3){animation-delay:.3s}',
+    '@keyframes l1017n-wait-dot{0%,65%,100%{transform:translateY(0);opacity:.48}32%{transform:translateY(-6px);opacity:1}}',
+    '@media(prefers-reduced-motion:reduce){#topupForm .dt-wait-dot{animation:none!important;opacity:1}}'
   ].join('');
   document.head.appendChild(style);
 
@@ -144,8 +150,15 @@
       const label=submit.querySelector('span');
       if(label)label.textContent='تم الشحن ✓';
     }
+    const waiting=state==='pending'||state==='matched';
     const symbol=el('span','dt-inline-credit-symbol',
-      state==='approved'?'✓':state==='rejected'?'!':state==='delayed'?'!':'⋯');
+      state==='approved'?'✓':state==='rejected'?'!':state==='delayed'?'!':'');
+    if(waiting){
+      // Three staggered animated dots are visual only; the status text
+      // remains accessible and success requires an approved backend request.
+      symbol.classList.add('dt-wait-dots');
+      symbol.replaceChildren(el('i','dt-wait-dot'),el('i','dt-wait-dot'),el('i','dt-wait-dot'));
+    }
     symbol.setAttribute('aria-hidden','true');
     const words=el('span','dt-inline-credit-copy');
     words.append(el('strong','',title));

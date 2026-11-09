@@ -1,5 +1,6 @@
-/* L1017n: sold Robux tracker. Read-only automatic orders + an owner-only
-   manual baseline; never edits inventory, wallets, or purchase records. */
+/* L1017n: editable displayed Robux sales total. The chosen number is
+   snapshotted against real completed orders so future sales increase it
+   automatically without rewriting any order, inventory or wallet data. */
 (function(){
   'use strict';
   const byId=id=>document.getElementById(id);
@@ -19,15 +20,18 @@
   function render(data){
     if(!data||typeof data!=='object')throw Error('invalid_sales_counter');
     const website=Number(data.website_sold);
-    const manual=Number(data.manual_sold);
+    const base=Number(data.display_base_total);
+    const increase=Number(data.new_site_sales_since_edit);
     const total=Number(data.total_sold);
-    if(!Number.isSafeInteger(website)||website<0||!Number.isSafeInteger(manual)||manual<0||
-        total!==website+manual)throw Error('invalid_sales_values');
-    latest={website,manual,total};
+    if(!Number.isSafeInteger(website)||website<0||
+       !Number.isSafeInteger(base)||base<0||
+       !Number.isSafeInteger(increase)||increase<0||
+       !Number.isSafeInteger(total)||total!==base+increase)throw Error('invalid_sales_values');
+    latest={website,base,increase,total};
     byId('adminRobuxSoldWebsite').textContent=display(website);
-    byId('adminRobuxSoldManual').textContent=display(manual);
+    byId('adminRobuxSoldManual').textContent=display(increase);
     byId('adminRobuxSoldTotal').textContent=display(total);
-    if(!dirty)byId('adminRobuxSoldInput').value=String(manual);
+    if(!dirty)byId('adminRobuxSoldInput').value=String(total);
   }
   async function refresh(){
     if(busy||saving||!isAdminStockOpen())return;
@@ -37,12 +41,12 @@
     const button=byId('adminRobuxSoldRefresh');
     if(button)button.disabled=true;
     try{
-      const {data,error}=await client.rpc('get_admin_robux_sales_counter');
+      const {data,error}=await client.rpc('get_admin_robux_sales_display');
       if(error)throw error;
       render(data);
       lastLoaded=Date.now();
-      if(dirty)say('أرقام الموقع محدّثة. عندك تغيير يدوي لم تحفظه بعد.');
-      else say('تم تحديث مبيعات الموقع تلقائيًا. العدد اليدوي محفوظ ويظل قابلًا للتعديل.');
+      if(dirty)say('تحدثت المبيعات التلقائية. ما زال عندك تعديل على العدد الإجمالي لم تحفظه.');
+      else say('تقدر تغيّر إجمالي العداد، ومبيعات الموقع الجديدة تزيده تلقائيًا بعد الحفظ.');
     }catch(e){
       console.warn('[admin/sold-robux] Could not load stats',e);
       say('تعذّر تحميل عدد الروبوكس المباعة. تأكد من اتصال الإنترنت واضغط تحديث.');
@@ -53,8 +57,9 @@
   async function save(){
     if(busy||saving||!isAdminStockOpen())return;
     const input=byId('adminRobuxSoldInput');
-    const num=Number(String(input.value).trim());
-    if(!Number.isSafeInteger(num)||num<0||num>1000000000){
+    const raw=String(input.value).trim();
+    const num=Number(raw);
+    if(!/^\d{1,10}$/.test(raw)||!Number.isSafeInteger(num)||num<0||num>1000000000){
       say('اكتب عدد روبوكس صحيحًا من 0 إلى 1,000,000,000.');
       input.focus();return;
     }
@@ -63,16 +68,16 @@
     saving=true;
     const button=byId('adminRobuxSoldSave');
     button.disabled=true;button.textContent='جاري الحفظ…';
-    say('جاري حفظ عدد الروبوكس المُدخل يدويًا…');
+    say('جاري ضبط العدد الإجمالي المعروض…');
     try{
-      const {data,error}=await client.rpc('admin_set_manual_robux_sold',{p_amount:num});
+      const {data,error}=await client.rpc('admin_set_robux_sales_display',{p_total:num});
       if(error)throw error;
       dirty=false;render(data);
       lastLoaded=Date.now();
-      say('✅ تم حفظ '+display(num)+' روبوكس يدويًا. إجمالي المبيعات الآن '+display(data.total_sold)+' روبوكس.');
+      say('✅ أصبح العدد الإجمالي '+display(data.total_sold)+' روبوكس. مبيعات الموقع الجديدة ستزيده تلقائيًا.');
     }catch(e){
       console.warn('[admin/sold-robux] Could not save',e);
-      say('تعذّر حفظ العدد. لم يتم تغيير المبيعات؛ جرّب مرة ثانية.');
+      say('تعذّر حفظ العدد الإجمالي. لم تتغيّر الطلبات أو أرصدة الزبائن. حاول مرة ثانية.');
     }finally{
       saving=false;
       button.disabled=false;button.textContent='حفظ العدد';
@@ -89,7 +94,7 @@
       if(latest){
         const value=Number(input.value);
         if(Number.isSafeInteger(value)&&value>=0&&value<=1000000000){
-          say('معاينة قبل الحفظ: '+display(latest.website+value)+' روبوكس إجمالًا. اضغط «حفظ العدد» للتأكيد.');
+          say('معاينة العدد بعد الحفظ: '+display(value)+' روبوكس. الطلبات المكتملة الجديدة تزيده بعد ذلك.');
         }else say('اكتب عدد روبوكس صحيحًا ثم احفظ.');
       }
     });

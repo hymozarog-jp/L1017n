@@ -20,19 +20,35 @@
  function addSections(){
    const account=q("#accountView"),orders=q("#ordersView"),store=q("#storeView"),admin=q("#adminContent");
    if(account&&!q("#l1017Loyalty")){
-     const section=document.createElement("section");
-     section.id="l1017Loyalty";
-     section.className="l1017-extra";
-     section.innerHTML='<div class="l1017-extra-head"><h3>✦ نقاط المكافآت</h3><button class="e-button e-secondary" type="button" id="refreshLoyalty">تحديث</button></div>'
-       +'<p>كل دينار من طلب مكتمل يعطيك نقطة واحدة. كل 100 نقطة تساوي 1 د.ل تقدر تحولها لرصيد المحفظة.</p>'
-       +'<div class="e-grid"><div class="e-metric"><span>نقاطك المتوفرة</span><strong id="loyaltyBalance">—</strong><small>النقاط القابلة للاستبدال</small></div>'
-       +'<div class="e-metric"><span>مجموع النقاط المكتسبة</span><strong id="loyaltyEarned">—</strong><small>من الطلبات المكتملة</small></div></div>'
-       +'<div class="e-progress"><i id="loyaltyProgress" style="width:0%"></i></div>'
-       +'<p class="e-sub" id="loyaltyProgressText">كل 100 نقطة = 1 د.ل</p>'
-       +'<div class="e-row"><label for="loyaltyRedeemAmount">استبدال نقاط</label><input id="loyaltyRedeemAmount" inputmode="numeric" type="number" min="100" max="10000" step="100" value="100">'
-       +'<button class="e-button" type="button" id="loyaltyRedeemBtn">تحويل إلى المحفظة</button></div>'
-       +'<p id="loyaltyStatus" class="e-status" role="status" aria-live="polite">جاري جلب النقاط…</p>';
-     account.appendChild(section);
+     const entry=document.createElement("button");
+     entry.id="openMyPoints";entry.type="button";entry.className="points-entry";
+     entry.innerHTML='<span class="points-entry-icon" aria-hidden="true">✦</span><span><b>نقاطي</b><small>مكافآت مشترياتك · حوّلها لرصيد</small></span><span class="points-entry-arrow" aria-hidden="true">‹</span>';
+     account.appendChild(entry);
+     const section=document.createElement("dialog");
+     section.id="l1017Loyalty";section.className="l1017-extra points-page";
+     section.setAttribute("aria-labelledby","pointsTitle");
+     section.innerHTML='<div class="points-shell"><header class="points-header"><button type="button" id="closeMyPoints" aria-label="الرجوع إلى حسابي">→</button><h2 id="pointsTitle">نقاطي</h2><button class="e-button e-secondary" type="button" id="refreshLoyalty">تحديث</button></header>'
+       +'<div class="points-intro"><span>مكافآت L1017n</span><h3>كل طلب يقرّبك لمكافأة</h3><p>اجمع نقاطك، وحوّلها لرصيد في محفظتك.</p></div>'
+       +'<section class="points-balance"><span class="points-emblem" aria-hidden="true">✦</span><span>رصيد نقاطك المتوفرة</span><strong id="loyaltyBalance">—</strong><small>نقطة قابلة للاستبدال</small><div class="points-rate">100 نقطة <span>↔</span> 1 د.ل</div></section>'
+       +'<div class="points-total"><span>إجمالي النقاط المكتسبة</span><strong id="loyaltyEarned">—</strong></div>'
+       +'<section class="points-panel"><div class="points-section-heading"><h3>حوّل نقاطك إلى رصيد</h3><span aria-hidden="true">↗</span></div>'
+       +'<p class="e-sub" id="loyaltyProgressText">كل 100 نقطة = 1 د.ل</p><div class="e-progress"><i id="loyaltyProgress" style="width:0%"></i></div>'
+       +'<label for="loyaltyRedeemAmount">عدد النقاط</label><div class="points-input-wrap"><input id="loyaltyRedeemAmount" inputmode="numeric" type="number" min="100" max="10000" step="100" value="100" aria-describedby="pointsInputHint"><span>نقطة</span></div>'
+       +'<small id="pointsInputHint">مضاعفات 100 · حتى 10,000 نقطة في المرة</small>'
+       +'<div class="points-conversion"><span>يُضاف إلى محفظتك</span><strong id="pointsCreditPreview">1.00 د.ل</strong></div>'
+       +'<button class="e-button" type="button" id="loyaltyRedeemBtn" disabled>تحويل إلى المحفظة</button>'
+       +'<p id="loyaltyStatus" class="e-status" role="status" aria-live="polite">جاري جلب النقاط…</p></section>'
+       +'<section class="points-guide"><h3>كيف تجمع النقاط؟</h3><p><b>01</b><span>تسوّق من المتجر وأكمل طلبك.</span></p><p><b>02</b><span>كل دينار من طلب مكتمل يمنحك نقطة.</span></p><p><b>03</b><span>كل 100 نقطة تتحوّل إلى 1 د.ل في محفظتك.</span></p></section></div>';
+     document.body.appendChild(section);
+     let previousOverflow="";
+     entry.addEventListener("click",()=>{
+       previousOverflow=document.body.style.overflow;
+       section.showModal();document.body.style.overflow="hidden";
+       section.scrollTop=0;void loadLoyalty();
+     });
+     q("#closeMyPoints").addEventListener("click",()=>section.close());
+     section.addEventListener("close",()=>{document.body.style.overflow=previousOverflow;entry.focus()});
+     q("#loyaltyRedeemAmount").addEventListener("input",updatePointsPreview);
    }
    if(orders&&!q("#l1017CustomerReviews")){
      const section=document.createElement("section");
@@ -85,26 +101,34 @@
    root.innerHTML=[1,2,3,4,5].map(n=>'<button type="button" class="e-star'+(n<=reviewRating?' is-on':'')+
      '" data-review-star="'+n+'" aria-label="'+n+' نجوم" aria-pressed="'+(n===reviewRating?'true':'false')+'">★</button>').join("");
  }
+ function updatePointsPreview(){
+   const amount=Number(q("#loyaltyRedeemAmount")?.value);
+   q("#pointsCreditPreview").textContent=Number.isSafeInteger(amount)&&amount>=100&&amount<=10000&&amount%100===0?cash(amount/100):"—";
+ }
  async function loadLoyalty(){
    if(loyaltyLoading||!q("#l1017Loyalty"))return;
    loyaltyLoading=true;
    try{
      if(!await getCurrentUser()){
        setMessage("#loyaltyStatus","سجّل دخولك عشان تظهر نقاطك.");
-       q("#loyaltyBalance").textContent="0";q("#loyaltyEarned").textContent="0";return;
+       q("#loyaltyBalance").textContent="0";q("#loyaltyEarned").textContent="0";
+       q("#loyaltyRedeemBtn").disabled=true;q("#loyaltyProgress").style.width="0%";
+       q("#loyaltyProgressText").textContent="سجّل دخولك لعرض رصيد مكافآتك.";return;
      }
      const d=await getRpc("get_my_store_loyalty");
      const balance=Math.max(0,Number(d?.points_balance)||0);
      q("#loyaltyBalance").textContent=qty(balance);
      q("#loyaltyEarned").textContent=qty(d?.points_earned);
-     q("#loyaltyProgress").style.width=(balance%100)+"%";
+     q("#loyaltyProgress").style.width=Math.min(100,balance)+"%";
      q("#loyaltyProgressText").textContent=balance>=100?'متاح للاستبدال: '+Math.floor(balance/100)+' د.ل':
        'باقي '+(100-balance%100)+' نقطة لأول دينار مكافأة';
      const input=q("#loyaltyRedeemAmount");
      if(input&&balance>=100&&Number(input.value)>balance)input.value=String(Math.min(10000,Math.floor(balance/100)*100));
+     updatePointsPreview();
      const button=q("#loyaltyRedeemBtn");if(button)button.disabled=balance<100;
      setMessage("#loyaltyStatus",balance>=100?'تقدر تستبدل النقاط الآن، وتنضاف لمحفظتك فورًا.':'نقاطك تزيد بعد اكتمال كل طلب. الطلبات السابقة للتفعيل لا تمنح نقاطًا بأثر رجعي.');
    }catch(e){
+     q("#loyaltyRedeemBtn").disabled=true;
      setMessage("#loyaltyStatus","تعذر جلب النقاط. اضغط تحديث.", "warning");
    }finally{loyaltyLoading=false}
  }
@@ -118,12 +142,13 @@
    button.disabled=true;button.textContent="جاري الاستبدال…";
    try{
      const d=await getRpc("redeem_store_loyalty",{p_points:amount,p_request_key:window.crypto.randomUUID()});
-     setMessage("#loyaltyStatus","تم تحويل "+cash(d.wallet_credit)+" إلى محفظتك بنجاح.","success");
+
      if(typeof renderWallet==="function")void renderWallet().catch(()=>{});
      await loadLoyalty();
+     setMessage("#loyaltyStatus","تم تحويل "+cash(d.wallet_credit)+" إلى محفظتك بنجاح.","success");
    }catch(e){
      setMessage("#loyaltyStatus",e?.message?.includes("insufficient_reward_points")?"نقاطك غير كافية. حدّث الرصيد.":"تعذر الاستبدال الآن. تأكد من النقاط وحاول مجددًا.","warning");
-   }finally{button.disabled=false;button.textContent="تحويل إلى المحفظة"}
+   }finally{button.disabled=Number(q("#loyaltyBalance").textContent.replace(/,/g,""))<100;button.textContent="تحويل إلى المحفظة"}
  }
  async function loadReviewable(){
    if(reviewLoading||!q("#l1017CustomerReviews"))return;
@@ -295,7 +320,7 @@
    },90000);
    const db=api();
    db?.auth?.onAuthStateChange?.(()=>setTimeout(()=>{
-     if(q("#accountView")&&!q("#accountView").classList.contains("hidden"))void loadLoyalty();
+     if(q("#l1017Loyalty")?.open||q("#accountView")&&!q("#accountView").classList.contains("hidden"))void loadLoyalty();
      if(q("#ordersView")&&!q("#ordersView").classList.contains("hidden"))void loadReviewable();
    },500));
  }

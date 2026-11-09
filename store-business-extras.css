@@ -128,3 +128,13 @@ dialog#l1017Loyalty.points-page{position:fixed;inset:0;width:100%;height:100%;he
 @keyframes points-art-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media(prefers-reduced-motion:reduce){#l1017Loyalty .points-art-gift,#l1017Loyalty .points-art-coin{animation:none!important}}
 @media(max-width:360px){#l1017Loyalty .points-intro h3{font-size:22px}#l1017Loyalty .points-balance{padding-inline:12px}#l1017Loyalty .points-journey{gap:6px}}
+
+/* My Points belongs to the account menu, alongside personal settings. */
+#accountModern .account-core-settings #openMyPoints{margin:0;border:0;border-bottom:1px solid #283654;border-radius:0;background:transparent;box-shadow:none;padding:13px 15px;min-height:74px;gap:13px}
+#accountModern #openMyPoints>span:nth-child(2){flex:1;min-width:0}
+#accountModern #openMyPoints b{font-size:15px}
+#accountModern #openMyPoints small{font-size:11px;color:#9aaac8}
+#accountModern #openMyPoints .points-entry-icon{width:40px;height:40px;border-radius:13px}
+#accountModern #openMyPoints .points-entry-icon svg{width:30px;height:30px}
+#accountModern #openMyPoints .points-entry-arrow{font-size:24px;color:#9aaac8}
+@media(max-width:600px){#accountModern .account-core-settings #openMyPoints{min-height:67px}}

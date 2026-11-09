@@ -25,7 +25,9 @@
      const entry=document.createElement("button");
      entry.id="openMyPoints";entry.type="button";entry.className="points-entry";
      entry.innerHTML='<span class="points-entry-icon" aria-hidden="true">'+pointsIcons.coin+'</span><span><b>نقاطي</b><small>مكافآت مشترياتك · حوّلها لرصيد</small></span><span class="points-entry-arrow" aria-hidden="true">‹</span>';
-     account.appendChild(entry);
+     const accountMenu=account.querySelector(".account-core-settings");
+     if(accountMenu)accountMenu.prepend(entry);
+     else account.prepend(entry);
      const section=document.createElement("dialog");
      section.id="l1017Loyalty";section.className="l1017-extra points-page";
      section.setAttribute("aria-labelledby","pointsTitle");

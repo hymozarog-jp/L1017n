@@ -462,12 +462,12 @@
       };
       const code=el('a','ussd-code',codeFor(amount));
       code.href=dialHref;
-      code.setAttribute('aria-label','اضغط كود ليبيانا لفتح الاتصال');
+      code.setAttribute('aria-label','التحويل مباشرة عبر ليبيانا');
       code.addEventListener('click',onDialCode);
       panel.append(code);
-      const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','فتح الاتصال وتحويل '+amount+' د.ل');
+      const dial=el('a','btn btn-primary full-width');setIconText(dial,'phone','التحويل مباشرة');
       dial.href=dialHref;
-      dial.setAttribute('aria-label','فتح الهاتف بكود تحويل ليبيانا من رقم المحوّل المحدّد');
+      dial.setAttribute('aria-label','التحويل مباشرة من رقم ليبيانا المحدّد');
       dial.addEventListener('click',onDialCode);
       panel.append(dial);
       const copy=el('button','btn btn-soft full-width','نسخ الكود للتحويل من تطبيق المكالمات');
@@ -482,7 +482,7 @@
         catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
       panel.append(copy);
-      const status=el('div','auto-topup-status','⏳ رقم الطلب جاهز. فتح كود الاتصال ينبه الإدارة ببدء المحاولة، وليس بإتمام الدفع.');
+      const status=el('div','auto-topup-status','⏳ طلب التحويل جاهز. إكمال التحويل مطلوب قبل إضافة الرصيد للمحفظة.');
       status.id='ussdTransferStatus';
       const refresh=el('button','btn btn-soft full-width','تحديث حالة التحويل');
       refresh.type='button';refresh.addEventListener('click',()=>{
@@ -490,7 +490,7 @@
         showVerifier(intent.request_id,amount);
       });
       panel.append(status,refresh);
-      panel.append(el('p','auto-topup-note','تقدر تحول من تطبيق المكالمات مباشرة بالكود الظاهر، حتى لو كتبته يدويًا، بعد تجهيز هذا الطلب. مش محتاج تضغط «تم التحويل»؛ سنتابع وصول التحويل تلقائيًا. فتح الاتصال وحده لا يثبت الدفع، ولا تكرر التحويل إذا تأخر التأكيد.'));
+      panel.append(el('p','auto-topup-note','اضغط «التحويل مباشرة» وأكمل التحويل من شريحة ليبيانا. التحقق تلقائي بعد وصول المبلغ ومطابقته، ولا تكرر التحويل إذا تأخر التأكيد.'));
       area.append(panel);
       // Monitor the existing intent before the customer switches to the native dialer.
       // A prepared intent alone never grants credit; only authenticated approval does.

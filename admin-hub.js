@@ -40,7 +40,7 @@
  function addReviewPanel(){
    const section=document.createElement('section');
    section.id='adminHubReviews';
-   section.className='admin-dashboard';
+   section.className='admin-dashboard l1017-extra';
    const heading=document.createElement('div');
    heading.className='section-head';
    heading.innerHTML='<div><h3>تقييمات المشترين</h3><p>إخفاء أو إظهار تقييمات أصحاب الطلبات المكتملة.</p></div>'+

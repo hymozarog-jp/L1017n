@@ -25,7 +25,7 @@
   ['wallets','محافظ الزبائن','الأرصدة والمعاملات'],
   ['reports','تقارير متقدمة','الجداول والتحليلات']
  ];
- let active='overview',nav=null,header=null,panes={};
+ let active=null,nav=null,header=null,panes={},lastVisible=false;
  function sectionOf(selector){return $(selector)?.closest('section')||null}
  function addFramePanel(id,url,name,description){
    const section=document.createElement('section');
@@ -76,7 +76,7 @@
      '</div>';
    menu.addEventListener('click',e=>{
      const button=e.target.closest('[data-admin-hub-tab]');
-     if(button){show(button.dataset.adminHubTab,true);}
+     if(button){openScreen(button.dataset.adminHubTab,true);}
    });
    menu.addEventListener('keydown',e=>{
      const button=e.target.closest('[data-admin-hub-tab]');
@@ -91,7 +91,8 @@
      if(next>=0){
        e.preventDefault();
        controls[next].focus();
-       show(controls[next].dataset.adminHubTab,false);
+       // Keyboard arrow keys focus the next category without opening a page.
+       controls.forEach(el=>el.tabIndex=0);
      }
    });
    $('#adminContent').prepend(menu);
@@ -102,46 +103,114 @@
      '<p class="admin-hub-current-sub" id="adminHubCurrentDesc"></p></div>'+
      '<button type="button" class="admin-hub-menu-shortcut">كل الأقسام ↑</button>';
    menu.after(current);
-   current.querySelector('button').addEventListener('click',()=>nav.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}));
+   current.querySelector('button').addEventListener('click',()=>returnToMenu());
+   current.hidden=true;
    header=current;
  }
- function show(key,scroll){
-   if(!Object.prototype.hasOwnProperty.call(panes,key))key='overview';
+ function adminIsVisible(){
+   const view=$('#adminView');
+   return !!view&&!view.classList.contains('hidden');
+ }
+ function adminURL(key){
+   const url=new URL(location.href);
+   url.searchParams.set('admin','1');
+   if(key)url.searchParams.set('section',key);
+   else url.searchParams.delete('section');
+   return url.pathname+url.search+url.hash;
+ }
+ // A full-screen page, not an accordion inside the dashboard.
+ function openScreen(key,pushHistory){
+   if(!Object.prototype.hasOwnProperty.call(panes,key))return;
    active=key;
-   for(const [section,node] of Object.entries(panes)){
-     if(!node)continue;
-     const selected=section===key;
-     node.classList.toggle('admin-hub-active',selected);
-     node.setAttribute('aria-hidden',selected?'false':'true');
+   const view=$('#adminView');
+   const pane=panes[key];
+   view?.classList.add('admin-hub-section-open');
+   for(const [id,node] of Object.entries(panes)){
+     const chosen=id===key;
+     node.classList.toggle('admin-hub-active',chosen);
+     node.setAttribute('aria-hidden',chosen?'false':'true');
+     node.inert=!chosen;
    }
-   nav?.querySelectorAll('[data-admin-hub-tab]').forEach(button=>{
-     const selected=button.dataset.adminHubTab===key;
-     button.classList.toggle('is-active',selected);
-     button.setAttribute('aria-selected',String(selected));
-     button.tabIndex=selected?0:-1;
-   });
-   const item=tabs.find(x=>x[0]===key);
-   if($('#adminHubCurrentName'))$('#adminHubCurrentName').textContent=item[1];
-   if($('#adminHubCurrentDesc'))$('#adminHubCurrentDesc').textContent=item[2];
+   if(nav){nav.hidden=true;nav.setAttribute('aria-hidden','true');}
+   if(header)header.hidden=true;
+   const item=tabs.find(row=>row[0]===key);
+   const label=pane.querySelector('.admin-hub-screen-label');
+   if(label)label.textContent=item[1];
+   if(pushHistory){
+     try{
+       history.pushState({...history.state,l1017AdminScreen:key},'',adminURL(key));
+     }catch(err){console.warn('[admin] Screen history unavailable',err)}
+   }
+   // Panels retain their existing secure refresh handlers and financial actions.
    if(key==='overview')$('#refreshTraffic')?.click();
-   if(key==='orders'||key==='topups'||key==='stock'||key==='products'){
-     // Reuse the existing authorized admin fetch; never mutate data on tab change.
+   if(['orders','topups','stock','products'].includes(key)){
      if(typeof loadAdminDashboard==='function')void loadAdminDashboard();
    }
    if(key==='finance'||key==='reviews')$('#refreshBusiness')?.click();
    if(key==='wallets'||key==='reports'){
-     const iframe=panes[key]?.querySelector('iframe[data-admin-frame]');
-     if(iframe&&!iframe.getAttribute('src')){
-       iframe.setAttribute('src',iframe.dataset.adminFrame+'?embedded=1');
+     const frame=pane.querySelector('iframe[data-admin-frame]');
+     if(frame&&!frame.getAttribute('src')){
+       frame.setAttribute('src',frame.dataset.adminFrame+'?embedded=1');
      }
    }
-   if(scroll&&header){
-     header.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+   pane.scrollTop=0;
+   const back=pane.querySelector('.admin-hub-screen-back');
+   if(pushHistory&&back)back.focus({preventScroll:true});
+ }
+ function showMenu(){
+   const view=$('#adminView');
+   active=null;
+   view?.classList.remove('admin-hub-section-open');
+   for(const pane of Object.values(panes)){
+     pane.classList.remove('admin-hub-active');
+     pane.setAttribute('aria-hidden','true');
+     pane.inert=true;
+   }
+   if(nav){nav.hidden=false;nav.removeAttribute('aria-hidden');}
+   if(header)header.hidden=true;
+   nav?.querySelectorAll('[data-admin-hub-tab]').forEach(button=>{
+     button.classList.remove('is-active');
+     button.setAttribute('aria-selected','false');
+     button.tabIndex=0;
+   });
+   if(adminIsVisible())view.scrollTop=0;
+ }
+ function returnToMenu(){
+   // A screen pushed a real browser-history entry, so hardware Back also works.
+   if(history.state?.l1017AdminScreen && active){
+     history.back();
+   }else{
+     showMenu();
+     try{history.replaceState({...history.state,l1017AdminScreen:null},'',adminURL(null));}catch(_){}
    }
  }
  function toggleAdminBody(){
-   const visible=!!$('#adminView')&&!$('#adminView').classList.contains('hidden');
+   const visible=adminIsVisible();
    document.body.classList.toggle('l1017-admin-open',visible);
+   if(visible!==lastVisible){
+     lastVisible=visible;
+     if(visible){
+       const requested=new URLSearchParams(location.search).get('section');
+       if(requested&&panes[requested])openScreen(requested,false);
+       else showMenu();
+     }else showMenu();
+   }
+ }
+ function createScreenHeaders(){
+   for(const [key,pane] of Object.entries(panes)){
+     const item=tabs.find(t=>t[0]===key);
+     const heading=document.createElement('header');
+     heading.className='admin-hub-screen-header';
+     heading.innerHTML='<button type="button" class="admin-hub-screen-back" aria-label="الرجوع إلى قائمة الإدارة">'+
+       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg><span>رجوع للإدارة</span></button>'+
+       '<span class="admin-hub-screen-label" id="adminHubScreenName-'+key+'">'+item[1]+'</span>'+
+       '<span class="admin-hub-screen-mark">L1017N</span>';
+     heading.querySelector('button').addEventListener('click',returnToMenu);
+     pane.prepend(heading);
+     pane.classList.add('admin-hub-screen');
+     pane.setAttribute('role','region');
+     pane.setAttribute('aria-labelledby','adminHubScreenName-'+key);
+   }
  }
  function init(){
    const view=$('#adminView'),content=$('#adminContent');
@@ -176,10 +245,24 @@
    Object.entries(panes).forEach(([key,node])=>{
      if(!node.id)node.id='adminHubPane-'+key;
      node.classList.add('admin-hub-pane');
-     node.setAttribute('role','tabpanel');
-     node.setAttribute('aria-labelledby','adminHubTab-'+key);
+     node.setAttribute('aria-hidden','true');
+     node.inert=true;
    });
    makeMenu();
+   createScreenHeaders();
+   window.addEventListener('popstate',event=>{
+     if(!adminIsVisible())return;
+     const key=event.state?.l1017AdminScreen||
+       new URLSearchParams(location.search).get('section');
+     if(key&&panes[key])openScreen(key,false);
+     else showMenu();
+   });
+   document.addEventListener('keydown',event=>{
+     if(event.key==='Escape'&&adminIsVisible()&&active&&!event.defaultPrevented){
+       if(event.target?.closest('dialog,[role="dialog"],input,textarea,select'))return;
+       event.preventDefault();returnToMenu();
+     }
+   });
    // A single canonical admin entry and a visible return to the storefront.
    const top=view.querySelector(':scope > .section-head');
    if(top&&!$('#adminHubBack')){
@@ -202,8 +285,8 @@
    const obs=new MutationObserver(toggleAdminBody);
    obs.observe(view,{attributes:true,attributeFilter:['class']});
    toggleAdminBody();
-   show('overview',false);
-   window.L1017nAdminHub={show:(key)=>show(key,true)};
+   showMenu();
+   window.L1017nAdminHub={show:(key)=>openScreen(key,true),back:returnToMenu,home:showMenu};
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
  else init();

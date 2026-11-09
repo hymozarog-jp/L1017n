@@ -503,3 +503,8 @@
     to{opacity:1;transform:translateY(0) scale(1)}
   }
 }
+
+/* Three customer-facing stages, with room for each Arabic label. */
+#ordersView #ordersList .orders-track-steps[data-stage-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}
+#ordersView #ordersList .orders-track-steps[data-stage-count="3"]::before{left:16.666%;right:16.666%}
+#ordersView #ordersList .orders-track-steps[data-stage-count="3"] .orders-track-label{white-space:normal;line-height:1.7;font-size:12px}

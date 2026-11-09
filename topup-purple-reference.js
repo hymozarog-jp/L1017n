@@ -166,13 +166,13 @@
     busy=true;confirm.disabled=true;
     confirm.querySelector('span').textContent='جاري تجهيز الاتصال…';
     fallback.hidden=true;
-    // Remove an old terminal message so the previous rejected request cannot
-    // be mistaken for the result of this brand-new attempt.
-    showPreparing();
-    message('جاري تجهيز طلب التحويل والتحقق من بياناته…','');
     try{
       legacyAmount.value=String(value);
+      // This input event intentionally invalidates any prior request. Put the
+      // loading card AFTER it so resetSelection cannot erase the spinner.
       legacyAmount.dispatchEvent(new Event('input',{bubbles:true}));
+      showPreparing();
+      message('جاري تجهيز طلب التحويل والتحقق من بياناته…','');
       const link=await transfer.prepare();
       // auto-topup now starts watching the request BEFORE returning the link.
       // The presence of tpReturnVerify therefore indicates progress, NOT

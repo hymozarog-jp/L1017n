@@ -151,7 +151,7 @@
      const frame=pane.querySelector('iframe[data-admin-frame]');
      if(frame&&!frame.getAttribute('src')){
        // Reports use a fresh full-screen layout; wallet iframe stays unchanged.
-       const params=key==='reports'?'?embedded=1&full-screen=1&saved-robux-profit=1':'?embedded=1';
+       const params=key==='reports'?'?embedded=1&full-screen=1&saved-robux-profit=1':'?embedded=1&v=wallet-fullscreen-20261110-1';
        frame.setAttribute('src',frame.dataset.adminFrame+params);
      }
    }

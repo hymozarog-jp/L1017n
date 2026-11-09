@@ -555,3 +555,30 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
  html body.l1017-live-ui #llBottomNav>button[data-ll-nav].active small{color:#fff!important}
 }
 @media(prefers-reduced-motion:reduce){html body.l1017-live-ui #llBottomNav>button[data-ll-nav] svg{transition:none!important}}
+
+/* Floating bottom dock: leave the iPhone gesture area outside the bar.
+   Fixed positioning follows Safari's changing visible viewport natively. */
+@media(max-width:680px){
+ html{scroll-padding-bottom:calc(126px + env(safe-area-inset-bottom,0px))}
+ html body.l1017-live-ui{padding-bottom:calc(126px + env(safe-area-inset-bottom,0px))!important}
+ html body.l1017-live-ui #llBottomNav{
+   position:fixed!important;
+   left:max(12px,env(safe-area-inset-left,0px))!important;
+   right:max(12px,env(safe-area-inset-right,0px))!important;
+   bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;
+   width:auto!important;
+   min-height:78px!important;
+   padding:10px 7px!important;
+   border-radius:27px!important;
+   border:1px solid #ffffff24!important;
+   background:rgba(17,22,33,.94)!important;
+   box-shadow:0 12px 32px #0007,inset 0 1px 0 #ffffff0b!important;
+   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+ }
+ html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{
+   transform:translate3d(0,calc(100% + 28px + env(safe-area-inset-bottom,0px)),0)!important;
+ }
+}
+@media(max-width:680px) and (prefers-reduced-motion:reduce){
+ html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{transform:none!important}
+}

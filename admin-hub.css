@@ -52,3 +52,86 @@ html body.l1017-live-ui.l1017-admin-open #llBottomNav,html body.l1017-live-ui.l1
  #adminView .admin-hub-embedded-frame{min-height:540px;height:76dvh}
 }
 @media(prefers-reduced-motion:reduce){#adminView .admin-hub-pane{animation:none!important}#adminView .admin-hub-tab{transition:none!important}}
+
+/* Every administration action opens a genuine full-viewport page.
+   Only the admin home shows the category tiles. */
+html body.l1017-admin-open{overflow:hidden!important;overscroll-behavior:none!important}
+html body.l1017-admin-open #adminView:not(.hidden){
+  position:fixed!important;inset:0!important;top:0!important;bottom:0!important;
+  z-index:2147482300!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;height:100dvh!important;
+  min-height:100dvh!important;max-height:none!important;
+  margin:0!important;padding:max(17px,env(safe-area-inset-top)) clamp(12px,4vw,40px) calc(40px + env(safe-area-inset-bottom))!important;
+  border:0!important;border-radius:0!important;
+  background:radial-gradient(ellipse 70% 44% at 75% -12%,#465da32a,transparent 75%),linear-gradient(145deg,#090f1e,#111c2f 65%,#090f1b)!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+}
+#adminView [hidden]{display:none!important}
+html body.l1017-admin-open #adminView.admin-hub-section-open>.section-head,
+html body.l1017-admin-open #adminView.admin-hub-section-open>#adminStatus,
+html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>.admin-hub-banner,
+html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>#adminHubMenu,
+html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>.admin-hub-current{
+  display:none!important;
+}
+html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>.admin-hub-pane.admin-hub-active{
+  position:fixed!important;
+  inset:0!important;
+  top:0!important;left:0!important;right:0!important;bottom:0!important;
+  display:block!important;
+  z-index:2147482350!important;
+  box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;
+  height:100dvh!important;min-height:100dvh!important;max-height:none!important;
+  margin:0!important;
+  padding:0 clamp(14px,4vw,44px) calc(34px + env(safe-area-inset-bottom))!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background:radial-gradient(ellipse 80% 38% at 87% -13%,#405aa22b,transparent 70%),linear-gradient(154deg,#0b1120,#111e32 65%,#0b1424)!important;
+  color:#eaf1ff!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  animation:adminFullScreenEnter .26s cubic-bezier(.2,.7,.2,1) both!important;
+}
+#adminView .admin-hub-screen-header{
+  position:sticky!important;
+  top:0!important;z-index:40!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px;min-height:76px;
+  margin:0 calc(-1 * clamp(14px,4vw,44px)) 20px!important;
+  padding:max(11px,env(safe-area-inset-top)) clamp(14px,4vw,44px) 12px!important;
+  background:rgba(12,19,33,.96)!important;
+  border-bottom:1px solid #39496b!important;
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  box-shadow:0 8px 18px #0003!important;
+}
+#adminView .admin-hub-screen-back{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  gap:7px!important;min-height:43px!important;flex:0 0 auto!important;
+  padding:9px 13px!important;
+  border-radius:13px!important;border:1px solid #697a9d!important;
+  background:#263551!important;color:#e5eeff!important;
+  font:800 13px 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+  cursor:pointer!important;
+}
+#adminView .admin-hub-screen-back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+#adminView .admin-hub-screen-back:focus-visible{outline:2px solid #c6b8ff;outline-offset:3px}
+#adminView .admin-hub-screen-label{color:#f5f8ff;font-weight:900;font-size:clamp(15px,3.7vw,20px);text-align:center;line-height:1.45}
+#adminView .admin-hub-screen-mark{font-size:10px;font-weight:850;letter-spacing:.8px;color:#a1b5da;white-space:nowrap}
+#adminView.admin-hub-section-open #adminHubWallets .admin-hub-embedded-frame,
+#adminView.admin-hub-section-open #adminHubReports .admin-hub-embedded-frame{
+  height:calc(100dvh - 255px)!important;min-height:380px!important;max-height:none!important;
+  border-radius:12px!important;
+}
+#adminView.admin-hub-section-open #adminHubWallets .admin-hub-frame-open,
+#adminView.admin-hub-section-open #adminHubReports .admin-hub-frame-open{margin-top:6px!important}
+@keyframes adminFullScreenEnter{from{opacity:.72;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+  html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>.admin-hub-pane.admin-hub-active{padding-right:12px!important;padding-left:12px!important}
+  #adminView .admin-hub-screen-header{margin-left:-12px!important;margin-right:-12px!important;padding-left:12px!important;padding-right:12px!important;gap:7px}
+  #adminView .admin-hub-screen-back{font-size:12px!important;padding:8px 10px!important}
+  #adminView .admin-hub-screen-mark{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  html body.l1017-admin-open #adminView.admin-hub-section-open #adminContent>.admin-hub-pane.admin-hub-active{animation:none!important}
+}

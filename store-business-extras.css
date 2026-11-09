@@ -138,3 +138,12 @@ dialog#l1017Loyalty.points-page{position:fixed;inset:0;width:100%;height:100%;he
 #accountModern #openMyPoints .points-entry-icon svg{width:30px;height:30px}
 #accountModern #openMyPoints .points-entry-arrow{font-size:24px;color:#9aaac8}
 @media(max-width:600px){#accountModern .account-core-settings #openMyPoints{min-height:67px}}
+
+#l1017BusinessPanel .robux-cost-calculator{margin:14px 0 20px;padding:18px;border:1px solid #baa0e840;border-radius:19px;background:linear-gradient(135deg,#29223c,#131e30)}
+#l1017BusinessPanel .robux-cost-results{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px}
+#l1017BusinessPanel .robux-cost-results strong{font-size:20px}
+#l1017BusinessPanel #businessRobuxQuantity{font-size:24px;font-weight:700;direction:ltr;text-align:right}
+#l1017BusinessPanel .robux-cost-total{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;margin:8px 0;border-bottom:1px solid #ffffff18}
+#l1017BusinessPanel .robux-cost-total strong{font-size:25px;color:#e2ceff}
+#l1017BusinessPanel #saveRobuxBusinessCost{width:100%;margin-top:10px}
+#l1017BusinessPanel #businessRobuxCost{color:#dcc8fc!important;background:#ffffff08!important}

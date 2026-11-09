@@ -80,8 +80,13 @@
        +'<div class="e-grid" id="businessPeriodCards"></div><p id="businessSummaryStatus" class="e-status">جاري تحميل التقرير…</p>'
        +'<div class="e-divider"></div><h4>إدخال تكاليف الشراء</h4>'
        +'<p class="e-legend">تكلفة الروبوكس تُحسب لكل 100 روبوكس، أما المنتجات الأخرى فتُحسب تكلفة بيع الباقة أو القطعة كاملة. تعديل التكلفة يعيد حساب الربح التقديري تاريخيًا، ولا يغير رصيد الزبائن.</p>'
-       +'<label for="businessRobuxCost">تكلفة شراء 100 روبوكس (د.ل)</label>'
-       +'<div class="e-row"><input id="businessRobuxCost" type="number" min="0" max="100000" step="0.01" placeholder="مثال: 11.50"><button class="e-button" type="button" id="saveRobuxBusinessCost">حفظ تكلفة الروبوكس</button></div>'
+       +'<section class="robux-cost-calculator"><h4>حاسبة تكلفة الروبوكس</h4><p>كل 1,000 روبوكس = 121 د.ل · بلس 70 د.ل لكل 10,000 أو جزء منها.</p>'
+       +'<label for="businessRobuxQuantity">كمية الروبوكس</label><input id="businessRobuxQuantity" type="text" inputmode="numeric" autocomplete="off" placeholder="مثال: 10000" aria-describedby="businessRobuxCalcStatus">'
+       +'<div class="e-grid robux-cost-results" aria-live="polite"><div class="e-metric"><span>شراء الروبوكس</span><strong id="businessRobuxBase">—</strong></div><div class="e-metric"><span>اشتراك بلس</span><strong id="businessRobuxPlus">—</strong><small id="businessRobuxCycles">—</small></div></div>'
+       +'<div class="robux-cost-total"><span>إجمالي التكلفة</span><strong id="businessRobuxTotal">—</strong></div>'
+       +'<label for="businessRobuxCost">متوسط تكلفة 100 روبوكس (د.ل)</label><input id="businessRobuxCost" type="number" readonly step="any" placeholder="يُحسب تلقائيًا">'
+       +'<p id="businessRobuxCalcStatus" class="e-status" role="status">اكتب الكمية لحساب التكلفة.</p>'
+       +'<button class="e-button" type="button" id="saveRobuxBusinessCost" disabled>حفظ التكلفة لحساب الأرباح</button><p class="e-sub">الحفظ يحدّث تكلفة حساب الأرباح التقديرية، بما فيها الطلبات السابقة. لا يغيّر سعر البيع للزبائن.</p></section>'
        +'<label for="businessProductSelect">تكلفة بقية المنتجات</label><select id="businessProductSelect"></select>'
        +'<div class="e-row"><input id="businessProductCost" type="number" min="0" max="100000" step="0.01" placeholder="سعر شراء الباقة بالدينار"><button type="button" class="e-button" id="saveProductBusinessCost">حفظ تكلفة المنتج</button></div>'
        +'<p class="e-status" id="businessCostStatus"></p>'
@@ -238,7 +243,7 @@
      q("#businessPeriodCards").innerHTML=financeCard("اليوم",fin.today)+financeCard("آخر 7 أيام",fin.week)+
        financeCard("آخر 30 يوم",fin.month)+financeCard("كل الفترة",fin.all);
      setMessage("#businessSummaryStatus","صافي الربح تقديري وفق تكاليف الشراء الحالية، والمبيعات تشمل الطلبات المكتملة فقط. اضبط كل التكاليف ليظهر الربح بدقة أكبر.");
-     q("#businessRobuxCost").value=(d.robux_cost_per_100===null||d.robux_cost_per_100===undefined)?"":String(d.robux_cost_per_100);
+     updateRobuxCostCalculator();
      const select=q("#businessProductSelect"),old=select.value;
      const items=Array.isArray(d.product_costs)?d.product_costs:[];
      select.innerHTML=items.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+' · '+esc(p.game)+'</option>').join("");
@@ -259,7 +264,28 @@
      console.warn("[business] Financial dashboard unavailable",e);
    }finally{adminLoading=false}
  }
+ function calculateRobuxBatch(raw){
+   const normalized=String(raw??"").replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/[,،٬\s]/g,"");
+   if(!/^\d+$/.test(normalized))return null;
+   const quantity=Number(normalized);
+   if(!Number.isSafeInteger(quantity)||quantity<1||quantity>10000000)return null;
+   const cycles=Math.ceil(quantity/10000),base=quantity*121/1000,plus=cycles*70;
+   return {quantity,cycles,base,plus,total:base+plus,per100:(base+plus)*100/quantity};
+ }
+ function updateRobuxCostCalculator(){
+   const input=q("#businessRobuxQuantity");if(!input)return null;
+   const result=calculateRobuxBatch(input.value);
+   q("#saveRobuxBusinessCost").disabled=!result;
+   q("#businessRobuxCost").value=result?String(Number(result.per100.toFixed(6))):"";
+   q("#businessRobuxBase").textContent=result?cash(result.base):"—";
+   q("#businessRobuxPlus").textContent=result?cash(result.plus):"—";
+   q("#businessRobuxCycles").textContent=result?qty(result.cycles)+" × 70 د.ل":"—";
+   q("#businessRobuxTotal").textContent=result?cash(result.total):"—";
+   q("#businessRobuxCalcStatus").textContent=result?"تم حساب التكلفة تلقائيًا.":input.value.trim()?"اكتب عدد روبوكس صحيحًا من 1 إلى 10,000,000.":"اكتب الكمية لحساب التكلفة.";
+   return result;
+ }
  async function saveCost(kind){
+   if(kind==="robux"&&!updateRobuxCostCalculator())return;
    const button=q(kind==="robux"?"#saveRobuxBusinessCost":"#saveProductBusinessCost");
    const input=q(kind==="robux"?"#businessRobuxCost":"#businessProductCost");
    const value=Number(input?.value);
@@ -295,6 +321,7 @@
    });
    q("#saveStoreReview")?.addEventListener("click",()=>void submitReview());
    q("#refreshBusiness")?.addEventListener("click",()=>void loadAdminFinance());
+   q("#businessRobuxQuantity")?.addEventListener("input",updateRobuxCostCalculator);
    q("#saveRobuxBusinessCost")?.addEventListener("click",()=>void saveCost("robux"));
    q("#saveProductBusinessCost")?.addEventListener("click",()=>void saveCost("product"));
    q("#businessProductSelect")?.addEventListener("change",updateCostSelection);

@@ -183,7 +183,8 @@
   }
   function renderCatalog() {
     const root=q("#llCatalog");if(!root)return;
-    const items=catalog().filter(item=>SHOP_SECTIONS.some(section=>section.key===gameKey(item)))
+    const visibleSections=SHOP_SECTIONS.filter(matchesSection);
+    const items=catalog().filter(item=>visibleSections.some(section=>section.key===gameKey(item)))
       .filter(item=>chosen==="all"||chosen===gameKey(item))
       .filter(item=>!query||normalize([item.name,item.game,item.amount,itemMeta(item).tag].join(" ")).includes(query));
     // Prioritize the real active Robux packages; no preview prices or fictional products.

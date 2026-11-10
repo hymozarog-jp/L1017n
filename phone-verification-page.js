@@ -179,6 +179,7 @@ async function verify(ev){
  finally{setBusy(false)}
 }
 function close(){
+ window.dispatchEvent(new Event("l1017n:account-phones-updated"));
  opened++;stop();if(panel){panel.hidden=true;panel.classList.remove("visible")}
  document.body.classList.remove("phone-wizard-open");
  focusBefore?.focus?.({preventScroll:true});

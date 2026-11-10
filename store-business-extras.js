@@ -239,11 +239,13 @@
    }catch(_){return fmtDate(value)}
  }
  function publicReviewCard(r){
+   const buyerName=String(r.display_name||'').trim().slice(0,60)||'مشتري من المتجر';
+   const buyerInitial=Array.from(buyerName)[0]||'م';
    const comment=String(r.comment||'').trim();
    const date=new Date(r.created_at),validDate=Number.isFinite(date.getTime());
    const check='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor"/><path d="m6 10 3 3 5-6" fill="none" stroke="#103425" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-   return '<article class="crr-review'+(comment?'':' crr-without-comment')+'"><div class="crr-review-heading"><div class="crr-avatar" aria-hidden="true"><span>م</span></div>'
-     +'<div class="crr-buyer"><h3>مشتري من المتجر</h3><span class="crr-verified">'+check+'مشتري موثّق</span></div>'
+   return '<article class="crr-review'+(comment?'':' crr-without-comment')+'"><div class="crr-review-heading"><div class="crr-avatar" aria-hidden="true"><span>'+esc(buyerInitial)+'</span></div>'
+     +'<div class="crr-buyer"><h3 dir="auto" style="text-align:right">'+esc(buyerName)+'</h3><span class="crr-verified">'+check+'مشتري موثّق</span></div>'
      +'<svg class="crr-quote" viewBox="0 0 32 28" aria-hidden="true"><path d="M2 15C2 7 5 3 12 2v5c-4 1-5 3-5 6h6v13H2V15Zm17 0c0-8 3-12 10-13v5c-4 1-5 3-5 6h6v13H19V15Z" fill="currentColor"/></svg></div>'
      +'<div class="crr-review-meta">'+reviewStars(r.rating)+(validDate?'<time datetime="'+esc(date.toISOString())+'" title="'+esc(fmtDate(r.created_at))+'">'+esc(reviewDate(r.created_at))+'</time>':'')+'</div>'
      +(comment?'<p class="crr-comment">'+esc(comment)+'</p>':'')

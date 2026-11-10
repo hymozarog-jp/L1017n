@@ -69,9 +69,12 @@
    }
    if(store&&!q("#l1017PublicReviews")){
      const section=document.createElement("section");section.id="l1017PublicReviews";section.className="l1017-extra";
-     section.innerHTML='<div class="l1017-extra-head"><h3>★ آراء المشترين الموثّقين</h3><span class="e-sub" id="publicReviewAverage">التقييمات الفعلية</span></div>'
-       +'<p>التقييمات هنا من طلبات مكتملة فقط.</p><div class="e-review-list" id="publicReviewsList"></div>'
-       +'<p id="publicReviewsStatus" class="e-status"></p>';
+     section.setAttribute("aria-labelledby","publicReviewsTitle");
+     section.innerHTML='<header class="crr-header"><h2 id="publicReviewsTitle">آراء العملاء</h2><p>تقييمات حقيقية من مشتري متجر L1017n</p></header>'
+       +'<div class="crr-summary" id="publicReviewSummary" aria-busy="true"><div class="crr-score"><strong id="publicReviewAverage">—</strong><div id="publicReviewStars">'+reviewStars(0)+'</div><span id="publicReviewCount">جاري تحميل التقييمات…</span></div>'
+       +'<div class="crr-distribution" id="publicReviewDistribution" aria-label="توزيع التقييمات حسب عدد النجوم"></div></div>'
+       +'<div class="e-review-list" id="publicReviewsList"></div><p id="publicReviewsStatus" class="e-status" role="status" aria-live="polite"></p>';
+
      store.appendChild(section);
    }
    if(admin&&!q("#l1017BusinessPanel")){
@@ -221,20 +224,60 @@
    }catch(e){setMessage("#reviewFormStatus","تعذر حفظ التقييم. تأكد من اكتمال الطلب وحاول مجددًا.","warning")}
    finally{button.disabled=false;button.textContent="نشر التقييم"}
  }
+ function reviewStars(value){
+   const rating=Math.max(0,Math.min(5,Number(value)||0));
+   return '<span class="crr-stars" role="img" aria-label="'+rating.toFixed(1)+' من 5 نجوم" style="--crr-fill:'+((rating/5)*100).toFixed(2)+'%"><span aria-hidden="true">★★★★★</span><span class="crr-stars-fill" aria-hidden="true">★★★★★</span></span>';
+ }
+ function reviewDate(value){
+   const date=new Date(value),elapsed=Date.now()-date.getTime();
+   if(!Number.isFinite(elapsed))return '';
+   const seconds=Math.max(0,Math.floor(elapsed/1000));
+   try{
+     const unit=seconds<3600?'minute':seconds<86400?'hour':'day';
+     const size=unit==='minute'?60:unit==='hour'?3600:86400;
+     return new Intl.RelativeTimeFormat('ar',{numeric:'auto'}).format(-Math.max(1,Math.floor(seconds/size)),unit);
+   }catch(_){return fmtDate(value)}
+ }
+ function publicReviewCard(r){
+   const comment=String(r.comment||'').trim();
+   const date=new Date(r.created_at),validDate=Number.isFinite(date.getTime());
+   const check='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor"/><path d="m6 10 3 3 5-6" fill="none" stroke="#103425" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+   return '<article class="crr-review'+(comment?'':' crr-without-comment')+'"><div class="crr-review-heading"><div class="crr-avatar" aria-hidden="true"><span>م</span></div>'
+     +'<div class="crr-buyer"><h3>مشتري من المتجر</h3><span class="crr-verified">'+check+'مشتري موثّق</span></div>'
+     +'<svg class="crr-quote" viewBox="0 0 32 28" aria-hidden="true"><path d="M2 15C2 7 5 3 12 2v5c-4 1-5 3-5 6h6v13H2V15Zm17 0c0-8 3-12 10-13v5c-4 1-5 3-5 6h6v13H19V15Z" fill="currentColor"/></svg></div>'
+     +'<div class="crr-review-meta">'+reviewStars(r.rating)+(validDate?'<time datetime="'+esc(date.toISOString())+'" title="'+esc(fmtDate(r.created_at))+'">'+esc(reviewDate(r.created_at))+'</time>':'')+'</div>'
+     +(comment?'<p class="crr-comment">'+esc(comment)+'</p>':'')
+     +'<small class="crr-product">'+esc(r.product_name)+'</small></article>';
+ }
  async function loadPublicReviews(){
    if(!q("#l1017PublicReviews"))return;
    try{
-     const d=await getRpc("get_public_verified_store_reviews",{p_limit:8});
+     const d=await getRpc("get_public_verified_store_reviews",{p_limit:20});
      const reviews=Array.isArray(d?.reviews)?d.reviews:[];
-     q("#publicReviewAverage").textContent=reviews.length&&d?.average!=null?'★ '+Number(d.average).toFixed(1)+'/5 · '+qty(d.count)+' تقييم':'تقييمات المشترين الفعليين';
-     q("#publicReviewsList").innerHTML=reviews.length?reviews.map(r=>
-       '<article class="e-review"><div class="e-review-top"><b>مشتري موثّق · '+esc(r.product_name)+'</b><span class="e-rating">'+stars(r.rating)+'</span></div>'+
-       '<p>'+esc(r.comment)+'</p><span class="e-sub">'+esc(fmtDate(r.created_at))+'</span></article>'
-     ).join(""):'<p>ما في تقييمات منشورة بعد. أول مشتري يكتمل طلبه يقدر يكتب تقييمه هنا.</p>';
-     setMessage("#publicReviewsStatus",reviews.length?'جميع الآراء مرتبطة بطلبات مكتملة.':'');
+     const total=Math.max(0,Math.trunc(Number(d?.count)||0));
+     const average=total&&Number.isFinite(Number(d?.average))?Math.max(0,Math.min(5,Number(d.average))):0;
+     const histogram=d?.distribution&&typeof d.distribution==='object'?d.distribution:{};
+     if(!d?.distribution&&reviews.length===total)reviews.forEach(r=>{histogram[r.rating]=(Number(histogram[r.rating])||0)+1});
+     q("#publicReviewAverage").textContent=total?average.toFixed(1):'—';
+     q("#publicReviewStars").innerHTML=reviewStars(average);
+     q("#publicReviewCount").textContent=qty(total)+' تقييم';
+     q("#publicReviewDistribution").innerHTML=[5,4,3,2,1].map(n=>{
+       const count=Math.max(0,Math.trunc(Number(histogram[n])||0));
+       const width=total?Math.min(100,count/total*100):0;
+       return '<div class="crr-bar-row" aria-label="'+n+' نجوم: '+count+' تقييم"><span class="crr-bar-label"><span aria-hidden="true">★</span> '+n+'</span><span class="crr-bar-track" aria-hidden="true"><i style="width:'+width.toFixed(2)+'%"></i></span><b dir="ltr">'+qty(count)+'</b></div>';
+     }).join('');
+     q("#publicReviewsList").innerHTML=reviews.length?reviews.map(publicReviewCard).join(''):'<p class="crr-empty">لا توجد تقييمات منشورة بعد. يظهر تقييمك هنا بعد اكتمال طلبك.</p>';
+     q("#publicReviewSummary").setAttribute('aria-busy','false');
+     setMessage("#publicReviewsStatus",total>reviews.length?'أحدث '+qty(reviews.length)+' تقييمًا من مشتري المتجر.':'');
+     if(!lastPublicLoaded&&window.location.hash==="#l1017PublicReviews")q("#l1017PublicReviews").scrollIntoView({block:"start",behavior:"auto"});
      lastPublicLoaded=true;
-   }catch(e){setMessage("#publicReviewsStatus","تعذر تحميل التقييمات حاليًا.","warning")}
+   }catch(e){
+     q("#publicReviewSummary")?.setAttribute('aria-busy','false');
+     if(!lastPublicLoaded)q("#publicReviewCount").textContent='التقييمات غير متاحة حاليًا';
+     setMessage("#publicReviewsStatus","تعذر تحميل التقييمات حاليًا. جرّب تحديث الصفحة.","warning");
+   }
  }
+
  let adminData=null;
  let financePeriod='month';
  function renderFinanceSummary(){

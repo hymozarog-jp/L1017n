@@ -1,0 +1,25 @@
+/* Flat charcoal page background matched to the supplied storefront reference. */
+html:root {
+  --bg: #0e1319;
+  --ll-bg: #0e1319;
+  --l1017-black: #0e1319;
+  background: #0e1319 !important;
+}
+html body,
+html body.l1017-live-ui {
+  background: #0e1319 !important;
+}
+html body::before,
+html body::after {
+  background: none !important;
+}
+html body.l1017-live-ui :is(#storeView, #llLanding, #walletView, #ordersView, #accountView, #offersView, #referralsView, #rankingView, #subscriptionsView),
+html body #accountView:has(#accountModern:not(.hidden)) {
+  background: #0e1319 !important;
+}
+html body.l1017-live-ui .topbar,
+html body.l1017-live-ui #llLanding .ph-topbar {
+  background: #0e1319 !important;
+  border-bottom-color: #292e35 !important;
+  box-shadow: none !important;
+}

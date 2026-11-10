@@ -1,0 +1,10 @@
+/* Keep the reference header controls close without changing their sizes or typography. */
+@media(max-width:900px){
+ html body.l1017-live-ui .topbar #headerAccountCluster{column-gap:2px!important}
+ html body.l1017-live-ui .topbar #headerAccountCluster > .account-wallet-group{
+  margin-inline:0!important;padding-inline:0!important;column-gap:0!important;
+ }
+ html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){
+  margin-inline:0!important;
+ }
+}

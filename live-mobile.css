@@ -509,29 +509,18 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 }
 
 
-/* iPhone bottom navigation follows scroll with a soft slide.
-   Scroll down: glide out of sight; scroll up: return to normal position.
-   Keep the original RTL tab layout, selected button colors and tap handlers. */
+/* Fixed bottom bar stays visible when scrolling in either direction. */
 @media(max-width:680px){
   html body.l1017-live-ui #llBottomNav{
     transform:translate3d(0,0,0)!important;
     opacity:1!important;
     visibility:visible!important;
     pointer-events:auto!important;
-    transition:transform .3s cubic-bezier(.22,.8,.24,1),
-               opacity .21s ease, visibility 0s linear 0s!important;
-    will-change:transform;
+    transition:none!important;
     -webkit-backface-visibility:hidden;
     backface-visibility:hidden;
   }
-  html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{
-    transform:translate3d(0,calc(100% + 12px),0)!important;
-    opacity:0!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-    transition:transform .3s cubic-bezier(.22,.8,.24,1),
-               opacity .21s ease,visibility 0s linear .3s!important;
-  }
+
 }
 @media(prefers-reduced-motion:reduce){
   html body.l1017-live-ui #llBottomNav,
@@ -575,10 +564,19 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
    box-shadow:0 12px 32px #0007,inset 0 1px 0 #ffffff0b!important;
    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
  }
- html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{
-   transform:translate3d(0,calc(100% + 28px + env(safe-area-inset-bottom,0px)),0)!important;
- }
+
 }
 @media(max-width:680px) and (prefers-reduced-motion:reduce){
  html body.l1017-live-ui #llBottomNav.ll-nav-scroll-away{transform:none!important}
+}
+
+/* Permanent mobile nav visibility. Login still uses its own auth-screen rule. */
+@media(max-width:680px){
+ html body.l1017-live-ui:not(.auth-screen) #llBottomNav{
+   position:fixed!important;
+   transform:none!important;
+   opacity:1!important;
+   visibility:visible!important;
+   pointer-events:auto!important;
+ }
 }

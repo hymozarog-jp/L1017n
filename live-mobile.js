@@ -31,7 +31,6 @@
   const normalize = value => String(value ?? "").toLowerCase().normalize("NFKC").replace(/[\u064b-\u065f\u0670]/g, "").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
   const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const price = value => Number(value || 0).toFixed(2) + " د.ل";
-  let showAllProducts=false;
   let chosen = "all", query = "", lastCatalog = "", activeSlide = 0, observer = null, refreshTimer = null;
 
   function catalog() {
@@ -170,41 +169,16 @@
     }
     elements.forEach(el => observer.observe(el));
   }
-  function productArtwork(item) {
-    const custom=String(item.image_url||"");
-    if(custom.startsWith("https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/"))return custom;
-    const key=gameKey(item);
-    if(key==="roblox")return "game-covers/robux-100-tokens.svg";
-    if(key==="mm2"){
-      const known={"mm2-deathshard":"mm2-deathshard.png","mm2-elderwood-blade":"mm2-elderwood-blade.png","mm2-nightblade":"mm2-nightblade.svg","mm2-pixel-knife":"mm2-pixel-owner.svg","mm2-phantom":"mm2-phantom.svg"};
-      return "game-covers/"+(known[item.product_key]||"official/mobile/mm2.webp");
-    }
-    return "game-covers/official/mobile/brainrot.webp";
-  }
   function renderCatalog() {
-    const root=q("#llCatalog");if(!root)return;
-    const visibleSections=SHOP_SECTIONS.filter(matchesSection);
-    const items=catalog().filter(item=>visibleSections.some(section=>section.key===gameKey(item)))
-      .filter(item=>chosen==="all"||chosen===gameKey(item))
-      .filter(item=>!query||normalize([item.name,item.game,item.amount,itemMeta(item).tag].join(" ")).includes(query));
-    // Prioritize the real active Robux packages; no preview prices or fictional products.
-    const ordered=chosen==="all"&&!query
-      ? [...items.filter(item=>gameKey(item)==="roblox"),...items.filter(item=>gameKey(item)!=="roblox")]
-      : items;
-    const visible=ordered.slice(0,chosen==="all"&&!query&&!showAllProducts?4:12);
-    const count=q("#llItemCount");if(count)count.textContent=items.length?items.length+" منتج":"";
-    root.innerHTML=visible.length?visible.map(item=>{
-      const key=gameKey(item),isRobux=key==="roblox";
-      const available=!isRobux||(typeof robuxUnlimited!=="undefined"&&robuxUnlimited)||(typeof robuxAvailable!=="undefined"&&robuxAvailable>=Number(item.amount||0));
-      const title=isRobux?Number(item.amount)+" روبوكس":item.name;
-      return '<article class="sb-product sb-product-'+esc(key)+'"><button type="button" class="sb-product-open" data-ll-buy="'+esc(item.id)+'" aria-label="عرض '+esc(title)+'">'
-        +'<span class="sb-product-art"><img src="'+esc(productArtwork(item))+'" alt="" loading="lazy" decoding="async">'
-        +(isRobux?'<span class="sb-product-brand" dir="ltr">ROBLOX</span><span class="sb-product-amount" dir="ltr">'+Number(item.amount)+'</span>':'')+'</span>'
-        +'<span class="sb-product-name">'+esc(title)+'</span></button>'
-        +'<div class="sb-product-bottom"><strong><b dir="ltr">'+Number(item.price||0).toFixed(2)+'</b> <small>د.ل</small></strong>'
-        +'<button type="button" class="sb-product-buy" data-ll-buy="'+esc(item.id)+'" aria-label="اختيار '+esc(title)+'" '+(!available?'disabled':'')+'>'
-        +(available?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.5 12h11L21 6H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>':'غير متوفر')+'</button></div></article>';
-    }).join(""):'<div class="sb-empty">'+(catalog().length?'لا توجد منتجات مطابقة. جرّب قسمًا آخر.':'جاري تحميل الباقات…')+'</div>';
+    const root=q("#llCatalog");
+    if(!root)return;
+    const visible=SHOP_SECTIONS.filter(matchesSection);
+    const count=q("#llItemCount");
+    if(count)count.textContent=visible.length+" أقسام";
+    root.innerHTML=visible.length
+      ? visible.map(sectionCard).join("")
+      : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
+    reveal([...root.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {
     chosen = key;
@@ -245,33 +219,43 @@
     routeView("home");
     const search = q("#llSearch");
     if (!search) return;
-    q("#llSearchWrap")?.classList.add("is-open");
     q("#llSearchWrap")?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
     setTimeout(() => { if (q("#storeView") && !q("#storeView").classList.contains("hidden")) search.focus({ preventScroll: true }); }, 100);
     updateNavigation("home");
   }
   function makeHeroSlides() {
-    const slides=[
-      {title:"شحن سريع<br>وآمن",button:"تسوّق الآن",game:"roblox",art:'<div class="sb-gift sb-gift-back"><img src="game-covers/official/mobile/brainrot.webp" alt=""><b>Brainrot</b></div><div class="sb-gift sb-gift-middle"><img src="game-covers/official/mobile/mm2.webp" alt=""><b>MM2</b></div><div class="sb-gift sb-gift-front"><img src="game-covers/roblox-mark.svg" alt=""><b>ROBLOX</b></div>'},
-      {title:"باقات روبوكس<br>على كيفك",button:"اختار باقتك",game:"roblox",art:'<img class="sb-hero-tokens" src="game-covers/robux-100-tokens.svg" alt="">'},
-      {title:"طوّر مجموعتك<br>في MM2",button:"شوف الأسلحة",game:"mm2",art:'<img class="sb-hero-game" src="game-covers/official/mobile/mm2.webp" alt="">'}
-    ];
-    return slides.map((slide,index)=>'<article class="sb-hero-slide" data-ll-slide="'+index+'" aria-label="العرض '+(index+1)+'"><div class="sb-hero-copy"><h1>'+slide.title+'</h1><button type="button" data-ll-game="'+slide.game+'">'+slide.button+' '+SVG("chevron")+'</button></div><div class="sb-hero-art" aria-hidden="true">'+slide.art+'</div></article>').join("");
+    return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + slide.theme + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.label) + '">'
+      + '<div class="ll-slide-copy"><span class="ll-slide-eyebrow">' + esc(slide.label) + '</span>'
+      + '<h2>' + esc(slide.headline) + '<br><span>' + esc(slide.more) + '</span></h2>'
+      + '<p>' + esc(slide.desc) + '</p>'
+      + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta">' + esc(slide.button) + ' <span aria-hidden="true">←</span></button></div>'
+      + '<img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="lazy" decoding="async"></article>').join("");
   }
   function build() {
     const store = q("#storeView");
     if (!store || q("#llLanding")) return;
     const container = document.createElement("div");
     container.id = "llLanding";
-    container.className="sb-storefront";
-    container.innerHTML = '<div class="sb-search" id="llSearchWrap">'+SVG("search")+'<label class="ll-sr-only" for="llSearch">البحث عن المنتجات</label><input id="llSearch" type="search" inputmode="search" autocomplete="off" placeholder="ابحث عن باقتك…"></div>'
-      +'<section class="sb-hero" aria-label="عروض المتجر"><div id="llSlideTrack" class="sb-hero-track" tabindex="0">'+makeHeroSlides()+'</div>'
-      +'<div class="sb-hero-dots" role="group" aria-label="اختيار العرض">'+HEROES.map((_,i)=>'<button type="button" class="sb-dot '+(i===0?'selected':'')+'" data-ll-dot="'+i+'" aria-label="العرض '+(i+1)+'" aria-current="'+(i===0)+'"></button>').join("")+'</div></section>'
-      +'<div class="sb-categories" id="llCategories" role="group" aria-label="أقسام المتجر">'
-      +[['roblox','روبوكس','<img src="game-covers/roblox-mark.svg" alt="">'],['mm2','MM2','<img src="game-covers/official/mobile/mm2.webp" alt="">'],['steal-a-brainrot','ماب السرقة','<img src="game-covers/official/mobile/brainrot.webp" alt="">'],['all','الكل','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>']].map(([key,label,icon])=>'<button type="button" data-ll-category="'+key+'" aria-pressed="'+(key==='all')+'" class="'+(key==='all'?'selected':'')+'"><span>'+icon+'</span><b>'+label+'</b></button>').join("")+'</div>'
-      +'<div class="sb-section-head"><h2>اختيارات لك</h2><button type="button" data-ll-show-all>عرض الكل '+SVG("chevron")+'</button></div>'
-      +'<div class="sb-products" id="llCatalog" aria-live="polite"></div><span id="llItemCount" class="ll-sr-only"></span>'
-      +'<section class="sb-wallet-banner"><div><h2>رصيدك جاهز للّعب</h2><button type="button" data-ll-wallet>اشحن محفظتك '+SVG("chevron")+'</button></div><img src="game-covers/robux-100-tokens.svg" alt="" loading="lazy"></section>';
+    container.innerHTML = '<div class="ll-intro ll-reveal">'
+      + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
+      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبوكس، MM2، ماب السرقة، وشحن المحفظة في مكان واحد.</p></div>'
+      + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
+      + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
+      + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'
+      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن قسم أو منتج…"></div>'
+      + '<div class="ll-title-row ll-title-offers"><div><small>كل الخيارات ظاهرة بدون سحب</small><h2>العروض السريعة</h2></div></div>'
+      + '<section class="ll-carousel ll-reveal" aria-label="العروض السريعة">'
+      + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
+      + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
+      + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
+      + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
+      + '<div class="ll-title-row ll-products-title"><div><small>اختار القسم وشوف الأسعار</small><h2>الأقسام المتوفرة</h2></div><span id="llItemCount">جاري التحميل</span></div>'
+      + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
+      + FILTERS.map(([key, label]) => '<button type="button" data-ll-category="' + esc(key) + '" aria-pressed="' + (key==='all') + '" class="' + (key==='all'?'selected':'') + '">' + esc(label) + '</button>').join("") + '</div>'
+      + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div>'
+      + '<p class="ll-safety-note">الأسعار والتوفر يُعرضان داخل كل قسم، ويتأكد الطلب عند الدفع.</p>'
+      + '<section class="ll-help ll-reveal"><div><h2>تحتاج مساعدة؟</h2><p>تابع الطلبات من حسابك، أو افتح القائمة للوصول إلى المحفظة والدعم.</p></div>'
+      + '<button type="button" data-ll-show-orders>طلباتي ←</button></section>';
 
     // Insert before existing legacy store content. Existing screens, forms and modal handlers remain intact.
     store.insertBefore(container, store.firstChild);
@@ -282,7 +266,7 @@
       ["home", "الرئيسية", "home"],
       ["orders", "طلباتي", "orders"],
       ["leaderboard", "التصنيف", "leaderboard"],
-      ["wallet", "محفظتي", "wallet"],
+      ["wallet", "المحفظة", "wallet"],
       ["account", "حسابي", "profile"]
     ].map(([key, label, icon], index) =>
       '<button type="button" data-ll-nav="' + key + '" class="' + (index === 0 ? "active" : "") + '" aria-label="' + label + '" aria-current="' + (index === 0 ? "page" : "false") + '">'
@@ -418,8 +402,6 @@
       });
     }, {passive:true});
     container.addEventListener("click", async e => {
-      if(e.target.closest("[data-ll-wallet]")){routeView("wallet");return;}
-      if(e.target.closest("[data-ll-show-all]")){chosen="all";query="";showAllProducts=true;q("#llSearch").value="";setCategory("all");return;}
       const dot=e.target.closest("[data-ll-dot]");
       if (dot) { scrollSlide(Number(dot.dataset.llDot)); return; }
       const direction=e.target.closest("[data-ll-slide-step]");

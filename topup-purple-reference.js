@@ -19,8 +19,8 @@
   panel.dir='rtl';
   panel.innerHTML=
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
-      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اكتب بيانات التحويل من ليبيانا إلى المتجر</p></div></div>'+
-      '<div class="dt-purple-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><input id="dtSender" inputmode="tel" type="tel" autocomplete="tel" dir="ltr" placeholder="092xxxxxxx" maxlength="16" aria-describedby="dtPhoneStatus"></div>'+
+      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
+      '<div class="dt-purple-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" dir="ltr" aria-describedby="dtPhoneStatus dtSenderCount" disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtAddSender" type="button" aria-label="إضافة رقم تحويل موثّق">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.</p>'+
@@ -30,7 +30,7 @@
     '<section class="dt-card dt-purple-guide dt-recharge-guide" aria-labelledby="dtPurpleGuideTitle">'+
       '<div class="dt-recharge-head"><span class="dt-recharge-head-icon" aria-hidden="true">'+svg('wallet')+'</span><div><h3 id="dtPurpleGuideTitle">طريقة الشحن</h3><p>اتبع الخطوات بالترتيب لشحن محفظتك بليبيانا</p></div><span class="dt-recharge-count">4 خطوات</span></div>'+
       '<ol class="dt-recharge-timeline">'+
-        '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اكتب رقمك والمبلغ</strong><small>أدخل رقم ليبيانا اللي بتحوّل منه، وحدّد المبلغ بالدينار.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اختر رقمك والمبلغ</strong><small>اختر رقمًا من أرقامك الموثّقة وحدّد المبلغ بالدينار.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">2</span><div class="dt-recharge-copy"><strong>اضغط «التحويل مباشرة»</strong><small>الموقع يجهّز لك تحويل الرصيد إلى رقم المتجر بالمبلغ اللي اخترته.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">3</span><div class="dt-recharge-copy"><strong>أكمل التحويل من ليبيانا</strong><small>أكّد عملية التحويل من شريحتك في شاشة ليبيانا؛ الضغط على الزر وحده ما ينقلش الرصيد.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">4</span><div class="dt-recharge-copy"><strong>انتظر التحقق التلقائي</strong><small>الموقع يطابق التحويل مع رقمك والمبلغ، ويضيف الرصيد بعد اعتماده فعليًا.</small></div></li>'+
@@ -98,7 +98,7 @@
   }
   const shopNumber=()=>normalize(window.L1017nDirectTransfer?.receiver);
   const senderNumber=()=>{
-    const candidate=normalize(sender.value)||normalize(document.getElementById('topupVerifiedNumber')?.textContent);
+    const candidate=normalize(sender.value);
     const shop=shopNumber();
     return candidate&&(!shop||candidate!==shop)?candidate:'';
   };
@@ -116,7 +116,7 @@
       if(label)label.textContent='التحويل مباشرة';
     }
   }
-  sender.addEventListener('input',()=>{
+  sender.addEventListener('change',()=>{
     prepared=null;fallback.hidden=true;
     resetApprovedPresentation();
     if(shopNumber()&&normalize(sender.value)===shopNumber())message('هذا رقم المتجر؛ أدخل رقم ليبيانا الذي ستحوّل منه.','error');
@@ -136,9 +136,7 @@
   function sync(){
     const receiver=window.L1017nDirectTransfer?.receiver;
     if(receiver&&receiverInput.value!==receiver)receiverInput.value=receiver;
-    const number=normalize(document.getElementById('topupVerifiedNumber')?.textContent);
     const shop=normalize(receiver);
-    if(number&&number!==shop&&!sender.value)sender.value=number;
     if(shop&&normalize(sender.value)===shop){
       sender.value='';
       message('رقم المتجر للاستقبال فقط. اكتب رقمك الذي ستحوّل منه.','error');
@@ -151,7 +149,7 @@
     const transfer=window.L1017nDirectTransfer;
     if(!transfer||!shopNumber()){message('خدمة التحويل لم تجهز بعد. تحقق من الإنترنت وحاول مرة ثانية.','error');return;}
     const from=senderNumber();
-    if(!from){message('أدخل رقم ليبيانا صحيحًا يبدأ بـ 092 أو 094، غير رقم المتجر.','error');sender.focus();return;}
+    if(!from){message('اختر رقم ليبيانا موثّقًا أو أضف رقمًا أولًا.','error');sender.focus();return;}
     const raw=enteredAmount.value.trim().replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
     const value=Number(raw);
     if(!/^\d+$/.test(raw)||!Number.isSafeInteger(value)||value<1||value>10000){
@@ -209,7 +207,74 @@
       }
     }
   });
-  new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
+  const addSender=panel.querySelector('#dtAddSender');
+  const senderCount=panel.querySelector('#dtSenderCount');
+  let phoneGeneration=0,phonesLoading=false,phonesLoaded=false,authWatching=false;
+  function resetSenderOptions(label){
+    const option=document.createElement('option');option.value='';option.textContent=label;
+    sender.replaceChildren(option);sender.disabled=true;
+  }
+  async function loadSenderPhones(){
+    const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
+    if(!db)return;
+    if(!authWatching){
+      authWatching=true;
+      db.auth.onAuthStateChange((event)=>{
+        if(event==='SIGNED_OUT'||event==='SIGNED_IN'||event==='USER_UPDATED'){
+          phoneGeneration++;phonesLoaded=false;phonesLoading=false;prepared=null;
+          resetSenderOptions('جاري تحميل أرقامك…');senderCount.textContent='';
+          setTimeout(()=>{void loadSenderPhones()},0);
+        }
+      });
+    }
+    const generation=++phoneGeneration,previous=sender.value;
+    phonesLoading=true;if(!previous)resetSenderOptions('جاري تحميل أرقامك…');
+    try{
+      const auth=await db.auth.getUser();
+      if(generation!==phoneGeneration)return;
+      if(auth.error||!auth.data?.user){
+        resetSenderOptions('سجّل الدخول لاختيار رقمك');addSender.hidden=true;senderCount.textContent='';return;
+      }
+      const {data,error}=await db.rpc('get_my_verified_account_phones');
+      if(generation!==phoneGeneration)return;
+      if(error)throw error;
+      const phones=Array.isArray(data)?data.slice(0,3):[];
+      sender.replaceChildren();
+      let available=0;
+      phones.forEach(item=>{
+        // Almadar can be verified for the account, but this form transfers Libyana credit.
+        const phone=normalize(item.phone);
+        const option=document.createElement('option');option.value=phone;
+        option.textContent=String(item.phone||'')+(item.primary?' · الأساسي':'')+(phone?'':' · المدار');
+        option.disabled=!phone||phone===shopNumber();
+        if(!option.disabled)available++;
+        sender.appendChild(option);
+      });
+      if(!available)resetSenderOptions('أضف رقم ليبيانا موثّقًا');
+      else{
+        sender.disabled=false;
+        const keep=Array.from(sender.options).find(o=>o.value===previous&&!o.disabled);
+        const first=keep||Array.from(sender.options).find(o=>!o.disabled);
+        sender.value=first.value;
+      }
+      addSender.hidden=phones.length>=3;
+      senderCount.textContent=phones.length+' / 3 أرقام موثّقة'+(phones.some(p=>!normalize(p.phone))?' · الشحن هنا بليبيانا':'');
+      if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}
+    }catch(_){
+      if(generation===phoneGeneration){resetSenderOptions('تعذر تحميل الأرقام');senderCount.textContent='أعد فتح المحفظة أو حدّث الصفحة.';addSender.hidden=false}
+    }finally{if(generation===phoneGeneration){phonesLoading=false;phonesLoaded=true}}
+  }
+  addSender.addEventListener('click',()=>{
+    prepared=null;fallback.hidden=true;
+    if(typeof window.openAccountPhonesPage==='function')window.openAccountPhonesPage();
+    else message('حدّث الصفحة لفتح إدارة أرقامك.','error');
+  });
+  window.addEventListener('l1017n:account-phones-updated',()=>{void loadSenderPhones()});
+  window.addEventListener('focus',()=>{if(!phonesLoading)void loadSenderPhones()});
+  const ensurePhones=()=>{if(!phonesLoaded&&!phonesLoading)void loadSenderPhones()};
+  new MutationObserver(()=>{sync();ensurePhones()}).observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('l1017n-direct-ready',ensurePhones);
+  ensurePhones();
   window.addEventListener('l1017n-direct-ready',sync);
   sync();
 })();

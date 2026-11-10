@@ -842,3 +842,15 @@ html,body{
 #topupForm #dtAddSender[hidden]{display:none!important}
 #topupForm .dt-sender-count{display:block;color:#aeb2c9;font-size:11px;line-height:1.8;margin:7px 2px 0}
 @media(max-width:350px){#topupForm .dt-sender-picker{gap:6px}#topupForm #dtAddSender{padding:8px;font-size:11px}}
+
+/* Give the sender picker a complete row, including on narrow phones. */
+#topupDedicatedPage .dt-purple-home .dt-purple-field.dt-sender-field{
+ grid-template-columns:minmax(0,1fr)!important;gap:9px!important;padding:12px 0!important;
+}
+#topupDedicatedPage .dt-sender-field>label,
+#topupDedicatedPage .dt-sender-field>.dt-sender-picker,
+#topupDedicatedPage .dt-sender-field>.dt-sender-count{grid-column:1/-1!important;width:100%;min-width:0;box-sizing:border-box}
+#topupDedicatedPage .dt-sender-field .dt-sender-picker{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+#topupDedicatedPage .dt-sender-field #dtSender{width:100%!important;min-width:0!important;min-height:46px;font-size:15px;text-align:center;padding:8px 10px}
+#topupDedicatedPage .dt-sender-field #dtAddSender{min-height:46px;padding:8px 11px;font-size:12px}
+#topupDedicatedPage .dt-sender-field .dt-sender-count{margin:0;font-size:11px;line-height:1.8;text-align:right;overflow-wrap:anywhere}

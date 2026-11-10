@@ -23,7 +23,7 @@
       document.body.appendChild(hub);
     };
     var extras=document.createElement('script');
-    extras.src='store-business-extras.js?v=latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&points-progress-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1';
+    extras.src='store-business-extras.js?v=one-review-per-customer-20261110-1&latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&points-progress-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1';
     extras.onload=loadUnifiedAdminHub;
     extras.onerror=function(){
       console.warn('[store] Rewards and reviews unavailable');

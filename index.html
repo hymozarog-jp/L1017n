@@ -832,9 +832,17 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #accountView #logoutBtn{margin:15px auto!important;border-radius:15px!important}
 #accountView #logoutBtn.account-only-logout:not(.hidden){
  display:flex!important;align-items:center!important;justify-content:center!important;
- width:min(100%,320px)!important;min-height:50px!important;
+ gap:9px!important;
+ width:min(100%,340px)!important;min-height:52px!important;
  padding:12px 20px!important;font-size:16px!important;font-weight:800!important;
  margin:18px auto 10px!important;
+ border:1px solid #9b79da!important;border-radius:16px!important;
+ background:linear-gradient(120deg,#6939aa,#4b2b82)!important;
+ color:#fff!important;box-shadow:0 8px 22px #25123a35!important;
+ cursor:pointer!important;
+}
+#accountView #logoutBtn.account-only-logout:not(.hidden) svg{
+ width:19px!important;height:19px!important;flex:none!important;
 }
 #accountView .account-panel:has(#signedInProfile:not(.hidden)){padding-top:23px!important}
 @media(max-width:600px){

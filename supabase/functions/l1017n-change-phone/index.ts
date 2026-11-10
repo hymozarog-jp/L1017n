@@ -56,13 +56,15 @@ Deno.serve(async(request:Request)=>{
   const apiKey=(Deno.env.get("RESALA_API_KEY")||"").trim();
   if(!apiKey)return reply(action==="status"?{configured:false}:{error:"not_configured"},action==="status"?200:503,origin);
   if(action==="status"){
+    const {data:phones,error:phonesError}=await client.rpc("get_my_verified_account_phones_for_user",{p_user:auth.user.id});
+    if(phonesError)return reply({error:"database_unavailable"},503,origin);
     const {data:s,error}=await client.from("phone_change_requests")
       .select("old_phone,new_phone,pin_hash,expires_at,last_sent_at").eq("user_id",auth.user.id).maybeSingle();
     if(error)return reply({error:"database_unavailable"},503,origin);
     const valid=!!s&&s.old_phone===current;
     const now=Date.now(),secs=valid&&s?.last_sent_at?Math.max(0,Math.ceil((240000-(now-Date.parse(s.last_sent_at)))/1000)):0;
     const exp=valid&&s?.expires_at?Math.max(0,Math.ceil((Date.parse(s.expires_at)-now)/1000)):0;
-    return reply({configured:true,current_phone:"0"+current,pending_phone:valid?"0"+s.new_phone:null,
+    return reply({configured:true,phones:phones||[],current_phone:"0"+current,pending_phone:valid?"0"+s.new_phone:null,
       retry_after_seconds:secs,expires_in_seconds:exp,code_pending:!!(valid&&s.pin_hash&&exp>0)},200,origin);
   }
   if(action==="send"){
@@ -107,6 +109,6 @@ Deno.serve(async(request:Request)=>{
     p_user:auth.user.id,p_phone:pending.new_phone,p_hash:hash
   });
   if(verifyError)return reply({error:"database_unavailable"},503,origin);
-  if(verdict==="changed")return reply({changed:true,verified:true,phone:"0"+pending.new_phone},200,origin);
+  if(verdict==="changed")return reply({changed:true,added:true,verified:true,phone:"0"+pending.new_phone},200,origin);
   return reply({error:verdict||"verification_failed"},verdict==="locked"?429:400,origin);
 });

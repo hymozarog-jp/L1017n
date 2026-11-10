@@ -164,3 +164,18 @@ dialog#l1017Loyalty.points-page{position:fixed;inset:0;width:100%;height:100%;he
 #l1017BusinessPanel :is(input,select){max-width:100%;box-sizing:border-box;font-size:16px}
 #l1017BusinessPanel .finance-reports-details p{font-size:12px;color:#b7b1c7;line-height:1.8}
 @media(min-width:1000px){#l1017BusinessPanel .finance-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Visible reward value and an honest, numbered collection goal. */
+#l1017Loyalty .points-goal-count{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0 10px}
+#l1017Loyalty .points-goal-count strong{font-size:20px;font-weight:800;color:#f1ddff;font-variant-numeric:tabular-nums}
+#l1017Loyalty .points-goal-count span{padding:5px 11px;border:1px solid #bb99e455;border-radius:100px;background:#b18ae512;color:#d3bbed;font-size:12px}
+#l1017Loyalty .e-progress{height:12px!important;border-radius:100px!important;background:#ffffff12!important;overflow:hidden;margin-bottom:22px}
+#l1017Loyalty .e-progress i{height:100%!important;border-radius:100px!important;background:linear-gradient(90deg,#b98eff,#99e5d3)!important;box-shadow:0 0 16px #b98eff55;transition:width .65s ease}
+#l1017Loyalty #loyaltyProgressText{font-size:14px;color:#d3c7e2;font-weight:600;line-height:1.9}
+#l1017Loyalty .points-input-wrap{padding:0 15px!important;min-height:60px;border-radius:17px!important;background:#111827!important;border:1px solid #9c7dc37a!important}
+#l1017Loyalty .points-input-wrap:focus-within{border-color:#c6a1f0!important;box-shadow:0 0 0 3px #c6a1f024}
+#l1017Loyalty #loyaltyRedeemAmount,#l1017Loyalty #loyaltyRedeemAmount:focus{outline:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;padding:13px 0!important;font-size:27px!important}
+#l1017Loyalty #pointsInputHint{display:block;margin-top:9px;font-size:11px;line-height:1.9;color:#b1abc5}
+#l1017Loyalty .points-conversion{margin:20px 0 17px;border:1px solid #bfa2dd45;border-radius:17px;background:linear-gradient(120deg,#46325233,#20283c);padding:18px}
+#l1017Loyalty #pointsCreditPreview{font-size:27px;font-weight:800;color:#dbc1ff;font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){#l1017Loyalty .e-progress i{transition:none!important}}

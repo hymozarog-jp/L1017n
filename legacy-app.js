@@ -688,14 +688,33 @@ function renderGoogleHeaderAvatar(user){
  btn.setAttribute('aria-label','فتح حساب '+name);btn.title='حساب '+name;
  btn.classList.remove('hidden');
 }
+// Display the registered phone as the account identifier; keep internal UUIDs.
+let accountDisplayPhoneUserId='';
+let accountDisplayPhone='';
+function showRegisteredAccountNumber(userId,rawPhone){
+ const owner=String(userId||'');
+ if(!owner||document.getElementById('accountModern')?.dataset.userId!==owner)return;
+ const phone=normalizeStorePhoneInput(rawPhone);
+ accountDisplayPhoneUserId=owner;
+ accountDisplayPhone=phone?'0'+phone:'';
+ const label=document.getElementById('accountModernId');
+ if(label)label.textContent=accountDisplayPhone||'—';
+}
 function paintGoldAccountIdentity(user,name){
  const avatar=document.getElementById('accountModernAvatar');
  if(!avatar||!user)return;
  const googleBadge=document.getElementById('accountGoogleBadge');
  const isGoogle=user.app_metadata?.provider==='google'||user.identities?.some(i=>i.provider==='google');
  if(googleBadge)googleBadge.hidden=!isGoogle;
+ const owner=String(user.id||'');
+ const modernCard=document.getElementById('accountModern');
+ if(modernCard)modernCard.dataset.userId=owner;
+ if(accountDisplayPhoneUserId!==owner){
+   accountDisplayPhoneUserId=owner;
+   accountDisplayPhone='';
+ }
  const shortId=document.getElementById('accountModernId');
- if(shortId)shortId.textContent=String(user.id||'').replace(/-/g,'').slice(0,10).toUpperCase()||'—';
+ if(shortId)shortId.textContent=accountDisplayPhone||'—';
  const initial=String(name||'م').slice(0,1).toUpperCase();
  const photo=approvedProfilePhoto(user);
  avatar.textContent=initial;
@@ -765,6 +784,8 @@ if(!phoneGate){phoneGate=document.createElement('div');phoneGate.id='accountPhon
 if(user){
  let {data:phoneRow,error:phoneError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();
  let registered=phoneRow?.libyana_phone||'';
+ // Display only this signed-in user's RLS-protected registered phone.
+ showRegisteredAccountNumber(user.id,phoneError?'':registered);
  if(registered){
    phoneGate.innerHTML='<strong class="profile-phone-label">رقم الهاتف المسجّل</strong><div class="profile-phone-inline"><span dir="ltr" class="profile-phone-number">0'+escapeHtml(registered)+'</span><button type="button" class="profile-phone-change" data-change-account-phone aria-label="تغيير رقم الهاتف وتأكيد الرقم الجديد برسالة SMS"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L9 17l-4 1 1-4z"/></svg><span>تغيير</span></button></div><p class="form-note">تغيير الرقم يتم بعد تأكيد الرقم الجديد برمز SMS، ورصيدك وطلباتك يبقوا محفوظين.</p>';
    phoneGate.querySelector('[data-change-account-phone]')?.addEventListener('click',()=>{
@@ -1411,10 +1432,18 @@ setTimeout(refreshAdminAccess,0);
  const copy=e.target.closest('#accountCopyId');
  if(copy){
   const account=await currentUser();
-  if(account?.id){
-   try{if(!navigator.clipboard?.writeText)throw Error('clipboard_unavailable');await navigator.clipboard.writeText(account.id);toast('تم نسخ معرف حسابك')}
-   catch(_){window.prompt('انسخ معرّف حسابك:',account.id)}
-  }
+  if(!account){toast('سجّل دخولك أولاً');return;}
+  const {data,error}=await supabaseClient.from('wallet_accounts')
+    .select('libyana_phone').eq('user_id',account.id).maybeSingle();
+  const normalized=!error?normalizeStorePhoneInput(data?.libyana_phone):null;
+  if(!normalized){toast('تعذر جلب رقم الحساب المسجّل. جرّب تحديث الصفحة.');return;}
+  const identifier='0'+normalized;
+  showRegisteredAccountNumber(account.id,normalized);
+  try{
+   if(!navigator.clipboard?.writeText)throw Error('clipboard_unavailable');
+   await navigator.clipboard.writeText(identifier);
+   toast('تم نسخ معرّف الحساب (رقم الهاتف)');
+  }catch(_){window.prompt('انسخ معرّف حسابك:',identifier)}
   return;
  }
  const edit=e.target.closest('#accountEditName');if(edit){editName();return}

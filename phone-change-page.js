@@ -140,6 +140,7 @@
   finally{lock(false)}
  }
  function close(){
+  window.dispatchEvent(new Event("l1017n:account-phones-updated"));
   sequence++;stopTicker();panel?.classList.remove("visible");if(panel)panel.hidden=true;
   document.body.classList.remove("phone-change-open");
   if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});

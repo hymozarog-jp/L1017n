@@ -20,7 +20,7 @@
   panel.innerHTML=
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
       '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
-      '<div class="dt-purple-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" dir="ltr" aria-describedby="dtPhoneStatus dtSenderCount" disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtAddSender" type="button" aria-label="إضافة رقم تحويل موثّق">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
+      '<div class="dt-purple-field dt-sender-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" dir="ltr" aria-describedby="dtPhoneStatus dtSenderCount" disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtAddSender" type="button" aria-label="إضافة رقم تحويل موثّق">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.</p>'+
@@ -250,7 +250,7 @@
         if(!option.disabled)available++;
         sender.appendChild(option);
       });
-      if(!available)resetSenderOptions('أضف رقم ليبيانا موثّقًا');
+      if(!available)resetSenderOptions('لا يوجد رقم ليبيانا');
       else{
         sender.disabled=false;
         const keep=Array.from(sender.options).find(o=>o.value===previous&&!o.disabled);
@@ -258,7 +258,7 @@
         sender.value=first.value;
       }
       addSender.hidden=phones.length>=3;
-      senderCount.textContent=phones.length+' / 3 أرقام موثّقة'+(phones.some(p=>!normalize(p.phone))?' · الشحن هنا بليبيانا':'');
+      senderCount.textContent='الأرقام الموثّقة: '+phones.length+' من 3'+(!available?' · أضف رقم ليبيانا للشحن':'');
       if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}
     }catch(_){
       if(generation===phoneGeneration){resetSenderOptions('تعذر تحميل الأرقام');senderCount.textContent='أعد فتح المحفظة أو حدّث الصفحة.';addSender.hidden=false}

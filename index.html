@@ -456,8 +456,7 @@
       <div id="accountSettingsDetail" class="account-settings-detail hidden" aria-live="polite"></div>
     </div>
     
-    <button class="btn btn-soft hidden" id="logoutBtn" type="button">تسجيل الخروج</button>
-    <button class="btn btn-soft account-wallet-link" data-view="wallet">افتح المحفظة</button>
+    <button class="btn btn-soft hidden account-only-logout" id="logoutBtn" type="button">تسجيل الخروج</button>
   </div>
 </section>
 
@@ -831,7 +830,12 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 #accountView #openAdminDashboard{display:block;margin:17px auto!important;min-height:49px!important;padding:11px 23px!important;border-radius:15px!important;font-size:16px!important;font-weight:800!important}
 #accountView #openAdminDashboard.hidden{display:none!important}
 #accountView #logoutBtn{margin:15px auto!important;border-radius:15px!important}
-#accountView .account-wallet-link{border-radius:15px!important}
+#accountView #logoutBtn.account-only-logout:not(.hidden){
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:min(100%,320px)!important;min-height:50px!important;
+ padding:12px 20px!important;font-size:16px!important;font-weight:800!important;
+ margin:18px auto 10px!important;
+}
 #accountView .account-panel:has(#signedInProfile:not(.hidden)){padding-top:23px!important}
 @media(max-width:600px){
 #accountView{padding-inline:13px!important}

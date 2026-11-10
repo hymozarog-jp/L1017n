@@ -1,5 +1,5 @@
 /* Fast, consistent left-to-right page entrances; no persistent layer or blur. */
-:root{--l1017-page-time:300ms;--l1017-page-ease:cubic-bezier(.22,.75,.25,1)}
+:root{--l1017-page-time:480ms;--l1017-page-ease:cubic-bezier(.22,.75,.25,1)}
 @keyframes l1017EnterFromLeft{
  from{translate:-36px 0;opacity:.35}
  to{translate:0 0;opacity:1}

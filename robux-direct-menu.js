@@ -34,10 +34,10 @@
       var back=document.createElement('button');
       back.type='button';
       back.className='robux-purchase-back';
-      back.textContent='رجوع لاختيار الكمية ←';
+      back.textContent='رجوع للباقات ←';
       var kicker=document.createElement('span');
       kicker.className='robux-menu-kicker';
-      kicker.textContent='GAMEBOXLY • ROBUX';
+      kicker.textContent='L1017N';
       top.append(back,kicker);
       var heading=document.createElement('div');
       heading.className='robux-menu-heading';
@@ -46,10 +46,10 @@
       art.alt='';
       var words=document.createElement('div');
       var headingTitle=document.createElement('h2');
-      headingTitle.textContent='قائمة طلب روبوكس';
+      headingTitle.textContent='تأكيد الطلب';
       var description=document.createElement('p');
       description.textContent='راجع كمية الروبوكس وتحقق من حساب Roblox قبل تأكيد الشراء.';
-      words.append(headingTitle,description);
+      words.append(headingTitle);
       heading.append(art,words);
       var summary=document.createElement('div');
       summary.className='robux-menu-summary';

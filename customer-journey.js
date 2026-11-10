@@ -91,7 +91,9 @@
       const balance=Number(data.balance);
       if(!Number.isFinite(balance)||balance<0)return;
       const diff=price===null?null:Math.max(0,Math.round((price-balance)*100)/100);
-      line.textContent='رصيد محفظتك: '+format(balance)+' د.ل'+(diff===null?'':diff>0?' · ينقصك '+format(diff)+' د.ل':' · رصيدك يكفي قيمة الباقة');
+      const compact=!!form.closest('#robuxPurchaseScreen');
+      line.textContent=(compact?'رصيدك: ':'رصيد محفظتك: ')+format(balance)+' د.ل'+(diff===null?'':diff>0?' · ينقصك '+format(diff)+' د.ل':compact?'':' · رصيدك يكفي قيمة الباقة');
+      if(compact){const actions=panel.querySelector('.gbj-actions');if(actions)actions.hidden=diff!==null&&diff<=0;}
       if(diff!==null&&diff>0&&diff<=10000){
         const button=panel.querySelector('[data-gbj="topup"]');
         if(button){button.dataset.shortfall=String(Math.ceil(diff));button.textContent='اشحن المبلغ الناقص ('+format(diff)+' د.ل)'}

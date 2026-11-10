@@ -1,0 +1,39 @@
+/* Fast, consistent left-to-right page entrances; no persistent layer or blur. */
+:root{--l1017-page-time:300ms;--l1017-page-ease:cubic-bezier(.22,.75,.25,1)}
+@keyframes l1017EnterFromLeft{
+ from{translate:-36px 0;opacity:.35}
+ to{translate:0 0;opacity:1}
+}
+html body :is(
+ #homeView,#storeView,#walletView,#ordersView,#accountView,#leaderboardView,#subscriptionsView,#adminView
+):not(.hidden):not([hidden]),
+html body #robloxGamePage,
+html body #pubgCategoryPage.visible,
+html body #l1017AccountHistory.visible,
+html body #personalDetailsPage.visible,
+html body #offersPage.visible,
+html body #phoneVerifyWizard.visible,
+html body #phoneChangeWizard.visible,
+html body #notificationsPage[open],
+html body #topupDedicatedPage:not([hidden]):not(.hidden),
+html body #robuxModal.robux-full-page:not(.hidden) .robux-store-box{
+ animation:l1017EnterFromLeft var(--l1017-page-time) var(--l1017-page-ease) none!important;
+ filter:none!important;
+}
+/* A page moves once; its hero does not slide again in the other direction. */
+html body #robloxGamePage .rgp-hero,
+html body #robuxModal:not(.hidden) .robux-reference-hero,
+html body #pubgCategoryPage.visible .pubg-hero{animation:none!important}
+@media(prefers-reduced-motion:reduce){
+ html body :is(#homeView,#storeView,#walletView,#ordersView,#accountView,#leaderboardView,#subscriptionsView,#adminView):not(.hidden):not([hidden]),
+ html body #robloxGamePage,
+ html body #pubgCategoryPage.visible,
+ html body #l1017AccountHistory.visible,
+html body #personalDetailsPage.visible,
+html body #offersPage.visible,
+ html body #phoneVerifyWizard.visible,
+ html body #phoneChangeWizard.visible,
+ html body #notificationsPage[open],
+ html body #topupDedicatedPage:not([hidden]):not(.hidden),
+ html body #robuxModal.robux-full-page:not(.hidden) .robux-store-box{animation:none!important}
+}

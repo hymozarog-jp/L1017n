@@ -23,3 +23,28 @@
 .account-pack-card .fixed-pack-art>img:first-child{position:absolute;top:12px;left:22%;width:56%;height:24px;max-height:24px;object-fit:contain}
 .account-pack-card .fixed-pack-art>img.fixed-pack-robux-image{position:absolute;top:24%;left:10%;width:80%;height:51%;max-height:none;object-fit:contain;filter:none}
 .account-pack-card .fixed-pack-art>b{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:clamp(30px,7vw,48px)}
+
+/* Compact cards with dedicated children, isolated from old portrait themes. */
+#robuxModal.robux-fixed-packs .package-grid{align-items:start!important;gap:12px!important}
+#robuxModal.robux-fixed-packs .robux-package{
+ aspect-ratio:auto!important;height:auto!important;min-height:0!important;max-height:none!important;
+ justify-content:flex-start!important;align-items:stretch!important;gap:0!important;
+ border-radius:19px!important;border:1px solid #85749b59!important;
+ background:linear-gradient(150deg,#1d263b,#11192c)!important;box-shadow:0 6px 18px #0003!important;
+}
+#robuxModal.robux-fixed-packs .robux-pack-visual{
+ position:relative;display:flex;align-items:center;justify-content:center;height:108px;flex:0 0 108px;
+ overflow:hidden;background:radial-gradient(ellipse at center,#41365b55,#101625 80%);border-bottom:1px solid #bca2e12b;
+}
+#robuxModal.robux-fixed-packs .robux-pack-visual>img{display:block;width:112px;max-width:85%;height:88px;object-fit:contain;filter:drop-shadow(0 5px 12px #0004)}
+#robuxModal.robux-fixed-packs .robux-pack-count{position:absolute;bottom:8px;right:10px;display:block;min-width:32px;padding:3px 8px;border-radius:8px;border:1px solid #c9b0ec55;background:#20253bdc;color:#eee5ff;font:800 13px/1.4 system-ui}
+#robuxModal.robux-fixed-packs .robux-pack-copy{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:7px;padding:12px;min-height:0;height:auto;background:none}
+#robuxModal.robux-fixed-packs .robux-pack-copy>strong{font-size:14px!important;line-height:1.6!important;margin:0!important;color:#f6f2ff!important}
+#robuxModal.robux-fixed-packs .robux-pack-copy>.robux-pack-price{display:block!important;align-self:stretch!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;color:#ddc7ff!important;font-size:20px!important;font-weight:800!important;line-height:1.6!important}
+#robuxModal.robux-fixed-packs .robux-pack-copy>.stock-label{display:flex!important;align-self:stretch!important;align-items:center!important;justify-content:center!important;margin:2px 0 0!important;padding:5px 8px!important;min-height:29px;border-radius:9px!important;border:1px solid #84c5aa44!important;background:#84c5aa0a!important;color:#b0dec9!important;font-size:10px!important;line-height:1.6!important}
+#robuxModal.robux-fixed-packs .robux-package:disabled .stock-label{color:#c5b8c0!important;border-color:#c5b8c044!important}
+#robuxModal.robux-fixed-packs .robux-plus{width:25px!important;height:25px!important;top:8px!important;left:8px!important;font-size:19px!important;border:1px solid #d4bbfa44!important;background:#28253e!important}
+#robuxModal.robux-fixed-packs .robux-reference-features{margin:10px 0 16px!important;padding:10px!important;min-height:0!important}
+#robuxModal.robux-fixed-packs .robux-reference-section{font-size:21px!important;margin:18px 0 6px!important}
+#robuxModal.robux-fixed-packs .robux-packages-help{font-size:12px!important;line-height:1.7!important;margin:0 0 14px!important}
+@media(min-width:850px){#robuxModal.robux-fixed-packs .robux-pack-visual{height:125px;flex-basis:125px}}

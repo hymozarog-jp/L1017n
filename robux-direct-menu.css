@@ -46,3 +46,32 @@ html.gb-robux-direct-menu #robuxModal .robux-checkout-bar{display:none!important
  #robuxPurchaseScreen .robux-menu-summary span{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){#robuxPurchaseScreen.robux-direct-menu{animation:none!important}}
+
+/* A single compact summary, then username verification and purchase. */
+#robuxPurchaseScreen.robux-direct-menu{padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))!important;background:radial-gradient(ellipse at 85% 0,#503c7026,transparent 50%),#0d1425!important}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-top{margin-bottom:20px;gap:10px}
+#robuxPurchaseScreen.robux-direct-menu .robux-purchase-back{padding:8px 12px!important;min-height:40px;font-size:12px!important;border-radius:12px!important}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-heading{gap:10px;margin-bottom:14px}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-heading img{width:52px!important;height:52px!important}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-heading h2{font-size:23px!important;margin:0!important}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-summary{padding:13px 15px;margin-bottom:16px;border-radius:15px;background:linear-gradient(115deg,#2a2643,#19243b);border-color:#ab8dd152}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-summary strong{font-size:15px}
+#robuxPurchaseScreen.robux-direct-menu .robux-menu-summary span{font-size:20px}
+#robuxPurchaseScreen.robux-direct-menu #purchaseBox{margin:0 auto!important}
+#robuxPurchaseScreen.robux-direct-menu #purchaseForm{display:grid!important;gap:12px!important;margin:0!important;padding:18px 16px!important;background:#151e31!important;border:1px solid #8f7da544!important;border-radius:19px!important;min-height:0!important}
+#robuxPurchaseScreen.robux-direct-menu #purchaseForm>h3,#robuxPurchaseScreen.robux-direct-menu #purchaseForm>.form-note{display:none!important}
+#robuxPurchaseScreen.robux-direct-menu #purchaseForm label{margin:0!important;font-size:13px!important;color:#c5cee1}
+#robuxPurchaseScreen.robux-direct-menu .roblox-verify-row{display:flex!important;gap:8px!important;align-items:stretch!important;margin:0!important}
+#robuxPurchaseScreen.robux-direct-menu #robloxUsername{flex:1!important;min-width:0!important;width:0!important;min-height:48px!important;padding:11px 12px!important;background:#0c1526!important;border:1px solid #64708c66!important;border-radius:12px!important;color:#fff!important;font-size:16px!important}
+#robuxPurchaseScreen.robux-direct-menu #verifyRobloxBtn{flex:0 0 auto!important;min-height:48px!important;padding:10px 16px!important;font-size:14px!important;border-radius:12px!important;background:#655092!important;color:white!important}
+#robuxPurchaseScreen.robux-direct-menu #robloxVerifyResult{margin:0!important;font-size:12px;line-height:1.8}
+#robuxPurchaseScreen.robux-direct-menu #robloxVerifyResult:empty{display:none!important}
+#robuxPurchaseScreen.robux-direct-menu .gb-journey{padding:12px!important;margin:0!important;border:1px solid #8a9db433!important;border-radius:13px!important;background:#a9bdd908!important}
+#robuxPurchaseScreen.robux-direct-menu .gbj-title,#robuxPurchaseScreen.robux-direct-menu .gbj-desc{display:none!important}
+#robuxPurchaseScreen.robux-direct-menu .gbj-total{font-size:12px!important;line-height:1.8!important;margin:0!important}
+#robuxPurchaseScreen.robux-direct-menu .gbj-actions{margin-top:8px!important}
+#robuxPurchaseScreen.robux-direct-menu .gbj-actions button{padding:8px 12px!important;font-size:12px!important;min-height:40px!important}
+#robuxPurchaseScreen.robux-direct-menu #submitRobloxPurchase{width:100%!important;min-height:49px!important;margin:0!important;padding:12px 15px!important;border-radius:13px!important;font-size:15px!important;background:linear-gradient(110deg,#9870cf,#7355a4)!important;color:white!important;box-shadow:none!important}
+#robuxPurchaseScreen.robux-direct-menu #submitRobloxPurchase:disabled{opacity:.5!important}
+
+#robuxPurchaseScreen.robux-direct-menu .gbj-actions[hidden]{display:none!important}

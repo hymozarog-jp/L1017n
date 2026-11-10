@@ -441,7 +441,7 @@
    completionDialog.innerHTML='<span class="cr-check" aria-hidden="true">✓</span><h2 id="crTitle">تم إكمال طلبك بنجاح</h2><p class="cr-product"></p><p>كيف كانت تجربتك معنا؟</p><div class="cr-stars" role="group" aria-label="اختر تقييمًا من خمس نجوم">'+[1,2,3,4,5].map(n=>'<button type="button" data-cr-star="'+n+'" aria-label="'+n+' من 5 نجوم" aria-pressed="false">★</button>').join('')+'</div><span class="cr-label" aria-live="polite">اختر عدد النجوم</span><textarea maxlength="300" rows="3" aria-label="تعليق اختياري" placeholder="اكتب رأيك هنا (اختياري)"></textarea><p class="cr-status" role="status"></p><button type="button" class="cr-send" disabled>إرسال التقييم</button><button type="button" class="cr-later">إغلاق</button>';
    document.body.appendChild(completionDialog);
    completionDialog.querySelectorAll('[data-cr-star]').forEach(b=>b.addEventListener('click',()=>{
-     if(completionBusy)return;
+     if(completionBusy||!completionOrder)return;
      completionRating=Number(b.dataset.crStar);
      completionDialog.querySelectorAll('[data-cr-star]').forEach(star=>{star.classList.toggle('is-on',Number(star.dataset.crStar)<=completionRating);star.setAttribute('aria-pressed',String(Number(star.dataset.crStar)===completionRating));});
      completionDialog.querySelector('.cr-label').textContent=['','ضعيف','مقبول','جيد','جيد جدًا','ممتاز'][completionRating];

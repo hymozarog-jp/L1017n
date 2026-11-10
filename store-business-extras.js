@@ -194,13 +194,13 @@
      const rows=await getRpc("get_my_reviewable_purchases");
      reviewable=Array.isArray(rows)?rows:[];
      const select=q("#reviewOrderSelect"),form=q("#reviewFormWrap");
-     if(!reviewable.length){form.hidden=true;setMessage("#reviewFormStatus","ما في طلبات مكتملة بعد. يظهر التقييم بعد تسليم الطلب.");return}
+     if(!reviewable.length){form.hidden=true;setMessage("#reviewFormStatus","التقييم متاح مرة واحدة لكل حساب، بعد اكتمال الطلب.");return}
      const old=select.value;
      select.innerHTML=reviewable.map((o,i)=>'<option value="'+esc(o.order_id)+'">'+esc(o.product_name)+' · '+cash(o.total_amount)+(o.reviewed?' · تم تقييمه':' · لم يُقيّم')+'</option>').join("");
      if(reviewable.some(x=>x.order_id===old))select.value=old;
      form.hidden=false;
      syncReviewChoice();
-     setMessage("#reviewFormStatus","تقدر تقيّم أي طلب مكتمل مرة واحدة وتعدّل تقييمك لاحقًا.");
+     setMessage("#reviewFormStatus","تقدر تقيّم المتجر مرة واحدة فقط من حسابك.");
    }catch(e){setMessage("#reviewFormStatus","تعذر تحميل طلبات التقييم. اضغط تحديث.","warning")}
    finally{reviewLoading=false}
  }
@@ -221,7 +221,7 @@
      await getRpc("submit_verified_store_review",{p_order_id:orderId,p_rating:reviewRating,p_comment:comment});
      setMessage("#reviewFormStatus","تم حفظ تقييمك بنجاح. شكرًا على رأيك!","success");
      await Promise.all([loadReviewable(),loadPublicReviews()]);
-   }catch(e){setMessage("#reviewFormStatus","تعذر حفظ التقييم. تأكد من اكتمال الطلب وحاول مجددًا.","warning")}
+   }catch(e){if(String(e?.message||"").includes("review_already_submitted")){q("#reviewFormWrap").hidden=true;setMessage("#reviewFormStatus","سبق أن أرسلت تقييمك. شكرًا لك!","success")}else setMessage("#reviewFormStatus","تعذر حفظ التقييم. تأكد من اكتمال الطلب وحاول مجددًا.","warning")}
    finally{button.disabled=false;button.textContent="نشر التقييم"}
  }
  function reviewStars(value){
@@ -460,7 +460,7 @@
        completionDialog.querySelector('.cr-later').textContent='إغلاق';
        completionOrder=null;
        void loadReviewable();void loadPublicReviews();
-     }catch(e){status.textContent='تعذر حفظ التقييم. حاول مرة أخرى.';button.disabled=false;button.textContent='إرسال التقييم'}
+     }catch(e){if(String(e?.message||'').includes('review_already_submitted')){status.textContent='سبق أن أرسلت تقييمك. شكرًا لك!';button.textContent='تم التقييم';completionOrder=null;pendingCompletionPrompt=null;void loadReviewable()}else{status.textContent='تعذر حفظ التقييم. حاول مرة أخرى.';button.disabled=false;button.textContent='إرسال التقييم'}}
      finally{completionBusy=false}
    };
  }
@@ -473,6 +473,7 @@
      if(pendingCompletionPrompt?.userId!==user.id)pendingCompletionPrompt=null;
      const order=pendingCompletionPrompt?.order||await getRpc('claim_latest_completed_review_prompt');
      if(order?.order_id)pendingCompletionPrompt={userId:user.id,order};
+     if(order?.order_id){const eligible=await getRpc('get_my_reviewable_purchases');if(!Array.isArray(eligible)||!eligible.length){pendingCompletionPrompt=null;return}}
      const current=await getCurrentUser();
      if(current?.id!==user.id){pendingCompletionPrompt=null;return;}
      if(!order?.order_id||completionDialog?.open||document.visibilityState==='hidden'||document.querySelector('dialog[open]'))return;

@@ -833,3 +833,12 @@ html,body{
     font-size:11px!important;
   }
 }
+
+/* Verified account sender selector. */
+#topupForm .dt-sender-picker{display:flex;gap:8px;align-items:stretch;min-width:0}
+#topupForm .dt-sender-picker select{flex:1;min-width:0;width:0;min-height:52px;border:1px solid #8b78b34d;border-radius:14px;padding:10px 12px;background:#111827;color:#f4efff;font:600 16px/1.5 system-ui,sans-serif;direction:ltr;color-scheme:dark;outline-offset:3px}
+#topupForm .dt-sender-picker select:disabled{opacity:.65}
+#topupForm #dtAddSender{flex:0 0 auto;border:1px solid #a48bdd66;border-radius:14px;padding:10px 12px;background:#8e6cd324;color:#d5c6ff;font-family:inherit;font-size:12px;font-weight:700;line-height:1.5;white-space:nowrap;cursor:pointer}
+#topupForm #dtAddSender[hidden]{display:none!important}
+#topupForm .dt-sender-count{display:block;color:#aeb2c9;font-size:11px;line-height:1.8;margin:7px 2px 0}
+@media(max-width:350px){#topupForm .dt-sender-picker{gap:6px}#topupForm #dtAddSender{padding:8px;font-size:11px}}

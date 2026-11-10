@@ -227,3 +227,7 @@ html[data-store-theme] body #robuxPurchaseScreen.robux-direct-menu #purchaseBox 
 html[data-store-theme] body #robuxPurchaseScreen.robux-direct-menu #purchaseBox #purchaseForm .gb-journey{background:var(--sb-soft)!important;color:var(--sb-ink)!important;border-color:var(--sb-line)!important}
 html[data-store-theme] body #robuxPurchaseScreen.robux-direct-menu #purchaseBox #purchaseForm .gbj-total{color:var(--sb-muted)!important}
 html[data-store-theme] body #robuxPurchaseScreen.robux-direct-menu #purchaseBox #purchaseForm .gbj-actions button{background:#0760eb!important;color:#fff!important;border-color:#0760eb!important}
+
+/* Legacy shared .btn selectors carry three IDs through :is(); match that weight. */
+html[data-store-theme] body.l1017-live-ui .topbar #accountBtn#accountBtn#accountBtn{background:var(--sb-soft)!important;color:var(--sb-ink)!important;border:1px solid var(--sb-line)!important;box-shadow:none!important}
+html[data-store-theme] #llLanding .sb-dot.selected{background-clip:content-box!important}

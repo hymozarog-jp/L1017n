@@ -2,9 +2,10 @@
 (function(){
  "use strict";
  const errors={
+  phone_limit:"ربطت 3 أرقام بالفعل؛ هذا هو الحد الأقصى للحساب.",primary_verification_required:"وثّق رقم حسابك الحالي أولاً من خيار توثيق الهاتف.",
   unauthorized:"سجّل دخولك إلى حسابك أولاً.",phone_required:"لازم يكون عندك رقم محفوظ أولاً.",
-  invalid_phone:"اكتب رقمًا ليبيًا صحيحًا يبدأ بـ 09.",same_phone:"هذا هو رقمك الحالي؛ اكتب رقمًا مختلفًا.",
-  phone_already_registered:"الرقم الجديد مسجّل في حساب آخر. استعمل رقمًا آخر.",
+  invalid_phone:"اكتب رقمًا ليبيًا صحيحًا يبدأ بـ 09.",same_phone:"هذا هو رقم الحساب الأساسي؛ اكتب رقمًا مختلفًا.",
+  phone_already_registered:"الرقم مسجّل في حساب آخر. استعمل رقمًا آخر.",
   cooldown:"تقدر تعيد إرسال الرمز بعد انتهاء الأربع دقائق.",
   hour_limit:"وصلت للحد المسموح من الرسائل خلال الساعة.",
   day_limit:"وصلت للحد المسموح من الرسائل اليوم.",
@@ -43,7 +44,7 @@
  function step(stage){
   ["entry","code","done"].forEach(s=>{const el=q(".pc-"+s);if(el)el.hidden=s!==stage});
   const heading=q(".pc-heading");
-  if(heading)heading.textContent=stage==="code"?"تأكيد الرقم الجديد":stage==="done"?"تم تغيير الرقم":"تغيير رقم الهاتف";
+  if(heading)heading.textContent=stage==="code"?"تأكيد الرقم الجديد":stage==="done"?"تم توثيق الرقم":"أرقام التحويل";
  }
  function lock(value){
   busy=value;
@@ -76,12 +77,24 @@
    const state=await invoke("status");if(seq!==sequence)return;
    if(state.configured===false)throw Error(errors.not_configured);
    phoneHint(state.current_phone);
+   const list=q(".pc-linked-list");list.replaceChildren();
+   (state.phones||[]).slice(0,3).forEach(item=>{
+    const row=document.createElement("div");row.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid #70618b55;border-radius:16px;margin:8px 0;background:#ffffff06";
+    const number=document.createElement("strong");number.dir="ltr";number.textContent=item.phone;
+    const badge=document.createElement("span");badge.textContent=item.primary?"✓ موثّق · أساسي":"✓ موثّق";badge.style.color="#a9d5bb";
+    row.append(number,badge);list.append(row);
+   });
+   if(!(state.phones||[]).length){
+    const verify=document.createElement("button");verify.type="button";verify.className="pc-primary";verify.textContent="توثيق رقم الحساب الأساسي";verify.onclick=()=>{close();window.openPhoneVerificationPage?.()};list.append(verify);
+   }
+   const total=document.createElement("p");total.textContent=(state.phones||[]).length+" / 3 أرقام موثّقة";list.append(total);
+   panel.dataset.full=String((state.phones||[]).length>=3);
    if(state.code_pending&&normalize(state.pending_phone)){
     requested=normalize(state.pending_phone);
     step("code");phoneHint();countdown(state.retry_after_seconds||0);
-    setStatus("وصل رمز إلى الرقم الجديد؟ اكتبه لتأكيد التغيير.");
+    setStatus("وصل رمز إلى الرقم الجديد؟ اكتبه لإضافة الرقم.");
    }else{
-    requested="";step("entry");countdown(state.retry_after_seconds||0);
+    requested="";step("entry");q(".pc-entry").hidden=!(state.phones||[]).length||(state.phones||[]).length>=3;countdown(state.retry_after_seconds||0);
     setStatus(state.retry_after_seconds?"يمكن طلب رمز جديد بعد انتهاء العدّاد.":"");
    }
   }catch(e){if(seq===sequence)setStatus(e.message||errors.database_unavailable,true)}
@@ -116,9 +129,9 @@
   lock(true);setStatus("جاري تأكيد ملكية الرقم الجديد…");
   try{
    const result=await invoke("verify",{code});
-   if(!result.changed)throw Error("تعذر تأكيد تغيير الرقم.");
+   if(!result.added&&!result.changed)throw Error("تعذر إضافة الرقم.");
    stopTicker();step("done");q(".pc-done-number").textContent=result.phone||"0"+requested;
-   setStatus("تم حفظ رقمك الجديد بأمان.");
+   setStatus("تم ربط الرقم بنفس محفظتك.");
    if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
    if(typeof renderWallet==="function")void Promise.resolve(renderWallet()).catch(()=>{});
    if(typeof window.L1017nPersonalPremium?.refreshFromServer==="function")
@@ -136,16 +149,16 @@
   panel=document.createElement("section");panel.id="phoneChangeWizard";panel.hidden=true;
   panel.dir="rtl";panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
   panel.setAttribute("aria-labelledby","phoneChangeTitle");
-  panel.innerHTML='<div class="pc-shell"><header class="pc-header"><button type="button" class="pc-back" aria-label="إغلاق تغيير الرقم">‹</button><b>L1017n • أمان الحساب</b><span>🔒</span></header>'+
-  '<div class="pc-hero"><span class="pc-hero-icon">☎</span><h2 class="pc-heading" id="phoneChangeTitle">تغيير رقم الهاتف</h2><p>غيّر رقمك بأمان. رقمك القديم يظل مربوطًا بالحساب حتى تؤكد الرمز الذي يصلك على الرقم الجديد.</p></div>'+
-  '<div class="pc-current-panel"><span>رقمك الحالي</span><strong dir="ltr" class="pc-current">—</strong></div>'+
-  '<form class="pc-entry"><label for="pcNewPhone">رقم الهاتف الجديد</label><div class="pc-input-row"><span dir="ltr">+218</span><input id="pcNewPhone" class="pc-new-number" type="tel" inputmode="tel" dir="ltr" autocomplete="tel-national" placeholder="09xxxxxxxx" maxlength="15" required></div>'+
+  panel.innerHTML='<div class="pc-shell"><header class="pc-header"><button type="button" class="pc-back" aria-label="إغلاق أرقام التحويل">‹</button><b>L1017n • أمان الحساب</b><span>🔒</span></header>'+
+  '<div class="pc-hero"><span class="pc-hero-icon">☎</span><h2 class="pc-heading" id="phoneChangeTitle">أرقام التحويل</h2><p>اربط حتى 3 أرقام موثّقة بمحفظتك. أي تحويل يصل من أحدها يُضاف لنفس الحساب.</p></div>'+
+  '<div class="pc-linked-list" aria-label="الأرقام الموثّقة"></div><div class="pc-current-panel"><span>رقم الحساب الأساسي</span><strong dir="ltr" class="pc-current">—</strong></div>'+
+  '<form class="pc-entry"><label for="pcNewPhone">إضافة رقم آخر</label><div class="pc-input-row"><span dir="ltr">+218</span><input id="pcNewPhone" class="pc-new-number" type="tel" inputmode="tel" dir="ltr" autocomplete="tel-national" placeholder="09xxxxxxxx" maxlength="15" required></div>'+
    '<p>لازم يكون الرقم الجديد ملكك وغير مربوط بحساب آخر.</p><button type="submit" class="pc-primary">إرسال رمز التحقق</button></form>'+
   '<div class="pc-code" hidden><p>أرسلنا رمزًا من 6 أرقام إلى <strong class="pc-sent-to" dir="ltr"></strong></p>'+
    '<form class="pc-verify"><label for="pcOtpCode">رمز التحقق</label><input id="pcOtpCode" class="pc-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" dir="ltr" required>'+
-   '<button type="submit" class="pc-primary">تأكيد وتغيير الرقم</button></form><div class="pc-resend-box"><span>إرسال رمز جديد</span><b class="pc-timer" dir="ltr">04:00</b></div>'+
+   '<button type="submit" class="pc-primary">توثيق وإضافة الرقم</button></form><div class="pc-resend-box"><span>إرسال رمز جديد</span><b class="pc-timer" dir="ltr">04:00</b></div>'+
    '<button type="button" class="pc-resend" disabled>إعادة إرسال بعد 04:00</button><p>لا تشارك رمز التحقق مع أي شخص. الرمز صالح لخمس دقائق.</p></div>'+
-  '<div class="pc-done" hidden><span>✓</span><h3>تم تغيير الرقم بنجاح</h3><p>رقمك الجديد <strong class="pc-done-number" dir="ltr"></strong> تم تأكيده برسالة SMS. رصيدك وطلباتك محفوظة.</p>'+
+  '<div class="pc-done" hidden><span>✓</span><h3>تم توثيق الرقم بنجاح</h3><p>رقمك الجديد <strong class="pc-done-number" dir="ltr"></strong> تم تأكيده برسالة SMS. تحويلاته تصل لنفس المحفظة.</p>'+
    '<button type="button" class="pc-primary pc-finish">العودة إلى حسابي</button></div>'+
   '<p class="pc-status" role="status" aria-live="polite"></p></div>';
   document.body.appendChild(panel);
@@ -166,5 +179,6 @@
   const seq=++sequence;countdown(0);q(".pc-back").focus({preventScroll:true});void load(seq);
  }
  window.openPhoneChangePage=open;
+ window.openAccountPhonesPage=open;
  window.closePhoneChangePage=close;
 })();

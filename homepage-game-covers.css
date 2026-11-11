@@ -1,8 +1,10 @@
 /* Main category cover cards — source: user-supplied visual reference.
-   Only the three homepage Roblox categories. No checkout, product grid or account styles. */
+   Roblox and PUBG Mobile category covers. No checkout, product grid or account styles. */
 body.l1017-live-ui #llLanding .ll-catalog:has(.ll-game-section) {
   display: grid !important;
-  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  max-width: 690px !important;
+  margin-inline: auto !important;
   align-items: start !important;
   gap: 10px !important;
 }
@@ -138,3 +140,9 @@ body.l1017-live-ui #llLanding .ll-game-section-details small {
     box-shadow: 0 15px 28px rgba(0,0,0,.4) !important;
   }
 }
+
+/* PUBG tile: use the existing illustrated PUBG storefront cover instead of a blank placeholder. */
+body.l1017-live-ui #llLanding .ll-game-pubg .ll-game-section-art { background:#182b36!important; border-color:#618795!important; }
+body.l1017-live-ui #llLanding .ll-game-pubg .ll-game-section-art img { object-fit:cover!important;object-position:center!important;padding:0!important;filter:none!important; }
+body.l1017-live-ui #llLanding .ll-game-pubg .ll-game-section-details { border-top-color:#d8aa5b!important; }
+body.l1017-live-ui #llLanding .ll-game-pubg .ll-game-section-link:focus-visible { outline-color:#ffd489!important; }

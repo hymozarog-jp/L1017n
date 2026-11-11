@@ -5,7 +5,8 @@
   const PAGE_ID = "pubgCategoryPage";
   const CATEGORIES = [
     { key: "codes", title: "أكواد الشحن", latin: "REDEEM CODES", visual: "UC", subtitle: "استلم الكود بعد الشراء" },
-    { key: "charge", title: "نشحنها لك", latin: "DIRECT TOP-UP", visual: "+", subtitle: "اشحن الشدات إلى UID" }
+    { key: "charge", title: "شحن عن طريق ID", latin: "DIRECT TOP-UP", visual: "+", subtitle: "اشحن الشدات إلى UID" },
+    { key: "offers", title: "عروض ببجي", latin: "PUBG OFFERS", visual: "UC", subtitle: "عروض المورد المتاحة" }
   ];
 
   let lastFocused = null;
@@ -14,6 +15,12 @@
   let catalogReady = false;
   let catalogError = "";
   let catalogRequest = 0;
+  let omnexLive = false;
+  // Reference-only supplier prices; these never authorize payment or create an order.
+  const SUPPLIER_REFERENCE = {
+    charge: [[60,"11.374"],[325,"57.030"],[660,"114.056"],[1800,"285.157"],[3850,"567.533"],[8100,"1136.085"]],
+    codes: [[60,"11.685"],[325,"59.035"],[660,"115.473"],[1800,"290.117"],[3850,"577.366"],[8100,"1165.790"]]
+  };
 
   function safe(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) =>
@@ -37,6 +44,25 @@
     };
     try {
       if(typeof supabaseClient==="undefined")throw new Error("خدمة المنتجات غير جاهزة");
+      // Supplier catalog comes from the server-backed read-only RPC, not direct browser calls
+      // to Omnex. No API keys, supplier purchase requests or financial writes in the browser.
+      const supplier=await supabaseClient.rpc("get_public_omnex_pubg_catalog");
+      if(requestId!==catalogRequest)return;
+      if(!supplier.error && supplier.data?.enabled && Array.isArray(supplier.data.products) && supplier.data.products.length){
+        omnexLive=true;
+        pubgCatalog=supplier.data.products.map(p=>{
+          const match=String(p.name||"").match(/(\\d[\\d,.]*)\\s*(?:UC|شد[ةات])/i);
+          const amount=match?Number(match[1].replace(/[,]/g,"")):0;
+          return {...p, source:"omnex", game:"pubg", amount,
+            group_name:String(p.group||p.region||""),
+            description:String(p.group||p.region||""),
+            available:p.available===true};
+        }).filter(p=>/^[a-f0-9]{32}$/i.test(String(p.id)) && Number(p.price)>0);
+        catalogReady=true;
+        refresh();return;
+      }
+      omnexLive=false;
+      // Existing manually fulfilled products remain visible until the supplier is synced.
       const {data,error}=await supabaseClient.from("products")
         .select("id,product_key,name,description,game,amount,price,active,sort_order,image_url")
         .eq("game","pubg").eq("active",true).order("sort_order");
@@ -48,6 +74,7 @@
     } catch(error) {
       if(requestId!==catalogRequest)return;
       pubgCatalog=[];
+      omnexLive=false;
       catalogReady=true;
       catalogError="تعذر تحميل باقات ببجي. تأكد من اتصال الإنترنت وأعد المحاولة.";
       console.warn("[pubg] Live catalog loading failed",error);
@@ -58,7 +85,8 @@
     // Display existing 60 UC under codes, but do not imply it is in stock.
     // The backend still blocks instant redemption of this manual product.
     if (String(p.product_key || "").toLowerCase() === "pubg-60") return "codes";
-    const label = [p.name, p.product_key, p.description].join(" ").toLowerCase();
+    const label = [p.group_name,p.region,p.name, p.product_key, p.description].join(" ").toLowerCase();
+    if (/عروض|offer|bundle|خصم/.test(label)) return "offers";
     if (/كود|code|بطاق[ةه]|card|redeem|voucher/.test(label)) return "codes";
     return "charge";
   }
@@ -90,6 +118,8 @@
     const priceText = (Number.isFinite(price) ? price : 0).toFixed(2);
     const isVoucher = categoryFor(product) === "codes";
     const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
+    const supplierUnavailable = product.source === "omnex" && product.available !== true;
+    const isDisabled = noCodeAvailable || supplierUnavailable;
     return '<article class="pubg-pack" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : 'شحن على UID') + '</span>'
       + '<span class="pubg-pack-arrow" aria-hidden="true">↗</span></div>'
@@ -98,8 +128,8 @@
       + '<h3 class="pubg-pack-name">' + name + '</h3>'
       + (noCodeAvailable ? '<p class="pubg-unavailable-note">كود 60 UC غير متوفر في المخزون حاليًا</p>' : '')
       + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>السعر</small><strong>' + priceText + ' <span>د.ل</span></strong></div>'
-      + (noCodeAvailable
-        ? '<button type="button" class="pubg-buy" disabled aria-label="كود 60 UC غير متوفر حاليًا">غير متوفر</button>'
+      + (isDisabled
+        ? '<button type="button" class="pubg-buy" disabled aria-label="الباقة غير متوفرة حاليًا">غير متوفر</button>'
         : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">' + "فتح القائمة" + ' <span aria-hidden="true">←</span></button>') + '</div>'
       + '</article>';
   }
@@ -212,13 +242,22 @@
     input.focus({preventScroll:true});
   }
 
+  function supplierReference(key){
+    const rows=SUPPLIER_REFERENCE[key];
+    if(!rows?.length)return "";
+    return '<div class="pubg-supplier-note" role="status"><strong>باقات المورد Omnex</strong><span>الأسعار أدناه أسعار المورد للمرجع فقط، وليست أسعار البيع. الشراء الآلي غير مفعّل حتى اكتمال ربط الكتالوج.</span></div>'
+      + '<div class="pubg-supplier-reference">'+rows.map(([amount,cost])=>
+        '<div class="pubg-supplier-reference-card"><img src="game-covers/pubg-uc.svg" alt="" loading="lazy">'
+        +'<strong>'+amount.toLocaleString("en-US")+' UC</strong><small>سعر المورد</small>'
+        +'<b>'+safe(Number(cost).toFixed(3))+' رصيد</b><span>غير متاح للشراء الآن</span></div>').join("")+'</div>';
+  }
   function paintOffers(panel, key) {
     const list = categoryProducts(key);
     const codes = key === "codes";
     panel.innerHTML = '<div class="pubg-results-heading"><div>'
-      + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : 'DIRECT TOP-UP') + '</span>'
-      + '<h2>' + (codes ? 'أكواد الشحن' : 'نشحنها لك') + '</h2>'
-      + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : 'اختار الباقة، وبعد الدفع نحتاج معرف اللاعب UID للشحن.') + '</p></div>'
+      + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : key==='offers'?'OFFERS':'DIRECT TOP-UP') + '</span>'
+      + '<h2>' + (codes ? 'أكواد الشحن' : key==='offers'?'عروض ببجي':'شحن عن طريق ID') + '</h2>'
+      + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : key==='offers'?'العروض الظاهرة من المورد عند توفرها.':'اختار الباقة وأدخل معرف اللاعب UID للشحن.') + '</p></div>'
       + '<span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
@@ -226,12 +265,12 @@
         ? '<div class="pubg-empty-state" role="alert"><strong>' + safe(catalogError) + '</strong><button type="button" class="pubg-retry-catalog">إعادة المحاولة</button></div>'
         : list.length
         ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
-        : '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div>'
-          + '<strong>' + (codes ? 'لا توجد أكواد متوفرة حاليًا' : 'لا توجد باقات للشحن حاليًا') + '</strong>'
-          + '<p>أول ما نضيف منتجات جديدة للقسم بتظهر هنا تلقائيًا.</p></div>')
-      + '<p class="pubg-purchase-note">' + (codes
-        ? 'استلام الأكواد فوري بعد دفع الطلب، بشرط توفر كود حقيقي في مخزون المتجر.'
-        : 'أدخل UID الصحيح: يتم شحن الشدات بواسطة الإدارة بعد استلام الطلب، وليس تلقائيًا.') + '</p>';
+        : supplierReference(key) || '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div>'
+          + '<strong>لا توجد عروض متوفرة حاليًا</strong>'
+          + '<p>ستظهر العروض عند توفرها من المورد.</p></div>')
+      + '<p class="pubg-purchase-note">' + (omnexLive
+        ? 'الأسعار والتوفر يُؤكدان من المورد عند فتح الطلب، ونتابع التنفيذ داخل طلباتي.'
+        : 'الربط التلقائي مع المورد لم يكتمل بعد؛ الأسعار المرجعية أعلاه لا يمكن شراؤها من المتجر حاليًا.') + '</p>';
 
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
       void fetchPubgProducts(document.getElementById(PAGE_ID));
@@ -240,7 +279,10 @@
       button.addEventListener("click", () => {
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
         if (!selected || String(selected.product_key || "").toLowerCase() === "pubg-60") return;
-        if (categoryFor(selected) === "charge") {
+        if (selected.source === "omnex") {
+          if(typeof window.openOmnexProductCheckout === "function") void window.openOmnexProductCheckout(selected);
+          else window.alert("خدمة المورد غير جاهزة للشراء حاليًا.");
+        } else if (categoryFor(selected) === "charge") {
           openPubgAccountCheckout(selected);
         } else if (typeof window.openInstantCodeCheckout === "function") {
           window.openInstantCodeCheckout(selected.id, selected.name, selected.price);
@@ -252,7 +294,7 @@
   }
   // Same two-screen experience as Roblox: categories first, packages on a separate inner screen.
   function showPubgCategories(root) {
-    root.classList.remove("pubg-inner-page", "pubg-codes-page", "pubg-charge-page");
+    root.classList.remove("pubg-inner-page", "pubg-codes-page", "pubg-charge-page", "pubg-offers-page");
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
       button.classList.remove("selected");
       button.setAttribute("aria-pressed","false");
@@ -274,13 +316,14 @@
     root.classList.add("pubg-inner-page");
     root.classList.toggle("pubg-codes-page",key==="codes");
     root.classList.toggle("pubg-charge-page",key==="charge");
+    root.classList.toggle("pubg-offers-page",key==="offers");
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
       const active=button.dataset.pubgCategory === key;
       button.classList.toggle("selected",active);
       button.setAttribute("aria-pressed",String(active));
     });
     const heading=root.querySelector("[data-pubg-title]");
-    if(heading)heading.textContent=key==="codes"?"أكواد الشحن":"نشحنها لك";
+    if(heading)heading.textContent=key==="codes"?"أكواد الشحن":key==="offers"?"عروض ببجي":"شحن عن طريق ID";
     const back=root.querySelector("[data-pubg-close]");
     if(back){
       back.setAttribute("aria-label","رجوع إلى أقسام ببجي");
@@ -312,6 +355,7 @@
     currentCategory="codes";
     catalogReady=false;
     catalogError="";
+    omnexLive=false;
     pubgCatalog=[];
     root.className = "pubg-premium visible";
     root.setAttribute("role", "dialog");
@@ -345,8 +389,8 @@
           : '<img class="pubg-choice-battle" src="game-covers/pubg-battlefront.webp" alt="" loading="lazy" decoding="async">')
         + '</span>'
         + '<span class="pubg-choice-info"><strong>' + item.title + '</strong>'
-        + '<small>' + (item.key==="codes"?"أكواد شدات PUBG المتوفرة في المخزون":"نجهز الشحن لك باستخدام معرف UID") + '</small>'
-        + '<span class="pubg-choice-action">' + (item.key==="codes"?"عرض أكواد الشحن":"عرض باقات الشحن") + '<span aria-hidden="true">←</span></span></span>'
+        + '<small>' + (item.key==="codes"?"أكواد شدات PUBG المتوفرة في المخزون":item.key==="offers"?"باقات وعروض خاصة":"نجهز الشحن باستخدام معرف UID") + '</small>'
+        + '<span class="pubg-choice-action">' + (item.key==="codes"?"عرض أكواد الشحن":item.key==="offers"?"عرض العروض":"عرض باقات الشحن") + '<span aria-hidden="true">←</span></span></span>'
         + '</button>').join("")
       + '</div></section>'
       + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite" aria-hidden="true"></div>'

@@ -690,3 +690,62 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
   transition:none!important;
  }
 }
+
+
+/* The pre-rendered / desktop game tile uses the same image-only Roblox front.
+   Keep its existing DOM and click handler for legacy filtering/navigation. */
+#storeView #productGrid .game-tiles{
+ grid-template-columns:minmax(0,1fr)!important;
+ width:100%!important;
+ max-width:760px!important;
+ margin-inline:auto!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"]{
+ width:100%!important;
+ min-width:0!important;
+ overflow:hidden!important;
+ border-radius:23px!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-yellow,
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-info,
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-brand{
+ display:none!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-btn{
+ display:block!important;
+ width:100%!important;
+ padding:0!important;
+ overflow:hidden!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art{
+ display:flex!important;
+ justify-content:center!important;
+ align-items:center!important;
+ width:100%!important;
+ min-height:255px!important;
+ max-height:none!important;
+ height:auto!important;
+ aspect-ratio:16/10!important;
+ background:radial-gradient(ellipse at 50% 45%,#6f57ae 0%,#292349 56%,#12162a 100%)!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art::before,
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art::after{
+ display:none!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art img{
+ display:block!important;
+ position:relative!important;
+ width:min(67%,300px)!important;
+ height:auto!important;
+ max-height:245px!important;
+ object-fit:contain!important;
+ object-position:center!important;
+ padding:0!important;
+ filter:drop-shadow(0 18px 20px #100b2877)!important;
+}
+@media(max-width:480px){
+ #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art{
+  min-height:220px!important;
+  aspect-ratio:4/3!important;
+ }
+}

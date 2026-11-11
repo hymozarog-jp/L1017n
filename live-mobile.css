@@ -580,3 +580,8 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
    pointer-events:auto!important;
  }
 }
+
+/* Dedicated PUBG cover beside Roblox. Only these two top-level categories are visible. */
+#llLanding .ll-catalog:has(.ll-game-section){grid-template-columns:repeat(2,minmax(0,1fr));max-width:690px}
+#llLanding .ll-game-pubg .ll-game-section-art{background:#182b36;border-color:#628b9f}
+#llLanding .ll-game-pubg .ll-game-section-art img{object-fit:cover;padding:0;filter:none}

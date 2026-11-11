@@ -51,7 +51,7 @@
       if(!supplier.error && supplier.data?.enabled && Array.isArray(supplier.data.products) && supplier.data.products.length){
         omnexLive=true;
         pubgCatalog=supplier.data.products.map(p=>{
-          const match=String(p.name||"").match(/(\\d[\\d,.]*)\\s*(?:UC|شد[ةات])/i);
+          const match=String(p.name||"").match(/(\d[\d,.]*)\s*(?:UC|شد[ةات])/i);
           const amount=match?Number(match[1].replace(/[,]/g,"")):0;
           return {...p, source:"omnex", game:"pubg", amount,
             group_name:String(p.group||p.region||""),
@@ -87,7 +87,7 @@
     if (String(p.product_key || "").toLowerCase() === "pubg-60") return "codes";
     const label = [p.group_name,p.region,p.name, p.product_key, p.description].join(" ").toLowerCase();
     if (/عروض|offer|bundle|خصم/.test(label)) return "offers";
-    if (/كود|code|بطاق[ةه]|card|redeem|voucher/.test(label)) return "codes";
+    if (/أ?كواد|اكواد|كود|code|بطاق[ةه]|card|redeem|voucher/.test(label)) return "codes";
     return "charge";
   }
   function categoryProducts(key) {
@@ -116,12 +116,13 @@
     const amountText = Number.isFinite(amount) && amount > 0 ? Math.trunc(amount).toLocaleString("en-US") : "—";
     const price = Number(product.price);
     const priceText = (Number.isFinite(price) ? price : 0).toFixed(2);
-    const isVoucher = categoryFor(product) === "codes";
+    const groupType = categoryFor(product);
+    const isVoucher = groupType === "codes";
     const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
     const supplierUnavailable = product.source === "omnex" && product.available !== true;
     const isDisabled = noCodeAvailable || supplierUnavailable;
     return '<article class="pubg-pack" style="--pubg-index:' + Math.min(index, 8) + '">'
-      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : 'شحن على UID') + '</span>'
+      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : groupType === 'offers' ? 'عرض ببجي' : 'شحن على UID') + '</span>'
       + '<span class="pubg-pack-arrow" aria-hidden="true">↗</span></div>'
       + '<div class="pubg-coin-wrap"><img class="pubg-uc-art l1017n-catalog-image" src="' + safe(productImageSrc(product.image_url)||'game-covers/pubg-uc.svg') + '" alt="' + safe(productImageSrc(product.image_url)?product.name:'') + '" loading="lazy" decoding="async"></div>'
       + '<div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'

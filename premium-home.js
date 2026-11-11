@@ -111,11 +111,11 @@ function mount(){
  },{passive:true});
 
  const search=document.createElement('div');search.className='ph-search-wrap';
- search.innerHTML='<label for="phGameSearch" style="position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden">البحث عن قسم</label><span class="ph-search-icon" aria-hidden="true">⌕</span><input type="search" id="phGameSearch" dir="rtl" autocomplete="off" enterkeyhint="search" placeholder="ابحث عن روبوكس أو MM2 أو ماب السرقة...">';
+ search.innerHTML='<label for="phGameSearch" style="position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden">البحث عن قسم</label><span class="ph-search-icon" aria-hidden="true">⌕</span><input type="search" id="phGameSearch" dir="rtl" autocomplete="off" enterkeyhint="search" placeholder="ابحث داخل روبلوكس: روبوكس، MM2، ماب السرقة...">';
  store.insertBefore(search,heading);
  const input=search.querySelector('input');
  const filters=document.createElement('div');filters.className='ph-filters';filters.setAttribute('role','group');filters.setAttribute('aria-label','تصفية الأقسام');
- const options=[['all','الكل'],['roblox','روبوكس'],['mm2','MM2'],['steal-a-brainrot','ماب السرقة']];
+ const options=[['all','الكل'],['roblox','روبلوكس']];
  options.forEach(function(item){
   const b=document.createElement('button');b.type='button';b.className='ph-filter';b.dataset.phFilter=item[0];b.textContent=item[1];b.setAttribute('aria-pressed',String(item[0]==='all'));filters.appendChild(b);
  });
@@ -159,7 +159,7 @@ function mount(){
  });
  let filter='all',pending=false;
  const normalize=v=>String(v||'').toLowerCase().normalize('NFKC').replace(/[\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه');
- const aliases={roblox:'روبوكس روبلوكس roblox robux شحن',mm2:'mm2 murder mystery أسلحة سلاح سكاكين', 'steal-a-brainrot':'ماب السرقة سرقه steal brainrot قرما لاسيكرت لاسبوكي'};
+ const aliases={roblox:'روبلوكس روبوكس roblox robux شحن mm2 murder mystery 2 اسلحة أسلحة سكاكين ماب السرقة سرقه steal brainrot قرما لاسيكرت لاسبوكي'};
  function belongs(key){
   return filter==='all'||String(key||'').toLowerCase()===filter;
  }

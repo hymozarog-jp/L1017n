@@ -18,9 +18,10 @@
   const GAME_META = {
     roblox: {name:"Roblox",tag:"روبلوكس",color:"purple",art:"R"},
     mm2: {name:"MM2",tag:"Murder Mystery 2",color:"blue",art:"M"},
-    "steal-a-brainrot": {name:"ماب السرقة",tag:"Steal a Brainrot",color:"teal",art:"01"}
+    "steal-a-brainrot": {name:"ماب السرقة",tag:"Steal a Brainrot",color:"teal",art:"01"},
+    pubg: {name:"PUBG Mobile",tag:"ببجي موبايل",color:"gold",art:"UC"}
   };
-  const FILTERS = [["all","الكل"],["roblox","روبلوكس"]];
+  const FILTERS = [["all","الكل"],["roblox","روبلوكس"],["pubg","ببجي"]];
   const HEROES = [
     {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
     {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102"},
@@ -66,6 +67,19 @@
     return normalize([section.title,section.subtitle,section.tag,aliases[section.key],
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
+  function matchesPubg(){
+    if(chosen!=="all"&&chosen!=="pubg")return false;
+    if(!query)return true;
+    const aliases="ببجي ببجي موبايل شدات شدة شحن معرف حساب uid uc pubg mobile";
+    return normalize(aliases).includes(query);
+  }
+  function pubgParentCard(){
+    return '<article class="ll-game-section ll-game-pubg ll-reveal" dir="rtl">'
+      +'<button type="button" class="ll-game-section-link" data-ll-game="pubg" aria-label="فتح ببجي موبايل">'
+      +'<span class="ll-game-section-art"><img src="game-covers/pubg-battlefront.webp" alt="" loading="eager" decoding="async"></span>'
+      +'<span class="ll-game-section-details"><strong>ببجي موبايل</strong></span>'
+      +'</button></article>';
+  }
   function robloxParentCard(){
     // The original Robux game-tile layout, with only its visible name changed
     // to Roblox. Checkout options remain inside the Roblox section.
@@ -104,6 +118,12 @@
       if(key==="steal-a-brainrot"){
         if(typeof window.openBrainrotStoreCategory==="function")window.openBrainrotStoreCategory();
         else notify("قسم ماب السرقة غير جاهز حاليًا.");
+        return;
+      }
+      if(key==="pubg"){
+        if(typeof window.renderPremiumPubg==="function")window.renderPremiumPubg();
+        else if(typeof openPubgCategories==="function")openPubgCategories();
+        else notify("قسم ببجي مازال يتحمّل، جرّب تحديث الصفحة.");
         return;
       }
     }catch(error){
@@ -173,11 +193,13 @@
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
-    const visible=SHOP_SECTIONS.some(matchesSection);
+    const visibleRoblox=SHOP_SECTIONS.some(matchesSection);
+    const visiblePubg=matchesPubg();
+    const visibleCount=Number(visibleRoblox)+Number(visiblePubg);
     const count=q("#llItemCount");
-    if(count)count.textContent=visible?"قسم واحد":"";
-    root.innerHTML=visible
-      ? robloxParentCard()
+    if(count)count.textContent=visibleCount?visibleCount+" قسم":"";
+    root.innerHTML=visibleCount
+      ? (visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")
       : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
@@ -239,7 +261,7 @@
     container.id = "llLanding";
     container.innerHTML = '<div class="ll-intro ll-reveal">'
       + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
-      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وفيه شحن روبوكس وMM2 وماب السرقة، مع شحن المحفظة.</p></div>'
+      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وببجي موبايل، وباقات الروبوكس وMM2 وماب السرقة وشدات UC.</p></div>'
       + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'

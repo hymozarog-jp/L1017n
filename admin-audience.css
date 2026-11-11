@@ -1,0 +1,69 @@
+/* L1017n admin audience — visitors and customer account screens. */
+#adminView #adminHubVisitors,#adminView #adminHubAccounts{color:#edf3ff}
+#adminView .admin-audience-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+#adminView .admin-audience-heading h3{font-size:clamp(19px,5vw,26px);font-weight:900;margin:3px 0 4px;color:#f4f6ff}
+#adminView .admin-audience-heading p{font-size:12px;color:#aebbd1;line-height:1.75;margin:0}
+#adminView .admin-audience-heading button{min-height:39px;flex:0 0 auto}
+#adminView .admin-audience-kicker{font:800 9px system-ui,sans-serif;letter-spacing:1.8px;color:#b69eff}
+#adminView .admin-audience-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:16px 0 22px}
+#adminView #adminVisitorsMetrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+#adminView .admin-audience-metric{display:flex;flex-direction:column;min-height:94px;gap:7px;padding:15px 12px;border-radius:17px;background:linear-gradient(142deg,#1c2a48,#101c30);border:1px solid #405379;box-shadow:inset 0 1px #ffffff0d;min-width:0}
+#adminView .admin-audience-metric small{font-size:11px;font-weight:750;color:#b5c6dd;line-height:1.5}
+#adminView .admin-audience-metric strong{font:900 clamp(24px,3vw,33px)/1.1 system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#fff}
+#adminView .admin-audience-metric span{font-size:10px;color:#839fca}
+#adminView .admin-audience-metric:nth-child(2){border-color:#655ea1;background:linear-gradient(135deg,#2b2851,#191a32)}
+#adminView .admin-audience-metric:nth-child(3){border-color:#3a797b;background:linear-gradient(135deg,#123e45,#11242c)}
+#adminView .admin-audience-chart-panel{border:1px solid #364866;background:#101b2e;border-radius:18px;padding:16px 13px;margin:0 0 20px}
+#adminView .admin-audience-subtitle{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:0 0 12px}
+#adminView .admin-audience-subtitle h4{font-size:15px;font-weight:850;margin:0;color:#f0f5ff}
+#adminView .admin-audience-subtitle span{font-size:10px;color:#a2b8d4}
+#adminView .admin-audience-chart{display:flex;flex-direction:column;gap:7px}
+#adminView .admin-audience-bar-line{display:grid;grid-template-columns:42px minmax(0,1fr) 35px 53px;align-items:center;gap:8px}
+#adminView .admin-audience-bar-day{font-size:10px;font-weight:700;color:#a3b7d3}
+#adminView .admin-audience-bar-track{height:17px;background:#243651;border-radius:100px;overflow:hidden}
+#adminView .admin-audience-bar-fill{display:block;height:100%;min-width:0;background:linear-gradient(90deg,#7462d4,#9a9cf8,#60c5c2);border-radius:100px;transition:width .35s ease}
+#adminView .admin-audience-bar-line strong{font-size:11px;font-weight:850;color:#e1edff;text-align:center}
+#adminView .admin-audience-bar-line small{font-size:9px;color:#a2b9d3;white-space:nowrap;text-align:left}
+#adminView .admin-audience-recent-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#adminView .admin-audience-visit{display:flex;align-items:center;gap:9px;border:1px solid #344866;background:#111f35;border-radius:14px;padding:11px;min-width:0}
+#adminView .admin-audience-visit-icon{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border-radius:11px;background:#274269;color:#afd2fa;font-size:22px}
+#adminView .admin-audience-visit>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+#adminView .admin-audience-visit b{font-size:11px;color:#e7efff}
+#adminView .admin-audience-visit small{font-size:10px;color:#95aac6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#adminView .admin-audience-visit time{margin-right:auto;font-size:10px;color:#bac7df;white-space:nowrap}
+#adminView .admin-audience-search-label{display:block;font-size:12px;font-weight:800;color:#dce6f5;margin:0 0 8px}
+#adminView .admin-audience-search{height:46px!important;width:100%!important;padding:0 14px!important;box-sizing:border-box;direction:rtl;border:1px solid #536986!important;background:#0b182b!important;border-radius:13px!important;color:#fff!important;font-size:14px!important;margin:0 0 16px!important;outline:none}
+#adminView .admin-audience-search:focus{border-color:#a49cf8!important;box-shadow:0 0 0 3px #9780ec20!important}
+#adminView .admin-audience-accounts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+#adminView .admin-audience-account{display:flex;align-items:flex-start;gap:11px;min-width:0;border:1px solid #3e5375;background:linear-gradient(144deg,#172640,#101d32);border-radius:17px;padding:15px 12px}
+#adminView .admin-audience-avatar{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:15px;background:linear-gradient(135deg,#7663dc,#4079a9);border:1px solid #bdb2ff55;color:#fff;font-size:20px;font-weight:900}
+#adminView .admin-audience-account-main{flex:1;min-width:0}
+#adminView .admin-audience-account-heading{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:3px}
+#adminView .admin-audience-account-heading strong{font-size:14px;font-weight:850;color:#fff;min-width:0;overflow-wrap:anywhere}
+#adminView .admin-audience-buyer{font-size:9px;font-weight:750;padding:3px 7px;color:#baffdc;background:#1d694833;border-radius:9px;border:1px solid #64bc8555}
+#adminView .admin-audience-email{display:block;font:500 11px/1.6 system-ui,sans-serif;color:#b6c9e2;text-align:right;word-break:break-all}
+#adminView .admin-audience-account-id{display:block;font:750 10px/1.6 system-ui,sans-serif;color:#a29ad6;text-align:right;margin:4px 0}
+#adminView .admin-audience-account-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding-top:10px;margin-top:8px;border-top:1px solid #ffffff16}
+#adminView .admin-audience-account-facts span{font-size:10px;color:#c2cce0;line-height:1.55;overflow-wrap:anywhere}
+#adminView .admin-audience-pagination{display:flex;align-items:center;justify-content:center;gap:13px;padding:20px 0 7px}
+#adminView .admin-audience-pagination span{font-size:12px;color:#c4cee2}
+#adminView .admin-audience-pagination button{min-width:80px;min-height:36px}
+#adminView .admin-audience-explain{border-top:1px solid #ffffff14;padding-top:14px;margin:16px 0 8px;color:#a2b2c9;font-size:11px;line-height:1.8}
+#adminView .admin-audience-status{font-size:11px;color:#a2b8d6;margin:7px 0}
+#adminView .admin-audience-empty{padding:24px;border:1px dashed #3d5576;border-radius:14px;color:#c1cce0;text-align:center;background:#101b2e;font-size:12px}
+@media(max-width:800px){
+ #adminView #adminVisitorsMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #adminView .admin-audience-accounts{grid-template-columns:1fr}
+ #adminView .admin-audience-recent-list{grid-template-columns:1fr}
+ #adminView .admin-audience-metrics{gap:8px}
+ #adminView .admin-audience-metric{padding:12px 10px;min-height:80px}
+ #adminView .admin-audience-metric strong{font-size:clamp(22px,6vw,29px)}
+}
+@media(max-width:390px){
+ #adminView .admin-audience-account{padding:12px 9px;gap:9px}
+ #adminView .admin-audience-avatar{width:37px;height:37px;flex-basis:37px}
+ #adminView .admin-audience-account-facts{grid-template-columns:1fr 1fr}
+ #adminView .admin-audience-bar-line{grid-template-columns:34px minmax(0,1fr) 28px 45px;gap:5px}
+ #adminView .admin-audience-metric small{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){#adminView .admin-audience-bar-fill{transition:none}}

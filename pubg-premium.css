@@ -680,3 +680,28 @@ body.pubg-account-checkout-open{overflow:hidden!important}
   #pubgCategoryPage.pubg-premium .pubg-choice-art{height:117px!important}
   #pubgCategoryPage.pubg-premium .pubg-choice-action{font-size:9px!important}
 }
+
+
+/* OMNEX supplier categories and safe pre-launch reference cards. */
+@media (min-width: 640px){
+  #pubgCategoryPage.pubg-premium .pubg-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width: 639px){
+  #pubgCategoryPage.pubg-premium .pubg-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pubgCategoryPage.pubg-premium .pubg-choice-offers{grid-column:1/-1;min-height:118px!important;display:flex;flex-direction:row;align-items:center;gap:14px}
+  #pubgCategoryPage.pubg-premium .pubg-choice-offers .pubg-choice-art{flex:0 0 27%;max-width:100px;min-width:76px}
+  #pubgCategoryPage.pubg-premium .pubg-choice-offers .pubg-choice-info{flex:1;min-width:0}
+}
+#pubgCategoryPage .pubg-supplier-note{display:flex;flex-direction:column;gap:5px;padding:13px 16px;border:1px solid #d6a75f55;border-radius:15px;background:linear-gradient(140deg,#272416,#171e28);color:#f2e5c9;line-height:1.7;margin:14px 0 16px}
+#pubgCategoryPage .pubg-supplier-note strong{color:#ffcf82;font-size:15px}
+#pubgCategoryPage .pubg-supplier-note span{color:#ccced3;font-size:12px}
+#pubgCategoryPage .pubg-supplier-reference{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+#pubgCategoryPage .pubg-supplier-reference-card{min-width:0;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;border:1px solid #ffffff24;border-radius:18px;background:linear-gradient(150deg,#20252e,#141b27);box-shadow:0 8px 20px #0003}
+#pubgCategoryPage .pubg-supplier-reference-card img{width:70px;height:67px;object-fit:contain;filter:drop-shadow(0 5px 12px #0007)}
+#pubgCategoryPage .pubg-supplier-reference-card strong{color:#fff;font-size:20px;direction:ltr}
+#pubgCategoryPage .pubg-supplier-reference-card small{color:#aeb9c9;font-size:11px}
+#pubgCategoryPage .pubg-supplier-reference-card b{color:#ffd28a;font-size:15px;font-variant-numeric:tabular-nums}
+#pubgCategoryPage .pubg-supplier-reference-card span{color:#9caabe;font-size:10px}
+@media (min-width: 670px){
+ #pubgCategoryPage .pubg-supplier-reference{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

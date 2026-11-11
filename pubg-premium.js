@@ -320,7 +320,7 @@
       + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : key==='offers'?'OFFERS':'DIRECT TOP-UP') + '</span>'
       + '<h2>' + (codes ? 'أكواد الشحن' : key==='offers'?'عروض ببجي':'شحن عن طريق ID') + '</h2>'
       + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : key==='offers'?'العروض الظاهرة من المورد عند توفرها.':'اختار الباقة وأدخل معرف اللاعب UID للشحن.') + '</p></div>'
-      + '<span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
+      + '<span class="pubg-results-count">' + countLabel(list.length || (SUPPLIER_REFERENCE[key]?.length || 0)) + '</span></div>'
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError

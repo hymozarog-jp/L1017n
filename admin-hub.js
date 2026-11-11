@@ -3,6 +3,7 @@
  "use strict";
  const $=s=>document.querySelector(s);
  const symbols={
+  omnex:'<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2"/>',
   overview:'<rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/>',
   orders:'<rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
   topups:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2M7 3h10"/>',
@@ -20,6 +21,7 @@
   ['topups','طلبات الشحن','التحويلات والمراجعة'],
   ['stock','مخزون الروبوكس','الكمية المتوفرة'],
   ['products','المنتجات','الأسعار والباقات'],
+  ['omnex','ربط OMNEX','منتجات روبلوكس وأسعار المورد'],
   ['finance','الأرباح والمبيعات','ملخص واضح وتكاليف الشراء'],
   ['reviews','التقييمات','آراء المشترين'],
   ['wallets','محافظ الزبائن','الأرصدة والمعاملات'],
@@ -240,6 +242,7 @@
      panes.finance=fallback;
    }
    panes.reviews=addReviewPanel();
+   panes.omnex=addFramePanel('adminHubOmnex','./admin-omnex.html?embedded=1','ربط OMNEX','منتجات روبلوكس من المورد، مع أسعار بيع محفوظة كمسودات.');
    panes.wallets=addFramePanel('adminHubWallets','./admin-wallets.html','محافظ الزبائن',
      'عرض المحافظ، البحث عن الزبائن ومراجعة المعاملات من نفس إدارة المتجر.');
    const reports=document.createElement('details');reports.className='finance-reports-details';

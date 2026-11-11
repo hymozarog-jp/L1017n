@@ -582,151 +582,130 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 }
 
 
-/* Roblox is the parent category; Robux, MM2 and Brainrot live inside it. */
+/* Standard compact Roblox game card — only the logo and the name outside.
+   Subcategories remain in the existing Roblox page after clicking. */
 #llLanding .ll-catalog:has(>.ll-roblox-parent){
  display:grid!important;
- grid-template-columns:minmax(0,1fr)!important;
+ grid-template-columns:repeat(auto-fill,minmax(155px,185px))!important;
+ gap:14px!important;
+ justify-content:start!important;
  justify-items:stretch!important;
- max-width:760px!important;
  width:100%!important;
- margin-inline:auto!important;
+ max-width:none!important;
+ margin:0!important;
+ direction:rtl!important;
 }
-#llLanding .ll-catalog>.ll-roblox-parent{
- grid-column:1/-1!important;
- width:100%!important;
- min-width:0!important;
-}
-#llLanding .ll-roblox-parent-cover{
- align-self:stretch!important;
- height:100%!important;
- box-sizing:border-box!important;
-}
-#llLanding .ll-roblox-parent-info{min-width:0!important}
-#llLanding .ll-roblox-parent-info h3{overflow-wrap:normal!important;word-break:normal!important}
-#llLanding .ll-roblox-subcategories{width:100%;min-width:0}
-#llLanding .ll-roblox-subcategory{
- width:100%!important;
- min-width:0!important;
- box-sizing:border-box!important;
- white-space:normal!important;
- line-height:1.5!important;
-}
-@media(max-width:480px){
- #llLanding .ll-catalog>.ll-roblox-parent{grid-template-columns:minmax(0,36%) minmax(0,64%)!important}
- #llLanding .ll-roblox-parent-cover{min-height:280px!important}
- #llLanding .ll-roblox-parent-info{padding:15px 12px!important}
- #llLanding .ll-roblox-parent-info h3{font-size:23px!important}
- #llLanding .ll-roblox-subcategory{gap:2px 5px!important;padding:10px 9px!important}
- #llLanding .ll-roblox-subcategory span{font-size:12px!important}
- #llLanding .ll-roblox-subcategory small{font-size:9px!important}
-}
-@media(max-width:350px){
- #llLanding .ll-catalog>.ll-roblox-parent{grid-template-columns:minmax(0,31%) minmax(0,69%)!important}
- #llLanding .ll-roblox-parent-cover{padding:6px!important}
- #llLanding .ll-roblox-parent-info{padding:12px 8px!important}
-}
-
-
-/* Roblox storefront: the exterior game tile shows the Roblox image only.
-   Products and subcategories remain inside the existing Roblox hub. */
 #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only{
+ grid-column:auto!important;
  display:block!important;
+ grid-template-columns:none!important;
  min-height:0!important;
+ max-width:185px!important;
+ width:100%!important;
  height:auto!important;
  overflow:hidden!important;
- grid-template-columns:none!important;
- border-radius:23px!important;
+ border:1px solid #7561ac66!important;
+ border-radius:18px!important;
+ background:#171b31!important;
 }
 #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
  display:flex!important;
+ flex-direction:column!important;
+ justify-content:stretch!important;
+ align-items:stretch!important;
  width:100%!important;
- min-width:0!important;
  height:auto!important;
- min-height:255px!important;
- aspect-ratio:16/10!important;
- padding:28px!important;
- align-items:center!important;
- justify-content:center!important;
+ min-height:0!important;
+ aspect-ratio:auto!important;
+ padding:0!important;
+ margin:0!important;
  border:0!important;
- border-radius:22px!important;
- background:radial-gradient(ellipse at 50% 45%,#6f57ae 0%,#292349 56%,#12162a 100%)!important;
- overflow:hidden!important;
+ border-radius:0!important;
+ box-sizing:border-box!important;
+ background:#171b31!important;
+ text-align:center!important;
  cursor:pointer!important;
- transition:filter .2s ease,background .2s ease!important;
 }
 #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover::before{
+ content:none!important;
  display:none!important;
 }
-#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover img{
+#llLanding .ll-roblox-cover-only .ll-roblox-parent-art{
+ display:flex!important;
+ justify-content:center!important;
+ align-items:center!important;
+ width:100%!important;
+ height:155px!important;
+ min-height:0!important;
+ padding:12px!important;
+ box-sizing:border-box!important;
+ background:radial-gradient(circle at center,#6c55ab 0%,#2b244c 65%,#181c32 100%)!important;
+ overflow:hidden!important;
+}
+#llLanding .ll-roblox-cover-only .ll-roblox-parent-art img{
  display:block!important;
- position:relative!important;
- z-index:1!important;
- width:min(67%,300px)!important;
+ width:98px!important;
+ height:98px!important;
  max-width:100%!important;
- height:auto!important;
- max-height:245px!important;
+ max-height:100%!important;
+ padding:0!important;
+ margin:0!important;
  object-fit:contain!important;
  object-position:center!important;
- padding:0!important;
- filter:drop-shadow(0 18px 20px #100b2877)!important;
+ filter:drop-shadow(0 9px 12px #110e2966)!important;
 }
-#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover:focus-visible{
- outline:3px solid #c4a9ff!important;
- outline-offset:-4px!important;
-}
-@media(max-width:480px){
- #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
-  min-height:220px!important;
-  aspect-ratio:4/3!important;
-  padding:22px!important;
- }
- #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover img{
-  width:min(72%,235px)!important;
-  max-height:225px!important;
- }
-}
-@media(prefers-reduced-motion:reduce){
- #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
-  transition:none!important;
- }
-}
-
-
-/* The pre-rendered / desktop game tile uses the same image-only Roblox front.
-   Keep its existing DOM and click handler for legacy filtering/navigation. */
-#storeView #productGrid .game-tiles{
- grid-template-columns:minmax(0,1fr)!important;
+#llLanding .ll-roblox-cover-only .ll-roblox-tile-name{
+ display:block!important;
  width:100%!important;
- max-width:760px!important;
- margin-inline:auto!important;
+ margin:0!important;
+ padding:12px 9px 13px!important;
+ box-sizing:border-box!important;
+ color:#fff!important;
+ background:#171b31!important;
+ font:850 16px/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+ text-align:center!important;
+}
+#llLanding .ll-roblox-cover-only .ll-roblox-parent-cover:focus-visible{
+ outline:3px solid #b69aff!important;
+ outline-offset:-3px!important;
+}
+/* Fallback/desktop tile matches the compact mobile card. */
+#storeView #productGrid .game-tiles{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fill,minmax(155px,185px))!important;
+ gap:14px!important;
+ justify-content:start!important;
+ width:100%!important;
+ max-width:none!important;
+ margin:0!important;
+ direction:rtl!important;
 }
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"]{
  width:100%!important;
  min-width:0!important;
+ max-width:185px!important;
+ border-radius:18px!important;
  overflow:hidden!important;
- border-radius:23px!important;
-}
-#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-yellow,
-#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-info,
-#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-brand{
- display:none!important;
 }
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-btn{
  display:block!important;
  width:100%!important;
+ height:auto!important;
  padding:0!important;
+ border-radius:18px!important;
  overflow:hidden!important;
 }
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art{
  display:flex!important;
- justify-content:center!important;
  align-items:center!important;
+ justify-content:center!important;
  width:100%!important;
- min-height:255px!important;
+ height:155px!important;
+ min-height:0!important;
  max-height:none!important;
- height:auto!important;
- aspect-ratio:16/10!important;
- background:radial-gradient(ellipse at 50% 45%,#6f57ae 0%,#292349 56%,#12162a 100%)!important;
+ aspect-ratio:auto!important;
+ box-sizing:border-box!important;
+ background:radial-gradient(circle at center,#6c55ab 0%,#2b244c 65%,#181c32 100%)!important;
 }
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art::before,
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art::after{
@@ -734,18 +713,44 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 }
 #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art img{
  display:block!important;
- position:relative!important;
- width:min(67%,300px)!important;
- height:auto!important;
- max-height:245px!important;
+ width:98px!important;
+ height:98px!important;
+ max-width:100%!important;
+ max-height:100%!important;
+ padding:0!important;
  object-fit:contain!important;
  object-position:center!important;
- padding:0!important;
- filter:drop-shadow(0 18px 20px #100b2877)!important;
+ filter:drop-shadow(0 9px 12px #110e2966)!important;
 }
-@media(max-width:480px){
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-brand,
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-yellow,
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-info small{
+ display:none!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-info{
+ display:block!important;
+ height:auto!important;
+ min-height:0!important;
+ background:#171b31!important;
+ padding:12px 9px 13px!important;
+ text-align:center!important;
+}
+#storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-info strong{
+ display:block!important;
+ color:#fff!important;
+ font:850 16px/1.4 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
+}
+@media(max-width:380px){
+ #llLanding .ll-catalog:has(>.ll-roblox-parent),
+ #storeView #productGrid .game-tiles{
+  grid-template-columns:repeat(auto-fill,minmax(138px,166px))!important;
+ }
+ #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only,
+ #storeView #productGrid .game-tile[data-game-group="روبلوكس"]{
+  max-width:166px!important;
+ }
+ #llLanding .ll-roblox-cover-only .ll-roblox-parent-art,
  #storeView #productGrid .game-tile[data-game-group="روبلوكس"] .game-tile-art{
-  min-height:220px!important;
-  aspect-ratio:4/3!important;
+  height:142px!important;
  }
 }

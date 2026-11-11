@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const api=()=>typeof supabaseClient!=='undefined'?supabaseClient:null;
-let catalog=[],dialog=null,quote=null,currentProduct=null,currentOrder=null,requestKey=null,owner='',liveUser='',generation=0,buying=false,polling=false,watching=false,lastPending=new Set();
+let dialog=null,quote=null,currentProduct=null,currentOrder=null,requestKey=null,owner='',liveUser='',generation=0,buying=false,polling=false,watching=false,lastPending=new Set();
 const $=s=>dialog?.querySelector(s),make=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
 const cash=v=>Number.isFinite(Number(v))&&Number(v)>0?Number(v).toFixed(2)+' د.ل':'السعر غير متاح';
 const errors={unauthorized:'سجّل دخولك أولًا.',insufficient_balance:'رصيد محفظتك غير كافٍ.',phone_verification_required_before_purchase:'وثّق رقم هاتفك من حسابي أولًا.',supplier_out_of_stock:'هذه الباقة غير متوفرة حاليًا.',product_not_available:'هذه الباقة غير متاحة حاليًا.',supplier_sales_paused:'الشراء متوقف مؤقتًا. حاول لاحقًا.',supplier_price_unavailable:'تعذر التحقق من سعر الباقة الآن. حاول بعد قليل.',supplier_wallet_changed:'الباقة غير متاحة للدفع حاليًا.',supplier_price_requires_review:'سعر الباقة قيد التحديث. حاول لاحقًا.',quote_expired:'انتهت صلاحية السعر. حدّث السعر وأكّد من جديد.',missing_product_field:'أكمل بيانات الباقة المطلوبة.',invalid_product_fields:'راجع بيانات المستفيد.',unsupported_product_fields:'هذه الباقة تحتاج مراجعة قبل عرضها للبيع.',supplier_order_already_pending:'عندك طلب لهذه الباقة قيد التنفيذ. تابعه من طلباتي.',too_many_pending_orders:'تابع طلباتك الحالية قبل إنشاء طلب آخر.',quote_rate_limit:'انتظر قليلًا ثم حاول مجددًا.'};
@@ -59,14 +59,140 @@ async function openProduct(product){
  try{const previous=await invoke({action:'resume',client_key:requestKey});if(seq!==generation)return;if(previous?.order_id){showOrder(previous);return}}catch{}
  if(seq===generation)await quoteProduct(product,seq);
 }
-window.openRobloxCodesPage=function(root){
- if(!root||root.id!=='robloxGamePage'||!root.isConnected)return;
- const old=root.querySelector('.rgp-grid,.rgp-method-page');if(!old)return;
- const page=make('section','rgp-method-page ox-catalog');old.replaceWith(page);root.classList.add('rgp-inner-page');root.classList.remove('rgp-category-hub');root.querySelector('.rgp-hub-subtitle')?.remove();if(typeof window.setRobloxInnerHeader==='function')window.setRobloxInnerHeader(root,'باقات وأكواد Roblox','codes');root.scrollTop=0;
- page.innerHTML='<header class="ox-catalog-head"><h2>باقات وأكواد روبلوكس</h2><p>اختر الباقة والمنطقة المناسبة لحسابك.</p></header><div class="ox-filters"><input type="search" class="ox-search" aria-label="ابحث عن باقة روبلوكس" placeholder="ابحث عن باقة"><select class="ox-filter-region" aria-label="المنطقة"><option value="">كل المناطق</option></select><label><input type="checkbox" class="ox-instock" checked> المتوفر فقط</label></div><p class="ox-catalog-status" role="status">جاري تحميل الباقات…</p><div class="ox-catalog-grid"></div><button class="ox-more ox-soft" type="button" hidden>عرض المزيد</button>';
- let limit=12;function draw(){const query=page.querySelector('.ox-search').value.trim().toLowerCase(),region=page.querySelector('.ox-filter-region').value,availableOnly=page.querySelector('.ox-instock').checked;const list=catalog.filter(p=>(!query||(p.name+' '+p.region).toLowerCase().includes(query))&&(!region||p.region===region)&&(!availableOnly||p.available));const grid=page.querySelector('.ox-catalog-grid');grid.replaceChildren();for(const p of list.slice(0,limit)){const card=make('button','ox-product');card.type='button';card.disabled=!p.available;card.setAttribute('aria-label',p.name+'، '+p.region+'، '+cash(p.price));const pic=make('img');pic.src='game-covers/robux-100-tokens.svg';pic.alt='';pic.loading='lazy';const info=make('span','ox-product-info');info.append(make('strong','',p.name),make('small','',p.region));const price=make('b','ox-product-price',cash(p.price)),stock=make('small','ox-product-stock',p.available?'اختيار الباقة ←':'غير متوفر');info.append(price,stock);card.append(pic,info);card.onclick=()=>openProduct(p);grid.append(card)}page.querySelector('.ox-catalog-status').textContent=list.length?'':'لا توجد باقات متاحة لهذا الاختيار.';page.querySelector('.ox-more').hidden=list.length<=limit}
- page.querySelector('.ox-search').oninput=()=>{limit=12;draw()};page.querySelector('.ox-filter-region').onchange=()=>{limit=12;draw()};page.querySelector('.ox-instock').onchange=()=>{limit=12;draw()};page.querySelector('.ox-more').onclick=()=>{limit+=12;draw()};
- (async()=>{try{const {data,error}=await api().rpc('get_public_omnex_roblox_catalog');if(!page.isConnected)return;if(error)throw error;catalog=Array.isArray(data?.products)?data.products:[];if(!data?.enabled){page.querySelector('.ox-catalog-status').textContent='الباقات قيد التحديث. جرّب مرة ثانية بعد قليل.';return}const select=page.querySelector('.ox-filter-region');[...new Set(catalog.map(p=>p.region))].sort().forEach(region=>{const op=make('option','',region||'روبلوكس');op.value=region;select.append(op)});draw()}catch{if(page.isConnected)page.querySelector('.ox-catalog-status').textContent='تعذر تحميل الباقات. حاول مرة ثانية.'}})();
+const regionLabels = new Map([
+ ['أمريكي', 'روبلوكس أمريكا'],
+ ['عالمية', 'روبلوكس عالمي'],
+ ['السعودية', 'روبلوكس السعودية'],
+ ['الإمارات', 'روبلوكس الإمارات'],
+ ['بريطانيا', 'روبلوكس بريطانيا'],
+ ['أوروبا', 'روبلوكس أوروبا'],
+]);
+
+function productCard(product, regionLabel) {
+ const card = make('button', 'ox-product');
+ card.type = 'button';
+ card.disabled = !product.available;
+ card.setAttribute('aria-label', [product.name, regionLabel, cash(product.price)].join('، '));
+ const image = make('img');
+ image.src = 'game-covers/robux-100-tokens.svg';
+ image.alt = '';
+ image.loading = 'lazy';
+ const info = make('span', 'ox-product-info');
+ info.append(
+  make('strong', '', product.name),
+  make('b', 'ox-product-price', cash(product.price)),
+  make('small', 'ox-product-stock', product.available ? 'اختيار الباقة ←' : 'غير متوفر'),
+ );
+ card.append(image, info);
+ card.onclick = () => openProduct(product);
+ return card;
+}
+
+window.openRobloxCodesPage = async function(root) {
+ if (!root || root.id !== 'robloxGamePage' || !root.isConnected) return;
+ const old = root.querySelector('.rgp-grid,.rgp-method-page');
+ if (!old) return;
+ const page = make('section', 'rgp-method-page ox-catalog');
+ old.replaceWith(page);
+ root.classList.add('rgp-inner-page');
+ root.classList.remove('rgp-category-hub');
+ root.querySelector('.rgp-hub-subtitle')?.remove();
+ window.setRobloxInnerHeader?.(root, 'باقات وأكواد Roblox', 'codes');
+ root.scrollTop = 0;
+ page.innerHTML = `
+  <header class="ox-catalog-head"><h2 tabindex="-1">أكواد روبلوكس</h2></header>
+  <p class="ox-catalog-status" role="status">جاري تحميل الأقسام…</p>
+  <div class="ox-region-grid" aria-label="أقسام روبلوكس حسب المنطقة" hidden></div>
+  <div class="ox-region-products" hidden>
+   <button class="ox-region-back ox-soft" type="button">→ كل المناطق</button>
+   <div class="ox-filters">
+    <input type="search" class="ox-search" aria-label="ابحث في باقات المنطقة" placeholder="ابحث في الباقات">
+    <label><input type="checkbox" class="ox-instock" checked> المتوفر فقط</label>
+   </div>
+   <div class="ox-catalog-grid"></div>
+   <button class="ox-more ox-soft" type="button" hidden>عرض المزيد</button>
+  </div>`;
+ const heading = page.querySelector('h2');
+ const status = page.querySelector('.ox-catalog-status');
+ const menu = page.querySelector('.ox-region-grid');
+ const products = page.querySelector('.ox-region-products');
+ const grid = page.querySelector('.ox-catalog-grid');
+ const search = page.querySelector('.ox-search');
+ const inStock = page.querySelector('.ox-instock');
+ const more = page.querySelector('.ox-more');
+ let activeRegion, activeButton, limit = 12;
+
+ function drawProducts() {
+  const query = search.value.trim().toLowerCase();
+  const matches = activeRegion.items.filter(product =>
+   (!inStock.checked || product.available) && product.name.toLowerCase().includes(query)
+  );
+  grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label)));
+  status.textContent = matches.length ? '' : 'لا توجد باقات تطابق اختيارك.';
+  more.hidden = matches.length <= limit;
+ }
+
+ function openRegion(region, button) {
+  activeRegion = region;
+  activeButton = button;
+  heading.textContent = region.label;
+  menu.hidden = true;
+  products.hidden = false;
+  search.value = '';
+  inStock.checked = region.items.some(product => product.available);
+  limit = 12;
+  drawProducts();
+  root.scrollTop = 0;
+  heading.focus({preventScroll: true});
+ }
+
+ page.querySelector('.ox-region-back').onclick = () => {
+  heading.textContent = 'أكواد روبلوكس';
+  products.hidden = true;
+  grid.replaceChildren();
+  status.textContent = '';
+  menu.hidden = false;
+  root.scrollTop = 0;
+  activeButton.focus({preventScroll: true});
+ };
+ search.oninput = inStock.onchange = () => { limit = 12; drawProducts(); };
+ more.onclick = () => { limit += 12; drawProducts(); };
+
+ try {
+  const {data, error} = await api().rpc('get_public_omnex_roblox_catalog');
+  if (!page.isConnected) return;
+  if (error) throw error;
+  if (!data?.enabled) {
+   status.textContent = 'الباقات قيد التحديث. جرّب مرة ثانية بعد قليل.';
+   return;
+  }
+  const groups = new Map();
+  for (const product of data.products || []) {
+   const key = product.region?.trim() || '';
+   const label = regionLabels.get(key) || key || 'أكواد أخرى';
+   if (!groups.has(key)) groups.set(key, {label, items: []});
+   groups.get(key).items.push(product);
+  }
+  const keys = [...regionLabels.keys(), ...[...groups.keys()].filter(key => !regionLabels.has(key))];
+  for (const key of keys) {
+   const region = groups.get(key);
+   if (!region) continue;
+   const count = region.items.filter(product => product.available).length;
+   const button = make('button', 'ox-region-card');
+   button.type = 'button';
+   const info = make('span', 'ox-region-info');
+   info.append(make('strong', '', region.label), make('small', '', count ? 'المتوفر: ' + count : 'غير متوفر حاليًا'));
+   const arrow = make('span', 'ox-region-arrow', '←');
+   arrow.setAttribute('aria-hidden', 'true');
+   button.append(info, arrow);
+   button.onclick = () => openRegion(region, button);
+   menu.append(button);
+  }
+  menu.hidden = !groups.size;
+  status.textContent = groups.size ? '' : 'لا توجد باقات روبلوكس حاليًا.';
+ } catch {
+  if (page.isConnected) status.textContent = 'تعذر تحميل الأقسام. حاول مرة ثانية.';
+ }
 };
 async function poll(){
  if(polling||document.visibilityState==='hidden'||!api())return;polling=true;watchAuth();

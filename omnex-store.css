@@ -1,2 +1,47 @@
 /* Supplier Roblox cards follow the store's compact dark catalog. */
 .ox-catalog{width:100%;max-width:720px;margin:auto;direction:rtl}.ox-catalog-head h2{margin:16px 0 6px;font-size:24px;color:#f3efff}.ox-catalog-head p{font-size:13px;color:#b0a9c2;line-height:1.8}.ox-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,.7fr);gap:10px;margin:18px 0}.ox-filters input,.ox-filters select,.ox-field input,.ox-field select{min-width:0;width:100%;min-height:44px;padding:9px 12px;border:1px solid #9787ba45;border-radius:12px;background:#131b2a;color:#f5f0ff;font:inherit;font-size:16px;color-scheme:dark}.ox-filters label{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:12px;color:#bcb3cb}.ox-filters input[type=checkbox]{width:17px;min-height:17px;height:17px}.ox-catalog-status{color:#aca4bc;font-size:13px}.ox-catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ox-product{display:flex;align-items:center;gap:12px;min-width:0;min-height:132px;direction:rtl;text-align:right;border:1px solid #aa98d02c;border-radius:20px;padding:14px;background:linear-gradient(135deg,#20283a,#131b29);color:#f3f0fc;cursor:pointer;font-family:inherit}.ox-product img{width:78px;height:82px;object-fit:contain;flex:none}.ox-product-info{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0}.ox-product-info strong{font-size:16px;line-height:1.5}.ox-product-info>small{font-size:11px;color:#b9adce}.ox-product-price{font:750 20px/1.6 system-ui,sans-serif;color:#dfd0ff;white-space:nowrap}.ox-product-info .ox-product-stock{color:#aad9bd;font-size:11px}.ox-product:disabled{opacity:.5;cursor:default}.ox-product:focus-visible,.ox-checkout button:focus-visible{outline:2px solid #c4a8f8;outline-offset:3px}.ox-soft,.ox-primary{min-height:44px;padding:10px 15px;border:1px solid #b09ada55;border-radius:13px;background:#8e6bce20;color:#e8dafa;font-family:inherit;font-size:14px;font-weight:650;line-height:1.5;cursor:pointer}.ox-more{width:100%;margin:18px 0}.ox-checkout{box-sizing:border-box;width:min(94vw,470px);max-width:94vw;max-height:88dvh;overflow:auto;margin:auto;padding:22px;border:1px solid #9c83c05c;border-radius:24px;background:#141b2a;color:#f1eef8;font-family:inherit;direction:rtl;box-shadow:0 28px 90px #0007;animation:l1017EnterFromLeft .48s cubic-bezier(.22,.75,.25,1)}.ox-checkout::backdrop{background:#060a12bd}.ox-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}.ox-dialog-head h2{margin:0;font-size:22px}.ox-close{background:#ffffff08;border:1px solid #ffffff19;border-radius:11px;width:38px;height:38px;color:#eee;font-size:27px;cursor:pointer}.ox-summary{display:flex;align-items:center;gap:10px;padding:14px 0;border-block:1px solid #ffffff12;margin-bottom:14px}.ox-summary img{width:58px;height:58px;object-fit:contain}.ox-summary>div{min-width:0;flex:1}.ox-name{font-size:16px;display:block;overflow-wrap:anywhere}.ox-region{display:block;margin-top:6px;color:#b6a7cf;font-size:12px}.ox-price{font:750 19px/1.5 system-ui,sans-serif;white-space:nowrap;color:#d5c4f6}.ox-field{display:grid;gap:8px;font-size:13px;color:#c9bfd8;margin:12px 0}.ox-accept{display:flex;align-items:flex-start;gap:10px;margin:16px 0;color:#c0b6cf;font-size:12px;line-height:1.9}.ox-accept input{margin-top:6px;flex:none;width:17px;height:17px}.ox-accept a{color:#d2b1ff}.ox-primary{width:100%;background:linear-gradient(110deg,#8e69d6,#6753a5);color:#fff;border:0;margin-top:10px;font-family:inherit;font-size:15px;font-weight:750}.ox-primary:disabled{opacity:.5;cursor:default}.ox-status,.ox-delivery-note,.ox-progress p{font-size:13px;color:#b4acc7;line-height:1.9;overflow-wrap:anywhere}.ox-order-id{color:#b5a8d2;direction:ltr;display:block}.ox-code{padding:16px;border:1px solid #a38ac64d;border-radius:13px;background:#0d1320;color:#d9f6e3;white-space:pre-wrap;word-break:break-word;user-select:all;direction:ltr;text-align:left;font:650 16px/1.7 monospace}.ox-checkout [hidden],.ox-catalog [hidden]{display:none!important}@media(max-width:650px){.ox-catalog-grid{grid-template-columns:1fr}.ox-product{min-height:122px}.ox-summary{flex-wrap:wrap}.ox-price{margin-inline-start:auto}.ox-checkout{padding:18px}.ox-catalog-head h2{font-size:22px}}@media(prefers-reduced-motion:reduce){.ox-checkout{animation:none}}
+
+.ox-region-grid {
+ display: grid;
+ grid-template-columns: repeat(2, minmax(0, 1fr));
+ gap: 10px;
+ margin: 18px 0;
+}
+
+.ox-region-card {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 8px;
+ min-width: 0;
+ min-height: 86px;
+ padding: 12px;
+ border: 1px solid #aa98d048;
+ border-radius: 16px;
+ background: linear-gradient(135deg, #222a3e, #151c2b);
+ color: #f3efff;
+ font: inherit;
+ text-align: start;
+ cursor: pointer;
+}
+
+.ox-region-info {
+ display: grid;
+ gap: 4px;
+ min-width: 0;
+}
+
+.ox-region-info strong { font-size: 15px; }
+.ox-region-info small { color: #bbb0ce; font-size: 12px; }
+.ox-region-arrow { color: #cfb6ff; flex: none; }
+.ox-region-card:hover { border-color: #ab8fe1; }
+.ox-region-card:focus-visible, .ox-region-back:focus-visible {
+ outline: 2px solid #c4a8f8;
+ outline-offset: 3px;
+}
+
+.ox-region-products .ox-filters { grid-template-columns: minmax(0, 1fr); }
+
+@media (max-width: 320px) {
+ .ox-region-grid { grid-template-columns: 1fr; }
+}

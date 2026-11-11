@@ -67,17 +67,12 @@
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
   function robloxParentCard(){
-    return '<article class="ll-roblox-parent ll-reveal" dir="rtl" aria-label="قسم روبلوكس وأقسامه الثلاثة">'
-      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح قسم روبلوكس">'
-      +'<span class="ll-roblox-parent-kicker">ROBLOX</span>'
-      +'<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></button>'
-      +'<div class="ll-roblox-parent-info"><span class="ll-roblox-parent-label">ROBLOX · L1017n</span>'
-      +'<h3>روبلوكس</h3><p>اختر من الأقسام الموجودة داخل روبلوكس.</p>'
-      +'<div class="ll-roblox-subcategories">'
-      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="roblox"><span>شحن روبوكس</span><small>باقات وأكواد</small></button>'
-      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="mm2"><span>MM2</span><small>أسلحة ومستلزمات</small></button>'
-      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="steal-a-brainrot"><span>ماب السرقة</span><small>شخصيات وأغراض</small></button>'
-      +'</div></div></article>';
+    // Outside Roblox, show only its artwork. Keep MM2, Brainrot and Robux
+    // accessible inside the Roblox hub, never as preview buttons here.
+    return '<article class="ll-roblox-parent ll-roblox-cover-only ll-reveal" dir="rtl">'
+      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح روبلوكس والأقسام الداخلية">'
+      +'<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async">'
+      +'</button></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");

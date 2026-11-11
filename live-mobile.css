@@ -580,3 +580,48 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
    pointer-events:auto!important;
  }
 }
+
+
+/* Roblox is the parent category; Robux, MM2 and Brainrot live inside it. */
+#llLanding .ll-catalog:has(>.ll-roblox-parent){
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ justify-items:stretch!important;
+ max-width:760px!important;
+ width:100%!important;
+ margin-inline:auto!important;
+}
+#llLanding .ll-catalog>.ll-roblox-parent{
+ grid-column:1/-1!important;
+ width:100%!important;
+ min-width:0!important;
+}
+#llLanding .ll-roblox-parent-cover{
+ align-self:stretch!important;
+ height:100%!important;
+ box-sizing:border-box!important;
+}
+#llLanding .ll-roblox-parent-info{min-width:0!important}
+#llLanding .ll-roblox-parent-info h3{overflow-wrap:normal!important;word-break:normal!important}
+#llLanding .ll-roblox-subcategories{width:100%;min-width:0}
+#llLanding .ll-roblox-subcategory{
+ width:100%!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+ white-space:normal!important;
+ line-height:1.5!important;
+}
+@media(max-width:480px){
+ #llLanding .ll-catalog>.ll-roblox-parent{grid-template-columns:minmax(0,36%) minmax(0,64%)!important}
+ #llLanding .ll-roblox-parent-cover{min-height:280px!important}
+ #llLanding .ll-roblox-parent-info{padding:15px 12px!important}
+ #llLanding .ll-roblox-parent-info h3{font-size:23px!important}
+ #llLanding .ll-roblox-subcategory{gap:2px 5px!important;padding:10px 9px!important}
+ #llLanding .ll-roblox-subcategory span{font-size:12px!important}
+ #llLanding .ll-roblox-subcategory small{font-size:9px!important}
+}
+@media(max-width:350px){
+ #llLanding .ll-catalog>.ll-roblox-parent{grid-template-columns:minmax(0,31%) minmax(0,69%)!important}
+ #llLanding .ll-roblox-parent-cover{padding:6px!important}
+ #llLanding .ll-roblox-parent-info{padding:12px 8px!important}
+}

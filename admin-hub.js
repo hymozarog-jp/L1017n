@@ -12,11 +12,15 @@
   finance:'<path d="M4 19h16M7 15V9M12 15V4M17 15v-5"/><path d="m4 8 5-4 5 3 6-5"/>',
   reviews:'<path d="m12 3 2.7 5.6 6.2.9-4.5 4.4 1.1 6.2-5.5-2.9-5.5 2.9 1.1-6.2-4.5-4.4 6.2-.9Z"/>',
   wallets:'<circle cx="8" cy="8" r="3"/><path d="M2 21v-2a6 6 0 0 1 12 0v2M16 7a3 3 0 0 1 0 6M16 16a5 5 0 0 1 6 5"/>',
-  reports:'<path d="M6 2h9l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M15 2v6h5M9 16v-4m4 4v-6m4 6v-3"/>'
+  reports:'<path d="M6 2h9l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M15 2v6h5M9 16v-4m4 4v-6m4 6v-3"/>',
+  visitors:'<path d="M4 19V8m5 11V4m5 15v-8m5 8v-5"/><path d="M2 21h20"/>',
+  accounts:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M18 8a3 3 0 0 1 0 6M18 16a5 5 0 0 1 4 5"/>'
  };
  const icon=k=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+symbols[k]+'</svg>';
  const tabs=[
-  ['overview','نظرة عامة','زوار المتجر'],
+  ['overview','نظرة عامة','ملخص زوار المتجر'],
+  ['visitors','الزوار','إحصائيات وآخر الزيارات'],
+  ['accounts','حسابات الزبائن','المسجلون والطلبات'],
   ['orders','طلبات الشراء','القبول والتسليم'],
   ['topups','طلبات الشحن','التحويلات والمراجعة'],
   ['stock','مخزون الروبوكس','الكمية المتوفرة'],
@@ -64,6 +68,35 @@
    heading.querySelector('button')?.addEventListener('click',()=>{
      $('#refreshBusiness')?.click();
    });
+   return section;
+ }
+
+ function addVisitorPanel(){
+   const section=document.createElement('section');
+   section.id='adminHubVisitors';
+   section.className='admin-dashboard';
+   section.innerHTML='<div class="admin-audience-heading"><div><span class="admin-audience-kicker">STORE VISITORS</span><h3>زوار الموقع</h3><p>إحصائيات المتصفحات والجلسات بدون كشف هوية الزائر.</p></div><button type="button" class="btn btn-soft" id="adminVisitorsRefresh">تحديث ↻</button></div>'+
+     '<div class="admin-audience-metrics" id="adminVisitorsMetrics" aria-live="polite"><p>جاري تحميل الإحصائيات…</p></div>'+
+     '<div class="admin-audience-chart-panel"><div class="admin-audience-subtitle"><h4>حركة الزيارات · آخر 14 يوم</h4><span>الجلسات اليومية</span></div><div id="adminVisitorsChart" class="admin-audience-chart" aria-label="مخطط الزيارات اليومية"></div></div>'+
+     '<div class="admin-audience-subtitle"><h4>أحدث الجلسات</h4><span>بدون أسماء أو عناوين IP</span></div><div id="adminVisitorsRecent" class="admin-audience-recent" aria-live="polite"><p>جاري التحميل…</p></div>'+
+     '<p class="admin-audience-explain">الزائر هنا هو متصفح مميز مجهول، وليس بالضرورة شخصًا واحدًا. الأرقام تبدأ من تاريخ تفعيل العداد ولا تشمل الجلسات المحجوبة بإعدادات الخصوصية.</p>'+
+     '<p id="adminVisitorsStatus" class="admin-audience-status" role="status"></p>';
+   $('#adminContent').appendChild(section);
+   return section;
+ }
+ function addAccountsPanel(){
+   const section=document.createElement('section');
+   section.id='adminHubAccounts';
+   section.className='admin-dashboard';
+   section.innerHTML='<div class="admin-audience-heading"><div><span class="admin-audience-kicker">STORE ACCOUNTS</span><h3>حسابات الزبائن</h3><p>الحسابات المسجلة فعليًا، وآخر دخول وعدد الطلبات.</p></div><button type="button" class="btn btn-soft" id="adminAccountsRefresh">تحديث ↻</button></div>'+
+     '<div class="admin-audience-metrics" id="adminAccountsMetrics"><p>جاري تحميل الحسابات…</p></div>'+
+     '<label class="admin-audience-search-label" for="adminAccountsSearch">ابحث عن حساب</label>'+
+     '<input id="adminAccountsSearch" class="admin-audience-search" type="search" maxlength="80" autocomplete="off" placeholder="الاسم أو البريد أو معرّف الحساب" aria-label="البحث عن حسابات الزبائن">'+
+     '<div id="adminAccountsList" class="admin-audience-accounts" aria-live="polite"><p>جاري التحميل…</p></div>'+
+     '<div class="admin-audience-pagination"><button id="adminAccountsPrev" type="button" class="btn btn-soft" disabled>السابق</button><span id="adminAccountsPage">—</span><button id="adminAccountsNext" type="button" class="btn btn-soft" disabled>التالي</button></div>'+
+     '<p class="admin-audience-explain">هذه البيانات ظاهرة لمدير المتجر المصرح له فقط، ولا تظهر لزوار الموقع.</p>'+
+     '<p id="adminAccountsStatus" class="admin-audience-status" role="status"></p>';
+   $('#adminContent').appendChild(section);
    return section;
  }
  function makeMenu(){
@@ -145,6 +178,7 @@
    }
    // Panels retain their existing secure refresh handlers and financial actions.
    if(key==='overview')$('#refreshTraffic')?.click();
+   document.dispatchEvent(new CustomEvent('l1017n:admin-screen',{detail:{key}}));
    if(['orders','topups','stock','products'].includes(key)){
      if(typeof loadAdminDashboard==='function')void loadAdminDashboard();
    }
@@ -242,6 +276,8 @@
      panes.finance=fallback;
    }
    panes.reviews=addReviewPanel();
+   panes.visitors=addVisitorPanel();
+   panes.accounts=addAccountsPanel();
    panes.omnex=addFramePanel('adminHubOmnex','./admin-omnex.html?embedded=1','ربط OMNEX','منتجات روبلوكس من المورد، مع أسعار بيع محفوظة كمسودات.');
    panes.wallets=addFramePanel('adminHubWallets','./admin-wallets.html','محافظ الزبائن',
      'عرض المحافظ، البحث عن الزبائن ومراجعة المعاملات من نفس إدارة المتجر.');

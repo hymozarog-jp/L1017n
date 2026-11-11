@@ -625,3 +625,68 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
  #llLanding .ll-roblox-parent-cover{padding:6px!important}
  #llLanding .ll-roblox-parent-info{padding:12px 8px!important}
 }
+
+
+/* Roblox storefront: the exterior game tile shows the Roblox image only.
+   Products and subcategories remain inside the existing Roblox hub. */
+#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only{
+ display:block!important;
+ min-height:0!important;
+ height:auto!important;
+ overflow:hidden!important;
+ grid-template-columns:none!important;
+ border-radius:23px!important;
+}
+#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
+ display:flex!important;
+ width:100%!important;
+ min-width:0!important;
+ height:auto!important;
+ min-height:255px!important;
+ aspect-ratio:16/10!important;
+ padding:28px!important;
+ align-items:center!important;
+ justify-content:center!important;
+ border:0!important;
+ border-radius:22px!important;
+ background:radial-gradient(ellipse at 50% 45%,#6f57ae 0%,#292349 56%,#12162a 100%)!important;
+ overflow:hidden!important;
+ cursor:pointer!important;
+ transition:filter .2s ease,background .2s ease!important;
+}
+#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover::before{
+ display:none!important;
+}
+#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover img{
+ display:block!important;
+ position:relative!important;
+ z-index:1!important;
+ width:min(67%,300px)!important;
+ max-width:100%!important;
+ height:auto!important;
+ max-height:245px!important;
+ object-fit:contain!important;
+ object-position:center!important;
+ padding:0!important;
+ filter:drop-shadow(0 18px 20px #100b2877)!important;
+}
+#llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover:focus-visible{
+ outline:3px solid #c4a9ff!important;
+ outline-offset:-4px!important;
+}
+@media(max-width:480px){
+ #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
+  min-height:220px!important;
+  aspect-ratio:4/3!important;
+  padding:22px!important;
+ }
+ #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover img{
+  width:min(72%,235px)!important;
+  max-height:225px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #llLanding .ll-catalog>.ll-roblox-parent.ll-roblox-cover-only>.ll-roblox-parent-cover{
+  transition:none!important;
+ }
+}

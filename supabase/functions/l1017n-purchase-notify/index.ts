@@ -40,11 +40,11 @@ Deno.serve(async(req:Request)=>{
  const {data:auth,error:authError}=await db.auth.getUser(bearer.slice(7));
  if(authError||!auth.user)return reply({error:"unauthorized"},401);
  const {data:order,error:readError}=await db.from("purchase_orders")
-  .select("id,user_id,product_name,total_amount,roblox_username,status,created_at,telegram_notification_claimed_at,telegram_notified_at")
+  .select("id,user_id,product_name,total_amount,roblox_username,status,created_at,telegram_notification_claimed_at,telegram_notified_at,supplier_managed")
   .eq("id",id).maybeSingle();
  if(readError)return reply({error:"order_lookup_failed"},500);
  if(!order||order.user_id!==auth.user.id)return reply({error:"order_not_found"},404);
- if(!["paid_pending_fulfillment","completed"].includes(order.status))
+ if(!["paid_pending_fulfillment","completed"].includes(order.status)&&!(order.supplier_managed&&["approved","processing"].includes(order.status)))
    return reply({error:"order_not_eligible"},409);
  if(Date.now()-new Date(order.created_at).getTime()>24*60*60*1000)
    return reply({error:"order_too_old"},409);
@@ -56,7 +56,7 @@ Deno.serve(async(req:Request)=>{
   .update({telegram_notification_claimed_at:claimedAt})
   .eq("id",id)
   .eq("user_id",auth.user.id)
-  .in("status",["paid_pending_fulfillment","completed"])
+  .in("status",["paid_pending_fulfillment","completed","approved","processing"])
   .is("telegram_notification_claimed_at",null)
   .is("telegram_notified_at",null)
   .select("id").maybeSingle();
@@ -64,19 +64,42 @@ Deno.serve(async(req:Request)=>{
  if(!claimed)return reply({ok:true,already_processing:true});
 
  const amount=Number(order.total_amount);
- const price=Number.isFinite(amount)?amount.toFixed(2):"—";
- const product=String(order.product_name||"منتج رقمي").slice(0,140);
- const username=String(order.roblox_username||"").slice(0,50);
- const isInstantCode=username==="DIGITAL_CODE";
+ const price=Number.isFinite(amount)?amount.toFixed(3):"—";
+ const product=String(order.product_name||"منتج رقمي").replace(/[\r\n\t]/g," ").slice(0,140);
+ const username=String(order.roblox_username||"").replace(/[\r\n\t]/g," ").slice(0,50);
+ const isSupplier=order.supplier_managed===true;
+ const isInstantCode=username==="DIGITAL_CODE"&&!isSupplier;
  const isPubg=/pubg|ببجي|بوبجي/i.test(product);
  const completed=order.status==="completed";
- const msg="🛍️ طلب شراء جديد — L1017n\n\n"
+ // Customer metadata is displayed only in the authenticated owner's private bot.
+ let customer="حساب مسجّل";
+ try{
+   const {data:profile,error:profileError}=await db.auth.admin.getUserById(order.user_id);
+   if(!profileError&&profile?.user){
+     const u=profile.user;
+     customer=String(u.user_metadata?.full_name||u.user_metadata?.name||u.email?.split("@")[0]||customer)
+       .replace(/[\r\n\t]/g," ").trim().slice(0,65)||customer;
+   }
+ }catch{console.warn("purchase_owner_name_unavailable")}
+ const {data:wallet}=await db.from("wallet_accounts")
+   .select("libyana_phone").eq("user_id",order.user_id).maybeSingle();
+ const phone=String(wallet?.libyana_phone||"").replace(/\D/g,"").slice(-9);
+ const when=new Date(order.created_at).toLocaleString("ar-LY",{
+   timeZone:"Africa/Tripoli",year:"numeric",month:"2-digit",day:"2-digit",
+   hour:"2-digit",minute:"2-digit",hour12:true
+ });
+ const msg="🛍️ طلب شراء — L1017n\n"
+   +"━━━━━━━━━━━━━━━━\n"
+   +"👤 الزبون: "+customer+"\n"
+   +(phone?"📱 رقم الحساب: 0"+phone+"\n":"")
    +"📦 المنتج: "+product+"\n"
    +"💰 المدفوع من المحفظة: "+price+" د.ل\n"
    +(username && username!=="DIGITAL_CODE"?(isPubg?"🎮 معرف لاعب PUBG (UID): ":"🎮 اسم Roblox: ")+username+"\n":"")
-   +"📋 الحالة: "+(isInstantCode?"✅ تم تسليم الكود آليًا":completed?"✅ تم التنفيذ":"⏳ لم يتم التنفيذ بعد")+"\n"
+   +"🕒 وقت الطلب: "+when+"\n"
+   +"📋 الحالة: "+(isSupplier?(completed?"✅ تم التنفيذ الآلي":"⏳ طلب آلي لدى OMNEX؛ يُتابع تلقائيًا"):isInstantCode?"✅ تم تسليم الكود آليًا":completed?"✅ تم التنفيذ":"⏳ بانتظار تنفيذ الإدارة")+"\n"
    +"🆔 رقم الطلب: "+id+"\n\n"
-   +"✅ هذا إشعار بعملية شراء ناجحة، وليس طلب دفع جديد.";
+   +"✅ عملية شراء مدفوعة من رصيد المحفظة؛ ليست طلب شحن جديد."
+   +(isSupplier?"\n\n🔗 التنفيذ والاسترداد لهذا الطلب يديرهما الربط تلقائيًا؛ تابع حالته من إدارة OMNEX.":isInstantCode||completed?"":"\n\n🧭 ترتيب متابعة الطلب:\n1️⃣ قبول الطلب\n2️⃣ قيد المعالجة\n3️⃣ قيد التنفيذ\n4️⃣ تم التنفيذ\n\n➡️ الخطوة التالية: 1️⃣ تم القبول\nاضغط الزر الحالي بعد التحقق من المرحلة.");
  try{
    const response=await fetch("https://api.telegram.org/bot"+token+"/sendMessage",{
      method:"POST",headers:{"content-type":"application/json"},
@@ -84,13 +107,14 @@ Deno.serve(async(req:Request)=>{
        chat_id:Number(chat),
        text:msg,
        disable_web_page_preview:true,
-       // Codes are already delivered automatically: no manual fulfillment actions.
-       // All other orders keep one Telegram message with inline status controls.
-       ...(isInstantCode||completed ? {} : {
-         reply_markup:{inline_keyboard:[[
-           {text:"✅ تم التنفيذ",callback_data:"po:done:"+id},
-           {text:"🔄 فحص الحالة",callback_data:"po:check:"+id}
-         ]]}
+       // Only the NEXT actionable stage is shown. After it is confirmed,
+       // the private Telegram admin bot edits this same message with the next.
+       // Failed/undeliverable purchases retain a separate refund action.
+       ...(isSupplier||isInstantCode||completed ? {} : {
+         reply_markup:{inline_keyboard:[
+           [{text:"1️⃣ 🔵 تم القبول",callback_data:"po:accept:"+id}],
+           [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+id}]
+         ]}
        })
      })
    });

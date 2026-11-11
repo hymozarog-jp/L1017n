@@ -184,7 +184,12 @@ window.openRobloxCodesPage = async function(root) {
    info.append(make('strong', '', region.label), make('small', '', count ? 'المتوفر: ' + count : 'غير متوفر حاليًا'));
    const arrow = make('span', 'ox-region-arrow', '←');
    arrow.setAttribute('aria-hidden', 'true');
-   button.append(info, arrow);
+   const image = make('img', 'ox-region-image');
+   image.src = 'game-covers/roblox-mark.svg';
+   image.alt = '';
+   image.width = 40;
+   image.height = 40;
+   button.append(image, info, arrow);
    button.onclick = () => openRegion(region, button);
    menu.append(button);
   }

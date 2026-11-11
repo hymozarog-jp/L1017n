@@ -25,7 +25,20 @@
  cursor: pointer;
 }
 
+.ox-region-image {
+ flex: none;
+ width: clamp(28px, 9vw, 40px);
+ height: auto;
+ aspect-ratio: 1;
+ padding: 3px;
+ box-sizing: border-box;
+ object-fit: contain;
+ border-radius: 10px;
+ background: #0d1424;
+}
+
 .ox-region-info {
+ flex: 1;
  display: grid;
  gap: 4px;
  min-width: 0;

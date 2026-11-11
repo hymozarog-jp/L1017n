@@ -67,12 +67,11 @@
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
   function robloxParentCard(){
-    // Outside Roblox, show only its artwork. Keep MM2, Brainrot and Robux
-    // accessible inside the Roblox hub, never as preview buttons here.
+    // Compact standard game tile. All Roblox subcategories stay INSIDE the hub.
     return '<article class="ll-roblox-parent ll-roblox-cover-only ll-reveal" dir="rtl">'
-      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح روبلوكس والأقسام الداخلية">'
-      +'<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async">'
-      +'</button></article>';
+      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح روبلوكس">'
+      +'<span class="ll-roblox-parent-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></span>'
+      +'<strong class="ll-roblox-tile-name">روبلوكس</strong></button></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");

@@ -132,19 +132,24 @@ var styleId='robloxGamePageStyles';
     root.scrollTop=0;
   }
   window.setRobloxInnerHeader=setInnerHeader;
-  function showRobloxPage(directCategory){
+  function showRobloxPage(directCategory,fromHub){
     addStyles();closePage();
-    var p=document.createElement('div');p.id=pageId;p.dataset.directCategory=directCategory||'';
+    var p=document.createElement('div');p.id=pageId;
+    // A category opened from the Roblox hub returns to the Roblox hub.
+    // Direct links from banners continue to return to the storefront.
+    p.dataset.directCategory=fromHub?'':directCategory||'';
     p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');
     p.setAttribute('aria-label',directCategory?'قسم روبلوكس':'أقسام روبلوكس');
     if(!directCategory)p.classList.add('rgp-category-hub');
     p.innerHTML=`<div class="rgp-shell">
       <div class="rgp-top"><button class="rgp-back" type="button" data-rgp-back aria-label="رجوع إلى المتجر"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg><span class="rgp-back-label">رجوع</span></button><div class="rgp-brand">روبلوكس</div><span class="rgp-header-spacer" aria-hidden="true"></span></div>
       <section class="rgp-hero"><img src="${robloxImage}" alt="شعار روبلوكس"><div class="rgp-hero-content"><span class="rgp-kicker">L1017N • ROBLOX</span><h1>Roblox</h1><span class="rgp-category-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg>باقات ومستلزمات</span><p>اختار القسم، وتصفح الباقات والأسعار بكل سهولة.</p></div></section>
-      <div class="rgp-reference-features"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختر الباقة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span></div><h2 class="rgp-title">اختار طريقة شحن روبلوكس</h2><p class="rgp-hub-subtitle">كل طريقة لها صفحتها الخاصة. شوف التفاصيل قبل ما تطلب.</p>
+      <div class="rgp-reference-features"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v5a2 2 0 0 0 0 4v5H4v-5a2 2 0 0 0 0-4V5zM9 8v2m0 4v2"/></svg><small>اختر الباقة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h17v14H3zM3 6V4h14v2M15 11h6v5h-6z"/></svg><small>دفع بالمحفظة</small></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span></div><h2 class="rgp-title">أقسام روبلوكس</h2><p class="rgp-hub-subtitle">شحن روبوكس وMM2 وماب السرقة في قسم واحد، وكل خيار يفتح صفحته.</p>
       <div class="rgp-grid">
-        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شحن روبوكس باسم المستخدم"><div class="rgp-card-body"><h3>شحن عبر اليوزر</h3><p>اختار باقتك وتوثّق اسم حسابك</p><span class="rgp-action">فتح الصفحة ←</span></div></button>
-        <button class="rgp-card codes" type="button" data-rgp-choice="codes"><img src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="أكواد روبلوكس"><div class="rgp-card-body"><h3>أكواد</h3><p>بطاقات وأكواد Roblox</p><span class="rgp-action">فتح الصفحة ←</span></div></button>
+        <button class="rgp-card" type="button" data-rgp-choice="robux"><img src="${robloxImage}" alt="شحن روبوكس باسم المستخدم"><div class="rgp-card-body"><h3>شحن روبوكس</h3><p>اختار الباقة واسم حسابك</p><span class="rgp-action">فتح الصفحة ←</span></div></button>
+        <button class="rgp-card codes" type="button" data-rgp-choice="codes"><img src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="أكواد روبلوكس"><div class="rgp-card-body"><h3>أكواد روبلوكس</h3><p>بطاقات وأكواد Roblox</p><span class="rgp-action">فتح الصفحة ←</span></div></button>
+        <button class="rgp-card mm2" type="button" data-rgp-choice="mm2"><img src="${mm2Image}" alt="أسلحة MM2"><div class="rgp-card-body"><h3>MM2</h3><p>أسلحة ومستلزمات Murder Mystery 2</p><span class="rgp-action">فتح القسم ←</span></div></button>
+        <button class="rgp-card steal" type="button" data-rgp-choice="brainrot"><img src="game-covers/official/mobile/brainrot.webp?v=official-art-20261102" alt="شخصيات ماب السرقة"><div class="rgp-card-body"><h3>ماب السرقة</h3><p>شخصيات وأغراض Steal a Brainrot</p><span class="rgp-action">فتح القسم ←</span></div></button>
       </div>
     </div>`;
     document.body.appendChild(p);
@@ -185,7 +190,10 @@ var styleId='robloxGamePageStyles';
         else alert('صفحة الأكواد غير جاهزة. حدّث الصفحة.');
         return;
       }
-      // Other game pages still have their own direct homepage routes.
+      if(choice.dataset.rgpChoice==='mm2'||choice.dataset.rgpChoice==='brainrot'){
+        showRobloxPage(choice.dataset.rgpChoice,true);
+        return;
+      }
       return;
     });
     // Open category content immediately; no intermediate Roblox category menu.

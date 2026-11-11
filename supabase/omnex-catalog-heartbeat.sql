@@ -6,7 +6,7 @@ BEGIN
  IF p_wallet NOT IN ('libyana','bank','usd') OR jsonb_typeof(p_items)<>'array' OR jsonb_array_length(p_items)>500 THEN RAISE EXCEPTION 'invalid_supplier_catalog'; END IF;
  PERFORM pg_advisory_xact_lock(7113,1);
  IF EXISTS(SELECT 1 FROM jsonb_array_elements(p_items) x WHERE x->>'category'<>'cd40561b622c4fa9ed9984c31f0c697f' OR x->>'category' IS NULL) THEN RAISE EXCEPTION 'roblox_only'; END IF;
- UPDATE private.omnex_roblox_catalog SET available=false;
+ UPDATE private.omnex_roblox_catalog SET available=false WHERE available;
  INSERT INTO private.omnex_roblox_catalog(supplier_product_id,name,group_name,supplier_cost,wallet,unit,stock,available,image_url)
  SELECT x->>'id',left(x->>'name',180),left(coalesce(x->>'group_name',''),100),
  CASE WHEN x->>'price' ~ '^[0-9]{1,8}(\.[0-9]{1,3})?$' AND (x->>'price')::numeric>0 THEN (x->>'price')::numeric ELSE NULL END,

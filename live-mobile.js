@@ -16,11 +16,11 @@
   ICONS.gift = '<path d="M3 10h18v11H3zM2 6h20v4H2zM12 6v15M12 6c-2.4-4-6.5-5.2-7.5-2.2C3.6 6 7 7 12 6Zm0 0c2.4-4 6.5-5.2 7.5-2.2C20.4 6 17 7 12 6Z"/>';
   const SVG = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
   const GAME_META = {
-    roblox: {name:"Robux",tag:"روبوكس",color:"purple",art:"R"},
+    roblox: {name:"Roblox",tag:"روبلوكس",color:"purple",art:"R"},
     mm2: {name:"MM2",tag:"Murder Mystery 2",color:"blue",art:"M"},
     "steal-a-brainrot": {name:"ماب السرقة",tag:"Steal a Brainrot",color:"teal",art:"01"}
   };
-  const FILTERS = [["all","الكل"],["roblox","روبوكس"],["mm2","MM2"],["steal-a-brainrot","ماب السرقة"]];
+  const FILTERS = [["all","الكل"],["roblox","روبلوكس"]];
   const HEROES = [
     {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
     {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102"},
@@ -48,14 +48,14 @@
     return key || "other";
   }
   function itemMeta(product) { return GAME_META[gameKey(product)] || { name: product.game || "الألعاب", tag: "منتجات رقمية", color: "purple", art: "L" }; }
-  // Three independent Roblox-only storefront sections; purchase stock is unchanged.
+  // One Roblox parent with three subcategories; checkout and stock stay unchanged.
   const SHOP_SECTIONS = [
-    {key:"roblox",title:"روبوكس",subtitle:"شحن روبوكس",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
+    {key:"roblox",title:"شحن روبوكس",subtitle:"باقات وأكواد",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
     {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102",tag:"MURDER MYSTERY 2"},
     {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102",tag:"STEAL A BRAINROT"}
   ];
   function matchesSection(section) {
-    if (chosen !== "all" && chosen !== section.key) return false;
+    if (chosen !== "all" && chosen !== "roblox") return false;
     if (!query) return true;
     const aliases = {
       roblox:"روبوكس روبلوكس roblox robux شحن",
@@ -66,13 +66,18 @@
     return normalize([section.title,section.subtitle,section.tag,aliases[section.key],
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
-  function sectionCard(section) {
-    return '<article class="ll-game-section ll-reveal ll-game-'+esc(section.key)+'">'
-      +'<button type="button" class="ll-game-section-link" data-ll-game="'+esc(section.key)+'" aria-label="فتح '+esc(section.title)+'">'
-      +'<span class="ll-game-section-art"><img src="'+esc(section.image)+'" alt="" loading="eager" decoding="async">'
-      +'<span class="ll-game-section-tag">'+esc(section.tag)+'</span></span>'
-      +'<span class="ll-game-section-details"><strong>'+esc(section.title)+'</strong>'
-      +'<small>'+esc(section.key==='roblox'&&typeof robuxAvailable!=='undefined'&&typeof robuxUnlimited!=='undefined'&&!robuxUnlimited&&robuxAvailable<1?'غير متوفر':section.subtitle)+'</small></span></button></article>';
+  function robloxParentCard(){
+    return '<article class="ll-roblox-parent ll-reveal" dir="rtl" aria-label="قسم روبلوكس وأقسامه الثلاثة">'
+      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح قسم روبلوكس">'
+      +'<span class="ll-roblox-parent-kicker">ROBLOX</span>'
+      +'<img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></button>'
+      +'<div class="ll-roblox-parent-info"><span class="ll-roblox-parent-label">ROBLOX · L1017n</span>'
+      +'<h3>روبلوكس</h3><p>اختر من الأقسام الموجودة داخل روبلوكس.</p>'
+      +'<div class="ll-roblox-subcategories">'
+      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="roblox"><span>شحن روبوكس</span><small>باقات وأكواد</small></button>'
+      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="mm2"><span>MM2</span><small>أسلحة ومستلزمات</small></button>'
+      +'<button type="button" class="ll-roblox-subcategory" data-ll-game="steal-a-brainrot"><span>ماب السرقة</span><small>شخصيات وأغراض</small></button>'
+      +'</div></div></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");
@@ -92,7 +97,7 @@
       if(key==="roblox"){
         if(typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
         else if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
-        else notify("قسم الروبوكس غير جاهز حاليًا.");
+        else notify("قسم روبلوكس غير جاهز حاليًا.");
         return;
       }
       if(key==="mm2"){
@@ -172,11 +177,11 @@
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
-    const visible=SHOP_SECTIONS.filter(matchesSection);
+    const visible=SHOP_SECTIONS.some(matchesSection);
     const count=q("#llItemCount");
-    if(count)count.textContent=visible.length+" أقسام";
-    root.innerHTML=visible.length
-      ? visible.map(sectionCard).join("")
+    if(count)count.textContent=visible?"قسم واحد":"";
+    root.innerHTML=visible
+      ? robloxParentCard()
       : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
@@ -238,7 +243,7 @@
     container.id = "llLanding";
     container.innerHTML = '<div class="ll-intro ll-reveal">'
       + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
-      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبوكس، MM2، ماب السرقة، وشحن المحفظة في مكان واحد.</p></div>'
+      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وفيه شحن روبوكس وMM2 وماب السرقة، مع شحن المحفظة.</p></div>'
       + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'

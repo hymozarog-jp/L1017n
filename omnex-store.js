@@ -190,6 +190,7 @@ window.openRobloxCodesPage = async function(root) {
   const groups = new Map();
   for (const product of data.products || []) {
    const key = product.region?.trim() || '';
+   if (key === 'أمريكي' && /\bUSD\b/i.test(product.name)) continue;
    const label = regionLabels.get(key);
    if (!label) continue;
    if (!groups.has(key)) groups.set(key, {key, label, items: []});

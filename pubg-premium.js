@@ -18,8 +18,8 @@
   let omnexLive = false;
   // Reference-only supplier prices; these never authorize payment or create an order.
   const SUPPLIER_REFERENCE = {
-    charge: [[60,"11.374"],[325,"57.030"],[660,"114.056"],[1800,"285.157"],[3850,"567.533"],[8100,"1136.085"]],
-    codes: [[60,"11.685"],[325,"59.035"],[660,"115.473"],[1800,"290.117"],[3850,"577.366"],[8100,"1165.790"]]
+    charge: [60,325,660,1800,3850,8100],
+    codes: [60,325,660,1800,3850,8100,16200,24300,32400,40500]
   };
 
   function safe(value) {
@@ -68,7 +68,7 @@
         .eq("game","pubg").eq("active",true).order("sort_order");
       if(error)throw error;
       if(requestId!==catalogRequest)return;
-      pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true);
+      pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true&&String(p.product_key)!=="pubg-60");
       catalogReady=true;
       refresh();
     } catch(error) {
@@ -246,11 +246,10 @@
   function supplierReference(key){
     const rows=SUPPLIER_REFERENCE[key];
     if(!rows?.length)return "";
-    return '<div class="pubg-supplier-note" role="status"><strong>باقات المورد Omnex</strong><span>الأسعار أدناه أسعار المورد للمرجع فقط، وليست أسعار البيع. الشراء الآلي غير مفعّل حتى اكتمال ربط الكتالوج.</span></div>'
-      + '<div class="pubg-supplier-reference">'+rows.map(([amount,cost])=>
+    return '<div class="pubg-supplier-note" role="status"><strong>باقات PUBG Mobile</strong><span>يجري تجهيز الربط التلقائي. ستظهر الأسعار النهائية وزر الشراء بمجرد تفعيل المورد.</span></div>'
+      + '<div class="pubg-supplier-reference">'+rows.map(amount=>
         '<div class="pubg-supplier-reference-card"><img src="game-covers/pubg-uc.svg" alt="" loading="lazy">'
-        +'<strong>'+amount.toLocaleString("en-US")+' UC</strong><small>سعر المورد</small>'
-        +'<b>'+safe(Number(cost).toFixed(3))+' رصيد</b><span>غير متاح للشراء الآن</span></div>').join("")+'</div>';
+        +'<strong>'+amount.toLocaleString("en-US")+' UC</strong><span>قريبًا</span></div>').join("")+'</div>';
   }
   function paintOffers(panel, key) {
     const list = categoryProducts(key);
@@ -271,7 +270,7 @@
           + '<p>ستظهر العروض عند توفرها من المورد.</p></div>')
       + '<p class="pubg-purchase-note">' + (omnexLive
         ? 'الأسعار والتوفر يُؤكدان من المورد عند فتح الطلب، ونتابع التنفيذ داخل طلباتي.'
-        : 'الربط التلقائي مع المورد لم يكتمل بعد؛ الأسعار المرجعية أعلاه لا يمكن شراؤها من المتجر حاليًا.') + '</p>';
+        : 'الربط التلقائي مع المورد لم يكتمل بعد؛ المنتجات الظاهرة بحالة قريبًا لا تُباع أو تُخصم قيمتها.') + '</p>';
 
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
       void fetchPubgProducts(document.getElementById(PAGE_ID));

@@ -28,7 +28,7 @@ function showOrder(order){
 async function quoteProduct(product,seq){
  $('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-refresh').hidden=true;status('جاري التحقق من الباقة والسعر…');
  try{const data=await invoke({action:'quote',id:product.id});if(seq!==generation||!dialog.open||owner!==liveUser)return;quote=data;
- $('.ox-name').textContent=data.name;$('.ox-region').textContent=data.region||'روبلوكس';$('.ox-price').textContent=cash(data.price);
+ $('.ox-name').textContent=data.name;$('.ox-region').textContent=data.region||(currentProduct?.game==='pubg'?'ببجي موبايل':'روبلوكس');$('.ox-price').textContent=cash(data.price);
  $('.ox-fields').replaceChildren();for(const field of data.fields||[]){const label=make('label','ox-field',field.label);label.htmlFor='ox-'+field.key;let input;if(field.type==='select'){input=make('select');const blank=make('option','','اختر');blank.value='';input.append(blank);for(const op of field.options){const o=make('option','',op.label);o.value=op.value;input.append(o)}}else{input=make('input');input.type='text';input.inputMode=field.type==='number'?'numeric':'text';input.maxLength=200;input.autocomplete='off'}input.id=label.htmlFor;input.name=field.key;input.required=field.required;label.append(input);$('.ox-fields').append(label)}
  $('.ox-terms').checked=false;$('.ox-submit').disabled=false;$('.ox-submit').textContent='تأكيد الشراء · '+cash(data.price);$('.ox-form').hidden=false;status('');
  }catch(err){if(seq===generation){status(errors[err.message]||'تعذر تحميل الباقة. حاول مرة ثانية.');$('.ox-refresh').hidden=false}}
@@ -55,7 +55,7 @@ async function openProduct(product){
  const db=api();if(!db)return;watchAuth();const {data,error}=await db.auth.getUser();if(error||!data?.user){if(typeof toast==='function')toast('سجّل دخولك أولًا لشراء الباقة');if(typeof switchView==='function')switchView('account');return}
  liveUser=data.user.id;owner=liveUser;mount();generation++;const seq=generation;quote=null;currentOrder=null;currentProduct=product;requestKey=crypto.randomUUID();buying=false;
  try{const saved=JSON.parse(localStorage.getItem(pendingKey(owner,product.id))||'null');if(saved?.client_key)requestKey=saved.client_key}catch{}
- $('.ox-name').textContent=product.name;$('.ox-region').textContent=product.region||'';$('.ox-price').textContent=cash(product.price);$('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-phone').hidden=true;dialog.showModal();status('جاري تحميل الباقة…');
+ $('.ox-name').textContent=product.name;$('.ox-region').textContent=product.region||'';$('.ox-price').textContent=cash(product.price);$('.ox-summary img').src=product.game==='pubg'?'game-covers/pubg-uc.svg':'game-covers/robux-100-tokens.svg';$('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-phone').hidden=true;dialog.showModal();status('جاري تحميل الباقة…');
  try{const previous=await invoke({action:'resume',client_key:requestKey});if(seq!==generation)return;if(previous?.order_id){showOrder(previous);return}}catch{}
  if(seq===generation)await quoteProduct(product,seq);
 }
@@ -108,6 +108,8 @@ function productCard(product, regionLabel, regionKey) {
  card.onclick = () => openProduct(product);
  return card;
 }
+
+window.openOmnexProductCheckout = openProduct;
 
 window.openRobloxCodesPage = async function(root) {
  if (!root || root.id !== 'robloxGamePage' || !root.isConnected) return;

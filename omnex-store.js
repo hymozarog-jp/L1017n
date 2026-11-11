@@ -68,22 +68,51 @@ const regionLabels = new Map([
  ['أوروبا', 'روبلوكس أوروبا'],
 ]);
 
-function productCard(product, regionLabel) {
+const regionFlags = new Map([
+ ['أمريكي', '🇺🇸'],
+ ['عالمية', '🌐'],
+ ['السعودية', '🇸🇦'],
+ ['الإمارات', '🇦🇪'],
+ ['بريطانيا', '🇬🇧'],
+ ['أوروبا', '🇪🇺'],
+]);
+
+function regionArtwork(key, label) {
+ const art = make('span', 'ox-cover');
+ const giftCard = make('span', 'ox-gift-card');
+ const image = make('img', 'ox-gift-mark');
+ image.src = 'game-covers/roblox-mark.svg';
+ image.alt = '';
+ image.width = 56;
+ image.height = 56;
+ const region = make('span', 'ox-gift-region');
+ const flag = regionFlags.get(key);
+ if (flag) {
+  const icon = make('span', '', flag);
+  icon.setAttribute('aria-hidden', 'true');
+  region.append(icon);
+ }
+ region.append(make('span', '', label.replace(/^روبلوكس /, '')));
+ giftCard.append(image, make('span', 'ox-gift-brand', 'ROBLOX'), region);
+ art.append(giftCard);
+ return art;
+}
+
+function productCard(product, regionLabel, regionKey) {
  const card = make('button', 'ox-product');
  card.type = 'button';
  card.disabled = !product.available;
- card.setAttribute('aria-label', [product.name, regionLabel, cash(product.price)].join('، '));
- const image = make('img');
- image.src = 'game-covers/robux-100-tokens.svg';
- image.alt = '';
- image.loading = 'lazy';
+ const availability = product.available ? 'شراء' : 'الكمية نفدت';
+ card.setAttribute('aria-label', [product.name, regionLabel, cash(product.price), availability].join('، '));
+ const art = regionArtwork(regionKey, regionLabel);
+ if (!product.available) art.append(make('span', 'ox-sold-out', availability));
  const info = make('span', 'ox-product-info');
  info.append(
   make('strong', '', product.name),
   make('b', 'ox-product-price', cash(product.price)),
-  make('small', 'ox-product-stock', product.available ? 'اختيار الباقة ←' : 'غير متوفر'),
+  make('span', 'ox-buy', availability),
  );
- card.append(image, info);
+ card.append(art, info);
  card.onclick = () => openProduct(product);
  return card;
 }
@@ -127,7 +156,7 @@ window.openRobloxCodesPage = async function(root) {
   const matches = activeRegion.items.filter(product =>
    (!inStock.checked || product.available) && product.name.toLowerCase().includes(query)
   );
-  grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label)));
+  grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label, activeRegion.key)));
   status.textContent = matches.length ? '' : 'لا توجد باقات تطابق اختيارك.';
   more.hidden = matches.length <= limit;
  }
@@ -139,7 +168,7 @@ window.openRobloxCodesPage = async function(root) {
   menu.hidden = true;
   products.hidden = false;
   search.value = '';
-  inStock.checked = region.items.some(product => product.available);
+  inStock.checked = false;
   limit = 12;
   drawProducts();
   root.scrollTop = 0;
@@ -170,7 +199,7 @@ window.openRobloxCodesPage = async function(root) {
   for (const product of data.products || []) {
    const key = product.region?.trim() || '';
    const label = regionLabels.get(key) || key || 'أكواد أخرى';
-   if (!groups.has(key)) groups.set(key, {label, items: []});
+   if (!groups.has(key)) groups.set(key, {key, label, items: []});
    groups.get(key).items.push(product);
   }
   const keys = [...regionLabels.keys(), ...[...groups.keys()].filter(key => !regionLabels.has(key))];
@@ -184,12 +213,9 @@ window.openRobloxCodesPage = async function(root) {
    info.append(make('strong', '', region.label), make('small', '', count ? 'المتوفر: ' + count : 'غير متوفر حاليًا'));
    const arrow = make('span', 'ox-region-arrow', '←');
    arrow.setAttribute('aria-hidden', 'true');
-   const image = make('img', 'ox-region-image');
-   image.src = 'game-covers/roblox-mark.svg';
-   image.alt = '';
-   image.width = 40;
-   image.height = 40;
-   button.append(image, info, arrow);
+   const footer = make('span', 'ox-region-footer');
+   footer.append(info, arrow);
+   button.append(regionArtwork(key, region.label), footer);
    button.onclick = () => openRegion(region, button);
    menu.append(button);
   }

@@ -50,7 +50,7 @@
   function itemMeta(product) { return GAME_META[gameKey(product)] || { name: product.game || "الألعاب", tag: "منتجات رقمية", color: "purple", art: "L" }; }
   // One Roblox parent with three subcategories; checkout and stock stay unchanged.
   const SHOP_SECTIONS = [
-    {key:"roblox",title:"شحن روبوكس",subtitle:"باقات وأكواد",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBUX"},
+    {key:"roblox",title:"روبلوكس",subtitle:"شحن روبوكس وMM2 وماب السرقة",image:"game-covers/roblox-mark.svg?v=logo-square1",tag:"ROBLOX"},
     {key:"mm2",title:"MM2",subtitle:"أسلحة ومستلزمات الماب",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102",tag:"MURDER MYSTERY 2"},
     {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102",tag:"STEAL A BRAINROT"}
   ];
@@ -67,11 +67,13 @@
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
   function robloxParentCard(){
-    // Compact standard game tile. All Roblox subcategories stay INSIDE the hub.
-    return '<article class="ll-roblox-parent ll-roblox-cover-only ll-reveal" dir="rtl">'
-      +'<button type="button" class="ll-roblox-parent-cover" data-ll-game="roblox" aria-label="فتح روبلوكس">'
-      +'<span class="ll-roblox-parent-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></span>'
-      +'<strong class="ll-roblox-tile-name">روبلوكس</strong></button></article>';
+    // The original Robux game-tile layout, with only its visible name changed
+    // to Roblox. Checkout options remain inside the Roblox section.
+    return '<article class="ll-game-section ll-game-roblox ll-reveal" dir="rtl">'
+      +'<button type="button" class="ll-game-section-link" data-ll-game="roblox" aria-label="فتح روبلوكس">'
+      +'<span class="ll-game-section-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></span>'
+      +'<span class="ll-game-section-details"><strong>روبلوكس</strong></span>'
+      +'</button></article>';
   }
   function notify(message) {
     let n = q("#l1017LiveToast");

@@ -16,10 +16,10 @@
   let catalogError = "";
   let catalogRequest = 0;
   let omnexLive = false;
-  // Reference-only supplier prices; these never authorize payment or create an order.
+  // Reference-only package sizes; never create orders for unsynced supplier products.
   const SUPPLIER_REFERENCE = {
     charge: [60,325,660,1800,3850,8100],
-    codes: [60,325,660,1800,3850,8100,16200,24300,32400,40500]
+    codes: [60,325,660,1800,3850,8100]
   };
 
   function safe(value) {
@@ -99,7 +99,50 @@
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
   function countLabel(count) {
-    return count ? count + " باقة" : "قريبًا";
+    return count ? count + " باقة" : "باقات قيد التجهيز";
+  }
+  function tierFor(amount) {
+    if(amount >= 8100) return { key:"legend", title:"باقة ضخمة", coins:3, flair:"تشكيلة UC كبيرة" };
+    if(amount >= 3850) return { key:"elite", title:"باقة كبيرة جدًا", coins:3, flair:"كمية كبيرة من الشدات" };
+    if(amount >= 1800) return { key:"pro", title:"باقة كبيرة", coins:3, flair:"1800 شدة أو أكثر" };
+    if(amount >= 660) return { key:"plus", title:"باقة متوسطة", coins:2, flair:"كمية متوسطة من الشدات" };
+    if(amount >= 325) return { key:"medium", title:"باقة صغيرة", coins:2, flair:"مناسبة للشحنات الصغيرة" };
+    return { key:"starter", title:"باقة أساسية", coins:1, flair:"شحن UC أساسي" };
+  }
+  function deliveryFor(key) {
+    return key === "codes"
+      ? {kind:"كود شحن", detail:"استلام كود رقمي", icon:"ticket", note:"يظهر الكود بعد تنفيذ الطلب إذا كان متوفرًا"}
+      : key === "offers"
+      ? {kind:"عرض ببجي", detail:"حسب العرض", icon:"spark", note:"التفاصيل تعتمد على العرض المتوفر"}
+      : {kind:"شحن عبر ID", detail:"يتطلب معرف اللاعب UID", icon:"id", note:"راجع معرف اللاعب قبل تأكيد أي طلب"};
+  }
+  function artForPack(amount, customUrl, tierKey, quantity) {
+    const src = productImageSrc(customUrl) || "game-covers/pubg-uc.svg";
+    const count = Math.max(1,Math.min(3,quantity||1));
+    const icons = Array.from({length:count}, (_,index) =>
+      '<img class="pubg-art-coin pubg-art-coin-' + (index+1) + '" src="' + safe(src) + '" alt="" loading="lazy" decoding="async">'
+    ).join("");
+    return '<div class="pubg-pack-scene pubg-scene-' + tierKey + '" aria-hidden="true">'
+      + '<span class="pubg-scene-orbit pubg-scene-orbit-a"></span>'
+      + '<span class="pubg-scene-orbit pubg-scene-orbit-b"></span>'
+      + '<svg class="pubg-scene-streak" viewBox="0 0 240 132" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<path d="M22 104 81 44M162 118 208 72M180 14 207 41" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".23"/>'
+      + '<path d="M26 31h11m-5.5-5.5v11M194 100h13m-6.5-6.5v13" stroke="#FFE1A2" stroke-width="2" stroke-linecap="round" opacity=".8"/>'
+      + '<circle cx="55" cy="84" r="2" fill="#FBE1AD"/><circle cx="181" cy="37" r="3" fill="#F2BC74"/>'
+      + '</svg>'
+      + '<div class="pubg-scene-coins">' + icons + '</div>'
+      + '<span class="pubg-scene-footer">BATTLEGROUNDS · UC</span>'
+      + '</div>';
+  }
+  function infoForPack(mode, availability, description) {
+    const delivery=deliveryFor(mode);
+    return '<div class="pubg-pack-facts">'
+      + '<div><span>المنتج</span><strong>شدات PUBG Mobile</strong></div>'
+      + '<div><span>طريقة الشحن</span><strong>' + safe(delivery.kind) + '</strong></div>'
+      + '<div><span>الاستلام</span><strong>' + safe(delivery.detail) + '</strong></div>'
+      + '</div>'
+      + '<p class="pubg-pack-explainer">' + safe(description||delivery.note) + '</p>'
+      + '<span class="pubg-pack-availability">' + safe(availability) + '</span>';
   }
   function page() {
     let element = document.getElementById(PAGE_ID);
@@ -111,27 +154,47 @@
     return element;
   }
   function productCard(product, index) {
-    const name = safe(product.name);
     const amount = Number(product.amount);
-    const amountText = Number.isFinite(amount) && amount > 0 ? Math.trunc(amount).toLocaleString("en-US") : "—";
+    const hasAmount = Number.isFinite(amount) && amount > 0;
+    const amountText = hasAmount ? Math.trunc(amount).toLocaleString("en-US") : "UC";
+    const tier = tierFor(hasAmount ? amount : 60);
+    const name = safe(product.name || "شدات PUBG Mobile");
     const price = Number(product.price);
-    const priceText = (Number.isFinite(price) ? price : 0).toFixed(2);
-    const groupType = categoryFor(product);
-    const isVoucher = groupType === "codes";
+    const mode = categoryFor(product);
+    const isVoucher = mode === "codes";
     const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
     const supplierUnavailable = product.source === "omnex" && product.available !== true;
-    const isDisabled = noCodeAvailable || supplierUnavailable;
-    return '<article class="pubg-pack" style="--pubg-index:' + Math.min(index, 8) + '">'
-      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + (isVoucher ? 'كود رقمي' : groupType === 'offers' ? 'عرض ببجي' : 'شحن على UID') + '</span>'
-      + '<span class="pubg-pack-arrow" aria-hidden="true">↗</span></div>'
-      + '<div class="pubg-coin-wrap"><img class="pubg-uc-art l1017n-catalog-image" src="' + safe(productImageSrc(product.image_url)||'game-covers/pubg-uc.svg') + '" alt="' + safe(productImageSrc(product.image_url)?product.name:'') + '" loading="lazy" decoding="async"></div>'
-      + '<div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
-      + '<h3 class="pubg-pack-name">' + name + '</h3>'
-      + (noCodeAvailable ? '<p class="pubg-unavailable-note">كود 60 UC غير متوفر في المخزون حاليًا</p>' : '')
-      + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>السعر</small><strong>' + priceText + ' <span>د.ل</span></strong></div>'
+    // No buyer-facing Omnex purchase until the dedicated PUBG server route is deployed and tested.
+    const supplierCheckoutPending = product.source === "omnex";
+    const isDisabled = noCodeAvailable || supplierUnavailable || supplierCheckoutPending;
+    const currentStatus = noCodeAvailable || supplierUnavailable ? "غير متوفر" : supplierCheckoutPending ? "جاري تجهيز الربط" : "متوفر للطلب";
+    return '<article class="pubg-pack pubg-pack-detailed pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index, 8) + '">'
+      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(deliveryFor(mode).kind) + '</span>'
+      + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
+      + artForPack(amount, product.image_url, tier.key, tier.coins)
+      + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + (hasAmount ? '<small> UC</small>' : '') + '</div>'
+      + '<h3 class="pubg-pack-name">' + name + '</h3></div>'
+      + infoForPack(mode, currentStatus)
+      + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>سعر البيع</small><strong>'
+      + (Number.isFinite(price) && price > 0 ? price.toFixed(2) + ' <span>د.ل</span>' : 'عند التوفر')
+      + '</strong></div>'
       + (isDisabled
-        ? '<button type="button" class="pubg-buy" disabled aria-label="الباقة غير متوفرة حاليًا">غير متوفر</button>'
-        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">' + "فتح القائمة" + ' <span aria-hidden="true">←</span></button>') + '</div>'
+        ? '<button type="button" class="pubg-buy" disabled aria-label="الباقة غير متاحة للشراء حاليًا">غير متاح حاليًا</button>'
+        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">اطلب الآن <span aria-hidden="true">←</span></button>')
+      + '</div></article>';
+  }
+  function referenceCard(amount, key, index) {
+    const tier=tierFor(amount),delivery=deliveryFor(key);
+    const amountText=Number(amount).toLocaleString("en-US");
+    return '<article class="pubg-pack pubg-pack-detailed pubg-pack-preview pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index,8) + '">'
+      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(delivery.kind) + '</span>'
+      + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
+      + artForPack(amount, "", tier.key, tier.coins)
+      + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
+      + '<h3 class="pubg-pack-name">باقة ' + amountText + ' شدة ببجي</h3></div>'
+      + infoForPack(key, "بانتظار تفعيل المورد")
+      + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>سعر البيع</small><strong>قريبًا</strong></div>'
+      + '<button class="pubg-buy" type="button" disabled>قيد التجهيز</button></div>'
       + '</article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
@@ -245,11 +308,10 @@
 
   function supplierReference(key){
     const rows=SUPPLIER_REFERENCE[key];
-    if(!rows?.length)return "";
-    return '<div class="pubg-supplier-note" role="status"><strong>باقات PUBG Mobile</strong><span>يجري تجهيز الربط التلقائي. ستظهر الأسعار النهائية وزر الشراء بمجرد تفعيل المورد.</span></div>'
-      + '<div class="pubg-supplier-reference">'+rows.map(amount=>
-        '<div class="pubg-supplier-reference-card"><img src="game-covers/pubg-uc.svg" alt="" loading="lazy">'
-        +'<strong>'+amount.toLocaleString("en-US")+' UC</strong><span>قريبًا</span></div>').join("")+'</div>';
+    if(!rows?.length)return '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>لا توجد عروض متاحة حاليًا</strong><p>العروض ستظهر هنا عندما يؤكدها المورد.</p></div>';
+    return '<div class="pubg-supplier-note" role="status"><strong>باقات PUBG Mobile</strong>'
+      + '<span>تفاصيل وأحجام الشدات جاهزة للعرض. الشراء والأسعار النهائية يتفعّلان بعد الربط الآمن مع المورد.</span></div>'
+      + '<div class="pubg-packages pubg-reference-packages">' + rows.map((amount,index)=>referenceCard(amount,key,index)).join("") + '</div>';
   }
   function paintOffers(panel, key) {
     const list = categoryProducts(key);

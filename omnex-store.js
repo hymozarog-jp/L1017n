@@ -62,19 +62,11 @@ async function openProduct(product){
 const regionLabels = new Map([
  ['أمريكي', 'روبلوكس أمريكا'],
  ['عالمية', 'روبلوكس عالمي'],
- ['السعودية', 'روبلوكس السعودية'],
- ['الإمارات', 'روبلوكس الإمارات'],
- ['بريطانيا', 'روبلوكس بريطانيا'],
- ['أوروبا', 'روبلوكس أوروبا'],
 ]);
 
 const regionFlags = new Map([
  ['أمريكي', '🇺🇸'],
  ['عالمية', '🌐'],
- ['السعودية', '🇸🇦'],
- ['الإمارات', '🇦🇪'],
- ['بريطانيا', '🇬🇧'],
- ['أوروبا', '🇪🇺'],
 ]);
 
 function regionArtwork(key, label) {
@@ -198,12 +190,12 @@ window.openRobloxCodesPage = async function(root) {
   const groups = new Map();
   for (const product of data.products || []) {
    const key = product.region?.trim() || '';
-   const label = regionLabels.get(key) || key || 'أكواد أخرى';
+   const label = regionLabels.get(key);
+   if (!label) continue;
    if (!groups.has(key)) groups.set(key, {key, label, items: []});
    groups.get(key).items.push(product);
   }
-  const keys = [...regionLabels.keys(), ...[...groups.keys()].filter(key => !regionLabels.has(key))];
-  for (const key of keys) {
+  for (const key of regionLabels.keys()) {
    const region = groups.get(key);
    if (!region) continue;
    const count = region.items.filter(product => product.available).length;

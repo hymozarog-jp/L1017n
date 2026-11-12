@@ -149,3 +149,65 @@
  .ox-region-grid,
  .ox-catalog .ox-catalog-grid { grid-template-columns: 1fr; }
 }
+
+/* Authenticated Omnex code receipt, inside the existing three-stage order modal. */
+.orders-view-dialog .orders-omnex-delivery{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:16px 0;
+  padding:15px;
+  border:1px solid #72649c78;
+  border-radius:17px;
+  background:linear-gradient(140deg,#232037,#141c2b);
+  color:#eef0ff;
+  box-shadow:inset 0 1px 0 #ffffff0d;
+}
+.orders-view-dialog .orders-omnex-delivery.is-delivered{
+  border-color:#4ca68999;
+  background:linear-gradient(145deg,#153831,#13272b);
+}
+.orders-view-dialog .orders-omnex-delivery-head{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;
+}
+.orders-view-dialog .orders-omnex-delivery-head strong{
+  font-size:15px;font-weight:850;line-height:1.5;color:#fff;
+}
+.orders-view-dialog .orders-omnex-delivery-state{
+  display:inline-flex;align-items:center;padding:5px 10px;
+  border-radius:100px;border:1px solid #9990c574;
+  background:#8377b326;color:#d8cbff;font-size:11px;font-weight:800;
+}
+.orders-view-dialog .is-delivered .orders-omnex-delivery-state{
+  border-color:#56bd9199;background:#24916630;color:#aaf2d3;
+}
+.orders-view-dialog .orders-omnex-delivery-note{
+  font-size:12px;line-height:1.85;color:#c8cbda;margin:0;
+}
+.orders-view-dialog .orders-omnex-code-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:stretch;gap:8px;min-width:0;
+}
+.orders-view-dialog .orders-omnex-code-value{
+  display:flex;align-items:center;
+  width:100%;min-width:0;margin:0;padding:12px;
+  box-sizing:border-box;border-radius:12px;
+  border:1px solid #5ac5a066;background:#0b1e22;
+  color:#b7ffe1;font:750 14px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;
+  text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;
+  user-select:text;-webkit-user-select:text;
+}
+.orders-view-dialog .orders-omnex-code-copy{
+  min-width:82px;padding:9px 11px;border:0;border-radius:12px;
+  background:linear-gradient(125deg,#6ce0ac,#36ae8c);
+  color:#08231b;font:800 12px/1.5 inherit;cursor:pointer;
+}
+.orders-view-dialog .orders-omnex-code-copy:focus-visible{
+  outline:3px solid #a6f9d5;outline-offset:2px;
+}
+@media(max-width:370px){
+ .orders-view-dialog .orders-omnex-delivery{padding:11px}
+ .orders-view-dialog .orders-omnex-code-row{grid-template-columns:minmax(0,1fr)}
+ .orders-view-dialog .orders-omnex-code-copy{min-height:38px}
+}

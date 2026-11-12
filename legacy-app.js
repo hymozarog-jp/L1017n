@@ -1081,15 +1081,36 @@ let orderStatusRefreshBusy=false;
 async function refreshVisibleOrderStatuses(){
  const page=$('#ordersView'),root=$('#ordersList');
  if(document.visibilityState==='hidden'||!page||page.classList.contains('hidden')||
-    !root||orderStatusRefreshBusy||root.querySelector('.orders-view-dialog[open]'))return;
+    !root||orderStatusRefreshBusy)return;
  orderStatusRefreshBusy=true;
- try{await renderOrders()}catch(err){console.warn('[orders/live-status]',err)}
+ try{
+   const open=root.querySelector('.orders-view-dialog[open]');
+   if(open){
+     // Preserve the order dialog; redraw only if its supplier state actually changes.
+     const card=open.closest('.orders-modern-card');
+     const prior=card?.dataset.omnexState;
+     if(!prior||['completed','refunded'].includes(prior))return;
+     const {data,error}=await supabaseClient.rpc('get_my_omnex_order_receipts');
+     if(error)return;
+     const current=(Array.isArray(data)?data:[]).find(x=>String(x.order_id)===card.dataset.orderId);
+     if(current&&current.state!==prior)await renderOrders();
+     return;
+   }
+   await renderOrders();
+ }catch(err){console.warn('[orders/live-status]',err)}
  finally{orderStatusRefreshBusy=false}
 }
 window.addEventListener('focus',()=>{void refreshVisibleOrderStatuses()});
 window.addEventListener('pageshow',()=>{void refreshVisibleOrderStatuses()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshVisibleOrderStatuses()});
 setInterval(()=>{void refreshVisibleOrderStatuses()},15000);
+// Poll waiting supplier deliveries frequently; other order types keep the regular cadence.
+setInterval(()=>{
+ const root=$('#ordersList');
+ if(root?.querySelector('.orders-modern-card[data-omnex-state]:not([data-omnex-state="completed"]):not([data-omnex-state="refunded"])'))
+   void refreshVisibleOrderStatuses();
+},5000);
+window.addEventListener('l1017n:omnex-order-settled',()=>{void refreshVisibleOrderStatuses()});
 $('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}switchView('wallet')});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');

@@ -159,12 +159,13 @@ async function renderOrders(){
  const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
  if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
- const [pr,tr,verifiedTopups]=await Promise.all([
+ const [pr,tr,verifiedTopups,omnexReceipts]=await Promise.all([
   supabaseClient.from('purchase_orders').select('id,product_id,product_name,total_amount,roblox_username,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
   supabaseClient.from('topup_requests').select('id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
   // A dial-code tap only creates an internal payment intent. Require a linked
   // carrier receipt or approved top-up before listing it as a customer order.
-  supabaseClient.rpc('get_my_visible_ussd_topup_ids')
+  supabaseClient.rpc('get_my_visible_ussd_topup_ids'),
+  supabaseClient.rpc('get_my_omnex_order_receipts')
  ]);
  if(pr.error||tr.error||verifiedTopups.error){root.innerHTML='<p class="orders-empty">تعذر التحقق من الطلبات وحالة التحويل. حاول مرة ثانية.</p>';return}
  let receivedCodes=[];
@@ -172,6 +173,13 @@ async function renderOrders(){
   try{receivedCodes=await window.getMyInstantCodes()}catch(_){receivedCodes=[]}
  }
  const codeMap=new Map(receivedCodes.map(x=>[String(x.order_id),String(x.code)]));
+ // Only records owned by the signed-in customer. Delivered codes never go to local storage.
+ if(omnexReceipts.error)console.warn('[orders/omnex-receipts]',omnexReceipts.error);
+ const omnexByOrder=new Map(
+  (Array.isArray(omnexReceipts.data)?omnexReceipts.data:[])
+   .filter(x=>x&&x.order_id)
+   .map(x=>[String(x.order_id),x])
+ );
  // Identify item category by the actual linked product, not only item name.
  // This matters for characters named "قرما" or "لاسيكرت".
  const handover=window.L1017nManualHandover;
@@ -194,9 +202,19 @@ async function renderOrders(){
    verifiedUssdIds.has(String(x.id)));
  const orders=[...(pr.data||[]).map(x=>({...x,kind:'purchase'})),...visibleTopups.map(x=>({...x,kind:'topup'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const group=x=>['rejected','refunded'].includes(x.status)?'refunded':x.status==='completed'||(x.kind==='topup'&&x.status==='approved')?'completed':'pending';
- const status=x=>group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع')
-   :group(x)==='completed'?'تم التنفيذ'
-   :['approved','processing','in_processing','fulfilling','in_progress'].includes(x.status)?'تم القبول':'تم الاستلام';
+ const status=x=>{
+   const supplier=x.kind==='purchase'?omnexByOrder.get(String(x.id)):null;
+   if(supplier){
+     if(group(x)==='refunded')return 'تم إرجاع الرصيد';
+     if(supplier.state==='completed'&&x.status==='completed')
+       return Array.isArray(supplier.codes)&&supplier.codes.length?'تم القبول · الكود جاهز':'تم التنفيذ';
+     if(supplier.state==='processing'&&['processing','approved','fulfilling'].includes(x.status))return 'تم القبول';
+     return supplier.state==='review'?'قيد المراجعة':'قيد الانتظار';
+   }
+   return group(x)==='refunded'?(x.status==='rejected'?'مرفوض':'مسترجع')
+     :group(x)==='completed'?'تم التنفيذ'
+     :['approved','processing','in_processing','fulfilling','in_progress'].includes(x.status)?'تم القبول':'تم الاستلام';
+ };
  const icon=x=>x.kind==='topup'?'＋':/roblox|robux|روبلوكس|روبوكس/i.test(x.product_name||'')?uiIcon('coins'):/pubg|ببجي|fortnite|فورت/i.test(x.product_name||'')?uiIcon('gamepad'):uiIcon('package');
  // Show static matching artwork; financial states, totals and transactions are unchanged.
  const orderArt=x=>{
@@ -276,8 +294,9 @@ async function renderOrders(){
    const order=orders[index],state=group(order),progress=stageFor(order);
    const topup=order.kind==='topup';
    const headline=state==='refunded'?(order.status==='rejected'?'مرفوض':'مسترجع')
-     :progress===2?'تم التنفيذ':progress===1?'تم القبول':'تم الاستلام';
-   const caption=order.status==='approved'
+     :progress===2?'تم التنفيذ':progress===1?'تم القبول'
+     :omnexByOrder.has(String(order.id))?'قيد الانتظار':'تم الاستلام';
+   let caption=order.status==='approved'
      ?(topup?'تم قبول طلب شحن المحفظة وإضافة الرصيد.':'تم قبول طلب الشراء، ولم يتم التسليم بعد.')
      :state==='completed'
      ?(topup?'تم اعتماد شحن المحفظة.':'تم تنفيذ طلبك بنجاح.')
@@ -287,6 +306,20 @@ async function renderOrders(){
      :order.status==='fulfilling'?'الطلب قيد التنفيذ، وسيتم تحديث حالته عند تأكيد التسليم.'
      :topup?'طلب شحن المحفظة مسجل وقيد التحقق من التحويل.'
        :'طلبك في قائمة الانتظار وسيبدأ التنفيذ بعد مراجعته.';
+   const supplierReceipt=order.kind==='purchase'?omnexByOrder.get(String(order.id)):null;
+   if(supplierReceipt){
+     if(supplierReceipt.state==='completed'&&order.status==='completed')
+       caption=Array.isArray(supplierReceipt.codes)&&supplierReceipt.codes.length
+         ?'تم قبول طلبك وتسليم الكود. تقدر تشوفه وتنسخه من هنا مباشرة.'
+         :'المورد أكد إتمام الطلب. تابع تفاصيل التسليم.';
+     else if(supplierReceipt.state==='processing')
+       caption='تم قبول الطلب لدى المورد، وجارٍ تجهيز كود الشحن. يظهر هنا أول ما يتم التسليم.';
+     else if(supplierReceipt.state==='review')
+       caption='طلبك قيد المراجعة لدى المورد. لا تعاود الشراء؛ تابع نفس الطلب.';
+     else if(supplierReceipt.state==='refunded')
+       caption='تعذر تنفيذ الطلب وتم إرجاع المبلغ إلى محفظتك.';
+     else caption='طلبك قيد الانتظار لدى المورد. نعرض لك الكود فور تأكيد تسليمه.';
+   }
    // Source statuses only: intermediate phases are not silently assumed to happen.
    const stageNames=['تم الاستلام','تم القبول','تم التنفيذ'];
    const stageCount=stageNames.length;
@@ -328,6 +361,60 @@ async function renderOrders(){
        +escapeHtml(order.transfer_reference)+'</b></div>':'')
      +'<a class="orders-complaint" href="'+whatsapp+'" target="_blank" rel="noopener noreferrer">تقديم شكوى عبر واتساب</a>'
      +'<div class="orders-detail-actions"></div></div>';
+   if(supplierReceipt){
+     card.dataset.omnexState=String(supplierReceipt.state||'pending');
+     const delivered=order.status==='completed'&&supplierReceipt.state==='completed';
+     const codes=delivered&&Array.isArray(supplierReceipt.codes)
+       ?supplierReceipt.codes.filter(value=>typeof value==='string'&&value.trim()&&value.length<=4000).slice(0,12)
+       :[];
+     const receipt=document.createElement('section');
+     receipt.className='orders-omnex-delivery '+(codes.length?'is-delivered':'is-waiting');
+     receipt.setAttribute('aria-label','استلام كود الشحن');
+     const receiptHead=document.createElement('div');
+     receiptHead.className='orders-omnex-delivery-head';
+     const title=document.createElement('strong');
+     title.textContent=codes.length?'تم القبول — الكود جاهز':'كود الشحن';
+     const state=document.createElement('span');
+     state.className='orders-omnex-delivery-state';
+     state.textContent=codes.length?'تم التسليم':supplierReceipt.state==='refunded'?'مسترجع':supplierReceipt.state==='processing'?'تم القبول · جاري التسليم':supplierReceipt.state==='review'?'قيد المراجعة':'قيد الانتظار';
+     receiptHead.append(title,state);
+     receipt.append(receiptHead);
+     if(codes.length){
+       for(const code of codes){
+         const line=document.createElement('div');
+         line.className='orders-omnex-code-row';
+         const number=document.createElement('pre');
+         number.className='orders-omnex-code-value';
+         number.dir='ltr';
+         number.textContent=code;
+         const copyCode=document.createElement('button');
+         copyCode.type='button';
+         copyCode.className='orders-omnex-code-copy';
+         copyCode.textContent='نسخ الكود';
+         copyCode.addEventListener('click',async()=>{
+           try{
+             if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
+             await navigator.clipboard.writeText(code);
+             copyCode.textContent='تم النسخ ✓';
+           }catch(_){copyCode.textContent='اضغط مطولاً على الكود لنسخه';}
+         });
+         line.append(number,copyCode);
+         receipt.append(line);
+       }
+     }else{
+       const note=document.createElement('p');
+       note.className='orders-omnex-delivery-note';
+       note.textContent=supplierReceipt.state==='refunded'
+         ?'تم إرجاع المبلغ إلى المحفظة، ولم يتم إصدار كود.'
+         :supplierReceipt.state==='review'
+           ?'المورد يراجع الطلب؛ لا تشتري نفس الباقة مرة ثانية.'
+           :supplierReceipt.state==='processing'
+             ?'المورد قبل الطلب. الكود يظهر هنا تلقائيًا فور التنفيذ.'
+             :'طلبك قيد الانتظار. سنعرض الكود هنا بعد تأكيد المورد، بدون الحاجة لشراء جديد.';
+       receipt.append(note);
+     }
+     details.querySelector('.orders-track-panel')?.insertAdjacentElement('afterend',receipt);
+   }
    const actions=details.querySelector('.orders-detail-actions');
    const id=card.querySelector('.orders-card-id');if(id)actions.appendChild(id.cloneNode(true));
    const copy=document.createElement('button');copy.type='button';copy.className='orders-copy-id';

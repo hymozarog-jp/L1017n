@@ -116,22 +116,13 @@
       ? {kind:"عرض ببجي", detail:"حسب العرض", icon:"spark", note:"التفاصيل تعتمد على العرض المتوفر"}
       : {kind:"شحن عبر ID", detail:"يتطلب معرف اللاعب UID", icon:"id", note:"راجع معرف اللاعب قبل تأكيد أي طلب"};
   }
-  function artForPack(amount, customUrl, tierKey, quantity) {
-    const src = productImageSrc(customUrl) || "game-covers/pubg-uc.svg";
-    const count = Math.max(1,Math.min(3,quantity||1));
-    const icons = Array.from({length:count}, (_,index) =>
-      '<img class="pubg-art-coin pubg-art-coin-' + (index+1) + '" src="' + safe(src) + '" alt="" loading="lazy" decoding="async">'
-    ).join("");
-    return '<div class="pubg-pack-scene pubg-scene-' + tierKey + '" aria-hidden="true">'
-      + '<span class="pubg-scene-orbit pubg-scene-orbit-a"></span>'
-      + '<span class="pubg-scene-orbit pubg-scene-orbit-b"></span>'
-      + '<svg class="pubg-scene-streak" viewBox="0 0 240 132" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
-      + '<path d="M22 104 81 44M162 118 208 72M180 14 207 41" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".23"/>'
-      + '<path d="M26 31h11m-5.5-5.5v11M194 100h13m-6.5-6.5v13" stroke="#FFE1A2" stroke-width="2" stroke-linecap="round" opacity=".8"/>'
-      + '<circle cx="55" cy="84" r="2" fill="#FBE1AD"/><circle cx="181" cy="37" r="3" fill="#F2BC74"/>'
-      + '</svg>'
-      + '<div class="pubg-scene-coins">' + icons + '</div>'
-      + '<span class="pubg-scene-footer">BATTLEGROUNDS · UC</span>'
+  // A single real product image, as in the Roblox catalog. Keep the original
+  // PUBG cover when no product-specific image has been uploaded.
+  function artForPack(amount, customUrl) {
+    const custom=productImageSrc(customUrl);
+    const src=custom || "game-covers/pubg-battlefront.webp";
+    return '<div class="pubg-pack-cover'+(custom?' pubg-pack-cover-custom':'')+'">'
+      + '<img class="pubg-pack-cover-image" src="' + safe(src) + '" alt="صورة باقة شدات ببجي" loading="lazy" decoding="async">'
       + '</div>';
   }
   function infoForPack(mode, availability, description) {
@@ -171,7 +162,7 @@
     return '<article class="pubg-pack pubg-pack-detailed pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(deliveryFor(mode).kind) + '</span>'
       + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(amount, product.image_url, tier.key, tier.coins)
+      + artForPack(amount, product.image_url)
       + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + (hasAmount ? '<small> UC</small>' : '') + '</div>'
       + '<h3 class="pubg-pack-name">' + name + '</h3></div>'
       + infoForPack(mode, currentStatus)
@@ -189,7 +180,7 @@
     return '<article class="pubg-pack pubg-pack-detailed pubg-pack-preview pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index,8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(delivery.kind) + '</span>'
       + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(amount, "", tier.key, tier.coins)
+      + artForPack(amount, "")
       + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
       + '<h3 class="pubg-pack-name">باقة ' + amountText + ' شدة ببجي</h3></div>'
       + infoForPack(key, "بانتظار تفعيل المورد")

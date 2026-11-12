@@ -17,7 +17,7 @@ function showOrder(order){
  if(!dialog?.open||owner!==liveUser)return;
  currentOrder=order;$('.ox-form').hidden=true;$('.ox-progress').hidden=false;$('.ox-progress').replaceChildren();
  const area=$('.ox-progress'),final=order.state==='completed'||order.state==='refunded';
- area.append(make('h3','',order.state==='completed'?'تم تنفيذ طلبك ✓':order.state==='refunded'?'تم إرجاع المبلغ':'طلبك قيد المتابعة'));
+ area.append(make('h3','',order.state==='completed'?'تم القبول — المنتج جاهز ✓':order.state==='refunded'?'تم إرجاع المبلغ':order.state==='processing'?'تم القبول · بانتظار تسليم الكود':'قيد الانتظار'));
  area.append(make('p','',order.product_name));area.append(make('small','ox-order-id','#'+String(order.order_id).slice(0,8).toUpperCase()));
  const msg=order.state==='completed'?'منتجك جاهز. يمكنك الرجوع له من طلباتي.':order.state==='refunded'?'رجع المبلغ إلى محفظتك.':order.state==='review'?'الطلب قيد المراجعة لدى المورد. لا تعاود الشراء؛ المبلغ محفوظ على نفس الطلب.':'ننتظر تنفيذ المورد، ونتابع حالته تلقائيًا حتى لو أغلقت الصفحة.';
  area.append(make('p','',msg));
@@ -43,7 +43,21 @@ function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id=
  const body={action:'purchase',id:currentProduct.id,quote_id:quote.quote_id,client_key:requestKey,accepted_terms:true,fields};
  try{localStorage.setItem(pendingKey(owner,currentProduct.id),JSON.stringify({client_key:requestKey,product:currentProduct.id}))}catch{}
  buying=true;$('.ox-submit').disabled=true;status('جاري تسجيل طلبك بأمان…');const seq=generation;
- try{const result=await invoke(body);if(seq!==generation||owner!==liveUser)return;showOrder(result);refreshStore();void api().functions.invoke('l1017n-purchase-notify',{body:{order_id:result.order_id}}).catch(()=>{});}
+ try{
+   const result=await invoke(body);
+   if(seq!==generation||owner!==liveUser)return;
+   showOrder(result);
+   refreshStore();
+   void api().functions.invoke('l1017n-purchase-notify',{body:{order_id:result.order_id}}).catch(()=>{});
+   // Open this very order in the normal "طلباتي" popup straight after payment.
+   // The backend owns the actual state and reveals codes only after fulfillment.
+   if(result.order_id&&typeof switchView==='function'){
+     window.L1017nJustPlacedOrderId=String(result.order_id);
+     dialog.close();
+     generation++;
+     switchView('orders');
+   }
+ }
  catch(err){if(seq!==generation)return;
  if(err.message==='quote_expired'){status(errors.quote_expired);$('.ox-form').hidden=true;$('.ox-refresh').hidden=false}
  else{status(errors[err.message]||'لم نتأكد من نتيجة الاتصال. تابع طلباتي أو حاول المتابعة؛ ما نعيدش الخصم لنفس المحاولة.');$('.ox-submit').disabled=false;$('.ox-submit').textContent='متابعة الطلب';if(err.message==='phone_verification_required_before_purchase')$('.ox-phone').hidden=false;
@@ -223,7 +237,7 @@ window.openRobloxCodesPage = async function(root) {
 };
 async function poll(){
  if(polling||document.visibilityState==='hidden'||!api())return;polling=true;watchAuth();
- try{const {data:auth}=await api().auth.getUser();if(!auth?.user)return;const uid=auth.user.id;liveUser=uid;const {data,error}=await api().rpc('get_my_omnex_orders');if(error)return;const jobs=Array.isArray(data)?data:[];const ids=new Set(jobs.map(j=>j.order_id));if([...lastPending].some(id=>!ids.has(id)))refreshStore();lastPending=ids;
+ try{const {data:auth}=await api().auth.getUser();if(!auth?.user)return;const uid=auth.user.id;liveUser=uid;const {data,error}=await api().rpc('get_my_omnex_orders');if(error)return;const jobs=Array.isArray(data)?data:[];const ids=new Set(jobs.map(j=>j.order_id));if([...lastPending].some(id=>!ids.has(id))){refreshStore();window.dispatchEvent(new Event('l1017n:omnex-order-settled'));}lastPending=ids;
  const targets=new Set(jobs.slice(0,3).map(j=>j.order_id));if(dialog?.open&&owner===uid&&currentOrder?.order_id&&!['completed','refunded'].includes(currentOrder.state))targets.add(currentOrder.order_id);
  for(const id of targets){try{const order=await invoke({action:'order',order_id:id});if(liveUser!==uid)return;if(dialog?.open&&owner===uid&&currentOrder?.order_id===id)showOrder(order)}catch{}}
  }finally{polling=false}

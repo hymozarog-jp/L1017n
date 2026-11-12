@@ -201,7 +201,7 @@
 .orders-view-dialog .orders-omnex-code-copy{
   min-width:82px;padding:9px 11px;border:0;border-radius:12px;
   background:linear-gradient(125deg,#6ce0ac,#36ae8c);
-  color:#08231b;font:800 12px/1.5 inherit;cursor:pointer;
+  color:#08231b;font-weight:800;font-size:12px;line-height:1.5;font-family:inherit;cursor:pointer;
 }
 .orders-view-dialog .orders-omnex-code-copy:focus-visible{
   outline:3px solid #a6f9d5;outline-offset:2px;

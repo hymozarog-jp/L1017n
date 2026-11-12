@@ -59,14 +59,14 @@ async function openProduct(product){
  try{const previous=await invoke({action:'resume',client_key:requestKey});if(seq!==generation)return;if(previous?.order_id){showOrder(previous);return}}catch{}
  if(seq===generation)await quoteProduct(product,seq);
 }
+// Only Roblox US codes are displayed in the storefront catalog.
+// Supplier catalog records are not deleted or modified.
 const regionLabels = new Map([
  ['أمريكي', 'روبلوكس أمريكا'],
- ['عالمية', 'روبلوكس عالمي'],
 ]);
 
 const regionFlags = new Map([
  ['أمريكي', '🇺🇸'],
- ['عالمية', '🌐'],
 ]);
 
 function regionArtwork(key, label) {
@@ -192,7 +192,8 @@ window.openRobloxCodesPage = async function(root) {
   const groups = new Map();
   for (const product of data.products || []) {
    const key = product.region?.trim() || '';
-   if (key === 'أمريكي' && /\bUSD\b/i.test(product.name)) continue;
+   if (key !== 'أمريكي') continue; // Hide global and other non-US Roblox codes.
+   if (/\bUSD\b/i.test(product.name)) continue;
    const label = regionLabels.get(key);
    if (!label) continue;
    if (!groups.has(key)) groups.set(key, {key, label, items: []});

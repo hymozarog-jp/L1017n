@@ -903,3 +903,70 @@ body.pubg-account-checkout-open{overflow:hidden!important}
   #pubgCategoryPage.pubg-premium .pubg-art-coin{animation:none!important}
   #pubgCategoryPage.pubg-premium .pubg-pack-detailed{transition:none!important}
 }
+
+/* PUBG product cards: the Roblox-like one-image layout. No stacked/animated UC artwork.
+   Preserve the original PUBG cover and any merchant-uploaded product images. */
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed{
+  min-height:0!important;
+  padding:11px!important;
+  border-color:#3b526f!important;
+  border-radius:18px!important;
+  background:linear-gradient(155deg,#17253a,#111b2b 70%,#0e1724)!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed:before{display:none!important}
+#pubgCategoryPage.pubg-premium .pubg-pack-cover{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:1/1;
+  height:auto;
+  min-height:0;
+  flex:none;
+  margin:9px 0 11px;
+  overflow:hidden;
+  border-radius:15px;
+  border:1px solid #46607b;
+  background:#142336;
+  box-sizing:border-box;
+}
+#pubgCategoryPage.pubg-premium .pubg-pack-cover-image{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-width:none;
+  max-height:none;
+  padding:0;
+  margin:0;
+  object-fit:cover;
+  object-position:center;
+  opacity:1;
+  transform:none;
+  filter:none;
+  animation:none;
+}
+#pubgCategoryPage.pubg-premium .pubg-pack-cover-custom .pubg-pack-cover-image{
+  object-fit:contain;
+}
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-headline{
+  padding-bottom:8px;
+  margin-bottom:3px;
+}
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-bottom{
+  gap:6px!important;
+}
+@media(max-width:760px){
+  #pubgCategoryPage.pubg-premium .pubg-pack-detailed{
+    min-height:0!important;
+    padding:9px!important;
+  }
+  #pubgCategoryPage.pubg-premium .pubg-pack-cover{
+    aspect-ratio:1/1;
+    margin:6px 0 8px;
+    border-radius:12px;
+  }
+}
+@media(max-width:360px){
+  #pubgCategoryPage.pubg-premium .pubg-pack-detailed{min-height:0!important}
+  #pubgCategoryPage.pubg-premium .pubg-pack-cover{margin:5px 0 7px}
+}

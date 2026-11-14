@@ -65,7 +65,7 @@ function getClient(){
   function productCard(item,product){
     const customImage=productImageSrc(product?.image_url);
     const productPicture=customImage||item.image||'game-covers/official/mobile/brainrot.webp';
-    const limitedStock=product?.product_key==="steal-garama";
+    const limitedStock=["steal-garama","steal-dragon"].includes(item.key);
     const remaining=Number(product?.stock_quantity);
     const available=!!(product&&product.active&&Number(product.price)>0&&(!limitedStock||(Number.isInteger(remaining)&&remaining>0)));
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
@@ -93,7 +93,7 @@ function getClient(){
       b.addEventListener("click",()=>{
         const product=map.get(b.dataset.stealBuy);
         if(product&&Number(product.price)>0&&product.active&&
-           (product.product_key!=="steal-garama"||(Number.isInteger(Number(product.stock_quantity))&&Number(product.stock_quantity)>0))) openCheckout(product);
+           (!["steal-garama","steal-dragon"].includes(product.product_key)||(Number.isInteger(Number(product.stock_quantity))&&Number(product.stock_quantity)>0))) openCheckout(product);
       });
     });
   }

@@ -42,6 +42,18 @@ render();
 $('#omnexSync').onclick=async()=>{
 if(busy||closed)return;busy=true;$('#omnexSync').disabled=true;$('#omnexStatus').textContent='جاري جلب منتجات روبلوكس من المورد…';
 try{const {data,error}=await db.functions.invoke('l1017n-omnex',{body:{action:'sync'}});if(error||!data?.ok)throw Error('sync_failed');await load();$('#omnexStatus').textContent='تم تحديث المنتجات. أسعار البيع المخصصة محفوظة.'}catch{$('#omnexStatus').textContent='تعذر تحديث المنتجات. تحقق من مفتاح OMNEX والمحفظة الرئيسية، ثم حاول مجددًا.'}finally{busy=false;$('#omnexSync').disabled=false}};
+$('#omnexSyncPsn').onclick=async()=>{
+ if(closed)return;
+ const button=$('#omnexSyncPsn');button.disabled=true;
+ $('#omnexPsnStatus').textContent='جاري جلب بطاقات البلايستيشن…';
+ try {
+  const {data,error}=await db.functions.invoke('l1017n-omnex',{body:{action:'sync_psn'}});
+  if(error||!data?.ok)throw Error('sync_failed');
+  const {data:catalog}=await db.rpc('get_public_omnex_psn_catalog');
+  $('#omnexPsnStatus').textContent='تمت المزامنة: '+Number(data.imported||0)+' بطاقة. المتوفر للزبائن: '+(catalog?.products||[]).filter(p=>p.available).length+'.';
+ } catch(_) {$('#omnexPsnStatus').textContent='لم تكتمل المزامنة. راجع فئات البطاقات في حساب Omnex والمخزون وصلاحيات API.';}
+ finally {button.disabled=false;}
+};
 async function saveSettings(enabled){await rpc('admin_set_omnex_settings',{p_enabled:enabled,p_markup:Number($('#omnexMarkup').value)});await load();$('#omnexStatus').textContent='تم تحديث إعدادات البيع. الطلبات المؤكدة تظل قيد المتابعة.'}
 $('#omnexSaveSettings').onclick=async()=>{try{await saveSettings(salesEnabled)}catch{$('#omnexStatus').textContent='تعذر حفظ الإعدادات. أدخل نسبة من 0 إلى 100.'}};
 $('#omnexPause').onclick=async()=>{try{await saveSettings(!salesEnabled)}catch{$('#omnexStatus').textContent='تعذر تغيير حالة البيع.'}};

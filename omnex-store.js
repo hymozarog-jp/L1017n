@@ -69,7 +69,7 @@ async function openProduct(product){
  const db=api();if(!db)return;watchAuth();const {data,error}=await db.auth.getUser();if(error||!data?.user){if(typeof toast==='function')toast('سجّل دخولك أولًا لشراء الباقة');if(typeof switchView==='function')switchView('account');return}
  liveUser=data.user.id;owner=liveUser;mount();generation++;const seq=generation;quote=null;currentOrder=null;currentProduct=product;requestKey=crypto.randomUUID();buying=false;
  try{const saved=JSON.parse(localStorage.getItem(pendingKey(owner,product.id))||'null');if(saved?.client_key)requestKey=saved.client_key}catch{}
- $('.ox-name').textContent=product.name;$('.ox-region').textContent=product.region||'';$('.ox-price').textContent=cash(product.price);$('.ox-summary img').src=product.game==='pubg'?'game-covers/pubg-uc.svg':'game-covers/robux-100-tokens.svg';$('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-phone').hidden=true;dialog.showModal();status('جاري تحميل الباقة…');
+ $('.ox-name').textContent=product.name;$('.ox-region').textContent=product.region||'';$('.ox-price').textContent=cash(product.price);$('.ox-summary img').src=product.game==='pubg'?'game-covers/pubg-uc.svg':product.game==='psn'?'game-covers/psn-card.svg':'game-covers/robux-100-tokens.svg';$('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-phone').hidden=true;dialog.showModal();status('جاري تحميل الباقة…');
  try{const previous=await invoke({action:'resume',client_key:requestKey});if(seq!==generation)return;if(previous?.order_id){showOrder(previous);return}}catch{}
  if(seq===generation)await quoteProduct(product,seq);
 }

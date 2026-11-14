@@ -1,0 +1,45 @@
+/* PlayStation/OMNEX gift-card catalog, isolated from Roblox and PUBG. */
+body.psn-open {overflow:hidden!important}
+.psn-screen[hidden]{display:none!important}
+.psn-screen{position:fixed;inset:0;z-index:99991;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(ellipse at 50% -15%,#123879,#08172d 55%,#060c18 100%);color:#f2f6ff;padding:calc(env(safe-area-inset-top) + 22px) 15px calc(env(safe-area-inset-bottom) + 80px);font-family:inherit}
+.psn-wrap{max-width:850px;margin:auto}
+.psn-head{display:flex;gap:14px;align-items:center;margin-bottom:20px}
+.psn-back{width:43px;height:43px;flex:none;border-radius:14px;background:#ffffff15;border:1px solid #ffffff27;color:white;font-size:27px;cursor:pointer}
+.psn-head>div{flex:1;min-width:0}
+.psn-eyebrow{font-size:10px;font-weight:800;letter-spacing:2.2px;color:#76a6ff;margin:0 0 7px}
+.psn-title{font-size:clamp(23px,5vw,32px);font-weight:900;margin:0 0 7px}
+.psn-sub{font-size:12px;color:#adc5ed;margin:0}
+.psn-mark{display:grid;place-items:center;flex:none;width:57px;height:57px;border-radius:15px;color:white;font-size:23px;font-weight:900;background:linear-gradient(150deg,#276ce6,#071c60);box-shadow:0 9px 30px #001b62aa}
+.psn-region-warning{background:#12294c;border:1px solid #315288;border-radius:14px;padding:12px 14px;color:#cbd9ef;line-height:1.8;font-size:12px;margin:0 0 17px}
+.psn-tools{display:flex;align-items:center;gap:12px;margin:0 0 17px;flex-wrap:wrap}
+.psn-search{flex:1;min-width:175px;width:100%;background:#0c1c34;border:1px solid #35527d;border-radius:13px;padding:13px;color:#f8fbff;font-size:14px;outline:none}
+.psn-search:focus{border-color:#78a9ff}
+.psn-tools label{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;color:#d1def1}
+.psn-tools input[type=checkbox]{accent-color:#387ded}
+.psn-status{font-size:13px;line-height:1.8;color:#bbcced;margin:10px 0}
+.psn-regions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.psn-region{display:flex;align-items:center;gap:11px;text-align:right;padding:14px 12px;min-width:0;color:#f6f9ff;background:linear-gradient(130deg,#12294a,#0b182e);border:1px solid #25466f;border-radius:16px;cursor:pointer}
+.psn-region:hover,.psn-region:focus-visible{border-color:#77a6ff;background:#173a69}
+.psn-flag{font-size:26px;flex:none}
+.psn-region-meta{display:grid;gap:5px;min-width:0;flex:1}
+.psn-region-meta strong{font-size:15px;overflow-wrap:anywhere}
+.psn-region-meta small{font-size:11px;color:#a5bedf}
+.psn-arr{font-size:21px;color:#77a6ff}
+.psn-list[hidden],.psn-regions[hidden]{display:none}
+.psn-to-regions{border:none;color:#9fc7ff;background:none;cursor:pointer;padding:7px 0 15px;font-weight:700}
+.psn-region-title{font-size:20px;margin:0 0 15px}
+.psn-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.psn-product{border:1px solid #31517b;background:linear-gradient(145deg,#132b52,#09162c);color:#f8faff;border-radius:17px;padding:11px;display:flex;flex-direction:column;align-items:stretch;text-align:right;gap:9px;cursor:pointer;min-width:0}
+.psn-product:disabled{opacity:.55;cursor:not-allowed}
+.psn-product:not(:disabled):hover,.psn-product:not(:disabled):focus-visible{border-color:#7cacff}
+.psn-product-art{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(120deg,#0d2a7f,#2866cd);border-radius:11px;min-height:83px;padding:14px;overflow:hidden}
+.psn-product-ps{font-weight:900;font-size:33px;color:white;letter-spacing:-3px;font-style:italic}
+.psn-product-store{font-weight:900;letter-spacing:2px;font-size:11px}
+.psn-product-country{font-size:24px}
+.psn-product-detail{display:grid;gap:7px;min-height:50px}
+.psn-product-detail strong{font-size:13px;overflow-wrap:anywhere;line-height:1.5}
+.psn-price{font-size:15px;font-weight:800;color:#c7e1ff}
+.psn-buy{display:block;border-radius:10px;background:#2563e9;padding:10px;text-align:center;font-size:13px;font-weight:800}
+.psn-product:disabled .psn-buy{background:#273b5b}
+.psn-foot{font-size:12px;line-height:1.9;color:#91a8c7;margin-top:25px}
+@media (min-width:650px){.psn-regions{grid-template-columns:repeat(3,minmax(0,1fr))}.psn-products{grid-template-columns:repeat(3,minmax(0,1fr))}}

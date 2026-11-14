@@ -53,3 +53,40 @@ body.psn-open {overflow:hidden!important}
 .psn-product-art .psn-package-image{display:block;width:100%;height:148px;object-fit:contain;object-position:center;max-width:120px;filter:drop-shadow(0 8px 10px #0004)}
 .psn-product-art .psn-product-country{position:absolute;top:8px;right:9px;display:grid;place-items:center;min-width:33px;height:33px;font-size:19px;border-radius:9px;background:#020d21cc;border:1px solid #ffffff33}
 @media(min-width:650px){.psn-product-art{min-height:180px}.psn-product-art .psn-package-image{height:170px;max-width:130px}}
+
+/* Compact square PlayStation cards: same grid and footer hierarchy as Roblox. */
+#psnStoreScreen{background:#0b101a;color:#f5f6fa;padding-inline:clamp(12px,3.3vw,22px)}
+#psnStoreScreen .psn-wrap{max-width:720px}
+#psnStoreScreen .psn-head{gap:10px;margin-bottom:17px}
+#psnStoreScreen .psn-eyebrow{letter-spacing:1.4px;color:#8aafff}
+#psnStoreScreen .psn-mark{width:48px;height:48px;background:#111b2b;border:1px solid #34435f;box-shadow:none}
+#psnStoreScreen .psn-mark img{object-fit:contain}
+#psnStoreScreen .psn-region-warning{background:#151f30;border-color:#33425b;border-radius:12px;color:#c7d0e0;font-size:11px;line-height:1.7;padding:10px 12px}
+#psnStoreScreen .psn-tools{gap:9px;margin-bottom:13px}
+#psnStoreScreen .psn-search{background:#141c2a;border-color:#3b4963;font-size:16px;box-sizing:border-box;min-height:44px;padding:10px 12px;min-width:130px}
+#psnStoreScreen .psn-tools label{font-size:11px}
+#psnStoreScreen .psn-regions,#psnStoreScreen .psn-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(9px,3vw,14px);align-items:stretch}
+#psnStoreScreen .psn-region,#psnStoreScreen .psn-product{display:flex;flex-direction:column;align-items:stretch;gap:0;box-sizing:border-box;width:100%;height:100%;min-width:0;padding:0;overflow:hidden;border:1px solid #3b475c;border-radius:17px;background:linear-gradient(150deg,#202838,#131b28);color:#f6f8ff;font:inherit;text-align:start;box-shadow:0 6px 16px #0002;transition:border-color .18s,transform .18s;cursor:pointer}
+#psnStoreScreen .psn-region-art,#psnStoreScreen .psn-product-art{position:relative;display:grid;place-items:center;width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:1/1;box-sizing:border-box;margin:0;padding:9%;border:0;border-bottom:1px solid #ffffff19;border-radius:0;overflow:hidden;background:radial-gradient(ellipse at 50% 25%,#25559a,#103766 58%,#0b203d)}
+#psnStoreScreen .psn-region-thumb,#psnStoreScreen .psn-product-art .psn-package-image{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;margin:0;padding:0;box-sizing:border-box;border:0;border-radius:8px;background:transparent;filter:drop-shadow(0 5px 8px #0005)}
+#psnStoreScreen .psn-region .psn-flag,#psnStoreScreen .psn-product-art .psn-product-country{position:absolute;inset-block-start:7%;inset-inline-start:7%;inset-inline-end:auto;display:grid;place-items:center;min-width:29px;height:29px;padding:0 4px;margin:0;font-size:19px;line-height:1;background:#101b2ee8;border:1px solid #ffffff30;border-radius:7px;z-index:2}
+#psnStoreScreen .psn-region-footer{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:11px 10px;flex:1}
+#psnStoreScreen .psn-region-meta{display:grid;gap:4px;min-width:0}
+#psnStoreScreen .psn-region-meta strong{font-size:clamp(12px,3.5vw,16px);font-weight:800;line-height:1.5;overflow-wrap:anywhere}
+#psnStoreScreen .psn-region-meta small{font-size:11px;line-height:1.5;color:#b3becf}
+#psnStoreScreen .psn-arr{font-size:19px;color:#9cbfff;flex:none}
+#psnStoreScreen .psn-product-detail{display:flex;flex:1;flex-direction:column;gap:7px;min-height:0;padding:10px}
+#psnStoreScreen .psn-product-detail strong{display:block;min-height:2.8em;line-height:1.5;font-size:clamp(12px,3.3vw,15px);font-weight:750;overflow-wrap:anywhere}
+#psnStoreScreen .psn-price{font-size:clamp(15px,4.5vw,20px);line-height:1.4;font-weight:850;color:#f4f7ff;font-variant-numeric:tabular-nums;white-space:nowrap}
+#psnStoreScreen .psn-buy{display:grid;place-items:center;min-height:36px;margin-top:auto;padding:5px 3px;box-sizing:border-box;border-radius:9px;background:#16813d;color:#fff;font-size:13px;font-weight:750;line-height:1.4}
+#psnStoreScreen .psn-product:disabled{opacity:1;cursor:default}
+#psnStoreScreen .psn-product:disabled .psn-product-art{background:#303741}
+#psnStoreScreen .psn-product:disabled .psn-package-image{filter:grayscale(1) brightness(.65)}
+#psnStoreScreen .psn-product:disabled .psn-buy{background:#303a48;color:#cbd0d9}
+#psnStoreScreen .psn-sold-out{position:absolute;inset-inline:8%;bottom:7%;padding:5px;border-radius:9px;background:#10141dec;color:#fff;font-size:11px;text-align:center;z-index:3}
+#psnStoreScreen .psn-region:focus-visible,#psnStoreScreen .psn-product:focus-visible{outline:2px solid #94baff;outline-offset:2px}
+@media(hover:hover){#psnStoreScreen .psn-region:hover,#psnStoreScreen .psn-product:not(:disabled):hover{border-color:#79aaff;transform:translateY(-2px)}}
+#psnStoreScreen .psn-regions[hidden],#psnStoreScreen .psn-list[hidden]{display:none!important}
+@media(min-width:650px){#psnStoreScreen .psn-regions,#psnStoreScreen .psn-products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:300px){#psnStoreScreen .psn-regions,#psnStoreScreen .psn-products{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#psnStoreScreen .psn-region,#psnStoreScreen .psn-product{transition:none!important;transform:none!important}}

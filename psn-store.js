@@ -48,7 +48,8 @@
     const only = root.querySelector('.psn-only').checked;
     regions.replaceChildren(); items.replaceChildren();
     const filtered = entries.filter(p => (!only || p.available) && (p.name+' '+p.region).toLocaleLowerCase().includes(query));
-    const keys = [...new Set(filtered.map(p => p.region))].sort((a,b)=>a.localeCompare(b,'ar'));
+    const preferredRegions = ['أمريكا','السعودية','الإمارات'];
+    const keys = [...new Set(filtered.map(p => p.region))].sort((a,b)=>{const rank=x=>preferredRegions.includes(x)?preferredRegions.indexOf(x):99;return rank(a)-rank(b)||a.localeCompare(b,'ar');});
     if (!selectedRegion) {
       list.hidden = true;
       regions.hidden = false;
@@ -56,10 +57,12 @@
         const b = el('button','psn-region');
         b.type = 'button'; const flag = el('span','psn-flag',countryFlag(region));
         const thumb = el('img','psn-region-thumb'); thumb.src=cardArt; thumb.alt=''; thumb.decoding='async'; thumb.loading='lazy';
+        const cover = el('span','psn-region-art'); cover.append(thumb, flag);
         const meta = el('span','psn-region-meta');
         const available = filtered.filter(p=>p.region===region&&p.available).length;
-        meta.append(el('strong','',region),el('small','',available ? available+' باقة متوفرة' : 'غير متوفر حاليًا'));
-        b.append(thumb, flag, meta, el('span','psn-arr','←'));
+        meta.append(el('strong','','بلايستيشن '+region),el('small','',available ? available+' باقة متوفرة' : 'غير متوفر حاليًا'));
+        const footer=el('span','psn-region-footer'); footer.append(meta,el('span','psn-arr','←'));
+        b.append(cover, footer);
         b.onclick = () => { selectedRegion = region; draw(); root.scrollTo({top:0,behavior:'smooth'}); };
         regions.append(b);
       }
@@ -73,9 +76,11 @@
         const art = el('span','psn-product-art');
         const photo=el('img','psn-package-image'); photo.src=cardArt; photo.alt='بطاقة بلايستيشن'; photo.loading='lazy'; photo.decoding='async';
         art.append(photo,el('span','psn-product-country',countryFlag(selectedRegion)));
+        if (!product.available) art.append(el('span','psn-sold-out','غير متوفر'));
         const detail=el('span','psn-product-detail');
         detail.append(el('strong','',product.name),el('span','psn-price',money(product.price)));
-        b.append(art,detail,el('span','psn-buy',product.available?'شراء':'نفدت'));
+        detail.append(el('span','psn-buy',product.available?'شراء':'غير متوفر'));
+        b.append(art,detail);
         if (product.available) b.onclick = () => {
           if (typeof window.openOmnexProductCheckout !== 'function') return;
           window.openOmnexProductCheckout({...product,game:'psn'});

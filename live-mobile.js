@@ -19,9 +19,10 @@
     roblox: {name:"Roblox",tag:"روبلوكس",color:"purple",art:"R"},
     mm2: {name:"MM2",tag:"Murder Mystery 2",color:"blue",art:"M"},
     "steal-a-brainrot": {name:"ماب السرقة",tag:"Steal a Brainrot",color:"teal",art:"01"},
-    pubg: {name:"PUBG Mobile",tag:"ببجي موبايل",color:"gold",art:"UC"}
+    pubg: {name:"PUBG Mobile",tag:"ببجي موبايل",color:"gold",art:"UC"},
+    psn: {name:"PlayStation Store",tag:"بطاقات بلايستيشن",color:"blue",art:"PS"}
   };
-  const FILTERS = [["all","الكل"],["roblox","روبلوكس"],["pubg","ببجي"]];
+  const FILTERS = [["all","الكل"],["roblox","روبلوكس"],["pubg","ببجي"],["psn","بلايستيشن"]];
   const HEROES = [
     {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
     {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102"},
@@ -73,6 +74,17 @@
     const aliases="ببجي ببجي موبايل شدات شدة شحن معرف حساب uid uc pubg mobile";
     return normalize(aliases).includes(query);
   }
+  function matchesPsn(){
+    if(chosen!=="all"&&chosen!=="psn")return false;
+    return !query || normalize("بلايستيشن بلاستيشن بلاي ستيشن بطاقات شحن اكواد psn playstation store PS4 PS5 امريكا السعودية تركيا الامارات").includes(query);
+  }
+  function psnParentCard(){
+    return '<article class="ll-game-section ll-game-psn ll-reveal" dir="rtl">'
+      +'<button type="button" class="ll-game-section-link" data-ll-game="psn" aria-label="فتح بطاقات بلايستيشن">'
+      +'<span class="ll-game-section-art"><img src="game-covers/psn-card.svg?v=playstation-20261114" alt="PlayStation Store" loading="eager" decoding="async"></span>'
+      +'<span class="ll-game-section-details"><strong>بلايستيشن</strong></span>'
+      +'</button></article>';
+  }
   function pubgParentCard(){
     return '<article class="ll-game-section ll-game-pubg ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="pubg" aria-label="فتح ببجي موبايل">'
@@ -118,6 +130,11 @@
       if(key==="steal-a-brainrot"){
         if(typeof window.openBrainrotStoreCategory==="function")window.openBrainrotStoreCategory();
         else notify("قسم ماب السرقة غير جاهز حاليًا.");
+        return;
+      }
+      if(key==="psn"){
+        if(typeof window.openPsnStore==="function")window.openPsnStore();
+        else notify("قسم البلايستيشن قيد التحديث، حدّث الصفحة وحاول مجددًا.");
         return;
       }
       if(key==="pubg"){
@@ -195,11 +212,12 @@
     if(!root)return;
     const visibleRoblox=SHOP_SECTIONS.some(matchesSection);
     const visiblePubg=matchesPubg();
-    const visibleCount=Number(visibleRoblox)+Number(visiblePubg);
+    const visiblePsn=matchesPsn();
+    const visibleCount=Number(visibleRoblox)+Number(visiblePubg)+Number(visiblePsn);
     const count=q("#llItemCount");
     if(count)count.textContent=visibleCount?visibleCount+" قسم":"";
     root.innerHTML=visibleCount
-      ? (visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")
+      ? (visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(visiblePsn?psnParentCard():"")
       : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
     reveal([...root.querySelectorAll(".ll-reveal")]);
   }
@@ -261,7 +279,7 @@
     container.id = "llLanding";
     container.innerHTML = '<div class="ll-intro ll-reveal">'
       + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
-      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وببجي موبايل، وباقات الروبوكس وMM2 وماب السرقة وشدات UC.</p></div>'
+      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وببجي موبايل وبطاقات بلايستيشن، وباقات الروبوكس وMM2 وماب السرقة وشدات UC.</p></div>'
       + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'

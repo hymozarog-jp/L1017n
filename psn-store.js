@@ -4,6 +4,7 @@
   const db = () => typeof supabaseClient !== 'undefined' ? supabaseClient : null;
   let root, entries = [], selectedRegion = null, requestSeq = 0, launched = false;
   const el = (tag, cls, label) => { const n = document.createElement(tag); if (cls) n.className = cls; if (label !== undefined) n.textContent = label; return n; };
+  const cardArt = 'game-covers/psn-user-card.webp?v=supplied-original-20261114';
   const money = v => Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v).toFixed(2) + ' د.ل' : 'السعر غير متاح';
   const flags = [['أمريك','🇺🇸'],['USA','🇺🇸'],['US','🇺🇸'],['سعود','🇸🇦'],['SA','🇸🇦'],['إمارات','🇦🇪'],['AE','🇦🇪'],['تركي','🇹🇷'],['TR','🇹🇷'],['بريطان','🇬🇧'],['UK','🇬🇧'],['GB','🇬🇧'],['كويت','🇰🇼'],['قطر','🇶🇦'],['بحرين','🇧🇭'],['كند','🇨🇦'],['ألمان','🇩🇪'],['فرنس','🇫🇷'],['أسترال','🇦🇺'],['يابان','🇯🇵']];
   function countryFlag(label) { const s = String(label || '').trim(); return flags.find(([key]) => (key.length < 3 ? s.toUpperCase() === key : s.toLowerCase().includes(key.toLowerCase())))?.[1] || '🎮'; }
@@ -13,7 +14,7 @@
     root.id = 'psnStoreScreen';
     root.dir = 'rtl'; root.hidden = true;
     root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','بطاقات بلايستيشن');
-    root.innerHTML = '<div class="psn-wrap"><header class="psn-head"><button type="button" class="psn-back" aria-label="رجوع">→</button><div><p class="psn-eyebrow">PLAYSTATION STORE</p><h1 class="psn-title">بطاقات بلايستيشن</h1><p class="psn-sub">أكواد أصلية · اختر دولة حسابك قبل الشراء</p></div><span class="psn-mark" aria-hidden="true">PS</span></header><p class="psn-region-warning">مهم: البطاقة تعمل فقط مع دولة حساب PlayStation المطابقة. تأكد من الريجن قبل تأكيد الطلب.</p><div class="psn-tools"><input class="psn-search" type="search" placeholder="ابحث عن بطاقة أو فئة..." aria-label="البحث في بطاقات بلايستيشن"><label><input class="psn-only" type="checkbox"> المتوفر فقط</label></div><p class="psn-status" role="status" aria-live="polite">جاري تحميل بطاقات المورد…</p><div class="psn-regions"></div><div class="psn-list" hidden><button type="button" class="psn-to-regions">→ جميع الدول</button><h2 class="psn-region-title"></h2><div class="psn-products"></div></div><p class="psn-foot">الأسعار بالدينار الليبي. يُراجع السعر والمخزون مباشرة عند الشراء. الكود يظهر في طلباتي بعد تسليم المورد.</p></div>';
+    root.innerHTML = '<div class="psn-wrap"><header class="psn-head"><button type="button" class="psn-back" aria-label="رجوع">→</button><div><p class="psn-eyebrow">PLAYSTATION STORE</p><h1 class="psn-title">بطاقات بلايستيشن</h1><p class="psn-sub">أكواد أصلية · اختر دولة حسابك قبل الشراء</p></div><span class="psn-mark"><img src="game-covers/psn-user-card.webp?v=supplied-original-20261114" alt="" aria-hidden="true"></span></header><p class="psn-region-warning">مهم: البطاقة تعمل فقط مع دولة حساب PlayStation المطابقة. تأكد من الريجن قبل تأكيد الطلب.</p><div class="psn-tools"><input class="psn-search" type="search" placeholder="ابحث عن بطاقة أو فئة..." aria-label="البحث في بطاقات بلايستيشن"><label><input class="psn-only" type="checkbox"> المتوفر فقط</label></div><p class="psn-status" role="status" aria-live="polite">جاري تحميل بطاقات المورد…</p><div class="psn-regions"></div><div class="psn-list" hidden><button type="button" class="psn-to-regions">→ جميع الدول</button><h2 class="psn-region-title"></h2><div class="psn-products"></div></div><p class="psn-foot">الأسعار بالدينار الليبي. يُراجع السعر والمخزون مباشرة عند الشراء. الكود يظهر في طلباتي بعد تسليم المورد.</p></div>';
     document.body.append(root);
     root.querySelector('.psn-back').onclick = close;
     root.querySelector('.psn-to-regions').onclick = () => { selectedRegion = null; draw(); };
@@ -54,10 +55,11 @@
       for (const region of keys) {
         const b = el('button','psn-region');
         b.type = 'button'; const flag = el('span','psn-flag',countryFlag(region));
+        const thumb = el('img','psn-region-thumb'); thumb.src=cardArt; thumb.alt=''; thumb.decoding='async'; thumb.loading='lazy';
         const meta = el('span','psn-region-meta');
         const available = filtered.filter(p=>p.region===region&&p.available).length;
         meta.append(el('strong','',region),el('small','',available ? available+' باقة متوفرة' : 'غير متوفر حاليًا'));
-        b.append(flag, meta, el('span','psn-arr','←'));
+        b.append(thumb, flag, meta, el('span','psn-arr','←'));
         b.onclick = () => { selectedRegion = region; draw(); root.scrollTo({top:0,behavior:'smooth'}); };
         regions.append(b);
       }
@@ -69,7 +71,8 @@
         const b = el('button','psn-product');
         b.type = 'button'; b.disabled = !product.available;
         const art = el('span','psn-product-art');
-        art.append(el('span','psn-product-ps','PS'),el('span','psn-product-store','STORE'),el('span','psn-product-country',countryFlag(selectedRegion)));
+        const photo=el('img','psn-package-image'); photo.src=cardArt; photo.alt='بطاقة بلايستيشن'; photo.loading='lazy'; photo.decoding='async';
+        art.append(photo,el('span','psn-product-country',countryFlag(selectedRegion)));
         const detail=el('span','psn-product-detail');
         detail.append(el('strong','',product.name),el('span','psn-price',money(product.price)));
         b.append(art,detail,el('span','psn-buy',product.available?'شراء':'نفدت'));

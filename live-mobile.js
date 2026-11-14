@@ -210,7 +210,7 @@
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
-    const visibleRoblox=SHOP_SECTIONS.some(matchesSection);
+    const visibleRoblox=SHOP_SECTIONS.filter(matchesSection).length > 0;
     const visiblePubg=matchesPubg();
     const visiblePsn=matchesPsn();
     const visibleCount=Number(visibleRoblox)+Number(visiblePubg)+Number(visiblePsn);

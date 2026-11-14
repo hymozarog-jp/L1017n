@@ -59,7 +59,7 @@ async function syncPsn(db){
   group_name:groups.get(p.group)||p.group_name||'',
   price:p.price,stock:p.stock,available:p.purchase_available===true,image_url:p.image_url||''
  }));
- if(!items.length||items.length>150){
+ if(!items.length||items.length>500){
   const counts={};for(const p of cat.products){const id=String(p.category||'');counts[id]=(counts[id]||0)+1}
   console.warn('[omnex-psn-debug]',JSON.stringify({matches:[...candidates].slice(0,12),
     itemCount:items.length,catalogProducts:cat.products.length,

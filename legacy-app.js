@@ -44,9 +44,10 @@ function renderProducts(){
  const g=$('#productGrid');if(!g)return;
  const games=[
   {name:'روبلوكس',category:'روبلوكس',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>/^(roblox|mm2|steal-a-brainrot)$/i.test(String(p.game||'').trim())).length},
-  {name:'ببجي موبايل',category:'ببجي',image:'game-covers/pubg-battlefront.webp',key:'pubg',count:products.filter(p=>String(p.game||'').trim().toLowerCase()==='pubg').length}
+  {name:'ببجي موبايل',category:'ببجي',image:'game-covers/pubg-battlefront.webp',key:'pubg',count:products.filter(p=>String(p.game||'').trim().toLowerCase()==='pubg').length},
+  {name:'بلايستيشن',category:'بلايستيشن',image:'game-covers/psn-card.svg',key:'psn',count:0}
  ];
- g.innerHTML='<div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+escapeHtml(x.category)+'"><button type="button" class="game-tile-btn" data-game-open="'+escapeHtml(x.key)+'" aria-label="'+escapeHtml(x.name)+'"><div class="game-tile-art game-art-'+escapeHtml(x.key)+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fortnite:'FORTNITE'}[x.key]||escapeHtml(x.name.toUpperCase()))+'</span>'+(x.image?'<img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+escapeHtml(x.name)+'</strong><small>'+(x.key==='roblox'?'شحن روبوكس · MM2 · ماب السرقة':(x.count?x.count+' باقة':'قريبًا'))+'</small></div></button></article>').join('')+'</div>';
+ g.innerHTML='<div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+escapeHtml(x.category)+'"><button type="button" class="game-tile-btn" data-game-open="'+escapeHtml(x.key)+'" aria-label="'+escapeHtml(x.name)+'"><div class="game-tile-art game-art-'+escapeHtml(x.key)+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fortnite:'FORTNITE',psn:'PLAYSTATION'}[x.key]||escapeHtml(x.name.toUpperCase()))+'</span>'+(x.image?'<img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+escapeHtml(x.name)+'</strong><small>'+(x.key==='roblox'?'شحن روبوكس · MM2 · ماب السرقة':x.key==='psn'?'بطاقات شحن حسابات PSN':(x.count?x.count+' باقة':'قريبًا'))+'</small></div></button></article>').join('')+'</div>';
  g.querySelectorAll('[data-game-open]').forEach(btn=>btn.addEventListener('click',()=>{
   const key=btn.dataset.gameOpen;
   if(key==='roblox'){if(typeof window.openRobloxGameMenu==='function')window.openRobloxGameMenu();else if(typeof window.openRobuxPackages==='function')window.openRobuxPackages();return;}
@@ -56,6 +57,7 @@ function renderProducts(){
     else toast('قسم ببجي غير جاهز مؤقتًا. حدّث الصفحة.');
     return;
   }
+  if(key==='psn'){if(typeof window.openPsnStore==='function')window.openPsnStore();else toast('قسم بلايستيشن قيد التحديث.');return;}
   if(key==='mm2'){if(typeof window.openMm2StoreCategory==='function')window.openMm2StoreCategory();else toast('قسم MM2 غير جاهز حاليًا.');return;}
   if(key==='steal-a-brainrot'){if(typeof window.openBrainrotStoreCategory==='function')window.openBrainrotStoreCategory();else toast('قسم ماب السرقة غير جاهز حاليًا.');return;}
  }));

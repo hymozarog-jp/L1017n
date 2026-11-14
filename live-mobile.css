@@ -585,3 +585,8 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 #llLanding .ll-catalog:has(.ll-game-section){grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}
 #llLanding .ll-game-pubg .ll-game-section-art{background:#182b36;border-color:#628b9f}
 #llLanding .ll-game-pubg .ll-game-section-art img{object-fit:cover;padding:0;filter:none}
+
+/* L1017n: PlayStation category art on the real live storefront. */
+#llLanding .ll-game-psn .ll-game-section-art{background:linear-gradient(145deg,#154c9e,#08183b);border-color:#4488f780}
+#llLanding .ll-game-psn .ll-game-section-art img{padding:9px;object-fit:cover;filter:none}
+#llLanding .ll-game-psn .ll-game-section-link:hover .ll-game-section-art{border-color:#81b4ff}

@@ -45,7 +45,7 @@ function renderProducts(){
  const games=[
   {name:'روبلوكس',category:'روبلوكس',image:'game-covers/roblox-mark.svg?v=logo-square1',key:'roblox',count:products.filter(p=>/^(roblox|mm2|steal-a-brainrot)$/i.test(String(p.game||'').trim())).length},
   {name:'ببجي موبايل',category:'ببجي',image:'game-covers/pubg-battlefront.webp',key:'pubg',count:products.filter(p=>String(p.game||'').trim().toLowerCase()==='pubg').length},
-  {name:'بلايستيشن',category:'بلايستيشن',image:'game-covers/psn-card.svg',key:'psn',count:0}
+  {name:'بلايستيشن',category:'بلايستيشن',image:'game-covers/psn-user-card.webp?v=supplied-original-20261114',key:'psn',count:0}
  ];
  g.innerHTML='<div class="game-tiles">'+games.map(x=>'<article class="game-tile" data-game-group="'+escapeHtml(x.category)+'"><button type="button" class="game-tile-btn" data-game-open="'+escapeHtml(x.key)+'" aria-label="'+escapeHtml(x.name)+'"><div class="game-tile-art game-art-'+escapeHtml(x.key)+'"><span class="game-tile-brand">'+({roblox:'ROBLOX',pubg:'PUBG MOBILE',freefire:'FREE FIRE',fortnite:'FORTNITE',psn:'PLAYSTATION'}[x.key]||escapeHtml(x.name.toUpperCase()))+'</span>'+(x.image?'<img loading="eager" decoding="async" referrerpolicy="no-referrer" src="'+x.image+'" alt="" onerror="this.remove()">':'')+'</div><div class="game-tile-yellow"></div><div class="game-tile-info"><strong>'+escapeHtml(x.name)+'</strong><small>'+(x.key==='roblox'?'شحن روبوكس · MM2 · ماب السرقة':x.key==='psn'?'بطاقات شحن حسابات PSN':(x.count?x.count+' باقة':'قريبًا'))+'</small></div></button></article>').join('')+'</div>';
  g.querySelectorAll('[data-game-open]').forEach(btn=>btn.addEventListener('click',()=>{

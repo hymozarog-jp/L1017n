@@ -27,12 +27,56 @@ async function syncCatalog(db){
  const items=cat.products.filter(p=>p.category==='cd40561b622c4fa9ed9984c31f0c697f').map(p=>({id:p.id,category:p.category,name:p.name,group_name:groups.get(p.group)||'',price:p.price,stock:p.stock,available:p.purchase_available===true,image_url:p.image_url||''}));
  return rpc(db,'sync_omnex_roblox_catalog',{p_items:items,p_wallet:cat.wallet});
 }
+
+/* PlayStation gift-card catalog: discover the supplier's category by its own
+   name; never trust customer-supplied category IDs. Unrecognized catalogs fail closed. */
+async function syncPsn(db){
+ const r=await supplier(db,'catalog');
+ if(r.status!==200||!Array.isArray(r.body?.products))throw Error('supplier_unavailable');
+ const cat=r.body;
+ const isPsn=s=>/(?:play\s*station|psn|بلاي\s*ستيشن|بليستيشن|بلايستيشن)/i.test(String(s||''));
+ const candidates=new Set();
+ const entries=value=>Array.isArray(value)?value:(value&&typeof value==='object'?Object.values(value):[]);
+ for(const group of [cat.categories,cat.category_list,cat.card_categories,cat.sections]){
+  for(const c of entries(group)){
+   if(!c||typeof c!=='object')continue;
+   const id=String(c.id||c.category_id||'');
+   if(/^[a-f0-9]{32}$/.test(id)&&isPsn([c.name,c.title,c.label,c.slug].filter(Boolean).join(' ')))candidates.add(id);
+  }
+ }
+ for(const g of entries(cat.groups)){
+  const id=String(g.category||'');
+  if(/^[a-f0-9]{32}$/.test(id)&&isPsn([g.category_name,g.category_title,g.parent_name,g.section_name].filter(Boolean).join(' ')))candidates.add(id);
+ }
+ for(const product of cat.products){
+  const id=String(product.category||'');
+  if(/^[a-f0-9]{32}$/.test(id)&&isPsn([product.category_name,product.category_title,product.category_label].filter(Boolean).join(' ')))candidates.add(id);
+ }
+ if(!candidates.size)throw Error('psn_category_not_found');
+ const groups=new Map(entries(cat.groups).map(g=>[g.id,g.name||g.title||'']));
+ const items=cat.products.filter(p=>candidates.has(String(p.category||''))).map(p=>({
+  id:p.id,category:p.category,name:p.name,
+  group_name:groups.get(p.group)||p.group_name||'',
+  price:p.price,stock:p.stock,available:p.purchase_available===true,image_url:p.image_url||''
+ }));
+ if(!items.length||items.length>150){
+  const counts={};for(const p of cat.products){const id=String(p.category||'');counts[id]=(counts[id]||0)+1}
+  console.warn('[omnex-psn-debug]',JSON.stringify({matches:[...candidates].slice(0,12),
+    itemCount:items.length,catalogProducts:cat.products.length,
+    productCategoryCounts:Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,18),
+    categoryKeys:Object.keys(cat).filter(x=>/categor|group|section|product/i.test(x)).slice(0,15)}));
+  throw Error('psn_catalog_unavailable');
+ }
+ return rpc(db,'sync_omnex_psn_catalog',{p_items:items,p_wallet:cat.wallet});
+}
+
 async function worker(db){
  const tasks=[];for(let i=0;i<6;i++){const job=await rpc(db,'claim_omnex_job');if(!job)break;tasks.push(runJob(db,job));}
  await Promise.allSettled(tasks);
  const {data:state}=await db.rpc('get_public_omnex_roblox_catalog');
  // Quotes always verify live prices. The periodic catalog refresh is only a listing cache.
  const {data:due}=await db.rpc('omnex_catalog_sync_due');if(due)try{await syncCatalog(db)}catch{}
+ const {data:psnDue}=await db.rpc('omnex_psn_catalog_sync_due');if(psnDue)try{await syncPsn(db)}catch(error){console.warn('[omnex-psn-sync]',String(error?.message||'unknown').slice(0,100))}
 }
 function fieldsSchema(raw){
  if(!Array.isArray(raw)||raw.length>10)throw Error('unsupported_product_fields');
@@ -70,7 +114,8 @@ Deno.serve(async req=>{
    const known=await rpc(service,'omnex_product_for_service',{p_product:body.id});if(!known)throw Error('product_not_available');
    const r=await supplier(service,'product',body.id),p=r.body?.product;
    if(r.status!==200||!p||p.id!==body.id||r.body.price_status!=='fresh')throw Error('supplier_price_unavailable');
-   if(p.category&&p.category!=='cd40561b622c4fa9ed9984c31f0c697f')throw Error('product_not_available');
+   const expectedCategory=known.game==='psn'?known.supplier_category_id:known.game==='pubg'?'30faee6b9893e3f424961c15a785efc3':'cd40561b622c4fa9ed9984c31f0c697f';
+   if(!expectedCategory||p.category!==expectedCategory)throw Error('product_not_available');
    if(p.purchase_available===false||r.body.stock===0||p.stock===0)throw Error('supplier_out_of_stock');
    const cost=millis(p.price);if(cost===null||cost<=0)throw Error('supplier_price_unavailable');
    const quote=await rpc(service,'make_omnex_quote',{p_user:uid,p_product:body.id,p_cost:p.price,p_wallet:r.body.wallet||p.wallet,p_stock:r.body.stock??p.stock??null,p_schema:fieldsSchema(r.body.fields||[])});
@@ -95,6 +140,7 @@ Deno.serve(async req=>{
   if(body.action==='status'){const state=await rpc(userDb,'get_omnex_roblox_admin_catalog');return reply({configured:!!Deno.env.get('OMNEX_API_KEY'),scope:'roblox',purchasing_enabled:state.purchasing_enabled},200,origin)}
   if(body.action==='catalog')return reply(await rpc(userDb,'get_omnex_roblox_admin_catalog'),200,origin);
   if(body.action==='sync')return reply({ok:true,imported:await syncCatalog(service),scope:'roblox'},200,origin);
+  if(body.action==='sync_psn')return reply({ok:true,imported:await syncPsn(service),scope:'psn'},200,origin);
   return reply({error:'invalid_action'},400,origin);
  }catch(error){
   const known=new Set(['invalid_product','product_not_available','unsupported_product_fields','invalid_product_fields','missing_product_field','invalid_purchase','quote_expired','supplier_sales_paused','supplier_price_unavailable','supplier_out_of_stock','supplier_wallet_changed','supplier_price_requires_review','insufficient_balance','phone_verification_required_before_purchase','too_many_pending_orders','supplier_order_already_pending','idempotency_conflict','quote_rate_limit']);

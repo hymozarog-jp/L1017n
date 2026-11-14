@@ -1107,3 +1107,19 @@ body.pubg-account-checkout-open{overflow:hidden!important}
  #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-headline{padding:12px 12px 0!important}
  #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-bottom{padding:10px 12px 12px!important}
 }
+
+/* Same full PUBG cover, same color, same framing on every category and package. */
+#pubgCategoryPage.pubg-premium .pubg-choice .pubg-choice-art,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed:has(.pubg-buy:disabled) .pubg-pack-cover{
+ background:radial-gradient(ellipse at 50% 78%,#226fc2 0%,transparent 40%),linear-gradient(155deg,#123a70,#06172e 70%)!important;
+}
+#pubgCategoryPage.pubg-premium .pubg-choice .pubg-choice-art img,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover-image,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed:has(.pubg-buy:disabled) .pubg-pack-cover-image{
+ inset:2%!important;width:96%!important;height:96%!important;
+ max-width:96%!important;max-height:96%!important;
+ object-fit:contain!important;object-position:center!important;
+ border-radius:5px!important;filter:drop-shadow(0 3px 4px #0004)!important;opacity:1!important;
+}
+#pubgAccountCheckoutOverlay .pubg-checkout-product-image{display:block;width:86px;height:86px;object-fit:contain;border-radius:12px;margin:0 0 14px}

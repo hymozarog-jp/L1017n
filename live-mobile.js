@@ -81,7 +81,7 @@
   function psnParentCard(){
     return '<article class="ll-game-section ll-game-psn ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="psn" aria-label="فتح بطاقات بلايستيشن">'
-      +'<span class="ll-game-section-art"><img src="game-covers/psn-card.svg?v=playstation-20261114" alt="PlayStation Store" loading="eager" decoding="async"></span>'
+      +'<span class="ll-game-section-art"><img src="game-covers/psn-user-card.webp?v=supplied-original-20261114" alt="PlayStation Store" loading="eager" decoding="async"></span>'
       +'<span class="ll-game-section-details"><strong>بلايستيشن</strong></span>'
       +'</button></article>';
   }

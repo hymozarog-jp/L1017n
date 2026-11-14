@@ -590,3 +590,7 @@ body.l1017-live-ui .ph-drawer-link:active{transform:scale(.97)}
 #llLanding .ll-game-psn .ll-game-section-art{background:linear-gradient(145deg,#154c9e,#08183b);border-color:#4488f780}
 #llLanding .ll-game-psn .ll-game-section-art img{padding:9px;object-fit:cover;filter:none}
 #llLanding .ll-game-psn .ll-game-section-link:hover .ll-game-section-art{border-color:#81b4ff}
+
+/* Photo supplied by the store owner, not the previous synthetic PSN icon. */
+#llLanding .ll-game-psn .ll-game-section-art{background:#070b16}
+#llLanding .ll-game-psn .ll-game-section-art img{object-fit:cover;padding:0;filter:none}

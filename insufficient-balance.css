@@ -16,13 +16,11 @@
   background: #0b0719b8;
 }
 
-#insufficientBalanceDialog img {
+#insufficientBalanceDialog .balance-wallet-art {
   display: block;
-  width: 108px;
-  height: 108px;
+  width: 112px;
+  height: 112px;
   margin: 0 auto 14px;
-  object-fit: cover;
-  border-radius: 24px;
 }
 
 #insufficientBalanceDialog h2 {

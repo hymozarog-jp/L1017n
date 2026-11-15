@@ -7,6 +7,22 @@
     {id:'sabCheckout',inner:'.sab-dialog',close:'.sab-dialog-close',label:'STEAL A BRAINROT'},
     {id:'pubgAccountCheckoutOverlay',inner:'.pubg-account-checkout',close:'.pubg-account-close',label:'PUBG MOBILE'}
   ];
+  const backSelector = [
+    '[data-rgp-back]', '[data-close-packages]', '.robux-purchase-back',
+    '.gb-package-back', '[data-pubg-close]', '.psn-back',
+    '#omnexCheckout .ox-close', '#closeGamePreview'
+  ].join(',');
+
+  function decorateBackButtons(root) {
+    const buttons = [...root.querySelectorAll(backSelector)];
+    if (root.matches(backSelector)) buttons.unshift(root);
+    for (const button of buttons) {
+      if (button.classList.contains('l1017-package-back')) continue;
+      button.classList.add('l1017-package-back');
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 6 6 6-6 6M20 12H4"/></svg><span class="rgp-back-label" data-pubg-back-label>رجوع</span>';
+    }
+  }
+
   function addHeader(overlay,type){
     if(!overlay||overlay.dataset.gbPackageMenuReady==='1')return;
     const panel=overlay.querySelector(type.inner);
@@ -30,6 +46,7 @@
     brand.textContent='GAMEBOXLY • '+type.label;
     top.append(back,brand);
     panel.prepend(top);
+    decorateBackButtons(top);
     if(!panel.querySelector('.gb-package-preamble')){
       const preamble=document.createElement('p');
       preamble.className='gb-package-preamble';
@@ -87,11 +104,13 @@
   }
   function boot(){
     sync(document.body);
+    decorateBackButtons(document.body);
     prepareCards(document.body);
     if(typeof MutationObserver==='function'){
       const observer=new MutationObserver(records=>{
         records.forEach(record=>record.addedNodes.forEach(node=>{
-          sync(node);prepareCards(node);
+          if(node.nodeType!==1) return;
+          sync(node);prepareCards(node);decorateBackButtons(node);
         }));
       });
       observer.observe(document.body,{childList:true,subtree:true});

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const db = () => typeof supabaseClient !== 'undefined' ? supabaseClient : null;
-  let root, entries = [], selectedRegion = null, requestSeq = 0, launched = false;
+  let root, entries = [], selectedRegion = null, regionScroll = 0, requestSeq = 0;
   const el = (tag, cls, label) => { const n = document.createElement(tag); if (cls) n.className = cls; if (label !== undefined) n.textContent = label; return n; };
   const cardArt = 'game-covers/psn-user-card.webp?v=supplied-original-20261114';
   const money = v => Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v).toFixed(2) + ' د.ل' : 'السعر غير متاح';
@@ -14,23 +14,40 @@
     root.id = 'psnStoreScreen';
     root.dir = 'rtl'; root.hidden = true;
     root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','بطاقات بلايستيشن');
-    root.innerHTML = '<div class="psn-wrap"><header class="psn-head"><button type="button" class="psn-back" aria-label="رجوع">→</button><div><p class="psn-eyebrow">PLAYSTATION STORE</p><h1 class="psn-title">بطاقات بلايستيشن</h1><p class="psn-sub">أكواد أصلية · اختر دولة حسابك قبل الشراء</p></div><span class="psn-mark"><img src="game-covers/psn-user-card.webp?v=supplied-original-20261114" alt="" aria-hidden="true"></span></header><p class="psn-region-warning">مهم: البطاقة تعمل فقط مع دولة حساب PlayStation المطابقة. تأكد من الريجن قبل تأكيد الطلب.</p><div class="psn-tools"><input class="psn-search" type="search" placeholder="ابحث عن بطاقة أو فئة..." aria-label="البحث في بطاقات بلايستيشن"><label><input class="psn-only" type="checkbox"> المتوفر فقط</label></div><p class="psn-status" role="status" aria-live="polite">جاري تحميل بطاقات المورد…</p><div class="psn-regions"></div><div class="psn-list" hidden><button type="button" class="psn-to-regions">→ جميع الدول</button><h2 class="psn-region-title"></h2><div class="psn-products"></div></div><p class="psn-foot">الأسعار بالدينار الليبي. يُراجع السعر والمخزون مباشرة عند الشراء. الكود يظهر في طلباتي بعد تسليم المورد.</p></div>';
+    root.innerHTML = '<div class="psn-wrap"><header class="psn-head"><button type="button" class="psn-back" aria-label="رجوع">→</button><div><p class="psn-eyebrow">PLAYSTATION STORE</p><h1 class="psn-title">بطاقات بلايستيشن</h1><p class="psn-sub">أكواد أصلية · اختر دولة حسابك قبل الشراء</p></div><span class="psn-mark"><img src="game-covers/psn-user-card.webp?v=supplied-original-20261114" alt="" aria-hidden="true"></span></header><p class="psn-region-warning">مهم: البطاقة تعمل فقط مع دولة حساب PlayStation المطابقة. تأكد من الريجن قبل تأكيد الطلب.</p><div class="psn-tools"><input class="psn-search" type="search" placeholder="ابحث عن بطاقة أو فئة..." aria-label="البحث في بطاقات بلايستيشن"><label><input class="psn-only" type="checkbox"> المتوفر فقط</label></div><p class="psn-status" role="status" aria-live="polite">جاري تحميل بطاقات المورد…</p><div class="psn-regions"></div><div class="psn-list" hidden><h2 class="psn-region-title"></h2><div class="psn-products"></div></div><p class="psn-foot">الأسعار بالدينار الليبي. يُراجع السعر والمخزون مباشرة عند الشراء. الكود يظهر في طلباتي بعد تسليم المورد.</p></div>';
     document.body.append(root);
-    root.querySelector('.psn-back').onclick = close;
-    root.querySelector('.psn-to-regions').onclick = () => { selectedRegion = null; draw(); };
+    root.querySelector('.psn-back').onclick = goBack;
     root.querySelector('.psn-search').oninput = draw;
     root.querySelector('.psn-only').onchange = draw;
-    document.addEventListener('keydown', event => { if (event.key === 'Escape' && root && !root.hidden) { event.preventDefault(); close(); } });
+    root.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !event.defaultPrevented) {
+        event.preventDefault();
+        goBack();
+      }
+    });
   }
   function open() {
     mount();
-    launched = true; root.hidden = false;
+    root.hidden = false;
     document.body.classList.add('psn-open');
     selectedRegion = null;
     root.querySelector('.psn-search').value = '';
     root.querySelector('.psn-only').checked = false;
     root.scrollTop = 0; root.querySelector('.psn-back').focus({ preventScroll:true });
+    draw();
     void reload();
+  }
+  function goBack() {
+    if (!selectedRegion) {
+      close();
+      return;
+    }
+    const previousRegion = selectedRegion;
+    selectedRegion = null;
+    draw();
+    root.scrollTop = regionScroll;
+    [...root.querySelectorAll('.psn-region')].find(button => button.dataset.region === previousRegion)
+      ?.focus({preventScroll:true});
   }
   function close() {
     if (!root) return;
@@ -47,6 +64,7 @@
     const query = root.querySelector('.psn-search').value.trim().toLocaleLowerCase();
     const only = root.querySelector('.psn-only').checked;
     regions.replaceChildren(); items.replaceChildren();
+    root.querySelector('.psn-back').setAttribute('aria-label', selectedRegion ? 'العودة إلى دول بلايستيشن' : 'العودة إلى المتجر');
     const filtered = entries.filter(p => (!only || p.available) && (p.name+' '+p.region).toLocaleLowerCase().includes(query));
     const preferredRegions = ['أمريكا','السعودية','الإمارات'];
     const keys = [...new Set(filtered.map(p => p.region))].sort((a,b)=>{const rank=x=>preferredRegions.includes(x)?preferredRegions.indexOf(x):99;return rank(a)-rank(b)||a.localeCompare(b,'ar');});
@@ -63,7 +81,14 @@
         meta.append(el('strong','','بلايستيشن '+region),el('small','',available ? available+' باقة متوفرة' : 'غير متوفر حاليًا'));
         const footer=el('span','psn-region-footer'); footer.append(meta,el('span','psn-arr','←'));
         b.append(cover, footer);
-        b.onclick = () => { selectedRegion = region; draw(); root.scrollTo({top:0,behavior:'smooth'}); };
+        b.dataset.region = region;
+        b.onclick = () => {
+          regionScroll = root.scrollTop;
+          selectedRegion = region;
+          draw();
+          root.scrollTop = 0;
+          root.querySelector('.psn-back').focus({preventScroll:true});
+        };
         regions.append(b);
       }
     } else {

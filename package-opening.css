@@ -61,3 +61,60 @@ body #omnexCheckout[open] {
     animation: none !important;
   }
 }
+
+/* The same back control fits catalog headers and checkout dialogs. */
+html body :is(
+  #robloxGamePage .rgp-top,
+  #robuxModal.robux-fixed-packs,
+  #robuxPurchaseScreen.robux-direct-menu,
+  #pubgCategoryPage.pubg-premium,
+  #psnStoreScreen .psn-head,
+  #rgpMm2Checkout.gb-package-dialog,
+  #sabCheckout.gb-package-dialog,
+  #pubgAccountCheckoutOverlay.gb-package-dialog,
+  #gbCodePurchaseConfirm .gb-code-shell,
+  #omnexCheckout .ox-dialog-head,
+  #storePurchaseBox .digital-game-preview
+) button.l1017-package-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  width: auto !important;
+  min-width: 78px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  flex: 0 0 auto !important;
+  padding: 0 10px !important;
+  border: 1px solid #8098d360 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(150deg, #243857, #15243b) !important;
+  color: #edf3ff !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  box-shadow: 0 3px 10px #03091640 !important;
+  direction: rtl;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+html body button.l1017-package-back svg {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+html body button.l1017-package-back:focus-visible {
+  outline: 2px solid #b3c8ff !important;
+  outline-offset: 3px;
+}
+
+html body #robuxModal.robux-fixed-packs .robux-reference-section {
+  padding-inline-end: 88px !important;
+}

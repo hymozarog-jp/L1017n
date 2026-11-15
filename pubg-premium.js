@@ -344,7 +344,7 @@
     });
   }
   // Same two-screen experience as Roblox: categories first, packages on a separate inner screen.
-  function showPubgCategories(root) {
+  function showPubgCategories(root, scroll = 0) {
     root.classList.remove("pubg-inner-page", "pubg-codes-page", "pubg-charge-page", "pubg-offers-page");
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
       button.classList.remove("selected");
@@ -359,7 +359,7 @@
       if(label)label.textContent="رجوع";
     }
     root.querySelector("#pubgCategoryResults")?.setAttribute("aria-hidden","true");
-    root.scrollTop=0;
+    root.scrollTop=scroll;
   }
   function setCategory(root, key, shouldScroll = true) {
     if(!CATEGORIES.some(item => item.key === key)) return;
@@ -448,22 +448,34 @@
 
     document.body.classList.add("pubg-premium-open");
     root.scrollTop = 0;
-    root.querySelector("[data-pubg-close]").addEventListener("click", () => {
-      if(root.classList.contains("pubg-inner-page")) showPubgCategories(root);
-      else closePremiumPubg();
+    let categoryButton, categoryScroll = 0;
+    const back = root.querySelector("[data-pubg-close]");
+    back.addEventListener("click", () => {
+      if(root.classList.contains("pubg-inner-page")){
+        showPubgCategories(root, categoryScroll);
+        categoryButton?.focus({preventScroll:true});
+      } else closePremiumPubg();
     });
     root.querySelectorAll("[data-pubg-category]").forEach(button => {
-      button.addEventListener("click", () => setCategory(root, button.dataset.pubgCategory));
+      button.addEventListener("click", () => {
+        categoryButton = button;
+        categoryScroll = root.scrollTop;
+        setCategory(root, button.dataset.pubgCategory);
+        back.focus({preventScroll:true});
+      });
     });
+    root.onkeydown = event => {
+      if(event.key === "Escape" && !event.defaultPrevented){
+        event.preventDefault();
+        back.click();
+      }
+    };
     setCategory(root,"codes",false);
     showPubgCategories(root);
     void fetchPubgProducts(root);
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closePremiumPubg();
-  });
   window.renderPremiumPubg = openPremiumPubg;
   window.closePremiumPubg = closePremiumPubg;
 })();

@@ -33,7 +33,7 @@ async function quoteProduct(product,seq){
  $('.ox-terms').checked=false;$('.ox-submit').disabled=false;$('.ox-submit').textContent='تأكيد الشراء · '+cash(data.price);$('.ox-form').hidden=false;status('');
  }catch(err){if(seq===generation){status(errors[err.message]||'تعذر تحميل الباقة. حاول مرة ثانية.');$('.ox-refresh').hidden=false}}
 }
-function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id='omnexCheckout';dialog.dir='rtl';dialog.setAttribute('aria-labelledby','oxTitle');dialog.innerHTML='<header class="ox-dialog-head"><h2 id="oxTitle">تأكيد الباقة</h2><button type="button" class="ox-close" aria-label="إغلاق">×</button></header><div class="ox-summary"><img src="game-covers/robux-100-tokens.svg" alt="" aria-hidden="true"><div><strong class="ox-name"></strong><small class="ox-region"></small></div><b class="ox-price"></b></div><form class="ox-form" hidden><div class="ox-fields"></div><p class="ox-delivery-note">تابع تنفيذ الطلب واستلام منتجك من «طلباتي».</p><label class="ox-accept"><input type="checkbox" class="ox-terms" required><span>راجعت الباقة والمنطقة وبيانات المستفيد وأوافق على <a href="https://omnex.ly/terms.html" target="_blank" rel="noopener noreferrer">شروط المنتجات الرقمية</a>.</span></label><button type="submit" class="ox-primary ox-submit">تأكيد الشراء</button></form><div class="ox-progress" hidden></div><p class="ox-status" role="status" aria-live="polite"></p><button type="button" class="ox-soft ox-refresh" hidden>تحديث السعر</button><button type="button" class="ox-soft ox-phone" hidden>توثيق رقم الهاتف</button>';document.body.append(dialog);
+function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id='omnexCheckout';dialog.dir='rtl';dialog.setAttribute('aria-labelledby','oxTitle');dialog.innerHTML='<header class="ox-dialog-head"><h2 id="oxTitle">تأكيد الباقة</h2><button type="button" class="ox-close" aria-label="العودة إلى الباقات">رجوع</button></header><div class="ox-summary"><img src="game-covers/robux-100-tokens.svg" alt="" aria-hidden="true"><div><strong class="ox-name"></strong><small class="ox-region"></small></div><b class="ox-price"></b></div><form class="ox-form" hidden><div class="ox-fields"></div><p class="ox-delivery-note">تابع تنفيذ الطلب واستلام منتجك من «طلباتي».</p><label class="ox-accept"><input type="checkbox" class="ox-terms" required><span>راجعت الباقة والمنطقة وبيانات المستفيد وأوافق على <a href="https://omnex.ly/terms.html" target="_blank" rel="noopener noreferrer">شروط المنتجات الرقمية</a>.</span></label><button type="submit" class="ox-primary ox-submit">تأكيد الشراء</button></form><div class="ox-progress" hidden></div><p class="ox-status" role="status" aria-live="polite"></p><button type="button" class="ox-soft ox-refresh" hidden>تحديث السعر</button><button type="button" class="ox-soft ox-phone" hidden>توثيق رقم الهاتف</button>';document.body.append(dialog);
  $('.ox-close').onclick=close;dialog.addEventListener('cancel',e=>{if(buying)e.preventDefault();else generation++});
  $('.ox-refresh').onclick=()=>quoteProduct(currentProduct,++generation);
  $('.ox-phone').onclick=()=>{close();window.openPhoneVerificationPage?.()};
@@ -194,7 +194,6 @@ window.openRobloxCodesPage = async function(root) {
   <p class="ox-catalog-status" role="status">جاري تحميل الأقسام…</p>
   <div class="ox-region-grid" aria-label="أقسام روبلوكس حسب المنطقة" hidden></div>
   <div class="ox-region-products" hidden>
-   <button class="ox-region-back ox-soft" type="button">→ كل المناطق</button>
    <div class="ox-filters">
     <input type="search" class="ox-search" aria-label="ابحث في باقات المنطقة" placeholder="ابحث في الباقات">
     <label><input type="checkbox" class="ox-instock" checked> المتوفر فقط</label>
@@ -210,7 +209,9 @@ window.openRobloxCodesPage = async function(root) {
  const search = page.querySelector('.ox-search');
  const inStock = page.querySelector('.ox-instock');
  const more = page.querySelector('.ox-more');
- let activeRegion, activeButton, limit = 12;
+ const back = root.querySelector('[data-rgp-back]');
+ const previousBackLabel = back.getAttribute('aria-label');
+ let activeRegion, activeButton, regionScroll, limit = 12;
 
  function drawProducts() {
   const query = search.value.trim().toLowerCase();
@@ -225,6 +226,8 @@ window.openRobloxCodesPage = async function(root) {
  function openRegion(region, button) {
   activeRegion = region;
   activeButton = button;
+  regionScroll = root.scrollTop;
+  back.setAttribute('aria-label', 'العودة إلى مناطق أكواد روبلوكس');
   heading.textContent = region.label;
   menu.hidden = true;
   products.hidden = false;
@@ -236,13 +239,17 @@ window.openRobloxCodesPage = async function(root) {
   heading.focus({preventScroll: true});
  }
 
- page.querySelector('.ox-region-back').onclick = () => {
+ back.onclick = event => {
+  if (!activeRegion || !page.isConnected) return;
+  event.stopPropagation();
+  activeRegion = null;
+  back.setAttribute('aria-label', previousBackLabel);
   heading.textContent = 'أكواد روبلوكس';
   products.hidden = true;
   grid.replaceChildren();
   status.textContent = '';
   menu.hidden = false;
-  root.scrollTop = 0;
+  root.scrollTop = regionScroll;
   activeButton.focus({preventScroll: true});
  };
  search.oninput = inStock.onchange = () => { limit = 12; drawProducts(); };

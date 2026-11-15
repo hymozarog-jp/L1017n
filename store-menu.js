@@ -132,12 +132,12 @@ var styleId='robloxGamePageStyles';
     root.scrollTop=0;
   }
   window.setRobloxInnerHeader=setInnerHeader;
-  function showRobloxPage(directCategory,fromHub){
+  function showRobloxPage(directCategory,restoreHub){
     addStyles();closePage();
     var p=document.createElement('div');p.id=pageId;
     // A category opened from the Roblox hub returns to the Roblox hub.
     // Direct links from banners continue to return to the storefront.
-    p.dataset.directCategory=fromHub?'':directCategory||'';
+    p.dataset.directCategory=restoreHub?'':directCategory||'';
     p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');
     p.setAttribute('aria-label',directCategory?'قسم روبلوكس':'أقسام روبلوكس');
     if(!directCategory)p.classList.add('rgp-category-hub');
@@ -156,7 +156,8 @@ var styleId='robloxGamePageStyles';
     if(typeof window.refreshRobloxStealCover==='function')window.refreshRobloxStealCover(p);
     p.addEventListener('click',function(e){
       if(e.target.closest('[data-rgp-back]')){
-        if(p.classList.contains('rgp-inner-page')&&!p.dataset.directCategory)showRobloxPage();
+        if(restoreHub)restoreHub();
+        else if(p.classList.contains('rgp-inner-page')&&!p.dataset.directCategory)showRobloxPage();
         else closePage();
         return;
       }
@@ -166,38 +167,44 @@ var styleId='robloxGamePageStyles';
           alert('باقات روبوكس غير جاهزة. حدّث الصفحة وحاول ثانية.');
           return;
         }
+        var returnToHub=returnToCurrentHub(choice);
         closePage();
         window.openRobuxPackages();
-        // Offer a return link only when a shopper arrived from the category hub.
-        var modal=document.getElementById('robuxModal');
-        var box=modal&&modal.querySelector('.robux-store-box');
-        if(box&&!box.querySelector('.rgp-return-categories')){
-          var returnButton=document.createElement('button');
-          returnButton.type='button';
-          returnButton.className='rgp-return-categories';
-          returnButton.textContent='رجوع إلى أقسام روبلوكس';
-          box.prepend(returnButton);
-          returnButton.addEventListener('click',function(){
+        var back=document.querySelector('#robuxModal [data-close-packages]');
+        if(back){
+          back.setAttribute('aria-label','العودة إلى أقسام روبلوكس');
+          back.addEventListener('click',function(event){
+            event.stopPropagation();
             if(typeof window.closeRobuxPackages==='function')window.closeRobuxPackages();
-            else modal.querySelector('[data-close-packages]')?.click();
-            showRobloxPage();
+            returnToHub();
           });
         }
         return;
       }
       if(choice.dataset.rgpChoice==='codes'){
-        if(typeof window.openRobloxCodesPage==='function')window.openRobloxCodesPage(p);
-        else alert('صفحة الأكواد غير جاهزة. حدّث الصفحة.');
+        if(typeof window.openRobloxCodesPage==='function'){
+          showRobloxPage('codes',returnToCurrentHub(choice));
+        } else alert('صفحة الأكواد غير جاهزة. حدّث الصفحة.');
         return;
       }
       if(choice.dataset.rgpChoice==='mm2'||choice.dataset.rgpChoice==='brainrot'){
-        showRobloxPage(choice.dataset.rgpChoice,true);
+        showRobloxPage(choice.dataset.rgpChoice,returnToCurrentHub(choice));
         return;
       }
       return;
     });
+    function returnToCurrentHub(choice){
+      var scroll=p.scrollTop;
+      return function(){
+        closePage();
+        document.body.appendChild(p);
+        p.scrollTop=scroll;
+        choice.focus({preventScroll:true});
+      };
+    }
     // Open category content immediately; no intermediate Roblox category menu.
-    if(directCategory==='mm2')void showMm2Page();
+    if(directCategory==='codes')void window.openRobloxCodesPage(p);
+    else if(directCategory==='mm2')void showMm2Page();
     else if(directCategory==='brainrot'){
       if(typeof window.openStealBrainrotCategory==='function')window.openStealBrainrotCategory();
       else {closePage();alert('تعذر تحميل ماب السرقة، حدّث الصفحة.');}

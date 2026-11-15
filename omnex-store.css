@@ -211,3 +211,51 @@
  .orders-view-dialog .orders-omnex-code-row{grid-template-columns:minmax(0,1fr)}
  .orders-view-dialog .orders-omnex-code-copy{min-height:38px}
 }
+
+.ox-supplier-notice {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  border: 1px solid #ce917459;
+  border-radius: 16px;
+  padding: 14px;
+  background: linear-gradient(145deg, #382333, #211b30);
+  color: #fff0e8;
+  direction: rtl;
+  text-align: start;
+}
+
+.ox-supplier-notice-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: #ffd09e;
+  background: #f6ac5c26;
+}
+
+.ox-supplier-notice-copy strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.ox-supplier-notice-copy p,
+.ox-progress .ox-supplier-notice-copy p {
+  margin: 4px 0 0;
+  color: #e8cbd4;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.orders-omnex-delivery.is-supplier-refunded {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.ox-supplier-orders {
+  margin-top: 10px;
+}

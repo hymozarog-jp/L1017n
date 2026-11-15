@@ -381,7 +381,11 @@ async function renderOrders(){
      state.textContent=codes.length?'تم التسليم':supplierReceipt.state==='refunded'?'مسترجع':supplierReceipt.state==='processing'?'تم القبول · جاري التسليم':supplierReceipt.state==='review'?'قيد المراجعة':'قيد الانتظار';
      receiptHead.append(title,state);
      receipt.append(receiptHead);
-     if(codes.length){
+     if(supplierReceipt.state==='refunded'&&order.status==='refunded'&&window.renderOmnexRefundNotice){
+       receipt.classList.add('is-supplier-refunded');
+       receipt.setAttribute('aria-label','تعذّر تنفيذ طلب المورد');
+       receipt.replaceChildren(window.renderOmnexRefundNotice());
+     }else if(codes.length){
        for(const code of codes){
          const line=document.createElement('div');
          line.className='orders-omnex-code-row';

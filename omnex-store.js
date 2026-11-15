@@ -12,15 +12,38 @@ function clearPending(){try{localStorage.removeItem(pendingKey(owner,currentProd
 function refreshStore(){if(typeof renderWallet==='function')void Promise.resolve(renderWallet()).catch(()=>{});if(typeof renderOrders==='function'&&!document.querySelector('#ordersView')?.classList.contains('hidden'))void Promise.resolve(renderOrders()).catch(()=>{});window.dispatchEvent(new Event('l1017n:orders-updated'))}
 function watchAuth(){const db=api();if(!db||watching)return;watching=true;db.auth.onAuthStateChange((_event,session)=>{const uid=session?.user?.id||'';if(liveUser&&uid!==liveUser){generation++;dialog?.close();quote=null;currentOrder=null;owner='';lastPending.clear()}liveUser=uid})}
 function close(){if(buying)return;generation++;dialog?.close()}
-function status(text){if($('.ox-status'))$('.ox-status').textContent=text}
+function status(content) {
+  const area = $('.ox-status');
+  if (!area) return;
+  if (content) area.replaceChildren(content);
+  else area.replaceChildren();
+}
+function isSupplierError(code) {
+  return code === 'product_not_available' || (code !== 'supplier_order_already_pending' && code.startsWith('supplier_'));
+}
+function supplierNotice(title, note) {
+  const card = make('div', 'ox-supplier-notice');
+  const icon = make('span', 'ox-supplier-notice-icon');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m10.3 4.4-7.5 13A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.7-2.6l-7.5-13a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 3h.01"/></svg>';
+  const copy = make('div', 'ox-supplier-notice-copy');
+  copy.append(make('strong', '', title), make('p', '', note));
+  card.append(icon, copy);
+  return card;
+}
+window.renderOmnexRefundNotice = () => supplierNotice(
+  'تعذّر تنفيذ الطلب عند المورد',
+  'رجع مبلغ الطلب إلى محفظتك. لم يتم إصدار كود لهذه الباقة.'
+);
 function showOrder(order){
  if(!dialog?.open||owner!==liveUser)return;
  currentOrder=order;$('.ox-form').hidden=true;$('.ox-progress').hidden=false;$('.ox-progress').replaceChildren();
  const area=$('.ox-progress'),final=order.state==='completed'||order.state==='refunded';
- area.append(make('h3','',order.state==='completed'?'تم القبول — المنتج جاهز ✓':order.state==='refunded'?'تم إرجاع المبلغ':order.state==='processing'?'تم القبول · بانتظار تسليم الكود':'قيد الانتظار'));
+ if(order.state==='refunded')area.append(window.renderOmnexRefundNotice());
+ else area.append(make('h3','',order.state==='completed'?'تم القبول — المنتج جاهز ✓':order.state==='processing'?'تم القبول · بانتظار تسليم الكود':'قيد الانتظار'));
  area.append(make('p','',order.product_name));area.append(make('small','ox-order-id','#'+String(order.order_id).slice(0,8).toUpperCase()));
- const msg=order.state==='completed'?'منتجك جاهز. يمكنك الرجوع له من طلباتي.':order.state==='refunded'?'رجع المبلغ إلى محفظتك.':order.state==='review'?'الطلب قيد المراجعة لدى المورد. لا تعاود الشراء؛ المبلغ محفوظ على نفس الطلب.':'ننتظر تنفيذ المورد، ونتابع حالته تلقائيًا حتى لو أغلقت الصفحة.';
- area.append(make('p','',msg));
+ const msg=order.state==='completed'?'منتجك جاهز. يمكنك الرجوع له من طلباتي.':order.state==='review'?'الطلب قيد المراجعة لدى المورد. لا تعاود الشراء؛ المبلغ محفوظ على نفس الطلب.':'ننتظر تنفيذ المورد، ونتابع حالته تلقائيًا حتى لو أغلقت الصفحة.';
+ if(order.state!=='refunded')area.append(make('p','',msg));
  if(order.state==='completed'&&Array.isArray(order.codes))for(const code of order.codes){const value=make('pre','ox-code',String(code)),copy=make('button','ox-soft','نسخ الكود');copy.type='button';copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(code));copy.textContent='تم النسخ ✓'}catch{copy.textContent='اضغط مطولًا على الكود لنسخه'}};area.append(value,copy)}
  const orders=make('button','ox-primary','فتح طلباتي');orders.type='button';orders.onclick=()=>{close();if(typeof switchView==='function')switchView('orders')};area.append(orders);status('');
  if(final){clearPending();refreshStore()}
@@ -31,9 +54,16 @@ async function quoteProduct(product,seq){
  $('.ox-name').textContent=data.name;$('.ox-region').textContent=data.region||(currentProduct?.game==='pubg'?'ببجي موبايل':'روبلوكس');$('.ox-price').textContent=cash(data.price);
  $('.ox-fields').replaceChildren();for(const field of data.fields||[]){const label=make('label','ox-field',field.label);label.htmlFor='ox-'+field.key;let input;if(field.type==='select'){input=make('select');const blank=make('option','','اختر');blank.value='';input.append(blank);for(const op of field.options){const o=make('option','',op.label);o.value=op.value;input.append(o)}}else{input=make('input');input.type='text';input.inputMode=field.type==='number'?'numeric':'text';input.maxLength=200;input.autocomplete='off'}input.id=label.htmlFor;input.name=field.key;input.required=field.required;label.append(input);$('.ox-fields').append(label)}
  $('.ox-terms').checked=false;$('.ox-submit').disabled=false;$('.ox-submit').textContent='تأكيد الشراء · '+cash(data.price);$('.ox-form').hidden=false;status('');
- }catch(err){if(seq===generation){status(errors[err.message]||'تعذر تحميل الباقة. حاول مرة ثانية.');$('.ox-refresh').hidden=false}}
+ }catch(err){
+   if(seq!==generation)return;
+   const message=errors[err.message]||'تعذّر التحقق من السعر والتوفر حاليًا. جرّب مرة ثانية.';
+   status(isSupplierError(err.message)?supplierNotice('تعذّر تحميل الباقة',message):message);
+   const refresh=$('.ox-refresh');
+   refresh.textContent='إعادة المحاولة';
+   refresh.hidden=false;
+ }
 }
-function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id='omnexCheckout';dialog.dir='rtl';dialog.setAttribute('aria-labelledby','oxTitle');dialog.innerHTML='<header class="ox-dialog-head"><h2 id="oxTitle">تأكيد الباقة</h2><button type="button" class="ox-close" aria-label="العودة إلى الباقات">رجوع</button></header><div class="ox-summary"><img src="game-covers/robux-100-tokens.svg" alt="" aria-hidden="true"><div><strong class="ox-name"></strong><small class="ox-region"></small></div><b class="ox-price"></b></div><form class="ox-form" hidden><div class="ox-fields"></div><p class="ox-delivery-note">تابع تنفيذ الطلب واستلام منتجك من «طلباتي».</p><label class="ox-accept"><input type="checkbox" class="ox-terms" required><span>راجعت الباقة والمنطقة وبيانات المستفيد وأوافق على <a href="https://omnex.ly/terms.html" target="_blank" rel="noopener noreferrer">شروط المنتجات الرقمية</a>.</span></label><button type="submit" class="ox-primary ox-submit">تأكيد الشراء</button></form><div class="ox-progress" hidden></div><p class="ox-status" role="status" aria-live="polite"></p><button type="button" class="ox-soft ox-refresh" hidden>تحديث السعر</button><button type="button" class="ox-soft ox-phone" hidden>توثيق رقم الهاتف</button>';document.body.append(dialog);
+function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id='omnexCheckout';dialog.dir='rtl';dialog.setAttribute('aria-labelledby','oxTitle');dialog.innerHTML='<header class="ox-dialog-head"><h2 id="oxTitle">تأكيد الباقة</h2><button type="button" class="ox-close" aria-label="العودة إلى الباقات">رجوع</button></header><div class="ox-summary"><img src="game-covers/robux-100-tokens.svg" alt="" aria-hidden="true"><div><strong class="ox-name"></strong><small class="ox-region"></small></div><b class="ox-price"></b></div><form class="ox-form" hidden><div class="ox-fields"></div><p class="ox-delivery-note">تابع تنفيذ الطلب واستلام منتجك من «طلباتي».</p><label class="ox-accept"><input type="checkbox" class="ox-terms" required><span>راجعت الباقة والمنطقة وبيانات المستفيد وأوافق على <a href="https://omnex.ly/terms.html" target="_blank" rel="noopener noreferrer">شروط المنتجات الرقمية</a>.</span></label><button type="submit" class="ox-primary ox-submit">تأكيد الشراء</button></form><div class="ox-progress" hidden></div><div class="ox-status" role="status" aria-live="polite"></div><button type="button" class="ox-soft ox-refresh" hidden>تحديث السعر</button><button type="button" class="ox-soft ox-phone" hidden>توثيق رقم الهاتف</button>';document.body.append(dialog);
  $('.ox-close').onclick=close;dialog.addEventListener('cancel',e=>{if(buying)e.preventDefault();else generation++});
  $('.ox-refresh').onclick=()=>quoteProduct(currentProduct,++generation);
  $('.ox-phone').onclick=()=>{close();window.openPhoneVerificationPage?.()};
@@ -59,10 +89,26 @@ function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id=
    }
  }
  catch(err){if(seq!==generation)return;
- if(err.message==='quote_expired'){status(errors.quote_expired);$('.ox-form').hidden=true;$('.ox-refresh').hidden=false}
+ if(err.message==='quote_expired'){status(errors.quote_expired);$('.ox-form').hidden=true;$('.ox-refresh').textContent='تحديث السعر';$('.ox-refresh').hidden=false}
  else{status(errors[err.message]||'لم نتأكد من نتيجة الاتصال. تابع طلباتي أو حاول المتابعة؛ ما نعيدش الخصم لنفس المحاولة.');$('.ox-submit').disabled=false;$('.ox-submit').textContent='متابعة الطلب';if(err.message==='phone_verification_required_before_purchase')$('.ox-phone').hidden=false;
  try{const resumed=await invoke({action:'resume',client_key:requestKey});if(resumed?.order_id&&seq===generation)showOrder(resumed)}catch{}
- if(err.message==='insufficient_balance'&&seq===generation&&!currentOrder)window.showInsufficientBalance?.(close);
+ if(seq===generation&&!currentOrder){
+   if(err.message==='insufficient_balance')window.showInsufficientBalance?.(close);
+   else if(isSupplierError(err.message)){
+     const unavailable=err.message!=='supplier_unavailable';
+     const notice=supplierNotice(
+       unavailable?'تعذّر إكمال الشراء':'تعذّر التأكد من حالة الطلب',
+       unavailable?(errors[err.message]||'جرّب مرة ثانية بعد قليل.'):'تابع حالة الطلب قبل إعادة شراء نفس الباقة.'
+     );
+     if(!unavailable&&typeof switchView==='function'){
+       const orders=make('button','ox-soft ox-supplier-orders','فتح طلباتي');
+       orders.type='button';
+       orders.onclick=()=>{close();switchView('orders')};
+       notice.querySelector('.ox-supplier-notice-copy').append(orders);
+     }
+     status(notice);
+   }
+ }
  }
  }finally{buying=false}
  };

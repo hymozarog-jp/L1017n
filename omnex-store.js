@@ -65,13 +65,66 @@ function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id=
  }finally{buying=false}
  };
 }
-async function openProduct(product){
- const db=api();if(!db)return;watchAuth();const {data,error}=await db.auth.getUser();if(error||!data?.user){if(typeof toast==='function')toast('سجّل دخولك أولًا لشراء الباقة');if(typeof switchView==='function')switchView('account');return}
- liveUser=data.user.id;owner=liveUser;mount();generation++;const seq=generation;quote=null;currentOrder=null;currentProduct=product;requestKey=crypto.randomUUID();buying=false;
- try{const saved=JSON.parse(localStorage.getItem(pendingKey(owner,product.id))||'null');if(saved?.client_key)requestKey=saved.client_key}catch{}
- $('.ox-name').textContent=product.name;$('.ox-region').textContent=product.region||'';$('.ox-price').textContent=cash(product.price);$('.ox-summary img').src=product.game==='pubg'?'game-covers/pubg-battlefront.webp':product.game==='psn'?'game-covers/psn-user-card.webp?v=supplied-original-20261114':'game-covers/robux-100-tokens.svg';$('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-phone').hidden=true;dialog.showModal();status('جاري تحميل الباقة…');
- try{const previous=await invoke({action:'resume',client_key:requestKey});if(seq!==generation)return;if(previous?.order_id){showOrder(previous);return}}catch{}
- if(seq===generation)await quoteProduct(product,seq);
+let openingProduct = false;
+async function openProduct(product) {
+  const db = api();
+  if (!db || openingProduct || dialog?.open) return;
+  openingProduct = true;
+  let savedKey;
+  let seq;
+  try {
+    watchAuth();
+    const {data, error} = await db.auth.getUser();
+    if (error || !data?.user) {
+      if (typeof toast === 'function') toast('سجّل دخولك أولًا لشراء الباقة');
+      if (typeof switchView === 'function') switchView('account');
+      return;
+    }
+
+    liveUser = data.user.id;
+    owner = liveUser;
+    mount();
+    seq = ++generation;
+    quote = null;
+    currentOrder = null;
+    currentProduct = product;
+    buying = false;
+
+    try {
+      savedKey = JSON.parse(localStorage.getItem(pendingKey(owner, product.id)) || 'null')?.client_key;
+    } catch {}
+    requestKey = savedKey || crypto.randomUUID();
+
+    $('.ox-name').textContent = product.name;
+    $('.ox-region').textContent = product.region || '';
+    $('.ox-price').textContent = cash(product.price);
+    const artwork = {
+      pubg: 'game-covers/pubg-battlefront.webp',
+      psn: 'game-covers/psn-user-card.webp?v=supplied-original-20261114'
+    };
+    $('.ox-summary img').src = artwork[product.game] || 'game-covers/robux-100-tokens.svg';
+    $('.ox-form').hidden = true;
+    $('.ox-progress').hidden = true;
+    $('.ox-phone').hidden = true;
+    $('.ox-refresh').hidden = true;
+    dialog.scrollTop = 0;
+    status('جاري تحميل الباقة…');
+    dialog.showModal();
+  } finally {
+    openingProduct = false;
+  }
+
+  if (savedKey) {
+    try {
+      const previous = await invoke({action: 'resume', client_key: savedKey});
+      if (seq !== generation) return;
+      if (previous?.order_id) {
+        showOrder(previous);
+        return;
+      }
+    } catch {}
+  }
+  if (seq === generation) await quoteProduct(product, seq);
 }
 // Only Roblox US codes are displayed in the storefront catalog.
 // Supplier catalog records are not deleted or modified.

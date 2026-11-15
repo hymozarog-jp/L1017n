@@ -1,0 +1,63 @@
+@keyframes package-opening {
+  from { opacity: .65; translate: -12px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+body #robuxPurchaseScreen.robux-direct-menu,
+body #rgpMm2Checkout.gb-package-dialog .mm2-checkout-box,
+body #sabCheckout.gb-package-dialog .sab-dialog,
+body #pubgAccountCheckoutOverlay.gb-package-dialog .pubg-account-checkout,
+body #gbCodePurchaseConfirm .gb-code-shell,
+body #omnexCheckout[open] {
+  animation: package-opening 220ms cubic-bezier(.22, .75, .25, 1) both !important;
+}
+
+#omnexCheckout .ox-summary {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ffffff20;
+  border-radius: 16px;
+  background: #ffffff08;
+}
+
+#omnexCheckout .ox-summary img {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: #0b1220;
+}
+
+#omnexCheckout .ox-price {
+  font-size: clamp(13px, 4vw, 19px);
+  font-variant-numeric: tabular-nums;
+}
+
+#omnexCheckout .ox-close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+}
+
+#omnexCheckout .ox-status:empty {
+  display: none;
+}
+
+@media (max-width: 380px) {
+  #omnexCheckout .ox-summary { grid-template-columns: 44px minmax(0, 1fr); }
+  #omnexCheckout .ox-summary img { width: 44px; height: 44px; }
+  #omnexCheckout .ox-price { grid-column: 2; margin: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body #robuxPurchaseScreen.robux-direct-menu,
+  body #rgpMm2Checkout.gb-package-dialog .mm2-checkout-box,
+  body #sabCheckout.gb-package-dialog .sab-dialog,
+  body #pubgAccountCheckoutOverlay.gb-package-dialog .pubg-account-checkout,
+  body #gbCodePurchaseConfirm .gb-code-shell,
+  body #omnexCheckout[open] {
+    animation: none !important;
+  }
+}

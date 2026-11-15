@@ -284,6 +284,7 @@
       }catch(error){
         console.warn("[pubg/order]",error);
         const message=String(error?.message||"تعذر إنشاء الطلب");
+        if(/insufficient_balance/i.test(message))window.showInsufficientBalance?.();
         status.textContent=/insufficient_balance/i.test(message)
           ?"رصيد المحفظة غير كافٍ. اشحن المحفظة وحاول مرة أخرى."
           :/product_not_available/i.test(message)?"الباقة غير متوفرة حاليًا."

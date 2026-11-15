@@ -169,7 +169,9 @@
       try{if(typeof renderWallet==='function')await renderWallet();}catch(_){}
       try{if(typeof renderOrders==='function')await renderOrders();}catch(_){}
     }catch(error){
-      alert(message(error));
+      if (/insufficient_balance/i.test(String(error?.message || error)) && window.showInsufficientBalance) {
+        window.showInsufficientBalance();
+      } else alert(message(error));
     }finally{busy=false;}
   };
   window.getMyInstantCodes=async function(){

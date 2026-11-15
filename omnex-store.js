@@ -61,7 +61,9 @@ function mount(){if(dialog)return;dialog=make('dialog','ox-checkout');dialog.id=
  catch(err){if(seq!==generation)return;
  if(err.message==='quote_expired'){status(errors.quote_expired);$('.ox-form').hidden=true;$('.ox-refresh').hidden=false}
  else{status(errors[err.message]||'لم نتأكد من نتيجة الاتصال. تابع طلباتي أو حاول المتابعة؛ ما نعيدش الخصم لنفس المحاولة.');$('.ox-submit').disabled=false;$('.ox-submit').textContent='متابعة الطلب';if(err.message==='phone_verification_required_before_purchase')$('.ox-phone').hidden=false;
- try{const resumed=await invoke({action:'resume',client_key:requestKey});if(resumed?.order_id&&seq===generation)showOrder(resumed)}catch{}}
+ try{const resumed=await invoke({action:'resume',client_key:requestKey});if(resumed?.order_id&&seq===generation)showOrder(resumed)}catch{}
+ if(err.message==='insufficient_balance'&&seq===generation&&!currentOrder)window.showInsufficientBalance?.(close);
+ }
  }finally{buying=false}
  };
 }

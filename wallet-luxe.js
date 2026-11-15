@@ -164,6 +164,7 @@ function ensureSheet(){
     loadTransferHistory()
    ]);
   }catch(error){
+   if(/insufficient_balance/i.test(String(error?.message||'')))window.showInsufficientBalance?.();
    result.textContent=transferError(error);
    button.textContent="إعادة محاولة تأكيد نفس التحويل";
    console.warn("[wallet/transfer/send]",error);

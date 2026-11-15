@@ -1,0 +1,67 @@
+#insufficientBalanceDialog {
+  box-sizing: border-box;
+  width: min(360px, calc(100% - 32px));
+  max-height: calc(100% - 24px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid #a67ae76b;
+  border-radius: 26px;
+  background: radial-gradient(ellipse at top, #38245a, #19142c 68%);
+  color: #faf5ff;
+  text-align: center;
+  box-shadow: 0 24px 64px #07030ca8;
+}
+
+#insufficientBalanceDialog::backdrop {
+  background: #0b0719b8;
+}
+
+#insufficientBalanceDialog img {
+  display: block;
+  width: 108px;
+  height: 108px;
+  margin: 0 auto 14px;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+#insufficientBalanceDialog h2 {
+  margin: 0 0 20px;
+  color: inherit;
+  font-size: 24px;
+}
+
+#insufficientBalanceDialog button {
+  width: 100%;
+  min-height: 46px;
+  padding: 9px 14px;
+  border: 1px solid #ac87e65c;
+  border-radius: 13px;
+  color: inherit;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+#insufficientBalanceDialog .balance-topup {
+  background: linear-gradient(145deg, #8052c6, #6137a3);
+}
+
+#insufficientBalanceDialog .balance-cancel {
+  margin-top: 9px;
+  background: #ffffff0a;
+}
+
+#insufficientBalanceDialog button:focus-visible {
+  outline: 2px solid #dec4ff;
+  outline-offset: 3px;
+}
+
+/* Keep top-up verification and notices above the charging page. */
+html body:has(> #topupDedicatedPage.balance-topup-page) > :is(
+  #robuxPurchaseScreen, #rgpMm2Checkout.gb-package-dialog,
+  #sabCheckout.gb-package-dialog, #pubgAccountCheckoutOverlay.gb-package-dialog,
+  #walletSendSheet
+) {
+  z-index: 99998 !important;
+}

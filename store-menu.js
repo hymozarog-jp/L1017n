@@ -314,6 +314,7 @@ var styleId='robloxGamePageStyles';
         }
       }catch(err){
         var msg=String(err&&err.message||'');
+        if(/insufficient_balance/i.test(msg))window.showInsufficientBalance?.();
         state.textContent=/insufficient_balance/i.test(msg)?'رصيد المحفظة غير كافٍ. اشحن المحفظة أولاً.':
           /phone_verification_required_before_purchase/i.test(msg)?'وثّق رقم الهاتف برسالة SMS قبل الشراء.':
           /product_not_available/i.test(msg)?'نفدت الكمية! المنتج أصبح غير متوفر. ما انخصم منك رصيد.':

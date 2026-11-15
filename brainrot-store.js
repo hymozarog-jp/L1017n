@@ -183,6 +183,7 @@ function getClient(){
         if(!opened)alert("تم شراء "+product.name+" بنجاح. افتح «طلباتي» وتواصل مع المتجر عبر واتساب أو تيليجرام لاستلام الغرض.");
       }catch(error){
         const msg=String(error?.message||"");
+        if(/insufficient_balance/i.test(msg))window.showInsufficientBalance?.();
         status.textContent=/insufficient_balance/i.test(msg)?"رصيدك غير كافٍ، اشحن المحفظة أولًا."
           :/phone_verification_required_before_purchase/i.test(msg)?"يجب توثيق رقم الهاتف قبل الشراء."
           :/product_not_available/i.test(msg)?"المنتج غير متاح حاليًا."

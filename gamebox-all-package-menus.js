@@ -19,6 +19,7 @@
     for (const button of buttons) {
       if (button.classList.contains('l1017-package-back')) continue;
       button.classList.add('l1017-package-back');
+      if (button.id === 'closeGamePreview') button.parentElement?.prepend(button);
       button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 6 6 6-6 6M20 12H4"/></svg><span class="rgp-back-label" data-pubg-back-label>رجوع</span>';
     }
   }

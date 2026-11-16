@@ -17,10 +17,12 @@
   let catalogError = "";
   let catalogRequest = 0;
   let omnexLive = false;
-  // Reference-only package sizes; never create orders for unsynced supplier products.
+  // Public Omnex Libyana listings. Account-specific API quotes may differ.
   const SUPPLIER_REFERENCE = {
-    charge: [60,325,660,1800,3850,8100],
-    codes: [60,325,660,1800,3850,8100]
+    codes: [[60,12.468],[325,62.522],[660,125.045],[1800,312.977],[3850,616.832],[8100,1248.624],[16200,2496.915],[24300,3703.757],[32400,4905.841],[40500,6242.285]],
+    charge: [[60,12.597],[325,62.646],[660,124.828],[1800,312.844],[3850,625.225],[8100,1250.602]],
+    offers: [["Prime · شهر",12.209],["Prime · 3 أشهر",36.622],["Prime · 6 أشهر",73.244],["Prime · 12 شهرًا",146.486],
+      ["Prime Plus · شهر",122.072],["Prime Plus · 3 أشهر",366.215],["Prime Plus · 6 أشهر",721.332],["Prime Plus · 12 شهرًا",1456.534]]
   };
 
   function safe(value) {
@@ -174,18 +176,18 @@
         : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">اطلب الآن <span aria-hidden="true">←</span></button>')
       + '</div></article>';
   }
-  function referenceCard(amount, key, index) {
+  function referenceCard([packageName, price], key, index) {
+    const amount=typeof packageName==="number"?packageName:0;
     const tier=tierFor(amount),delivery=deliveryFor(key);
-    const amountText=Number(amount).toLocaleString("en-US");
+    const title=amount?amount.toLocaleString("en-US")+" UC":packageName;
+    const publicPrice=price.toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
     return '<article class="pubg-pack pubg-pack-detailed pubg-pack-preview pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index,8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(delivery.kind) + '</span>'
       + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
       + artForPack(amount, "")
-      + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + '<small> UC</small></div>'
-      + '<h3 class="pubg-pack-name">باقة ' + amountText + ' شدة ببجي</h3></div>'
-      + infoForPack(key, "بانتظار تفعيل المورد")
-      + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>سعر البيع</small><strong>قريبًا</strong></div>'
-      + '<button class="pubg-buy" type="button" disabled>قيد التجهيز</button></div>'
+      + '<div class="pubg-pack-headline"><h3 class="pubg-pack-name">' + safe(title) + '</h3></div>'
+      + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong dir="ltr">' + publicPrice + '</strong></div>'
+      + '<button class="pubg-buy" type="button" disabled>سعر Omnex</button></div>'
       + '</article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
@@ -298,10 +300,10 @@
 
   function supplierReference(key){
     const rows=SUPPLIER_REFERENCE[key];
-    if(!rows?.length)return '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>لا توجد عروض متاحة حاليًا</strong><p>العروض ستظهر هنا عندما يؤكدها المورد.</p></div>';
-    return '<div class="pubg-supplier-note" role="status"><strong>باقات PUBG Mobile</strong>'
-      + '<span>تفاصيل وأحجام الشدات جاهزة للعرض. الشراء والأسعار النهائية يتفعّلان بعد الربط الآمن مع المورد.</span></div>'
-      + '<div class="pubg-packages pubg-reference-packages">' + rows.map((amount,index)=>referenceCard(amount,key,index)).join("") + '</div>';
+    if(!rows?.length)return "";
+    return '<div class="pubg-supplier-note"><strong>أسعار Omnex · رصيد ليبيانا</strong>'
+      + '<span>أسعار عرض من صفحة المورد بتاريخ 17 نوفمبر 2026. قد تختلف حسب محفظة المورد والخصم. الشراء من هذه البطاقات غير مفعّل.</span></div>'
+      + '<div class="pubg-packages pubg-reference-packages">' + rows.map((row,index)=>referenceCard(row,key,index)).join("") + '</div>';
   }
   function paintOffers(panel, key) {
     const list = categoryProducts(key);
@@ -310,19 +312,17 @@
       + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : key==='offers'?'OFFERS':'DIRECT TOP-UP') + '</span>'
       + '<h2>' + (codes ? 'أكواد الشحن' : key==='offers'?'عروض ببجي':'شحن عن طريق ID') + '</h2>'
       + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : key==='offers'?'العروض الظاهرة من المورد عند توفرها.':'اختار الباقة وأدخل معرف اللاعب UID للشحن.') + '</p></div>'
-      + '<span class="pubg-results-count">' + countLabel(list.length || (SUPPLIER_REFERENCE[key]?.length || 0)) + '</span></div>'
+      + '<span class="pubg-results-count">' + countLabel(list.length + (!omnexLive ? (SUPPLIER_REFERENCE[key]?.length || 0) : 0)) + '</span></div>'
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError
         ? '<div class="pubg-empty-state" role="alert"><strong>' + safe(catalogError) + '</strong><button type="button" class="pubg-retry-catalog">إعادة المحاولة</button></div>'
         : list.length
         ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
-        : supplierReference(key) || '<div class="pubg-empty-state"><div class="pubg-empty-icon" aria-hidden="true">UC</div>'
-          + '<strong>لا توجد عروض متوفرة حاليًا</strong>'
-          + '<p>ستظهر العروض عند توفرها من المورد.</p></div>')
-      + '<p class="pubg-purchase-note">' + (omnexLive
-        ? 'الأسعار والتوفر يُؤكدان من المورد عند فتح الطلب، ونتابع التنفيذ داخل طلباتي.'
-        : 'الربط التلقائي مع المورد لم يكتمل بعد؛ المنتجات الظاهرة بحالة قريبًا لا تُباع أو تُخصم قيمتها.') + '</p>';
+        : "")
+      + (catalogReady && !omnexLive ? supplierReference(key) : "")
+      + (catalogReady && omnexLive && !list.length
+        ? '<p class="pubg-empty-state">لا توجد باقات متوفرة في هذه الفئة حاليًا.</p>' : "");
 
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
       void fetchPubgProducts(document.getElementById(PAGE_ID));

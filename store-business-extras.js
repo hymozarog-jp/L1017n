@@ -12,7 +12,7 @@
  const api=()=>typeof supabaseClient!=="undefined"?supabaseClient:null;
  const fmtDate=x=>{try{return new Date(x).toLocaleDateString("ar-LY",{day:"numeric",month:"short",year:"numeric"})}catch{return ""}};
  let reviewable=[],reviewRating=5,loyaltyLoading=false,reviewLoading=false,adminLoading=false;
- let lastPublicLoaded=false;
+ let lastPublicLoaded=false,publicShown=0,publicTotal=0,publicPaging=false;
  let loyaltyBalanceValue=null,loyaltyRedeeming=false;
  function setMessage(selector,msg,kind){
    const node=q(selector);if(!node)return;
@@ -73,7 +73,9 @@
      section.innerHTML='<header class="crr-header"><h2 id="publicReviewsTitle">آراء العملاء</h2><p>تقييمات حقيقية من مشتري متجر L1017n</p></header>'
        +'<div class="crr-summary" id="publicReviewSummary" aria-busy="true"><div class="crr-score"><strong id="publicReviewAverage">—</strong><div id="publicReviewStars">'+reviewStars(0)+'</div><span id="publicReviewCount">جاري تحميل التقييمات…</span></div>'
        +'<div class="crr-distribution" id="publicReviewDistribution" aria-label="توزيع التقييمات حسب عدد النجوم"></div></div>'
-       +'<div class="e-review-list" id="publicReviewsList"></div><p id="publicReviewsStatus" class="e-status" role="status" aria-live="polite"></p>';
+       +'<div class="e-review-list" id="publicReviewsList"></div><p id="publicReviewsStatus" class="e-status" role="status" aria-live="polite"></p>'
+       +'<div class="crr-actions"><button type="button" class="e-button e-secondary" id="showStoreReviews" aria-controls="publicReviewsList">عرض الآراء</button>'
+       +'<button type="button" class="e-button" id="publishStoreReview">انشر تقييمك</button></div>';
 
      store.appendChild(section);
    }
@@ -238,13 +240,21 @@
      return new Intl.RelativeTimeFormat('ar',{numeric:'auto'}).format(-Math.max(1,Math.floor(seconds/size)),unit);
    }catch(_){return fmtDate(value)}
  }
+ function safeReviewAvatar(value){
+   const url=String(value||"");
+   return url.length<=1024&&/^https:\/\/lh[0-9]+\.googleusercontent\.com\/\S+$/.test(url)?url:"";
+ }
+ function reviewAvatar(value){
+   const image=safeReviewAvatar(value);
+   return image?'<img src="'+esc(image)+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer">':'';
+ }
  function publicReviewCard(r){
    const buyerName=String(r.display_name||'').trim().slice(0,60)||'مشتري من المتجر';
    const buyerInitial=Array.from(buyerName)[0]||'م';
    const comment=String(r.comment||'').trim();
    const date=new Date(r.created_at),validDate=Number.isFinite(date.getTime());
    const check='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor"/><path d="m6 10 3 3 5-6" fill="none" stroke="#103425" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-   return '<article class="crr-review'+(comment?'':' crr-without-comment')+'"><div class="crr-review-heading"><div class="crr-avatar" aria-hidden="true"><span>'+esc(buyerInitial)+'</span></div>'
+   return '<article class="crr-review'+(comment?'':' crr-without-comment')+'"><div class="crr-review-heading"><div class="crr-avatar" aria-hidden="true"><span>'+esc(buyerInitial)+'</span>'+reviewAvatar(r.avatar_url)+'</div>'
      +'<div class="crr-buyer"><h3 dir="auto" style="text-align:right">'+esc(buyerName)+'</h3><span class="crr-verified">'+check+'مشتري موثّق</span></div>'
      +'<svg class="crr-quote" viewBox="0 0 32 28" aria-hidden="true"><path d="M2 15C2 7 5 3 12 2v5c-4 1-5 3-5 6h6v13H2V15Zm17 0c0-8 3-12 10-13v5c-4 1-5 3-5 6h6v13H19V15Z" fill="currentColor"/></svg></div>'
      +'<div class="crr-review-meta">'+reviewStars(r.rating)+(validDate?'<time datetime="'+esc(date.toISOString())+'" title="'+esc(fmtDate(r.created_at))+'">'+esc(reviewDate(r.created_at))+'</time>':'')+'</div>'
@@ -254,7 +264,7 @@
  async function loadPublicReviews(){
    if(!q("#l1017PublicReviews"))return;
    try{
-     const d=await getRpc("get_public_verified_store_reviews",{p_limit:20});
+     const d=await getRpc("get_public_verified_store_reviews",{p_limit:5});
      const reviews=Array.isArray(d?.reviews)?d.reviews:[];
      const total=Math.max(0,Math.trunc(Number(d?.count)||0));
      const average=total&&Number.isFinite(Number(d?.average))?Math.max(0,Math.min(5,Number(d.average))):0;
@@ -270,7 +280,9 @@
      }).join('');
      q("#publicReviewsList").innerHTML=reviews.length?reviews.map(publicReviewCard).join(''):'<p class="crr-empty">لا توجد تقييمات منشورة بعد. يظهر تقييمك هنا بعد اكتمال طلبك.</p>';
      q("#publicReviewSummary").setAttribute('aria-busy','false');
-     setMessage("#publicReviewsStatus",total>reviews.length?'أحدث '+qty(reviews.length)+' تقييمًا من مشتري المتجر.':'');
+     publicShown=reviews.length;publicTotal=total;
+     q("#showStoreReviews").textContent="عرض الآراء";
+     setMessage("#publicReviewsStatus","");
      if(!lastPublicLoaded&&window.location.hash==="#l1017PublicReviews")q("#l1017PublicReviews").scrollIntoView({block:"start",behavior:"auto"});
      lastPublicLoaded=true;
    }catch(e){
@@ -278,6 +290,23 @@
      if(!lastPublicLoaded)q("#publicReviewCount").textContent='التقييمات غير متاحة حاليًا';
      setMessage("#publicReviewsStatus","تعذر تحميل التقييمات حاليًا. جرّب تحديث الصفحة.","warning");
    }
+ }
+
+ async function showMorePublicReviews(){
+   if(publicPaging)return;
+   if(!lastPublicLoaded){await loadPublicReviews();if(!lastPublicLoaded)return}
+   if(publicShown>=publicTotal){setMessage("#publicReviewsStatus","كل الآراء معروضة.");return}
+   publicPaging=true;
+   const button=q("#showStoreReviews");
+   button.disabled=true;
+   try{
+     const data=await getRpc("get_public_verified_store_reviews",{p_limit:15,p_offset:publicShown});
+     const rows=Array.isArray(data?.reviews)?data.reviews:[];
+     q("#publicReviewsList").insertAdjacentHTML("beforeend",rows.map(publicReviewCard).join(""));
+     publicShown+=rows.length;publicTotal=Number(data?.count)||0;
+     setMessage("#publicReviewsStatus",publicShown>=publicTotal?"كل الآراء معروضة.":"");
+   }catch(_){setMessage("#publicReviewsStatus","تعذر تحميل المزيد من الآراء.","warning")}
+   finally{button.disabled=false;publicPaging=false}
  }
 
  let adminData=null;
@@ -383,6 +412,9 @@
    finally{if(button)button.disabled=false}
  }
  function wire(){
+   q("#showStoreReviews")?.addEventListener("click",()=>void showMorePublicReviews());
+   q("#publishStoreReview")?.addEventListener("click",()=>void openPublicReviewForm());
+   q("#l1017PublicReviews")?.addEventListener("error",event=>{if(event.target.matches(".crr-avatar img"))event.target.hidden=true;},true);
    q('#l1017BusinessPanel')?.addEventListener('click',e=>{const b=e.target.closest('[data-finance-period]');if(b){financePeriod=b.dataset.financePeriod;renderFinanceSummary();}});
 
    q("#refreshLoyalty")?.addEventListener("click",()=>void loadLoyalty());
@@ -431,14 +463,14 @@
  }
 
  // Completion prompt uses the same authenticated, owner-checked review API.
- let completionDialog,completionOrder=null,completionRating=0,completionBusy=false,promptLoading=false,pendingCompletionPrompt=null;
+ let completionDialog,completionOrder=null,completionRating=0,completionBusy=false,promptLoading=false,pendingCompletionPrompt=null,manualReview=false;
  function mountCompletionRating(){
    const style=document.createElement('style');
    style.textContent=`#completionRating{box-sizing:border-box;width:min(92vw,460px);max-height:88dvh;overflow:auto;margin:auto;padding:30px 22px 20px;border:1px solid #64567d;border-radius:28px;background:linear-gradient(145deg,#24243b,#131521);color:#fff;text-align:center;font-family:inherit;box-shadow:0 24px 80px #0008;direction:rtl}#completionRating::backdrop{background:#080914b8;backdrop-filter:blur(5px)}#completionRating .cr-check{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 18px;border:3px solid #52df8e;border-radius:50%;color:#a5ffc7;background:#234435;font-size:36px}#completionRating h2{font-size:25px;margin:12px 0}#completionRating p{color:#c8c6d8;line-height:1.7}#completionRating .cr-product{font-size:13px;color:#bca3e5}#completionRating .cr-stars{display:flex;justify-content:center;gap:4px;margin:20px 0 6px}#completionRating .cr-stars button{padding:3px;border:0;background:none;color:#696479;font-size:44px;line-height:1.2;min-width:44px;cursor:pointer;transition:color .16s,transform .16s}#completionRating .cr-stars button.is-on{color:#ffce40;text-shadow:0 2px 8px #fbbf2430;transform:translateY(-2px)}#completionRating button:focus-visible{outline:2px solid #dec7ff;outline-offset:3px}#completionRating textarea{box-sizing:border-box;width:100%;margin:14px 0 6px;padding:14px;background:#151625;color:white;border:1px solid #77708d;border-radius:16px;font:inherit;font-size:16px;resize:vertical}#completionRating .cr-send{width:100%;min-height:52px;border:0;border-radius:16px;background:linear-gradient(120deg,#8d45ff,#6525e7);color:white;font:inherit;font-weight:700;font-size:18px;cursor:pointer}#completionRating .cr-send:disabled{opacity:.5;cursor:default}#completionRating .cr-later{display:block;margin:12px auto 0;padding:10px 22px;background:none;border:0;color:#c9c6d7;font:inherit;cursor:pointer}#completionRating .cr-status{min-height:24px;font-size:13px}#completionRating .cr-label{display:block;min-height:24px;color:#e5dcee}@media(prefers-reduced-motion:reduce){#completionRating .cr-stars button{transition:none}}`;
    document.head.appendChild(style);
    completionDialog=document.createElement('dialog');completionDialog.id='completionRating';
    completionDialog.setAttribute('aria-labelledby','crTitle');
-   completionDialog.innerHTML='<span class="cr-check" aria-hidden="true">✓</span><h2 id="crTitle">تم إكمال طلبك بنجاح</h2><p class="cr-product"></p><p>كيف كانت تجربتك معنا؟</p><div class="cr-stars" role="group" aria-label="اختر تقييمًا من خمس نجوم">'+[1,2,3,4,5].map(n=>'<button type="button" data-cr-star="'+n+'" aria-label="'+n+' من 5 نجوم" aria-pressed="false">★</button>').join('')+'</div><span class="cr-label" aria-live="polite">اختر عدد النجوم</span><textarea maxlength="300" rows="3" aria-label="تعليق اختياري" placeholder="اكتب رأيك هنا (اختياري)"></textarea><p class="cr-status" role="status"></p><button type="button" class="cr-send" disabled>إرسال التقييم</button><button type="button" class="cr-later">إغلاق</button>';
+   completionDialog.innerHTML='<span class="cr-check" aria-hidden="true">✓</span><h2 id="crTitle">تم إكمال طلبك بنجاح</h2><p class="cr-product"></p><div class="cr-profile" hidden><div class="cr-profile-picture"></div><label><input type="checkbox" class="cr-share-avatar"> إظهار صورتي مع التقييم</label></div><p>كيف كانت تجربتك معنا؟</p><div class="cr-stars" role="group" aria-label="اختر تقييمًا من خمس نجوم">'+[1,2,3,4,5].map(n=>'<button type="button" data-cr-star="'+n+'" aria-label="'+n+' من 5 نجوم" aria-pressed="false">★</button>').join('')+'</div><span class="cr-label" aria-live="polite">اختر عدد النجوم</span><textarea maxlength="300" rows="3" aria-label="تعليق اختياري" placeholder="اكتب رأيك هنا (اختياري)"></textarea><p class="cr-status" role="status"></p><button type="button" class="cr-send" disabled>إرسال التقييم</button><button type="button" class="cr-later">إغلاق</button>';
    document.body.appendChild(completionDialog);
    completionDialog.querySelectorAll('[data-cr-star]').forEach(b=>b.addEventListener('click',()=>{
      if(completionBusy||!completionOrder)return;
@@ -447,6 +479,7 @@
      completionDialog.querySelector('.cr-label').textContent=['','ضعيف','مقبول','جيد','جيد جدًا','ممتاز'][completionRating];
      completionDialog.querySelector('.cr-send').disabled=false;
    }));
+   completionDialog.addEventListener('error',event=>{if(event.target.matches('.cr-profile-picture img'))event.target.hidden=true;},true);
    completionDialog.querySelector('.cr-later').onclick=()=>{if(!completionBusy)completionDialog.close()};
    completionDialog.addEventListener('cancel',e=>{if(completionBusy)e.preventDefault()});
    completionDialog.querySelector('.cr-send').onclick=async()=>{
@@ -455,7 +488,9 @@
      const button=completionDialog.querySelector('.cr-send'),status=completionDialog.querySelector('.cr-status');
      button.disabled=true;button.textContent='جاري إرسال التقييم…';status.textContent='';
      try{
-       await getRpc('submit_verified_store_review',{p_order_id:completionOrder.order_id,p_rating:completionRating,p_comment:completionDialog.querySelector('textarea').value.trim()});
+       const payload={p_order_id:completionOrder.order_id,p_rating:completionRating,p_comment:completionDialog.querySelector('textarea').value.trim()};
+       if(manualReview)await getRpc('submit_store_review_with_profile',{...payload,p_show_avatar:completionDialog.querySelector('.cr-share-avatar').checked});
+       else await getRpc('submit_verified_store_review',payload);
        status.textContent='شكرًا لك! تم حفظ تقييمك بنجاح.';button.textContent='تم إرسال التقييم';
        completionDialog.querySelector('.cr-later').textContent='إغلاق';
        completionOrder=null;
@@ -463,6 +498,45 @@
      }catch(e){if(String(e?.message||'').includes('review_already_submitted')){status.textContent='سبق أن أرسلت تقييمك. شكرًا لك!';button.textContent='تم التقييم';completionOrder=null;pendingCompletionPrompt=null;void loadReviewable()}else{status.textContent='تعذر حفظ التقييم. حاول مرة أخرى.';button.disabled=false;button.textContent='إرسال التقييم'}}
      finally{completionBusy=false}
    };
+ }
+ function resetReviewDialog(order,isManual){
+   completionOrder=order;completionRating=0;manualReview=isManual;
+   completionDialog.querySelector('#crTitle').textContent=isManual?'انشر تقييمك':'تم إكمال طلبك بنجاح';
+   completionDialog.querySelector('.cr-check').hidden=isManual;
+   completionDialog.querySelector('.cr-profile').hidden=true;
+   completionDialog.querySelector('.cr-share-avatar').checked=false;
+   completionDialog.querySelector('.cr-profile-picture').replaceChildren();
+   completionDialog.querySelector('.cr-product').textContent=order?.product_name||'';
+   completionDialog.querySelectorAll('[data-cr-star]').forEach(star=>{
+     star.classList.remove('is-on');star.setAttribute('aria-pressed','false');star.disabled=!order;
+   });
+   completionDialog.querySelector('textarea').value='';
+   completionDialog.querySelector('textarea').disabled=!order;
+   completionDialog.querySelector('.cr-status').textContent='';
+   completionDialog.querySelector('.cr-label').textContent='اختر عدد النجوم';
+   completionDialog.querySelector('.cr-send').textContent='نشر التقييم';
+   completionDialog.querySelector('.cr-send').disabled=true;
+ }
+ async function openPublicReviewForm(){
+   if(completionDialog.open)return;
+   resetReviewDialog(null,true);
+   const status=completionDialog.querySelector('.cr-status');
+   status.textContent='جاري التحقق من طلباتك…';
+   completionDialog.showModal();
+   try{
+     const user=await getCurrentUser();
+     if(!completionDialog.open||!manualReview)return;
+     if(!user){status.textContent='سجّل دخولك وانشر تقييمك بعد اكتمال طلبك.';return}
+     const rows=await getRpc('get_my_reviewable_purchases');
+     if(!completionDialog.open||!manualReview||(await getCurrentUser())?.id!==user.id)return;
+     if(!rows?.[0]?.order_id){status.textContent='تقدر تنشر تقييم واحد بعد اكتمال طلبك.';return}
+     resetReviewDialog(rows[0],true);
+     const avatar=reviewAvatar(user.user_metadata?.avatar_url||user.user_metadata?.picture);
+     if(avatar){
+       completionDialog.querySelector('.cr-profile').hidden=false;
+       completionDialog.querySelector('.cr-profile-picture').innerHTML=avatar;
+     }
+   }catch(_){status.textContent='تعذر تجهيز التقييم. حاول مرة ثانية.'}
  }
  async function promptCompletedOrder(){
    if(promptLoading||completionDialog?.open||document.visibilityState==='hidden')return;
@@ -477,13 +551,8 @@
      const current=await getCurrentUser();
      if(current?.id!==user.id){pendingCompletionPrompt=null;return;}
      if(!order?.order_id||completionDialog?.open||document.visibilityState==='hidden'||document.querySelector('dialog[open]'))return;
-     completionOrder=order;completionRating=0;
-     completionDialog.querySelector('.cr-product').textContent=order.product_name+' · #'+String(order.order_id).slice(0,8).toUpperCase();
-     completionDialog.querySelectorAll('[data-cr-star]').forEach(b=>{b.classList.remove('is-on');b.setAttribute('aria-pressed','false')});
-     completionDialog.querySelector('textarea').value='';completionDialog.querySelector('.cr-status').textContent='';
-     completionDialog.querySelector('.cr-label').textContent='اختر عدد النجوم';
-     completionDialog.querySelector('.cr-send').textContent='إرسال التقييم';completionDialog.querySelector('.cr-send').disabled=true;
-     completionDialog.querySelector('.cr-later').textContent='إغلاق';completionDialog.showModal();pendingCompletionPrompt=null;
+     resetReviewDialog(order,false);
+     completionDialog.showModal();pendingCompletionPrompt=null;
    }catch(e){/* Keep browsing available when the review API is offline. */}
    finally{promptLoading=false}
  }

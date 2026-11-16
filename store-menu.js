@@ -111,6 +111,9 @@ var styleId='robloxGamePageStyles';
   window.openRobloxGameMenu=function(){
     showRobloxPage();
   };
+  window.openRobloxGiftCards=function(){
+    showRobloxPage('codes');
+  };
   window.openMm2StoreCategory=function(){
     showRobloxPage('mm2');
   };

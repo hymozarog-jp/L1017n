@@ -76,7 +76,18 @@
   }
   function matchesPsn(){
     if(chosen!=="all"&&chosen!=="psn")return false;
-    return !query || normalize("بلايستيشن بلاستيشن بلاي ستيشن بطاقات شحن اكواد psn playstation store PS4 PS5 امريكا السعودية تركيا الامارات").includes(query);
+    return !query || normalize("بلايستيشن بلاستيشن بلاي ستيشن بطاقات الهدايا شحن اكواد psn playstation store PS4 PS5 امريكا السعودية تركيا الامارات").includes(query);
+  }
+  function matchesRobloxCodes(){
+    if(chosen!=="all"&&chosen!=="roblox")return false;
+    return !query || normalize("بطاقات الهدايا أكواد روبلوكس بطاقات روبلوكس روبوكس roblox robux gift cards").includes(query);
+  }
+  function robloxCodesCard(){
+    return '<article class="ll-game-section ll-game-roblox ll-reveal" dir="rtl">'
+      +'<button type="button" class="ll-game-section-link" data-ll-game="roblox-codes" aria-label="فتح أكواد روبلوكس">'
+      +'<span class="ll-game-section-art"><img src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" loading="lazy" decoding="async"></span>'
+      +'<span class="ll-game-section-details"><strong>أكواد روبلوكس</strong></span>'
+      +'</button></article>';
   }
   function psnParentCard(){
     return '<article class="ll-game-section ll-game-psn ll-reveal" dir="rtl">'
@@ -130,6 +141,11 @@
       if(key==="steal-a-brainrot"){
         if(typeof window.openBrainrotStoreCategory==="function")window.openBrainrotStoreCategory();
         else notify("قسم ماب السرقة غير جاهز حاليًا.");
+        return;
+      }
+      if(key==="roblox-codes"){
+        if(typeof window.openRobloxGiftCards==="function")window.openRobloxGiftCards();
+        else notify("قسم أكواد روبلوكس غير جاهز حاليًا.");
         return;
       }
       if(key==="psn"){
@@ -212,14 +228,19 @@
     if(!root)return;
     const visibleRoblox=SHOP_SECTIONS.filter(matchesSection).length > 0;
     const visiblePubg=matchesPubg();
-    const visiblePsn=matchesPsn();
-    const visibleCount=Number(visibleRoblox)+Number(visiblePubg)+Number(visiblePsn);
-    const count=q("#llItemCount");
-    if(count)count.textContent=visibleCount?visibleCount+" قسم":"";
-    root.innerHTML=visibleCount
-      ? (visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(visiblePsn?psnParentCard():"")
-      : '<div class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</div>';
-    reveal([...root.querySelectorAll(".ll-reveal")]);
+    const gamesSection=q("#llGamesSection");
+    const giftSection=q("#llGiftSection");
+    const gifts=q("#llGiftCatalog");
+    const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"");
+    const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"");
+    const showGames=Boolean(games);
+    const showGifts=Boolean(giftCards);
+    gamesSection.hidden=!showGames;
+    giftSection.hidden=!showGifts;
+    q("#llCatalogEmpty").hidden=showGames||showGifts;
+    root.innerHTML=games;
+    gifts.innerHTML=giftCards;
+    reveal([...root.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {
     chosen = key;
@@ -290,10 +311,14 @@
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
-      + '<div class="ll-title-row ll-products-title"><div><small>اختار القسم وشوف الأسعار</small><h2>الأقسام المتوفرة</h2></div><span id="llItemCount">جاري التحميل</span></div>'
+      + '<div class="ll-title-row ll-products-title"><div><small>اختار القسم وشوف الأسعار</small></div></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
       + FILTERS.map(([key, label]) => '<button type="button" data-ll-category="' + esc(key) + '" aria-pressed="' + (key==='all') + '" class="' + (key==='all'?'selected':'') + '">' + esc(label) + '</button>').join("") + '</div>'
-      + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div>'
+      + '<section id="llGamesSection" aria-labelledby="llGamesHeading"><div class="ll-title-row ll-products-title"><h2 id="llGamesHeading">الألعاب</h2></div>'
+      + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div></section>'
+      + '<section id="llGiftSection" aria-labelledby="llGiftHeading"><div class="ll-title-row ll-products-title"><h2 id="llGiftHeading">بطاقات الهدايا</h2></div>'
+      + '<div class="ll-catalog" id="llGiftCatalog" aria-live="polite"></div></section>'
+      + '<div id="llCatalogEmpty" hidden><p class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</p></div>'
       + '<p class="ll-safety-note">الأسعار والتوفر يُعرضان داخل كل قسم، ويتأكد الطلب عند الدفع.</p>'
       + '<section class="ll-help ll-reveal"><div><h2>تحتاج مساعدة؟</h2><p>تابع الطلبات من حسابك، أو افتح القائمة للوصول إلى المحفظة والدعم.</p></div>'
       + '<button type="button" data-ll-show-orders>طلباتي ←</button></section>';

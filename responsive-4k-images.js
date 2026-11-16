@@ -6,6 +6,7 @@
 (function(){
   'use strict';
   const regular = {
+    'dragon-card':[960,3840],
     'garama':[960,3840],
     'la-secret':[960,3840],
     'mm2-deathshard':[960,3840],
@@ -13,6 +14,7 @@
     'mm2-game-icon':[960,3840],
     'order-libyana-premium':[960,3840],
     'order-robux-premium':[960,3840],
+    'psn-user-card':[700,2799],
     'pubg-battlefront':[640,2560],
     'spooky-and-pumpky':[960,3840],
     'steal-a-brainrot-original':[960,3840],
@@ -47,7 +49,7 @@
     const width=Math.ceil(img.getBoundingClientRect().width);
     if(width<10)return;
     if(img.dataset.gbImageVariant!==info.name){
-      const v='?v=official-and-4k-20261102';
+      const v='?v=package-art-20261116';
       img.setAttribute('srcset',
         info.prefix+'mobile/'+info.asset+'.webp'+v+' '+info.sizes[0]+'w, '+
         info.prefix+'4k/'+info.asset+'.webp'+v+' '+info.sizes[1]+'w');

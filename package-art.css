@@ -1,0 +1,43 @@
+/* Shared square framing for package artwork. Keep original proportions and card controls. */
+#robuxModal .robux-package .robux-pack-visual,
+#psnStoreScreen .psn-product-art,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover,
+#robloxGamePage .rgp-package .mm2-item-art,
+#robloxGamePage .sab-item-card .sab-card-art,
+#robloxGamePage .ox-product .ox-cover {
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#robloxGamePage .rgp-package .mm2-item-art,
+#robloxGamePage .sab-item-card .sab-card-art {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 100%;
+  height: auto !important;
+  min-height: 0;
+  max-height: none;
+  background: radial-gradient(ellipse at 50% 35%, #303951, #141e31 75%);
+  border-radius: 12px;
+}
+
+#robuxModal .robux-package .robux-pack-visual img,
+#psnStoreScreen .psn-product-art .psn-package-image,
+#pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover-image,
+#robloxGamePage .rgp-package .mm2-item-art img,
+#robloxGamePage .sab-item-card .sab-card-art img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+#robloxGamePage .rgp-package .mm2-item-art img,
+#robloxGamePage .sab-item-card .sab-card-art img {
+  width: 92% !important;
+  height: 92% !important;
+  max-width: 92%;
+  max-height: 92%;
+  margin: 0;
+  padding: 0;
+}

@@ -17,8 +17,7 @@
   let catalogError = "";
   let catalogRequest = 0;
   let omnexLive = false;
-  // Every listed reference showed a Buy link at the last public Omnex check.
-  // A row can set its third value to false when the supplier marks it unavailable.
+  // Previously listed prices are informational when the live catalog is unavailable.
   const SUPPLIER_REFERENCE = {
     codes: [[60,12.468],[325,62.522],[660,125.045],[1800,312.977],[3850,622.881],[8100,1248.624],[16200,2496.915],[24300,3703.757],[32400,4905.841],[40500,6242.285]],
     charge: [[60,12.597],[325,62.646],[660,124.162],[1800,312.844],[3850,625.225],[8100,1235.947]],
@@ -158,9 +157,7 @@
     const isVoucher = mode === "codes";
     const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
     const supplierUnavailable = product.source === "omnex" && product.available !== true;
-    // No buyer-facing Omnex purchase until the dedicated PUBG server route is deployed and tested.
-    const supplierCheckoutPending = product.source === "omnex";
-    const isDisabled = noCodeAvailable || supplierUnavailable || supplierCheckoutPending;
+    const isDisabled = noCodeAvailable || supplierUnavailable;
     const currentStatus = noCodeAvailable || supplierUnavailable ? "غير متوفر" : "متوفر للطلب";
     return '<article class="pubg-pack pubg-pack-detailed pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(deliveryFor(mode).kind) + '</span>'
@@ -173,13 +170,11 @@
       + (Number.isFinite(price) && price > 0 ? price.toFixed(2) + ' <span>د.ل</span>' : 'عند التوفر')
       + '</strong></div>'
       + (isDisabled
-        ? (supplierCheckoutPending
-          ? '<span class="pubg-supplier-stock'+(supplierUnavailable?'':' is-available')+'">'+(supplierUnavailable?'غير متوفر عند المورد':'متوفر عند المورد')+'</span>'
-          : '<button type="button" class="pubg-buy" disabled>غير متوفر</button>')
-        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">اطلب الآن <span aria-hidden="true">←</span></button>')
+        ? '<button type="button" class="pubg-buy" disabled>غير متوفر</button>'
+        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن</button>')
       + '</div></article>';
   }
-  function referenceCard([packageName, cost, available = true], key, index) {
+  function referenceCard([packageName, cost], key, index) {
     const amount=typeof packageName==="number"?packageName:0;
     const tier=tierFor(amount),delivery=deliveryFor(key);
     const title=amount?amount.toLocaleString("en-US")+" UC":packageName;
@@ -191,7 +186,7 @@
       + artForPack(amount, "")
       + '<div class="pubg-pack-headline"><h3 class="pubg-pack-name">' + safe(title) + '</h3></div>'
       + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong dir="ltr">' + salePrice + ' <span>د.ل</span></strong></div>'
-      + '<span class="pubg-supplier-stock'+(available?' is-available':'')+'">'+(available?'متوفر عند المورد':'غير متوفر عند المورد')+'</span></div>'
+      + '<button type="button" class="pubg-buy" disabled>غير متوفر</button></div>'
       + '</article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
@@ -306,7 +301,7 @@
     const rows=SUPPLIER_REFERENCE[key];
     if(!rows?.length)return "";
     return '<div class="pubg-supplier-note"><strong>أسعار متجر L1017n لباقات Omnex</strong>'
-      + '<span>التوفر حسب صفحة المورد بتاريخ 17 نوفمبر 2026. الشراء من هذه البطاقات غير مفعّل.</span></div>'
+      + '<span>الأسعار للعرض إلى أن يتأكد التوفر من المورد.</span></div>'
       + '<div class="pubg-packages pubg-reference-packages">' + rows.map((row,index)=>referenceCard(row,key,index)).join("") + '</div>';
   }
   function paintOffers(panel, key) {
@@ -336,6 +331,7 @@
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
         if (!selected || String(selected.product_key || "").toLowerCase() === "pubg-60") return;
         if (selected.source === "omnex") {
+          if (selected.available !== true) return;
           if(typeof window.openOmnexProductCheckout === "function") void window.openOmnexProductCheckout(selected);
           else window.alert("خدمة المورد غير جاهزة للشراء حاليًا.");
         } else if (categoryFor(selected) === "charge") {

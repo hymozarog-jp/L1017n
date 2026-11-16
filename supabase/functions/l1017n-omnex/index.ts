@@ -70,6 +70,20 @@ async function syncPsn(db){
  return rpc(db,'sync_omnex_psn_catalog',{p_items:items,p_wallet:cat.wallet});
 }
 
+async function syncPubg(db){
+ const r=await supplier(db,'catalog');
+ if(r.status!==200||!Array.isArray(r.body?.products))throw Error('supplier_unavailable');
+ const cat=r.body, category='30faee6b9893e3f424961c15a785efc3';
+ const groups=new Map((Array.isArray(cat.groups)?cat.groups:Object.values(cat.groups||{}))
+  .filter(g=>g&&g.id).map(g=>[g.id,g.name||g.title||'']));
+ const items=cat.products.filter(p=>p?.category===category&&/^[a-f0-9]{32}$/.test(p.id||'')).map(p=>({
+  id:p.id,category,name:p.name,group_name:groups.get(p.group)||p.group_name||'',
+  price:p.price,stock:p.stock,available:p.purchase_available===true&&p.stock!==0&&p.stock!=='0',image_url:p.image_url||''
+ }));
+ if(!items.length||items.length>500)throw Error('pubg_catalog_unavailable');
+ return rpc(db,'sync_omnex_pubg_catalog',{p_items:items,p_wallet:cat.wallet});
+}
+
 async function worker(db){
  const tasks=[];for(let i=0;i<6;i++){const job=await rpc(db,'claim_omnex_job');if(!job)break;tasks.push(runJob(db,job));}
  await Promise.allSettled(tasks);
@@ -77,6 +91,8 @@ async function worker(db){
  // Quotes always verify live prices. The periodic catalog refresh is only a listing cache.
  const {data:due}=await db.rpc('omnex_catalog_sync_due');if(due)try{await syncCatalog(db)}catch{}
  const {data:psnDue}=await db.rpc('omnex_psn_catalog_sync_due');if(psnDue)try{await syncPsn(db)}catch(error){console.warn('[omnex-psn-sync]',String(error?.message||'unknown').slice(0,100))}
+ const {data:pubgDue}=await db.rpc('omnex_pubg_catalog_sync_due');
+ if(pubgDue)try{await syncPubg(db)}catch(error){console.warn('[omnex-pubg-sync]',String(error?.message||'unknown').slice(0,100))}
 }
 function fieldsSchema(raw){
  if(!Array.isArray(raw)||raw.length>10)throw Error('unsupported_product_fields');

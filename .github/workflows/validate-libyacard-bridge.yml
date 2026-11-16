@@ -1,0 +1,21 @@
+name: Validate Libya Cards Bridge
+on:
+  push:
+    paths:
+      - "integrations/libyacard-bridge/**"
+      - ".github/workflows/validate-libyacard-bridge.yml"
+  pull_request:
+    paths:
+      - "integrations/libyacard-bridge/**"
+      - ".github/workflows/validate-libyacard-bridge.yml"
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test bridge
+        run: cd integrations/libyacard-bridge && npm test

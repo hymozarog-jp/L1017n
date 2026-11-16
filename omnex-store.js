@@ -303,11 +303,13 @@ window.openRobloxCodesPage = async function(root) {
  search.oninput = inStock.onchange = () => { limit = 12; drawProducts(); };
  more.onclick = () => { limit += 12; drawProducts(); };
 
+ async function refreshCatalog(){
  try {
   const {data, error} = await api().rpc('get_public_omnex_roblox_catalog');
   if (!page.isConnected) return;
   if (error) throw error;
   if (!data?.enabled) {
+   for (const button of page.querySelectorAll('.ox-product,.ox-region-card')) button.disabled = true;
    status.textContent = 'الباقات قيد التحديث. جرّب مرة ثانية بعد قليل.';
    return;
   }
@@ -321,6 +323,7 @@ window.openRobloxCodesPage = async function(root) {
    if (!groups.has(key)) groups.set(key, {key, label, items: []});
    groups.get(key).items.push(product);
   }
+  menu.replaceChildren();
   for (const key of regionLabels.keys()) {
    const region = groups.get(key);
    if (!region) continue;
@@ -336,12 +339,28 @@ window.openRobloxCodesPage = async function(root) {
    button.append(regionArtwork(key, region.label), footer);
    button.onclick = () => openRegion(region, button);
    menu.append(button);
+   if(activeRegion?.key===key)activeButton=button;
   }
-  menu.hidden = !groups.size;
-  status.textContent = groups.size ? '' : 'لا توجد باقات روبلوكس حاليًا.';
+  if(activeRegion){
+   const refreshed=groups.get(activeRegion.key);
+   activeRegion=refreshed||{...activeRegion,items:[]};
+   drawProducts();
+  } else {
+   menu.hidden = !groups.size;
+   status.textContent = groups.size ? '' : 'لا توجد باقات روبلوكس حاليًا.';
+  }
  } catch {
-  if (page.isConnected) status.textContent = 'تعذر تحميل الأقسام. حاول مرة ثانية.';
+  if (page.isConnected) {
+   for (const button of page.querySelectorAll('.ox-product,.ox-region-card')) button.disabled = true;
+   status.textContent = 'تعذر تحديث التوفر. جاري إعادة المحاولة.';
+  }
  }
+ }
+ const catalogTimer=setInterval(()=>{
+  if(!page.isConnected){clearInterval(catalogTimer);return;}
+  if(!document.hidden)void refreshCatalog();
+ },60000);
+ await refreshCatalog();
 };
 async function poll(){
  if(polling||document.visibilityState==='hidden'||!api())return;polling=true;watchAuth();

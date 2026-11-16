@@ -37,9 +37,9 @@
     // legacy global products array, which can still be empty when PUBG opens.
     return pubgCatalog;
   }
-  async function fetchPubgProducts(root) {
+  async function fetchPubgProducts(root, quiet = false) {
     const requestId=++catalogRequest;
-    catalogReady=false;
+    if(!quiet)catalogReady=false;
     catalogError="";
     const refresh=()=> {
       if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
@@ -477,6 +477,10 @@
     root.querySelector("[data-pubg-close]").focus({ preventScroll: true });
   }
 
+  setInterval(() => {
+    const root=document.getElementById(PAGE_ID);
+    if(root?.classList.contains("visible")&&!document.hidden)void fetchPubgProducts(root,true);
+  },60000);
   window.renderPremiumPubg = openPremiumPubg;
   window.closePremiumPubg = closePremiumPubg;
 })();

@@ -118,10 +118,10 @@
     else if (!filtered.length || (selectedRegion && !filtered.some(p=>p.region===selectedRegion))) status.textContent = 'لا توجد باقات مطابقة للبحث حاليًا.';
     else status.textContent = '';
   }
-  async function reload() {
+  async function reload(quiet = false) {
     const seq = ++requestSeq; const api = db();
     if (!api) { root.querySelector('.psn-status').textContent = 'تعذر الاتصال بخدمة البطاقات.'; return; }
-    root.querySelector('.psn-status').textContent = 'جاري تحديث قائمة بطاقات البلايستيشن…';
+    if (!quiet) root.querySelector('.psn-status').textContent = 'جاري تحديث قائمة بطاقات البلايستيشن…';
     try {
       const {data,error} = await api.rpc('get_public_omnex_psn_catalog');
       if (seq!==requestSeq || root.hidden) return;
@@ -136,6 +136,7 @@
       if (seq===requestSeq) root.querySelector('.psn-status').textContent = 'تعذر تحميل بطاقات PlayStation. أعد فتح القسم لاحقًا.';
     }
   }
+  setInterval(() => { if (root && !root.hidden && !document.hidden) void reload(true); }, 60000);
   window.openPsnStore = open;
   window.L1017nPsnStore = {open,refresh:reload};
 })();

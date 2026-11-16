@@ -1,5 +1,5 @@
 /* L1017n — Steal a Brainrot Roblox inner category.
- * Existing Supabase prices and create_purchase_order remain the only purchase authority.
+ * Prices, stock, and wallet charges are validated by Supabase.
  * Original game: https://www.roblox.com/games/109983668079237/Steal-a-Brainrot
  */
 (function(){
@@ -13,6 +13,24 @@
     { key:"steal-garama", name:"قرما", latin:"GARAMA", number:"01", image:"game-covers/garama.webp" },
     { key:"steal-dragon", name:"دراقون", latin:"DRAGON", number:"02", image:"game-covers/dragon-card.webp?v=uploaded-dragon-20261105-1" }
   ];
+  // Variant products use the base product key followed by -- and the mutation slug.
+  // Multipliers order the choices; availability and price come only from the catalog.
+  const MUTATIONS = [
+    ["normal","عادي","#ced7e8",1], ["gold","قولد","#ffd44f",1.25],
+    ["diamond","دايموند","#63e5ff",1.5], ["bloodrot","بلود روت","#ff5360",2],
+    ["candy","كاندي","#ff8cd9",4], ["lava","لافا","#ff892c",6],
+    ["galaxy","جالاكسي","#b995ff",7], ["yinyang","ين يانغ","#f3f4f6",7.5],
+    ["radioactive","مشع","#adff58",8.5], ["cursed","كيرسد","#f27798",9],
+    ["divine","ديفاين","#fff0a7",10], ["rainbow","رينبو","#89e8d0",10],
+    ["cyber","سايبر","#51f3c5",11], ["phantom","فانتوم","#c5adff",12],
+    ["crystal","كريستال","#a8ecff",13]
+  ];
+  const mutationRank = new Map(MUTATIONS.map(([key], index)=>[key,index]));
+  const baseIncome = {"steal-garama":50};
+  function quantityLimit(product){
+    if(!product?.active || !(Number(product.price)>0)) return 0;
+    return product.stock_quantity==null ? 1 : Math.max(0,Number(product.stock_quantity)||0);
+  }
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;
   let checkoutBusy = false;
@@ -62,12 +80,12 @@ function getClient(){
     const prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
-  function productCard(item,product){
+  function productCard(item,product,hasVariants){
     const customImage=productImageSrc(product?.image_url);
     const productPicture=customImage||item.image||'game-covers/official/mobile/brainrot.webp';
-    const limitedStock=["steal-garama","steal-dragon"].includes(item.key);
+    const limitedStock=product?.stock_quantity!=null || ["steal-garama","steal-dragon"].includes(item.key);
     const remaining=Number(product?.stock_quantity);
-    const available=!!(product&&product.active&&Number(product.price)>0&&(!limitedStock||(Number.isInteger(remaining)&&remaining>0)));
+    const available=quantityLimit(product)>0;
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
       +'<div class="sab-card-art">'+(item.emoji&&!customImage
@@ -77,23 +95,34 @@ function getClient(){
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +(limitedStock?'<span class="sab-stock-badge '+(available?'in-stock':'out-of-stock')+'">'+(available?'المتوفر: '+remaining:'نفدت الكمية')+'</span>':'')
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
-      +(available?'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">فتح القائمة</button>'
-        :'<span class="sab-unavailable">غير متوفر</span>')
+      +'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">'+(available||hasVariants?'فتح القائمة':'عرض الألوان')+'</button>'
       +'</div></article>';
   }
   function renderItems(section, catalog){
-    const map=new Map((catalog||[]).map(p=>[String(p.product_key),p]));
+    const groups=new Map();
+    for(const product of catalog||[]){
+      const key=String(product.product_key);
+      const [base,mutation]=key.split("--");
+      const groupKey=mutationRank.has(mutation)?base:key;
+      if(!groups.has(groupKey))groups.set(groupKey,new Map());
+      groups.get(groupKey).set(groupKey===key?"normal":mutation,product);
+    }
     const target=section.querySelector("#sabCatalog");
     if(!target)return;
-    const extra=(catalog||[]).filter(p=>!ITEMS.some(item=>item.key===p.product_key))
-      .map((p,index)=>({key:p.product_key,name:p.name,latin:'STEAL A BRAINROT',number:String(ITEMS.length+index+1),image:'game-covers/official/mobile/brainrot.webp'}));
-    target.innerHTML='<div class="sab-products-grid">'+[...ITEMS,...extra].map(item=>productCard(item,map.get(item.key))).join("")+'</div>'
-      +'<p class="sab-info">المنتجات التي تحمل علامة «غير متوفر» لا يمكن طلبها حاليًا. عند توفر المنتج، التسليم داخل ماب السرقة يحتاج التواصل بعد الدفع.</p>';
-    target.querySelectorAll("[data-steal-buy]").forEach(b=>{
-      b.addEventListener("click",()=>{
-        const product=map.get(b.dataset.stealBuy);
-        if(product&&Number(product.price)>0&&product.active&&
-           (!["steal-garama","steal-dragon"].includes(product.product_key)||(Number.isInteger(Number(product.stock_quantity))&&Number(product.stock_quantity)>0))) openCheckout(product);
+    const extra=[...groups].filter(([key])=>!ITEMS.some(item=>item.key===key))
+      .map(([key,variants],index)=>{
+        const product=variants.get("normal")||variants.values().next().value;
+        return {key,name:product.name,latin:"STEAL A BRAINROT",number:String(ITEMS.length+index+1),image:OFFICIAL_FALLBACK};
+      });
+    const items=[...ITEMS,...extra];
+    target.innerHTML='<div class="sab-products-grid">'+items.map(item=>{
+      const variants=groups.get(item.key);
+      return productCard(item,variants?.get("normal")||variants?.values().next().value,variants?.size>1);
+    }).join("")+'</div><p class="sab-info">اختر الشخصية لعرض الألوان والوزن والكمية المتوفرة.</p>';
+    target.querySelectorAll("[data-steal-buy]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const item=items.find(entry=>entry.key===button.dataset.stealBuy);
+        if(item)openCheckout(item,groups.get(item.key)||new Map());
       });
     });
   }
@@ -120,7 +149,10 @@ function getClient(){
     const x=document.getElementById("sabCheckout");
     if(x)x.remove();
   }
-  async function openCheckout(product){
+  function openCheckout(item,variants){
+    const defaultProduct=variants.get("normal")||variants.values().next().value;
+    const picture=productImageSrc(defaultProduct?.image_url)||item.image;
+    const initial=MUTATIONS.find(([key])=>quantityLimit(variants.get(key))>0)?.[0]||"normal";
     closeCheckout();
     const box=document.createElement("div");
     box.id="sabCheckout";
@@ -130,9 +162,16 @@ function getClient(){
     box.innerHTML='<div class="sab-dialog">'
       +'<button type="button" class="sab-dialog-close" data-sab-cancel aria-label="إغلاق">×</button>'
       +'<span class="sab-dialog-kicker">STEAL A BRAINROT • L1017N</span>'
-      +(productImageSrc(product.image_url)?'<img class="l1017n-catalog-image sab-checkout-product-image" src="'+escapeHtml(productImageSrc(product.image_url))+'" alt="'+escapeHtml(product.name)+'" loading="eager">':'')
-      +'<h2>'+escapeHtml(ITEMS.find(item=>item.key===product.product_key)?.name||product.name)+'</h2>'
-      +'<strong class="sab-dialog-price">'+Number(product.price).toFixed(2)+' د.ل</strong>'
+      +'<img class="l1017n-catalog-image sab-checkout-product-image" src="'+escapeHtml(picture)+'" alt="'+escapeHtml(item.name)+'" loading="eager">'
+      +'<h2>'+escapeHtml(item.name)+'</h2>'
+      +'<fieldset class="sab-mutations"><legend>اللون · ترتيب قوة الطفرة</legend><div class="sab-mutation-grid">'
+      +MUTATIONS.map(([key,label,color])=>{
+        const available=quantityLimit(variants.get(key))>0;
+        return '<button type="button" data-sab-mutation="'+key+'" style="--mutation-color:'+color+'" aria-pressed="false"><span>'+label+'</span><small>'+(available?'متوفر':'غير متوفر')+'</small></button>';
+      }).join("")+'</div></fieldset>'
+      +'<div class="sab-details"><span data-sab-weight></span><span data-sab-stock></span></div>'
+      +'<div class="sab-quantity"><span>الكمية</span><div><button type="button" data-sab-step="-1" aria-label="نقص الكمية">−</button><output data-sab-quantity>1</output><button type="button" data-sab-step="1" aria-label="زِد الكمية">+</button></div></div>'
+      +'<strong class="sab-dialog-price" aria-live="polite"></strong>'
       +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'
       +'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'
       +'<input id="sabRobloxUsername" autocomplete="off" minlength="3" maxlength="20" required pattern="[A-Za-z0-9_]{3,20}" placeholder="Roblox username" dir="ltr">'
@@ -144,16 +183,49 @@ function getClient(){
     const form=box.querySelector("form");
     const send=form.querySelector('[type="submit"]');
     const status=box.querySelector(".sab-dialog-status");
+    let selected=initial;
+    let quantity=1;
+    const mutationButtons=[...box.querySelectorAll("[data-sab-mutation]")];
+    const stepButtons=[...box.querySelectorAll("[data-sab-step]")];
+    function update(){
+      const product=variants.get(selected);
+      const max=quantityLimit(product);
+      const multiplier=MUTATIONS[mutationRank.get(selected)][3];
+      const income=baseIncome[item.key];
+      mutationButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.sabMutation===selected)));
+      box.querySelector("[data-sab-weight]").textContent=income?"الوزن الأساسي: "+(income*multiplier)+"M/s":"مضاعف الدخل: ×"+multiplier;
+      box.querySelector("[data-sab-stock]").textContent=!max?"غير متوفر":product.stock_quantity==null?"متوفر":"المتوفر: "+max;
+      box.querySelector("[data-sab-quantity]").textContent=max?quantity:0;
+      box.querySelector(".sab-dialog-price").textContent=max?"الإجمالي: "+(Number(product.price)*quantity).toFixed(2)+" د.ل":"غير متوفر للشراء";
+      stepButtons[0].disabled=checkoutBusy||!max||quantity<=1;
+      stepButtons[1].disabled=checkoutBusy||quantity>=max;
+      send.disabled=checkoutBusy||!max;
+    }
+    mutationButtons.forEach(button=>button.addEventListener("click",()=>{
+      if(checkoutBusy)return;
+      selected=button.dataset.sabMutation;
+      quantity=1;
+      status.textContent="";
+      update();
+    }));
+    stepButtons.forEach(button=>button.addEventListener("click",()=>{
+      const next=quantity+Number(button.dataset.sabStep);
+      if(checkoutBusy||next<1||next>quantityLimit(variants.get(selected)))return;
+      quantity=next;
+      update();
+    }));
+    update();
     form.addEventListener("submit",async e=>{
       e.preventDefault();
-      if(checkoutBusy)return;
+      const product=variants.get(selected);
+      if(checkoutBusy||quantity>quantityLimit(product))return;
       const username=form.querySelector("input").value.trim();
       if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){
         status.textContent="أدخل اسم Roblox صحيحًا من 3 إلى 20 حرفًا.";return;
       }
       const client=getClient();
       if(!client){status.textContent="تعذر الاتصال بالمتجر.";return;}
-      checkoutBusy=true;send.disabled=true;
+      checkoutBusy=true;update();
       status.textContent="جارٍ مراجعة الحساب والرصيد…";
       try{
         const auth=await client.auth.getUser();
@@ -164,7 +236,7 @@ function getClient(){
           status.textContent="خدمة التحقق من الهاتف غير جاهزة. حدّث الصفحة.";return;
         }
         if(!await window.ensurePurchasePhone())return;
-        const r=await client.rpc("create_purchase_order",{p_product_id:product.id,p_roblox_username:username});
+        const r=await client.rpc("create_brainrot_purchase",{p_product_id:product.id,p_roblox_username:username,p_quantity:quantity,p_unit_price:Number(product.price)});
         if(r.error)throw r.error;
         if(r.data?.id)void client.functions.invoke('l1017n-purchase-notify',{body:{order_id:r.data.id}})
           .then(({error})=>{if(error)console.warn('[purchase] Telegram notification pending')})
@@ -176,7 +248,7 @@ function getClient(){
         const order=r.data;
         const opened=order?.id && window.L1017nManualHandover?.open({
           id:order.id,product_name:order.product_name||product.name,
-          total_amount:order.total_amount??product.price,
+          total_amount:order.total_amount??Number(product.price)*quantity,
           roblox_username:order.roblox_username||username,
           game:"steal-a-brainrot",product_key:product.product_key
         });
@@ -187,10 +259,11 @@ function getClient(){
         status.textContent=/insufficient_balance/i.test(msg)?"رصيدك غير كافٍ، اشحن المحفظة أولًا."
           :/phone_verification_required_before_purchase/i.test(msg)?"يجب توثيق رقم الهاتف قبل الشراء."
           :/product_not_available/i.test(msg)?"المنتج غير متاح حاليًا."
+          :/price_changed/i.test(msg)?"تغيّر السعر. ارجع وافتح الشخصية من جديد."
           :"تعذر إكمال الشراء. تحقق من طلباتك قبل المحاولة مجددًا.";
-      }finally{checkoutBusy=false;if(send.isConnected)send.disabled=false;}
+      }finally{checkoutBusy=false;if(send.isConnected)update();}
     });
-    form.querySelector("input").focus();
+    box.querySelector("[data-sab-cancel]").focus({preventScroll:true});
   }
 
   function openInsideRoblox(){

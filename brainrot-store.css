@@ -129,3 +129,17 @@
 #robloxGamePage .sab-item-card .sab-stock-badge.out-of-stock{
  background:#7b4a2540;border-color:#d2a05b88;color:#efce9b;
 }
+
+#sabCheckout .sab-dialog{width:min(100%,520px);max-height:calc(100vh - 34px);max-height:calc(100dvh - 34px);overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:clamp(14px,4vw,24px)}
+#sabCheckout .sab-checkout-product-image{width:72px;height:72px;object-fit:contain;display:block;margin:8px 0}
+#sabCheckout .sab-mutations{margin:0 0 12px;padding:0;border:0;min-width:0}
+#sabCheckout .sab-mutations legend{font-weight:800;margin-bottom:8px;padding:0}
+#sabCheckout .sab-mutation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#sabCheckout [data-sab-mutation]{display:grid;gap:2px;min-height:43px;border:1px solid #ffffff34;border-inline-start:3px solid var(--mutation-color);border-radius:8px;padding:4px;background:#1b2b3b;color:var(--mutation-color);font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+#sabCheckout [data-sab-mutation][aria-pressed=true]{border-color:var(--mutation-color);box-shadow:inset 0 0 0 1px var(--mutation-color);background:#26364a}
+#sabCheckout [data-sab-mutation] small{color:#c3cfdb;font-size:10px}
+#sabCheckout [data-sab-mutation=rainbow] span{background:linear-gradient(90deg,#ff78a9,#ffe070,#7bffd5,#b49dff);background-clip:text;-webkit-background-clip:text;color:transparent}
+#sabCheckout .sab-details,#sabCheckout .sab-quantity{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0;color:#e2edf6;font-size:13px}
+#sabCheckout .sab-quantity div{display:flex;align-items:center;gap:10px}
+#sabCheckout .sab-quantity button{width:44px;height:44px;border:1px solid #7191aa;border-radius:9px;background:#182c40;color:#fff;font-size:21px;cursor:pointer}
+#sabCheckout .sab-quantity button:disabled{opacity:.4;cursor:default}

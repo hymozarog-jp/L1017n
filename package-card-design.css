@@ -129,8 +129,8 @@ html body #robuxModal.robux-fixed-packs .package-grid .robux-pack-copy > .stock-
   padding: 5px 4px !important;
   border: 0 !important;
   border-radius: 9px !important;
-  background: var(--package-gold) !important;
-  color: #1b1608 !important;
+  background: #218449 !important;
+  color: #fff !important;
   font-size: clamp(10px, 2.7vw, 13px) !important;
   font-weight: 800 !important;
   line-height: 1.35 !important;
@@ -147,4 +147,12 @@ html body #robuxModal.robux-fixed-packs .package-grid .robux-package:disabled .r
 #robloxGamePage .ox-catalog .ox-product:disabled .ox-gift-card,
 #pubgCategoryPage.pubg-premium .pubg-pack-detailed:has(.pubg-buy:disabled) .pubg-pack-cover-image {
   filter: grayscale(.8) brightness(.58) !important;
+}
+
+#robloxGamePage .rgp-package:not(:disabled) .gb-card-open,
+#robloxGamePage .sab-item-card.sab-available .sab-buy,
+#llLanding .ll-card .ll-quickbuy:not(:disabled) {
+  background: #218449 !important;
+  border-color: #218449 !important;
+  color: #fff !important;
 }

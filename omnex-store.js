@@ -209,7 +209,7 @@ function productCard(product, regionLabel, regionKey) {
  const card = make('button', 'ox-product');
  card.type = 'button';
  card.disabled = !product.available;
- const availability = product.available ? 'شراء' : 'الكمية نفدت';
+ const availability = product.available ? 'شراء الآن' : 'الكمية نفدت';
  card.setAttribute('aria-label', [product.name, regionLabel, cash(product.price), availability].join('، '));
  const art = regionArtwork(regionKey, regionLabel);
  if (!product.available) art.append(make('span', 'ox-sold-out', availability));

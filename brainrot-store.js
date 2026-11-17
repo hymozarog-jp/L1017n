@@ -80,7 +80,7 @@ function getClient(){
     const prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
-  function productCard(item,product,hasVariants){
+  function productCard(item,product){
     const customImage=productImageSrc(product?.image_url);
     const productPicture=customImage||item.image||'game-covers/official/mobile/brainrot.webp';
     const limitedStock=product?.stock_quantity!=null || ["steal-garama","steal-dragon"].includes(item.key);
@@ -95,7 +95,7 @@ function getClient(){
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +(limitedStock?'<span class="sab-stock-badge '+(available?'in-stock':'out-of-stock')+'">'+(available?'المتوفر: '+remaining:'نفدت الكمية')+'</span>':'')
       +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
-      +'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">'+(available||hasVariants?'فتح القائمة':'عرض الألوان')+'</button>'
+      +'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">'+(available?'شراء الآن':'عرض الألوان')+'</button>'
       +'</div></article>';
   }
   function renderItems(section, catalog){
@@ -118,7 +118,7 @@ function getClient(){
     target.innerHTML='<div class="sab-products-grid">'+items.map(item=>{
       const variants=groups.get(item.key);
       const availableProduct=variants&&MUTATIONS.map(([key])=>variants.get(key)).find(product=>quantityLimit(product)>0);
-      return productCard(item,availableProduct||variants?.get("normal")||variants?.values().next().value,variants?.size>1);
+      return productCard(item,availableProduct||variants?.get("normal")||variants?.values().next().value);
     }).join("")+'</div><p class="sab-info">اختر الشخصية لعرض الألوان والوزن والكمية المتوفرة.</p>';
     target.querySelectorAll("[data-steal-buy]").forEach(button=>{
       button.addEventListener("click",()=>{

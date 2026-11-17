@@ -249,7 +249,7 @@ var styleId='robloxGamePageStyles';
           (available?' data-mm2-id="'+escapeHtml(x.id)+'"':' disabled aria-disabled="true"')+'>'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
           '<span class="mm2-price">'+(priced?Number(x.price).toFixed(2)+' د.ل':'السعر قريبًا')+'</span>'+
-          '<small class="mm2-delivery">'+(!priced?'بانتظار تحديد السعر':available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">فتح القائمة ←</span>':'')+'</button>';
+          '<small class="mm2-delivery">'+(!priced?'بانتظار تحديد السعر':available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">شراء الآن</span>':'')+'</button>';
       }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;

@@ -104,7 +104,7 @@
         if (!product.available) art.append(el('span','psn-sold-out','غير متوفر'));
         const detail=el('span','psn-product-detail');
         detail.append(el('strong','',product.name),el('span','psn-price',money(product.price)));
-        detail.append(el('span','psn-buy',product.available?'شراء':'غير متوفر'));
+        detail.append(el('span','psn-buy',product.available?'شراء الآن':'غير متوفر'));
         b.append(art,detail);
         if (product.available) b.onclick = () => {
           if (typeof window.openOmnexProductCheckout !== 'function') return;

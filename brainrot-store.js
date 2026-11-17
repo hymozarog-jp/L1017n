@@ -117,7 +117,8 @@ function getClient(){
     const items=[...ITEMS,...extra];
     target.innerHTML='<div class="sab-products-grid">'+items.map(item=>{
       const variants=groups.get(item.key);
-      return productCard(item,variants?.get("normal")||variants?.values().next().value,variants?.size>1);
+      const availableProduct=variants&&MUTATIONS.map(([key])=>variants.get(key)).find(product=>quantityLimit(product)>0);
+      return productCard(item,availableProduct||variants?.get("normal")||variants?.values().next().value,variants?.size>1);
     }).join("")+'</div><p class="sab-info">اختر الشخصية لعرض الألوان والوزن والكمية المتوفرة.</p>';
     target.querySelectorAll("[data-steal-buy]").forEach(button=>{
       button.addEventListener("click",()=>{
@@ -196,7 +197,7 @@ function getClient(){
       box.querySelector("[data-sab-weight]").textContent=income?"الوزن الأساسي: "+(income*multiplier)+"M/s":"مضاعف الدخل: ×"+multiplier;
       box.querySelector("[data-sab-stock]").textContent=!max?"غير متوفر":product.stock_quantity==null?"متوفر":"المتوفر: "+max;
       box.querySelector("[data-sab-quantity]").textContent=max?quantity:0;
-      box.querySelector(".sab-dialog-price").textContent=max?"الإجمالي: "+(Number(product.price)*quantity).toFixed(2)+" د.ل":"غير متوفر للشراء";
+      box.querySelector(".sab-dialog-price").textContent=max?"الإجمالي: "+(Number(product.price)*quantity).toFixed(2)+" د.ل":product?priceText(product)+" · غير متوفر للشراء":"غير متوفر للشراء";
       stepButtons[0].disabled=checkoutBusy||!max||quantity<=1;
       stepButtons[1].disabled=checkoutBusy||quantity>=max;
       send.disabled=checkoutBusy||!max;

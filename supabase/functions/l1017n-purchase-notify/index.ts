@@ -71,6 +71,16 @@ Deno.serve(async(req:Request)=>{
  const isInstantCode=username==="DIGITAL_CODE"&&!isSupplier;
  const isPubg=/pubg|ببجي|بوبجي/i.test(product);
  const completed=order.status==="completed";
+ const keyboard=[];
+ if(!isPubg&&username!=="DIGITAL_CODE"&&/^[A-Za-z0-9_]{3,20}$/.test(username)){
+   keyboard.push([{text:"📋 نسخ يوزر روبلوكس",copy_text:{text:username}}]);
+ }
+ if(!isSupplier&&!isInstantCode&&!completed){
+   keyboard.push(
+     [{text:"1️⃣ 🔵 تم القبول",callback_data:"po:accept:"+id}],
+     [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+id}]
+   );
+ }
  // Customer metadata is displayed only in the authenticated owner's private bot.
  let customer="حساب مسجّل";
  try{
@@ -107,15 +117,7 @@ Deno.serve(async(req:Request)=>{
        chat_id:Number(chat),
        text:msg,
        disable_web_page_preview:true,
-       // Only the NEXT actionable stage is shown. After it is confirmed,
-       // the private Telegram admin bot edits this same message with the next.
-       // Failed/undeliverable purchases retain a separate refund action.
-       ...(isSupplier||isInstantCode||completed ? {} : {
-         reply_markup:{inline_keyboard:[
-           [{text:"1️⃣ 🔵 تم القبول",callback_data:"po:accept:"+id}],
-           [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+id}]
-         ]}
-       })
+       ...(keyboard.length?{reply_markup:{inline_keyboard:keyboard}}:{})
      })
    });
    const data=await response.json().catch(()=>({ok:false}));

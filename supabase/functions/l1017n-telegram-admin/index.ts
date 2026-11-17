@@ -157,7 +157,7 @@ Deno.serve(async (request: Request) => {
       const orderId=manualChoice[2];
       const action=manualChoice[1].toLowerCase();
       let {data:order,error:readError}=await db.from("purchase_orders")
-        .select("id,roblox_username,status").eq("id",orderId).maybeSingle();
+        .select("id,roblox_username,status,product_name").eq("id",orderId).maybeSingle();
       if(readError||!order||order.roblox_username==="DIGITAL_CODE"){
         await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"الطلب غير موجود أو تم تسليم كوده آليًا",show_alert:true});
         return json({ok:true});
@@ -180,7 +180,7 @@ Deno.serve(async (request: Request) => {
         }
         changed=decision?.changed===true;
         refunded=decision?.wallet_refunded===true;
-        const latest=await db.from("purchase_orders").select("id,roblox_username,status")
+        const latest=await db.from("purchase_orders").select("id,roblox_username,status,product_name")
           .eq("id",orderId).maybeSingle();
         if(latest.error||!latest.data){
           await notify("answerCallbackQuery",{callback_query_id:cb.id,text:"تم إرسال القرار، لكن تعذّر إعادة قراءة الحالة",show_alert:true});
@@ -207,10 +207,17 @@ Deno.serve(async (request: Request) => {
         fulfilling:{action:"done",label:"4️⃣ ✅ تم التنفيذ"}
       };
       const next=nextStep[order.status];
-      const controls={inline_keyboard:next?[
-        [{text:next.label,callback_data:"po:"+next.action+":"+orderId}],
-        [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+orderId}]
-      ]:[]};
+      const keyboard=[];
+      const username=String(order.roblox_username||"");
+      if(!/pubg|ببجي|بوبجي/i.test(order.product_name||"")&&/^[A-Za-z0-9_]{3,20}$/.test(username)){
+        keyboard.push([{text:"📋 نسخ يوزر روبلوكس",copy_text:{text:username}}]);
+      }
+      if(next){
+        keyboard.push(
+          [{text:next.label,callback_data:"po:"+next.action+":"+orderId}],
+          [{text:"❌ رفض واسترجاع المبلغ",callback_data:"po:reject:"+orderId}]
+        );
+      }
       if(cb.message?.message_id){
         const oldText=String(cb.message.text||"🛍️ طلب شراء — L1017n\n🆔 رقم الطلب: "+orderId);
         const statusText=/📋 الحالة:[^\n]*/.test(oldText)
@@ -224,7 +231,7 @@ Deno.serve(async (request: Request) => {
         await notify("editMessageText",{
           chat_id:adminChat,message_id:cb.message.message_id,
           text:updatedText.slice(0,3900),
-          reply_markup:final?{inline_keyboard:[]}:controls
+          reply_markup:{inline_keyboard:keyboard}
         });
       }
       await notify("answerCallbackQuery",{

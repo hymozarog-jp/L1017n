@@ -7,11 +7,11 @@ html body #robuxModal.robux-fixed-packs .package-grid,
   --package-border: #30313b;
   --package-gold: #ffd748;
   --package-text: #f6f6f8;
-  --package-inset: clamp(8px, 2vw, 14px);
+  --package-inset: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: clamp(8px, 2vw, 15px) !important;
+  gap: 12px !important;
 }
-@media (max-width: 360px) {
+@media (max-width: 639px) {
   html body #robuxModal.robux-fixed-packs .package-grid,
   #psnStoreScreen .psn-products,
   #robloxGamePage .ox-catalog .ox-catalog-grid,
@@ -99,7 +99,7 @@ html body #robuxModal.robux-fixed-packs .package-grid .robux-pack-copy > strong,
 #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-name {
   min-height: 2.8em !important;
   color: var(--package-text) !important;
-  font-size: clamp(12px, 3vw, 16px) !important;
+  font-size: clamp(13px, 3vw, 16px) !important;
   font-weight: 750 !important;
   line-height: 1.4 !important;
   white-space: normal !important;

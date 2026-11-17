@@ -148,7 +148,7 @@ async function openProduct(product) {
     $('.ox-price').textContent = cash(product.price);
     const artwork = {
       pubg: 'game-covers/pubg-battlefront.webp',
-      psn: 'game-covers/psn-user-card.webp?v=supplied-original-20261114'
+      psn: 'game-covers/packages/psn.webp'
     };
     $('.ox-summary img').src = artwork[product.game] || 'game-covers/robux-100-tokens.svg';
     $('.ox-form').hidden = true;

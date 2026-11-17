@@ -4,6 +4,7 @@
 
   const PAGE_ID = "pubgCategoryPage";
   const PUBG_ART = "game-covers/pubg-battlefront.webp";
+  const PACKAGE_ART = {codes:"game-covers/packages/pubg-codes.webp",charge:"game-covers/packages/pubg-charge.webp"};
   const CATEGORIES = [
     { key: "codes", title: "أكواد الشحن", latin: "REDEEM CODES", visual: "UC", subtitle: "استلم الكود بعد الشراء" },
     { key: "charge", title: "شحن عن طريق ID", latin: "DIRECT TOP-UP", visual: "+", subtitle: "اشحن الشدات إلى UID" },
@@ -121,8 +122,8 @@
   }
   // A single real product image, as in the Roblox catalog. Keep the original
   // PUBG cover when no product-specific image has been uploaded.
-  function artForPack(amount, customUrl) {
-    const src=PUBG_ART;
+  function artForPack(kind) {
+    const src=PACKAGE_ART[kind]||PUBG_ART;
     return '<div class="pubg-pack-cover">'
       + '<img class="pubg-pack-cover-image" src="' + safe(src) + '" alt="صورة باقة شدات ببجي" loading="lazy" decoding="async">'
       + '</div>';
@@ -162,7 +163,7 @@
     return '<article class="pubg-pack pubg-pack-detailed pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index, 8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(deliveryFor(mode).kind) + '</span>'
       + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(amount, product.image_url)
+      + artForPack(mode)
       + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + (hasAmount ? '<small> UC</small>' : '') + '</div>'
       + '<h3 class="pubg-pack-name">' + name + '</h3></div>'
       + infoForPack(mode, currentStatus)
@@ -183,7 +184,7 @@
     return '<article class="pubg-pack pubg-pack-detailed pubg-pack-preview pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index,8) + '">'
       + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(delivery.kind) + '</span>'
       + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(amount, "")
+      + artForPack(key)
       + '<div class="pubg-pack-headline"><h3 class="pubg-pack-name">' + safe(title) + '</h3></div>'
       + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong dir="ltr">' + salePrice + ' <span>د.ل</span></strong></div>'
       + '<button type="button" class="pubg-buy" disabled>غير متوفر</button></div>'
@@ -204,7 +205,7 @@
     const price = Number(product.price) || 0;
     overlay.innerHTML = '<div class="pubg-account-checkout">' +
       '<button type="button" class="pubg-account-close" aria-label="إغلاق طلب الشحن">×</button>' +
-      '<img class="pubg-checkout-product-image l1017n-catalog-image" src="'+safe(PUBG_ART)+'" alt="'+safe(product.name)+'" loading="eager">' +
+      '<img class="pubg-checkout-product-image l1017n-catalog-image" src="'+safe(PACKAGE_ART.charge)+'" alt="'+safe(product.name)+'" loading="eager">' +
       '<span class="pubg-eyebrow">PUBG MOBILE / ACCOUNT TOP-UP</span>' +
       '<h2 id="pubgCheckoutTitle">شحن ' + Math.trunc(amount) + ' شدة</h2>' +
       '<p class="pubg-account-explainer">اكتب معرف اللاعب (UID) في ببجي بدقة. بعد الدفع من رصيد محفظتك يوصل الطلب للإدارة، ويتم شحن حسابك بعد تنفيذ الطلب.</p>' +
@@ -436,7 +437,7 @@
       + CATEGORIES.map(item =>
         '<button type="button" class="pubg-choice pubg-choice-' + item.key + '" data-pubg-category="' + item.key + '" aria-pressed="false">'
         + '<span class="pubg-choice-art pubg-choice-art-' + item.key + '" aria-hidden="true">'
-        + '<img class="pubg-choice-battle" src="'+safe(PUBG_ART)+'" alt="" loading="lazy" decoding="async">'
+        + '<img class="pubg-choice-battle" src="'+safe(PACKAGE_ART[item.key]||PUBG_ART)+'" alt="" loading="lazy" decoding="async">'
         + '</span>'
         + '<span class="pubg-choice-info"><strong>' + item.title + '</strong>'
         + '<small>' + (item.key==="codes"?"أكواد شدات PUBG المتوفرة في المخزون":item.key==="offers"?"باقات وعروض خاصة":"نجهز الشحن باستخدام معرف UID") + '</small>'

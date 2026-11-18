@@ -270,3 +270,46 @@ body.phone-wizard-open{overflow:hidden!important}
   outline: 2px solid #ffcad4;
   outline-offset: 2px;
 }
+
+/* Keep action feedback visible while the phone list scrolls. */
+#phoneVerifyWizard .pv-status {
+  position: fixed;
+  inset: calc(12px + env(safe-area-inset-top, 0px)) 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(calc(100% - 28px), 450px);
+  min-height: 0;
+  margin: 0 auto;
+  padding: 10px 12px;
+  border: 1px solid #62538d;
+  border-radius: 14px;
+  background: #252039;
+  color: #f3eaff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: start;
+  pointer-events: none;
+  box-shadow: 0 7px 24px #0007;
+}
+#phoneVerifyWizard .pv-status[hidden] { display: none; }
+#phoneVerifyWizard .pv-status[data-kind="success"] {
+  border-color: #40826e;
+  background: #16392f;
+  color: #d0ffe9;
+}
+#phoneVerifyWizard .pv-status[data-error="true"] {
+  border-color: #935569;
+  background: #472537;
+  color: #ffdce3;
+}
+#phoneVerifyWizard .pv-notice-icon {
+  display: grid;
+  flex: 0 0 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}

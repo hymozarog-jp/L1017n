@@ -1,10 +1,20 @@
 /* Contact phone registration for account and wallet. */
 (function(){
 "use strict";
-let panel=null,opened=0,focusBefore=null,primaryPhone="";
+let panel=null,opened=0,focusBefore=null,primaryPhone="",noticeTimer;
 const $=q=>panel?.querySelector(q);
 function normalize(v){let s=String(v||"").replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/\D/g,"");if(s.startsWith("00218"))s=s.slice(5);else if(s.startsWith("218"))s=s.slice(3);if(s.startsWith("0"))s=s.slice(1);return /^9[1-4][0-9]{7}$/.test(s)?s:""}
-function status(s,error=false){const x=$(".pv-status");if(x){x.textContent=s;x.dataset.error=String(error)}}
+function status(message,error=false,kind="info"){
+ const notice=$(".pv-status");
+ if(!notice)return;
+ clearTimeout(noticeTimer);
+ notice.dataset.error=String(error);
+ notice.dataset.kind=error?"error":kind;
+ notice.querySelector(".pv-notice-icon").textContent=error?"!":kind==="success"?"✓":"•";
+ notice.querySelector(".pv-notice-text").textContent=message;
+ notice.hidden=!message;
+ if(message&&(kind==="success"||kind==="cancel"))noticeTimer=setTimeout(()=>status(""),3500);
+}
 function client(){return typeof supabaseClient==="undefined"?null:supabaseClient}
 async function loadRegistration(seq){
  const form=$(".pv-registration");
@@ -65,7 +75,7 @@ async function registerPhone(event){
   if(error||data!==phone)throw Error("تعذر حفظ الرقم. حاول مرة ثانية.");
   await loadRegistration(seq);
   if(seq!==opened)return;
-  if(!$(".pv-status").dataset.error || $(".pv-status").dataset.error==="false")status("تم حفظ الرقم بنجاح.");
+  if(!$(".pv-status").dataset.error || $(".pv-status").dataset.error==="false")status("تمت إضافة الرقم بنجاح.",false,"success");
   window.dispatchEvent(new Event("l1017n:account-phones-updated"));
   if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
  }catch(e){if(seq===opened){input.disabled=submit.disabled=false;status(e.message,true)}}
@@ -78,12 +88,15 @@ function confirmDelete(phone,button){
  dialog.querySelector("bdi").textContent=phone;
  dialog.returnValue="";
  dialog.addEventListener("close",()=>{
-  if(seq===opened&&dialog.returnValue==="delete"&&button.isConnected)void deletePhone(phone,button);
+  if(seq!==opened||!button.isConnected)return;
+  if(dialog.returnValue==="delete")void deletePhone(phone,button);
+  else status("تم إلغاء حذف الرقم.",false,"cancel");
  },{once:true});
  dialog.showModal();
 }
 async function deletePhone(phone,button){
  const seq=opened;button.disabled=true;
+ status("جاري حذف الرقم…");
  try {
   const {data,error}=await client().rpc("delete_my_saved_contact_phone",{p_phone:phone});
   if(seq!==opened)return;
@@ -91,7 +104,7 @@ async function deletePhone(phone,button){
   if(error||data!==true)throw Error("تعذر حذف الرقم. حاول مرة ثانية.");
   await loadRegistration(seq);
   if(seq!==opened)return;
-  if($(".pv-status").dataset.error==="false")status("تم حذف الرقم.");
+  if($(".pv-status").dataset.error==="false")status("تم حذف الرقم بنجاح.",false,"success");
   window.dispatchEvent(new Event("l1017n:account-phones-updated"));
   if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
  }catch(e){if(seq===opened){button.disabled=false;status(e.message,true)}}
@@ -99,6 +112,7 @@ async function deletePhone(phone,button){
 function close(){
  if(!panel?.classList.contains("visible"))return;
  opened++;
+ status("");
  const dialog=$(".pv-delete-dialog");
  if(dialog.open)dialog.close("cancel");
  panel.hidden=true;panel.classList.remove("visible");
@@ -112,7 +126,7 @@ function create(){
  panel.setAttribute("role","dialog");
  panel.setAttribute("aria-modal","true");
  panel.setAttribute("aria-labelledby","phoneWizardHeading");
- panel.innerHTML='<div class="pv-shell"><header class="pv-header"><button type="button" class="pv-back" aria-label="رجوع"><span aria-hidden="true">→</span></button><span>حساب L1017n</span></header><div class="pv-body"><h1 class="pv-heading" id="phoneWizardHeading">أرقام الهاتف</h1><ul class="pv-saved-phones" aria-label="الأرقام المحفوظة"></ul><form class="pv-registration"><label for="pvRegisterNumber">إضافة رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form><p class="pv-status" role="status" aria-live="polite"></p></div></div>';
+ panel.innerHTML='<div class="pv-shell"><header class="pv-header"><button type="button" class="pv-back" aria-label="رجوع"><span aria-hidden="true">→</span></button><span>حساب L1017n</span></header><div class="pv-body"><h1 class="pv-heading" id="phoneWizardHeading">أرقام الهاتف</h1><ul class="pv-saved-phones" aria-label="الأرقام المحفوظة"></ul><form class="pv-registration"><label for="pvRegisterNumber">إضافة رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form><div class="pv-status" role="status" aria-live="polite" aria-atomic="true" hidden><span class="pv-notice-icon" aria-hidden="true"></span><span class="pv-notice-text"></span></div></div></div>';
  panel.insertAdjacentHTML("beforeend",`
   <dialog class="pv-delete-dialog" aria-labelledby="pvDeleteHeading" aria-describedby="pvDeleteNumber">
    <div class="pv-delete-icon" aria-hidden="true">

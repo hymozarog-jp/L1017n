@@ -47,8 +47,6 @@
       var words=document.createElement('div');
       var headingTitle=document.createElement('h2');
       headingTitle.textContent='تأكيد الطلب';
-      var description=document.createElement('p');
-      description.textContent='راجع كمية الروبوكس وتحقق من حساب Roblox قبل تأكيد الشراء.';
       words.append(headingTitle);
       heading.append(art,words);
       var summary=document.createElement('div');
@@ -58,7 +56,10 @@
       var price=document.createElement('span');
       price.textContent=tile.querySelector('small:not(.stock-label)')?.textContent||'';
       summary.append(product,price);
-      screen.append(top,heading,summary,box);
+      var sheet=document.createElement('div');
+      sheet.className='robux-purchase-sheet';
+      sheet.append(top,heading,summary,box);
+      screen.appendChild(sheet);
       box.style.display='block';
       var close=function(){
         var home=modal.querySelector('.robux-store-box');
@@ -77,7 +78,6 @@
         if(event.key==='Escape'){event.preventDefault();close();}
       });
       document.body.appendChild(screen);
-      window.scrollTo({top:0,behavior:'auto'});
       back.focus({preventScroll:true});
     }).catch(function(err){
       console.warn('[robux/menu]',err);

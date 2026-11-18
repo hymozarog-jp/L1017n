@@ -629,12 +629,18 @@ document.addEventListener('click',async function(e){
     var screen=document.createElement('div');
     screen.id='robuxPurchaseScreen';
     screen.dir='rtl';
-    screen.style.cssText='position:fixed!important;inset:0!important;z-index:2147483647!important;overflow:auto!important;display:block!important;background:#0a1428!important;color:white!important;padding:65px 18px 40px!important;box-sizing:border-box!important';
+    screen.className='robux-direct-menu';
+    screen.setAttribute('role','dialog');
+    screen.setAttribute('aria-modal','true');
+    screen.setAttribute('aria-label','إكمال طلب روبلوكس');
     var back=document.createElement('button');
     back.type='button';back.textContent='→ رجوع لاختيار الكمية';
     back.style.cssText='padding:12px 18px;border-radius:12px;background:#253c61;color:white;border:1px solid #526c94;margin-bottom:25px';
     var title=document.createElement('h2');title.textContent='إكمال طلب روبلوكس';
-    screen.append(back,title,box);
+    var sheet=document.createElement('div');
+    sheet.className='robux-purchase-sheet';
+    sheet.append(back,title,box);
+    screen.appendChild(sheet);
     box.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;max-width:600px;margin:25px auto';
     back.onclick=function(){modal.querySelector('.robux-store-box').appendChild(box);box.style.display='none';screen.remove()};
     document.body.appendChild(screen);
@@ -995,7 +1001,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="gamebox-all-package-menus.css?v=all-packs2">
 <script src="gamebox-all-package-menus.js?v=all-packs1&package-back=2"></script>
 <link rel="stylesheet" href="robux-direct-menu.css?v=compact-checkout-20261110-1&open-menu2">
-<script src="robux-direct-menu.js?v=compact-checkout-20261110-1&custom-qty-20261108-1"></script>
+<script src="robux-direct-menu.js?v=checkout-sheet-20261118&compact-checkout-20261110-1&custom-qty-20261108-1"></script>
 <script>
 (function(){
   const form=document.getElementById('topupForm');
@@ -1017,7 +1023,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <link rel="stylesheet" href="home-compact.css?v=2-hide-header-promos">
 <link rel="stylesheet" href="leaderboard-royal.css?v=rank-colors-line-20261104-1">
 <script src="notifications-page.js?v=unread-bell-20261104-1"></script>
-<script src="customer-journey.js?v=compact-checkout-20261110-1&fix-wallet-guide-reference-20261104-1" defer></script>
+<script src="customer-journey.js?v=checkout-sheet-20261118&compact-checkout-20261110-1&fix-wallet-guide-reference-20261104-1" defer></script>
 <script src="leaderboard-royal.js?v=only-compact-rank-20261104-1" defer></script>
 <link rel="stylesheet" href="homepage-game-covers.css?v=compact-original-roblox-20261112-2">
 <link rel="stylesheet" href="roblox-category-pages.css?v=roblox-3-methods-20261102-1">
@@ -1258,7 +1264,7 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 <script src="omnex-store.js?v=green-buy-20261118&psn-original-image-20261114-1&package-opening=1&package-back=1&balance-dialog=1&supplier-notice=1&live-supplier-refresh=1&matching-package-art=1" defer></script>
 <link rel="stylesheet" href="psn-store.css?v=psn-premium-three-columns-20261114-3">
 <script src="psn-store.js?v=green-buy-20261118&psn-square-cards-20261114-2&package-back=1&live-supplier-refresh=1&matching-package-art=1" defer></script>
-<link rel="stylesheet" href="package-opening.css?v=3">
+<link rel="stylesheet" href="package-opening.css?v=checkout-sheet-20261118&3">
 <link rel="stylesheet" href="insufficient-balance.css?v=2">
 <script src="insufficient-balance.js?v=2" defer></script>
 <link rel="stylesheet" href="package-art.css?v=1">

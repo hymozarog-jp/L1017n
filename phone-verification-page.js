@@ -61,6 +61,46 @@ function applyState(data){
  }else step("phone");
  progress(seconds);
 }
+async function loadRegistration(seq){
+ const form=$(".pv-registration");
+ const input=form.querySelector("input");
+ const submit=form.querySelector("button");
+ input.value="";input.disabled=submit.disabled=true;
+ status("جاري تحميل الرقم…");
+ try {
+  const c=client();if(!c)throw Error("الصفحة غير جاهزة. حاول تحديثها.");
+  const {data:{session}}=await c.auth.getSession();
+  if(seq!==opened)return;
+  if(!session)throw Error("سجّل دخولك من «حسابي» أولًا.");
+  const {data,error}=await c.from("wallet_accounts").select("libyana_phone").eq("user_id",session.user.id).maybeSingle();
+  if(seq!==opened)return;
+  if(error)throw Error("تعذر تحميل الرقم. حاول مرة ثانية.");
+  const phone=normalize(data?.libyana_phone);
+  input.value=phone?"0"+phone:"";
+  input.disabled=submit.disabled=!!phone;
+  status(phone?"رقم هاتفك محفوظ.":"");
+ }catch(e){if(seq===opened)status(e.message,true)}
+}
+async function registerPhone(event){
+ event.preventDefault();
+ const form=event.currentTarget,input=form.querySelector("input"),submit=form.querySelector("button");
+ if(submit.disabled)return;
+ const phone=normalize(input.value);
+ if(!phone){status("اكتب رقمًا ليبيًا صحيحًا يبدأ بـ09 (10 أرقام).",true);input.focus();return}
+ const seq=opened;
+ input.disabled=submit.disabled=true;
+ status("جاري حفظ الرقم…");
+ try {
+  const {data,error}=await client().rpc("save_my_libyana_phone",{p_phone:phone});
+  if(seq!==opened)return;
+  if(error?.code==="23505")throw Error("هذا الرقم مستخدم في الموقع. أدخل رقمًا ثانيًا.");
+  if(error||data!==phone)throw Error("تعذر حفظ الرقم. حاول مرة ثانية.");
+  input.value="0"+phone;
+  status("تم حفظ رقمك بنجاح.");
+  window.dispatchEvent(new Event("l1017n:account-phones-updated"));
+  if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
+ }catch(e){if(seq===opened){input.disabled=submit.disabled=false;status(e.message,true)}}
+}
 async function load(seq){
  status("جاري فحص رقم الهاتف…");
  try{
@@ -193,6 +233,7 @@ function create(){
  +'<div class="pv-body"><div class="pv-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="35" height="35" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18h3"/></svg></div>'
  +'<p class="pv-phase">الخطوة الأولى • إدخال الهاتف</p><h1 class="pv-heading" id="phoneWizardHeading">توثيق رقم الهاتف</h1>'
  +'<p class="pv-lead">ثبّت ملكية رقمك برسالة SMS لحماية حسابك وطلبات الشراء.</p>'
+ +'<form class="pv-registration" hidden><label for="pvRegisterNumber">رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form>'
  +'<div class="pv-phone"><label for="pvWizardNumber">اكتب رقم تلفونك</label><div class="pv-input-row"><span dir="ltr">+218</span><input class="pv-number" id="pvWizardNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15"/></div><p class="pv-hint">اكتب رقم ليبيانا أو المدار الذي تملكه.</p><button type="button" class="pv-save-phone" hidden>حفظ الرقم الجديد</button><button type="button" class="pv-action pv-send">إرسال رمز التحقق</button></div>'
  +'<div class="pv-code" hidden><p class="pv-sent">تم طلب إرسال رمز إلى <b class="pv-code-number" dir="ltr"></b></p><form class="pv-verify"><label for="pvWizardCode">رمز التحقق من SMS</label><input id="pvWizardCode" class="pv-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required dir="ltr"/><button class="pv-action pv-check" type="submit">تأكيد الرمز</button></form><p class="pv-code-tip">الرمز صالح 5 دقائق. لا تشاركه مع أي شخص.</p><button type="button" class="pv-resend" disabled>إعادة إرسال الرمز بعد 04:00</button><button type="button" class="pv-change-from-code">تغيير رقم الهاتف</button></div>'
  +'<div class="pv-done" hidden><span class="pv-done-icon" aria-hidden="true"><svg class="l1017-icon"><use href="#l1017-icon-check-circle"></use></svg></span><h3>تم توثيق رقمك</h3><p>الرقم <b class="pv-verified-number" dir="ltr"></b> موثّق بنجاح.</p><button type="button" class="pv-action pv-finish">العودة إلى حسابي</button><button type="button" class="pv-done-change">أرقام التحويل (حتى 3)</button></div>'
@@ -203,6 +244,7 @@ function create(){
  document.body.appendChild(panel);
  $(".pv-back").addEventListener("click",close);
  $(".pv-finish").addEventListener("click",close);
+ $(".pv-registration").addEventListener("submit",registerPhone);
  $(".pv-send").addEventListener("click",send);
  $(".pv-clear-phone").addEventListener("click",clearSavedNumber);
  $(".pv-save-phone").addEventListener("click",saveChangedNumber);
@@ -220,13 +262,23 @@ function create(){
  $(".pv-verify").addEventListener("submit",verify);
  panel.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
 }
-function open(){
+function open(registration=false){
  focusBefore=document.activeElement;create();stop();until=0;saved="";locked=false;busy=false;
  const seq=++opened;panel.hidden=false;panel.classList.add("visible");document.body.classList.add("phone-wizard-open");
  step("phone");toggleClear(false);$(".pv-number").readOnly=false;$(".pv-number").value="";$(".pv-code-input").value="";
- progress(0);status("جاري فحص حالة الرقم…");$(".pv-back").focus({preventScroll:true});
- void load(seq);
+ $(".pv-registration").hidden=!registration;
+ for(const el of [$(".pv-phase"),$(".pv-lead"),$(".pv-security")])el.hidden=registration;
+ $(".pv-header > span").textContent=registration?"حساب L1017n":"توثيق حساب L1017n";
+ $(".pv-back").focus({preventScroll:true});
+ if(registration){
+  $(".pv-heading").textContent="رقم الهاتف";
+  $(".pv-phone").hidden=$(".pv-wait").hidden=true;
+  void loadRegistration(seq);
+  return;
+ }
+ progress(0);status("جاري فحص حالة الرقم…");void load(seq);
 }
-window.openPhoneVerificationPage=open;
+window.openPhoneVerificationPage=()=>open();
+window.openPhoneRegistrationPage=()=>open(true);
 window.closePhoneVerificationPage=close;
 })();

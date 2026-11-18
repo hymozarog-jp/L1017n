@@ -88,7 +88,7 @@ function decorate(page,user,name){
   wrap(emailLabel,'mail',false);
   const phone=document.createElement('button');phone.type='button';phone.className='premium-info-row premium-info-button premium-info-phone';
   phone.innerHTML='<span class="premium-row-icon premium-icon-phone">'+svg('phone')+'</span><span class="premium-row-copy"><small>رقم الهاتف</small><b class="premium-phone-value" data-state="loading">جاري التحقق…</b></span><span class="premium-row-side">‹</span>';
-  phone.addEventListener('click',()=>openVerification(page));fields.append(phone);
+  phone.addEventListener('click',()=>{if(typeof window.openPhoneRegistrationPage==='function')window.openPhoneRegistrationPage();else openVerification(page);});fields.append(phone);
   const active=document.createElement('div');active.innerHTML=row('shield','حالة الحساب','مسجل الدخول','premium-active-value');
   fields.append(active.firstElementChild);
   const secure=document.createElement('div');secure.innerHTML=row('lock','حماية الحساب','جاري الفحص…','premium-security-value');

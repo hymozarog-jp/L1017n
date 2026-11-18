@@ -85,7 +85,7 @@
   function robloxCodesCard(){
     return '<article class="ll-game-section ll-game-roblox ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="roblox-codes" aria-label="فتح أكواد روبلوكس">'
-      +'<span class="ll-game-section-art"><img src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" loading="lazy" decoding="async"></span>'
+      +'<span class="ll-game-section-art"><img src="game-covers/packages/roblox-code-card-20261118.webp" alt="" loading="lazy" decoding="async"></span>'
       +'<span class="ll-game-section-details"><strong>أكواد روبلوكس</strong></span>'
       +'</button></article>';
   }

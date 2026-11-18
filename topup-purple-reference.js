@@ -20,7 +20,7 @@
   panel.innerHTML=
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
       '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
-      '<div class="dt-purple-field dt-sender-field"><label for="dtSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" dir="ltr" aria-describedby="dtPhoneStatus dtSenderCount" disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtAddSender" type="button" aria-label="إضافة رقم تحويل موثّق">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
+      '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span><span aria-hidden="true">⌄</span></button><button id="dtAddSender" type="button">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.</p>'+
@@ -43,6 +43,46 @@
     if(child!==panel){child.hidden=true;child.style.setProperty('display','none','important');}
   }
   const sender=panel.querySelector('#dtSender');
+  const pickSender=panel.querySelector('#dtPickSender');
+  const picker=document.createElement('dialog');
+  picker.className='dt-number-dialog';
+  picker.setAttribute('aria-labelledby','dtNumberTitle');
+  picker.dir='rtl';
+  picker.innerHTML='<h2 id="dtNumberTitle">اختر الرقم المحوّل منه</h2><div class="dt-number-options"></div><div class="dt-number-actions"><button type="button" data-number-close autofocus>إغلاق</button><button type="button" data-number-manage>إدارة الأرقام</button></div>';
+  panel.appendChild(picker);
+  function refreshSenderButton(){
+    const value=sender.selectedOptions[0]?.textContent||'اختر رقم ليبيانا';
+    const label=pickSender.firstElementChild;
+    if(label.textContent!==value)label.textContent=value;
+    pickSender.disabled=sender.disabled;
+  }
+  pickSender.addEventListener('click',()=>{
+    if(picker.open||sender.disabled)return;
+    const choices=document.createDocumentFragment();
+    for(const option of sender.options){
+      if(!option.value||option.disabled)continue;
+      const choice=document.createElement('button');
+      choice.type='button';choice.dir='ltr';
+      choice.textContent=option.textContent;
+      choice.setAttribute('aria-pressed',String(option.value===sender.value));
+      choice.addEventListener('click',()=>{
+        if(!Array.from(sender.options).some(current=>!current.disabled&&current.value===option.value)){picker.close();return;}
+        if(sender.value!==option.value){
+          sender.value=option.value;
+          sender.dispatchEvent(new Event('change'));
+        }
+        picker.close();
+      });
+      choices.appendChild(choice);
+    }
+    picker.querySelector('.dt-number-options').replaceChildren(choices);
+    picker.showModal();
+  });
+  picker.querySelector('[data-number-close]').addEventListener('click',()=>picker.close());
+  picker.querySelector('[data-number-manage]').addEventListener('click',()=>{
+    picker.close();
+    panel.querySelector('#dtAddSender').click();
+  });
   const receiverInput=panel.querySelector('#dtReceiver');
   const enteredAmount=panel.querySelector('#dtAmount');
   const msg=panel.querySelector('#dtPhoneStatus');
@@ -117,6 +157,7 @@
     }
   }
   sender.addEventListener('change',()=>{
+    refreshSenderButton();
     prepared=null;fallback.hidden=true;
     resetApprovedPresentation();
     if(shopNumber()&&normalize(sender.value)===shopNumber())message('هذا رقم المتجر؛ أدخل رقم ليبيانا الذي ستحوّل منه.','error');
@@ -139,6 +180,7 @@
     const shop=normalize(receiver);
     if(shop&&normalize(sender.value)===shop){
       sender.value='';
+      refreshSenderButton();
       message('رقم المتجر للاستقبال فقط. اكتب رقمك الذي ستحوّل منه.','error');
     }
     // An active verification marker belongs to the in-progress USSD request.
@@ -149,7 +191,7 @@
     const transfer=window.L1017nDirectTransfer;
     if(!transfer||!shopNumber()){message('خدمة التحويل لم تجهز بعد. تحقق من الإنترنت وحاول مرة ثانية.','error');return;}
     const from=senderNumber();
-    if(!from){message('اختر رقم ليبيانا محفوظًا أو أضف رقمك أولًا.','error');sender.focus();return;}
+    if(!from){message('اختر رقم ليبيانا محفوظًا أو أضف رقمك أولًا.','error');(pickSender.disabled?addSender:pickSender).focus();return;}
     const raw=enteredAmount.value.trim().replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
     const value=Number(raw);
     if(!/^\d+$/.test(raw)||!Number.isSafeInteger(value)||value<1||value>10000){
@@ -213,6 +255,8 @@
   function resetSenderOptions(label){
     const option=document.createElement('option');option.value='';option.textContent=label;
     sender.replaceChildren(option);sender.disabled=true;
+    if(picker.open)picker.close();
+    refreshSenderButton();
   }
   async function loadSenderPhones(){
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
@@ -257,7 +301,10 @@
         const first=keep||Array.from(sender.options).find(o=>!o.disabled);
         sender.value=first.value;
       }
-      addSender.hidden=phones.length>=3;
+      addSender.hidden=false;
+      const action=phones.length>=3?'إدارة الأرقام':'+ إضافة رقم';
+      if(addSender.textContent!==action)addSender.textContent=action;
+      refreshSenderButton();
       senderCount.textContent='الأرقام المحفوظة: '+phones.length+' من 3'+(!available?' · أضف رقم ليبيانا للشحن':'');
       if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}
     }catch(_){

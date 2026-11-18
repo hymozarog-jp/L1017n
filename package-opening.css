@@ -126,23 +126,31 @@ html body #storePurchaseBox .digital-game-preview > #closeGamePreview {
   margin: 0 0 14px auto !important;
 }
 
-/* Checkout panels scroll independently while the catalog stays visible above. */
+/* Full-screen checkout with a readable form width on larger displays. */
 html body #robuxPurchaseScreen.robux-direct-menu,
 html body #rgpMm2Checkout.gb-package-dialog,
 html body #sabCheckout.gb-package-dialog,
 html body #pubgAccountCheckoutOverlay.gb-package-dialog,
-html body #gbCodePurchaseConfirm {
+html body #gbCodePurchaseConfirm,
+html body #omnexCheckout[open] {
   position: fixed !important;
   inset: 0 !important;
-  display: flex !important;
+  display: block !important;
   box-sizing: border-box !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-  padding: var(--checkout-top-gap, 0px) 0 var(--checkout-bottom-gap, 0px) !important;
-  background: #070912a8 !important;
-  animation: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scroll-padding-block: 16px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #151829 !important;
+  box-shadow: none !important;
   color: #f9f7ff;
 }
 
@@ -150,32 +158,25 @@ html body #robuxPurchaseScreen.robux-direct-menu > .robux-purchase-sheet,
 html body #rgpMm2Checkout.gb-package-dialog .mm2-checkout-box,
 html body #sabCheckout.gb-package-dialog .sab-dialog,
 html body #pubgAccountCheckoutOverlay.gb-package-dialog .pubg-account-checkout,
-html body #gbCodePurchaseConfirm .gb-code-shell,
-html body #omnexCheckout[open] {
+html body #gbCodePurchaseConfirm .gb-code-shell {
   box-sizing: border-box !important;
-  width: min(calc(100% - 24px), 620px) !important;
+  width: min(100%, 620px) !important;
   max-width: 100% !important;
   min-height: 0 !important;
-  max-height: 56vh !important;
-  max-height: 56dvh !important;
-  max-height: var(--checkout-visible-half, 56dvh) !important;
-  overflow: auto !important;
-  overscroll-behavior: contain;
-  margin: 0 !important;
-  padding: 14px 16px 16px !important;
-  border: 1px solid #5b5670 !important;
-  border-radius: 24px !important;
-  background: #151829 !important;
-  color: #f9f7ff !important;
-  box-shadow: 0 14px 40px #0006 !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   animation: checkout-sheet-in 220ms ease-out both !important;
 }
 
-html body #omnexCheckout[open] {
-  position: fixed !important;
-  inset: var(--checkout-top-gap, 0px) 0 var(--checkout-bottom-gap, 0px) !important;
-  height: fit-content !important;
-  margin: auto !important;
+html body #omnexCheckout[open] > * {
+  max-width: 620px;
+  margin-inline: auto;
 }
 
 html body :is(.gb-package-dialog, #gbCodePurchaseConfirm) .gb-package-top,

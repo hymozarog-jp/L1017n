@@ -22,7 +22,7 @@ async function loadRegistration(seq){
   if(seq!==opened)return;
   if(error)throw Error("تعذر تحميل الرقم. حاول مرة ثانية.");
   primaryPhone=normalize(data?.libyana_phone);
-  $(".pv-heading").textContent=primaryPhone?"إضافة رقم آخر":"إضافة رقم الهاتف";
+  $(".pv-registration label").textContent=primaryPhone?"إضافة رقم آخر":"إضافة رقم الهاتف";
   const saved=await c.rpc("get_my_saved_sender_phones");
   if(seq!==opened)return;
   if(saved.error)throw Error("تعذر تحميل الأرقام المحفوظة.");
@@ -34,7 +34,13 @@ async function loadRegistration(seq){
    const remove=document.createElement("button");remove.type="button";
    remove.textContent="حذف";remove.setAttribute("aria-label","حذف الرقم "+item.phone);
    remove.addEventListener("click",()=>deletePhone(item.phone,remove));
-   row.append((item.primary?"الرقم الأساسي":"رقم محفوظ")+" · ",number," ",remove);
+   const details=document.createElement("div");details.className="pv-number-details";
+   const label=document.createElement("span");label.className="pv-number-label";
+   label.textContent=item.primary?"الرقم الأساسي":"رقم إضافي";
+   if(item.primary)row.classList.add("pv-primary-number");
+   remove.className="pv-remove";
+   details.append(label,number);
+   row.append(details,remove);
    list.appendChild(row);
   }
   const full=!!primaryPhone&&phones.length>=3;
@@ -94,7 +100,7 @@ function create(){
  panel.setAttribute("role","dialog");
  panel.setAttribute("aria-modal","true");
  panel.setAttribute("aria-labelledby","phoneWizardHeading");
- panel.innerHTML='<div class="pv-shell"><header class="pv-header"><button type="button" class="pv-back" aria-label="رجوع">‹</button><span>حساب L1017n</span></header><div class="pv-body"><h1 class="pv-heading" id="phoneWizardHeading">إضافة رقم الهاتف</h1><ul class="pv-saved-phones" aria-label="الأرقام المحفوظة"></ul><form class="pv-registration"><label for="pvRegisterNumber">رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form><p class="pv-status" role="status" aria-live="polite"></p></div></div>';
+ panel.innerHTML='<div class="pv-shell"><header class="pv-header"><button type="button" class="pv-back" aria-label="رجوع"><span aria-hidden="true">→</span></button><span>حساب L1017n</span></header><div class="pv-body"><h1 class="pv-heading" id="phoneWizardHeading">أرقام الهاتف</h1><ul class="pv-saved-phones" aria-label="الأرقام المحفوظة"></ul><form class="pv-registration"><label for="pvRegisterNumber">إضافة رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form><p class="pv-status" role="status" aria-live="polite"></p></div></div>';
  document.body.appendChild(panel);
  $(".pv-registration").addEventListener("submit",registerPhone);
  $(".pv-back").addEventListener("click",close);

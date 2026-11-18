@@ -144,3 +144,72 @@ body.phone-wizard-open{overflow:hidden!important}
 #phoneVerifyWizard .pv-save-phone:focus-visible,
 #phoneVerifyWizard .pv-change-from-code:focus-visible,
 #phoneVerifyWizard .pv-done-change:focus-visible{outline:3px solid #e4dcff;outline-offset:3px}
+
+/* Saved phone cards and the add-number form. */
+#phoneVerifyWizard .pv-header { margin-block-end: 24px; }
+#phoneVerifyWizard .pv-back { font-size: 22px; }
+#phoneVerifyWizard .pv-body { text-align: start; }
+#phoneVerifyWizard .pv-heading { margin: 0 0 18px; }
+#phoneVerifyWizard .pv-saved-phones {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+}
+#phoneVerifyWizard .pv-saved-phones:empty,
+#phoneVerifyWizard .pv-status:empty { display: none; }
+#phoneVerifyWizard .pv-saved-phones li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 74px;
+  border: 1px solid #374363;
+  border-radius: 16px;
+  background: #121c31;
+}
+#phoneVerifyWizard .pv-saved-phones .pv-primary-number {
+  border-color: #8062c4;
+  background: linear-gradient(135deg, #272046, #141f36);
+}
+#phoneVerifyWizard .pv-number-details {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  min-width: 0;
+}
+#phoneVerifyWizard .pv-number-label { color: #c3cce5; font-size: 12px; font-weight: 700; }
+#phoneVerifyWizard .pv-primary-number .pv-number-label { color: #dfd0ff; }
+#phoneVerifyWizard .pv-number-details bdi {
+  font: 700 17px/1.25 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+#phoneVerifyWizard .pv-remove {
+  flex: none;
+  min-width: 56px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border: 1px solid #82516a;
+  border-radius: 11px;
+  color: #ffd5e0;
+  background: #352337;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+#phoneVerifyWizard .pv-remove:disabled { opacity: .55; }
+#phoneVerifyWizard .pv-remove:focus-visible {
+  outline: 2px solid #ffd5e0;
+  outline-offset: 2px;
+}
+#phoneVerifyWizard .pv-registration {
+  padding: 16px;
+  border: 1px solid #3e4c70;
+  border-radius: 18px;
+  background: #121c31;
+}
+#phoneVerifyWizard .pv-registration .pv-input-row { min-height: 54px; }
+#phoneVerifyWizard .pv-registration input { min-height: 52px; font-size: 18px; }
+#phoneVerifyWizard .pv-registration .pv-action { margin-top: 14px; }

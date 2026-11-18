@@ -22,23 +22,24 @@ async function loadRegistration(seq){
   if(seq!==opened)return;
   if(error)throw Error("تعذر تحميل الرقم. حاول مرة ثانية.");
   primaryPhone=normalize(data?.libyana_phone);
-  if(!primaryPhone){
-   $(".pv-heading").textContent="إضافة رقم الهاتف";
-   input.disabled=submit.disabled=false;status("");return;
-  }
-  $(".pv-heading").textContent="إضافة رقم آخر";
-  const extra=await c.from("account_contact_phones").select("phone").eq("user_id",session.user.id).order("created_at");
+  $(".pv-heading").textContent=primaryPhone?"إضافة رقم آخر":"إضافة رقم الهاتف";
+  const saved=await c.rpc("get_my_saved_sender_phones");
   if(seq!==opened)return;
-  if(extra.error)throw Error("تعذر تحميل الأرقام المحفوظة.");
+  if(saved.error)throw Error("تعذر تحميل الأرقام المحفوظة.");
   const list=$(".pv-saved-phones");
-  for(const [phone,label] of [[primaryPhone,"الرقم الأساسي"],...(extra.data||[]).map(row=>[row.phone,"رقم تواصل"])]){
+  const phones=Array.isArray(saved.data)?saved.data:[];
+  for(const item of phones){
    const row=document.createElement("li");
-   const number=document.createElement("bdi");number.dir="ltr";number.textContent="0"+phone;
-   row.append(label+" · ",number);list.appendChild(row);
+   const number=document.createElement("bdi");number.dir="ltr";number.textContent=item.phone;
+   const remove=document.createElement("button");remove.type="button";
+   remove.textContent="حذف";remove.setAttribute("aria-label","حذف الرقم "+item.phone);
+   remove.addEventListener("click",()=>deletePhone(item.phone,remove));
+   row.append((item.primary?"الرقم الأساسي":"رقم محفوظ")+" · ",number," ",remove);
+   list.appendChild(row);
   }
-  const full=(extra.data||[]).length>=2;
+  const full=!!primaryPhone&&phones.length>=3;
   input.disabled=submit.disabled=full;
-  status(full?"حفظت الحد الأقصى من الأرقام لهذا الحساب.":"الرقم الإضافي يُحفظ للتواصل.");
+  status(full?"حفظت الحد الأقصى من الأرقام لهذا الحساب.":"");
  }catch(e){if(seq===opened)status(e.message,true)}
 }
 async function registerPhone(event){
@@ -64,6 +65,21 @@ async function registerPhone(event){
  }catch(e){if(seq===opened){input.disabled=submit.disabled=false;status(e.message,true)}}
 }
 
+async function deletePhone(phone,button){
+ if(!window.confirm("تحب تحذف الرقم من حسابك؟"))return;
+ const seq=opened;button.disabled=true;
+ try {
+  const {data,error}=await client().rpc("delete_my_saved_contact_phone",{p_phone:phone});
+  if(seq!==opened)return;
+  if(error?.message?.includes("contact_phone_pending_topup"))throw Error("فيه طلب شحن قيد المتابعة من هذا الرقم. حاول بعد انتهاء الطلب.");
+  if(error||data!==true)throw Error("تعذر حذف الرقم. حاول مرة ثانية.");
+  await loadRegistration(seq);
+  if(seq!==opened)return;
+  if($(".pv-status").dataset.error==="false")status("تم حذف الرقم.");
+  window.dispatchEvent(new Event("l1017n:account-phones-updated"));
+  if(typeof renderAccount==="function")void Promise.resolve(renderAccount()).catch(()=>{});
+ }catch(e){if(seq===opened){button.disabled=false;status(e.message,true)}}
+}
 function close(){
  if(!panel?.classList.contains("visible"))return;
  opened++;

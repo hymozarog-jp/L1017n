@@ -83,7 +83,7 @@
   function resetSelection(){chosen=false;currentRequest=null;currentAmount=null;stopWatcher();clearDialHandoff();closeVerifier();}
   function errorText(error){
     const t=String(error?.message||'');
-    if(/verified_libyana_phone_required/.test(t))return 'لو ما وثّقت رقمك، اكتب رقم المحوّل في الخطوة الثانية للشحن بالمراجعة اليدوية.';
+    if(/verified_libyana_phone_required/.test(t))return 'أضف رقم ليبيانا من حسابك ثم اختره للشحن.';
     if(/manual_topup_daily_limit/.test(t))return 'وصلت الحد اليومي لطلبات الشحن اليدوية. حاول غدوة أو تواصل مع الإدارة.';
     if(/invalid_sender_phone/.test(t))return 'رقم المحوّل غير صحيح. يجب أن يبدأ بـ 092 أو 094.';
     if(/sender_phone_reserved/.test(t))return 'هذا الرقم يحتاج مراجعة الإدارة قبل استخدامه في الشحن.';
@@ -399,38 +399,29 @@
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db){show('warning','تعذر الاتصال بالمتجر','حدّث الصفحة وحاول مرة ثانية.');return}
     try{
-      const [auth,verified,readiness]=await Promise.all([
+      const [auth,phones,readiness]=await Promise.all([
         db.auth.getUser(),
-        db.functions.invoke('l1017n-resala-otp',{body:{action:'status'}}),
+        db.rpc('get_my_saved_sender_phones'),
         db.rpc('is_libyana_topup_intake_enabled')
       ]);
       if(run!==generation)return;
       if(auth.error||!auth.data?.user){
         show('warning','لازم تسجّل الدخول أولًا','ارجع لحسابك وسجّل الدخول قبل شحن المحفظة.');return;
       }
-      // OTP is optional for manually reviewed top-ups. Never interpret a failed
-      // OTP-status lookup as a verified phone or as proof of payment.
-      const maybePhone=verified.error||verified.data?.verified!==true
-        ?'':String(verified.data?.phone||'');
-      const phone=/^09[24][0-9]{7}$/.test(maybePhone)?maybePhone:'';
+      if(phones.error)throw phones.error;
+      const phone=(phones.data||[]).find(item=>/^09[24][0-9]{7}$/.test(item.phone))?.phone||'';
       if(readiness.error)throw readiness.error;
       if(readiness.data!==true){
         show('warning','خدمة استقبال طلبات الشحن غير متاحة حاليًا','ما تحوّلش رصيد قبل ما ترجع خدمة المطابقة والمراجعة تشتغل.');
         return;
       }
-      // The account must be signed in. An OTP-verified sender uses the original
-      // path; other senders are matched against their entered number and the incoming carrier SMS.
       const senderPicker=window.L1017nTopupWizard?.getSenderPhone;
       const sender=typeof senderPicker==='function'?senderPicker():phone;
       if(!/^09[24][0-9]{7}$/.test(sender)){
-        show('warning','رقم المحوّل غير صحيح','اكتب رقم ليبيانا يبدأ بـ 092 أو 094 في خطوة رقم الهاتف.');
+        show('warning','رقم المحوّل غير صحيح','اختر رقم ليبيانا يبدأ بـ 092 أو 094 أو أضفه أولًا.');
         return;
       }
-      const otherSender=!phone||sender!==phone;
-      const intentCall=otherSender
-        ?db.rpc('create_ussd_topup_intent_for_sender',{p_amount:amount,p_sender_phone:sender})
-        :db.rpc('create_ussd_topup_intent',{p_amount:amount});
-      const {data:intent,error:intentError}=await intentCall;
+      const {data:intent,error:intentError}=await db.rpc('create_ussd_topup_intent_for_sender',{p_amount:amount,p_sender_phone:sender});
       if(run!==generation)return;
       if(intentError)throw intentError;
       if(!intent?.request_id)throw Error('missing_request');
@@ -541,21 +532,20 @@
     const number=document.getElementById('topupVerifiedNumber');
     const state=document.getElementById('topupPhoneState');
     if(!number||!state)return;
-    number.textContent='جاري التحقق…';state.textContent='فحص التوثيق';
+    number.textContent='جاري التحقق…';state.textContent='تحميل الرقم';
     const db=typeof supabaseClient!=='undefined'?supabaseClient:null;
     if(!db){number.textContent='غير متاح';state.textContent='تعذر الاتصال';state.className='tp-phone-state is-error';return}
     try{
-      const [user,verified]=await Promise.all([
-        db.auth.getUser(),db.functions.invoke('l1017n-resala-otp',{body:{action:'status'}})
-      ]);
+      const [user,phones]=await Promise.all([db.auth.getUser(),db.rpc('get_my_saved_sender_phones')]);
       if(user.error||!user.data?.user){number.textContent='سجّل الدخول أولًا';state.textContent='غير مسجّل';state.className='tp-phone-state is-error';return}
-      const phone=String(verified.data?.phone||'');
-      if(verified.error||!verified.data?.verified||!/^09[24][0-9]{7}$/.test(phone)){
-        number.textContent='لم يتم توثيق رقم ليبيانا';
-        state.textContent='وثّق رقمك في حسابي';state.className='tp-phone-state is-error';return;
+      if(phones.error)throw phones.error;
+      const phone=(phones.data||[]).find(item=>/^09[24][0-9]{7}$/.test(item.phone))?.phone;
+      if(!phone){
+        number.textContent='ما فيش رقم ليبيانا محفوظ';
+        state.textContent='أضف رقمك في حسابي';state.className='tp-phone-state is-error';return;
       }
       number.textContent=phone;
-      setIconText(state,'check-circle','رقم موثّق');state.className='tp-phone-state is-verified';
+      setIconText(state,'check-circle','رقم محفوظ');state.className='tp-phone-state is-verified';
     }catch(error){number.textContent='تعذر جلب الرقم';state.textContent='أعد المحاولة';state.className='tp-phone-state is-error'}
   }
   let directBusy=false;

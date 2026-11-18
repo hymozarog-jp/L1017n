@@ -30,7 +30,7 @@
     '<section class="dt-card dt-purple-guide dt-recharge-guide" aria-labelledby="dtPurpleGuideTitle">'+
       '<div class="dt-recharge-head"><span class="dt-recharge-head-icon" aria-hidden="true">'+svg('wallet')+'</span><div><h3 id="dtPurpleGuideTitle">طريقة الشحن</h3><p>اتبع الخطوات بالترتيب لشحن محفظتك بليبيانا</p></div><span class="dt-recharge-count">4 خطوات</span></div>'+
       '<ol class="dt-recharge-timeline">'+
-        '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اختر رقمك والمبلغ</strong><small>اختر رقمًا من أرقامك الموثّقة وحدّد المبلغ بالدينار.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اختر رقمك والمبلغ</strong><small>اختر رقمًا من أرقامك المحفوظة وحدّد المبلغ بالدينار.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">2</span><div class="dt-recharge-copy"><strong>اضغط «التحويل مباشرة»</strong><small>الموقع يجهّز لك تحويل الرصيد إلى رقم المتجر بالمبلغ اللي اخترته.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">3</span><div class="dt-recharge-copy"><strong>أكمل التحويل من ليبيانا</strong><small>أكّد عملية التحويل من شريحتك في شاشة ليبيانا؛ الضغط على الزر وحده ما ينقلش الرصيد.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">4</span><div class="dt-recharge-copy"><strong>انتظر التحقق التلقائي</strong><small>الموقع يطابق التحويل مع رقمك والمبلغ، ويضيف الرصيد بعد اعتماده فعليًا.</small></div></li>'+
@@ -149,7 +149,7 @@
     const transfer=window.L1017nDirectTransfer;
     if(!transfer||!shopNumber()){message('خدمة التحويل لم تجهز بعد. تحقق من الإنترنت وحاول مرة ثانية.','error');return;}
     const from=senderNumber();
-    if(!from){message('للتحويل الآلي اختر رقمًا مؤكدًا مسبقًا. تعبئة الكروت متاحة من المحفظة.','error');sender.focus();return;}
+    if(!from){message('اختر رقم ليبيانا محفوظًا أو أضف رقمك أولًا.','error');sender.focus();return;}
     const raw=enteredAmount.value.trim().replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
     const value=Number(raw);
     if(!/^\d+$/.test(raw)||!Number.isSafeInteger(value)||value<1||value>10000){
@@ -235,7 +235,7 @@
       if(auth.error||!auth.data?.user){
         resetSenderOptions('سجّل الدخول لاختيار رقمك');addSender.hidden=true;senderCount.textContent='';return;
       }
-      const {data,error}=await db.rpc('get_my_verified_account_phones');
+      const {data,error}=await db.rpc('get_my_saved_sender_phones');
       if(generation!==phoneGeneration)return;
       if(error)throw error;
       const phones=Array.isArray(data)?data.slice(0,3):[];
@@ -250,7 +250,7 @@
         if(!option.disabled)available++;
         sender.appendChild(option);
       });
-      if(!available)resetSenderOptions('لا يوجد رقم مؤكد للتحويل الآلي');
+      if(!available)resetSenderOptions('لا يوجد رقم ليبيانا محفوظ');
       else{
         sender.disabled=false;
         const keep=Array.from(sender.options).find(o=>o.value===previous&&!o.disabled);
@@ -258,7 +258,7 @@
         sender.value=first.value;
       }
       addSender.hidden=phones.length>=3;
-      senderCount.textContent='الأرقام الموثّقة: '+phones.length+' من 3'+(!available?' · تعبئة الكروت متاحة من المحفظة':'');
+      senderCount.textContent='الأرقام المحفوظة: '+phones.length+' من 3'+(!available?' · أضف رقم ليبيانا للشحن':'');
       if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}
     }catch(_){
       if(generation===phoneGeneration){resetSenderOptions('تعذر تحميل الأرقام');senderCount.textContent='أعد فتح المحفظة أو حدّث الصفحة.';addSender.hidden=false}

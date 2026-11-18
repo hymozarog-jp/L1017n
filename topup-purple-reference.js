@@ -182,7 +182,7 @@
           return;
         }
         hidePreparing();
-        message(document.getElementById('transferInstructions')?.textContent?.trim()||'تعذر تجهيز التحويل. حاول مرة ثانية.','error');
+        message(document.querySelector('#transferInstructions .auto-topup-status-detail')?.textContent?.trim()||'تعذر تجهيز التحويل. حاول مرة ثانية.','error');
         return;
       }
       prepared={key,link};

@@ -67,7 +67,7 @@
     const root=host(); if(!root)return null;
     const msg=el('div','auto-topup-status '+cls);
     msg.append(el('div','auto-topup-status-title',title));
-    if(details)msg.append(el('div','',details));
+    if(details)msg.append(el('div','auto-topup-status-detail',details));
     root.replaceChildren(msg);
     return root;
   }
@@ -442,8 +442,9 @@
       const panel=el('div','auto-topup-transfer');
       panel.append(el('div','','المبلغ: '+amount.toFixed(2)+' د.ل'));
       panel.append(el('div','','رقم المحوّل: '+sender));
+      panel.append(el('div','auto-topup-request-id','رقم الطلب: '+intent.request_id));
       panel.append(el('p','auto-topup-note','الطلب مربوط بالرقم والمبلغ أعلاه. لازم تحوّل من نفس الرقم بالضبط، سواء من التطبيق أو عبر زر الاتصال.'));
-      if(otherSender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب فقط. إذا كان رقم شخص آخر، لازم موافقته ومطابقة تحويله قبل شحن محفظتك.'));
+      if(intent.shared_sender)panel.append(el('p','auto-topup-note','نفّذ التحويل من الرقم المكتوب فقط. إذا كان رقم شخص آخر، لازم موافقته ومطابقة تحويله قبل شحن محفظتك.'));
       const dialHref='tel:'+codeFor(amount).replace('#','%23');
       const onDialCode=()=>{
         armDialHandoff(intent.request_id,amount);

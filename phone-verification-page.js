@@ -33,7 +33,7 @@ async function loadRegistration(seq){
    const number=document.createElement("bdi");number.dir="ltr";number.textContent=item.phone;
    const remove=document.createElement("button");remove.type="button";
    remove.textContent="حذف";remove.setAttribute("aria-label","حذف الرقم "+item.phone);
-   remove.addEventListener("click",()=>deletePhone(item.phone,remove));
+   remove.addEventListener("click",()=>confirmDelete(item.phone,remove));
    const details=document.createElement("div");details.className="pv-number-details";
    const label=document.createElement("span");label.className="pv-number-label";
    label.textContent=item.primary?"الرقم الأساسي":"رقم إضافي";
@@ -71,8 +71,18 @@ async function registerPhone(event){
  }catch(e){if(seq===opened){input.disabled=submit.disabled=false;status(e.message,true)}}
 }
 
+function confirmDelete(phone,button){
+ const dialog=$(".pv-delete-dialog");
+ if(dialog.open)return;
+ const seq=opened;
+ dialog.querySelector("bdi").textContent=phone;
+ dialog.returnValue="";
+ dialog.addEventListener("close",()=>{
+  if(seq===opened&&dialog.returnValue==="delete"&&button.isConnected)void deletePhone(phone,button);
+ },{once:true});
+ dialog.showModal();
+}
 async function deletePhone(phone,button){
- if(!window.confirm("تحب تحذف الرقم من حسابك؟"))return;
  const seq=opened;button.disabled=true;
  try {
   const {data,error}=await client().rpc("delete_my_saved_contact_phone",{p_phone:phone});
@@ -89,6 +99,8 @@ async function deletePhone(phone,button){
 function close(){
  if(!panel?.classList.contains("visible"))return;
  opened++;
+ const dialog=$(".pv-delete-dialog");
+ if(dialog.open)dialog.close("cancel");
  panel.hidden=true;panel.classList.remove("visible");
  document.body.classList.remove("phone-wizard-open");
  focusBefore?.focus?.({preventScroll:true});
@@ -101,10 +113,24 @@ function create(){
  panel.setAttribute("aria-modal","true");
  panel.setAttribute("aria-labelledby","phoneWizardHeading");
  panel.innerHTML='<div class="pv-shell"><header class="pv-header"><button type="button" class="pv-back" aria-label="رجوع"><span aria-hidden="true">→</span></button><span>حساب L1017n</span></header><div class="pv-body"><h1 class="pv-heading" id="phoneWizardHeading">أرقام الهاتف</h1><ul class="pv-saved-phones" aria-label="الأرقام المحفوظة"></ul><form class="pv-registration"><label for="pvRegisterNumber">إضافة رقم الهاتف</label><div class="pv-input-row"><span dir="ltr">+218</span><input id="pvRegisterNumber" type="tel" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="09xxxxxxxx" maxlength="15" required></div><button type="submit" class="pv-action">حفظ الرقم</button></form><p class="pv-status" role="status" aria-live="polite"></p></div></div>';
+ panel.insertAdjacentHTML("beforeend",`
+  <dialog class="pv-delete-dialog" aria-labelledby="pvDeleteHeading" aria-describedby="pvDeleteNumber">
+   <div class="pv-delete-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M4 7h16m-10 4v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/>
+    </svg>
+   </div>
+   <h2 id="pvDeleteHeading">هل أنت متأكد من حذف الرقم؟</h2>
+   <p id="pvDeleteNumber"><bdi dir="ltr"></bdi></p>
+   <form method="dialog" class="pv-delete-actions">
+    <button type="submit" value="cancel" autofocus>إلغاء</button>
+    <button type="submit" value="delete" class="pv-delete-confirm">حذف الرقم</button>
+   </form>
+  </dialog>`);
  document.body.appendChild(panel);
  $(".pv-registration").addEventListener("submit",registerPhone);
  $(".pv-back").addEventListener("click",close);
- panel.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+ panel.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$(".pv-delete-dialog").open)close()});
 }
 function open(){
  focusBefore=document.activeElement;create();

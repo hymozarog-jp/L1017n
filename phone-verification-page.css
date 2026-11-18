@@ -213,3 +213,60 @@ body.phone-wizard-open{overflow:hidden!important}
 #phoneVerifyWizard .pv-registration .pv-input-row { min-height: 54px; }
 #phoneVerifyWizard .pv-registration input { min-height: 52px; font-size: 18px; }
 #phoneVerifyWizard .pv-registration .pv-action { margin-top: 14px; }
+
+#phoneVerifyWizard .pv-delete-dialog {
+  box-sizing: border-box;
+  width: min(calc(100% - 32px), 380px);
+  max-height: calc(100% - 32px);
+  padding: 22px;
+  border: 1px solid #874656;
+  border-radius: 22px;
+  background: #1c1928;
+  color: #fff3f5;
+  text-align: center;
+  box-shadow: 0 16px 48px #0008;
+}
+#phoneVerifyWizard .pv-delete-dialog::backdrop { background: #060710bb; }
+#phoneVerifyWizard .pv-delete-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+  border-radius: 15px;
+  background: #4b2332;
+  color: #ffa7b7;
+}
+#phoneVerifyWizard .pv-delete-icon svg { width: 27px; height: 27px; }
+#phoneVerifyWizard .pv-delete-dialog h2 {
+  margin: 0;
+  color: #ffadb9;
+  font-size: 19px;
+  line-height: 1.55;
+}
+#phoneVerifyWizard .pv-delete-dialog p {
+  margin: 8px 0 18px;
+  color: #ead7e1;
+  font: 650 16px/1.5 system-ui, sans-serif;
+}
+#phoneVerifyWizard .pv-delete-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#phoneVerifyWizard .pv-delete-actions button {
+  min-height: 46px;
+  border: 1px solid #55495f;
+  border-radius: 12px;
+  background: #30293f;
+  color: #fff5f8;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+#phoneVerifyWizard .pv-delete-actions .pv-delete-confirm {
+  border-color: #da536c;
+  background: #af2944;
+  color: #fff;
+}
+#phoneVerifyWizard .pv-delete-actions button:focus-visible {
+  outline: 2px solid #ffcad4;
+  outline-offset: 2px;
+}

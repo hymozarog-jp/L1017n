@@ -6,6 +6,10 @@
   const legacyAmount=document.getElementById('topupAmount');
   if(!form||!legacyAmount||form.querySelector('.dt-purple-home'))return;
   const icon={
+    chevron:'<path d="m6 9 6 6 6-6"/>',
+    addPhone:'<rect x="4" y="3" width="10" height="18" rx="2"/><path d="M8 17h2m8-8v6m-3-3h6"/>',
+    numbers:'<rect x="4" y="5" width="16" height="14" rx="3"/><path d="M8 9h1m3 0h4M8 14h1m3 0h4"/>',
+    close:'<path d="m6 6 12 12M18 6 6 18"/>',
     user:'<circle cx="12" cy="7.7" r="3.3"/><path d="M5.3 20v-1.8a6.7 6.7 0 0 1 13.4 0V20"/>',
     exchange:'<path d="M4 7h16m0 0-4-4m4 4-4 4M20 17H4m0 0 4-4m-4 4 4 4"/>',
     coins:'<ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>',
@@ -20,7 +24,7 @@
   panel.innerHTML=
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
       '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
-      '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span><span aria-hidden="true">⌄</span></button><button id="dtAddSender" type="button">+ إضافة رقم</button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
+      '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span>'+svg('chevron')+'</button><button id="dtAddSender" type="button">'+svg('addPhone')+'<span>إضافة رقم</span></button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اضغط «التحويل مباشرة» لمتابعة تحويل ليبيانا، وبعد إتمامه سنتحقق من وصول الرصيد.</p>'+
@@ -48,7 +52,7 @@
   picker.className='dt-number-dialog';
   picker.setAttribute('aria-labelledby','dtNumberTitle');
   picker.dir='rtl';
-  picker.innerHTML='<h2 id="dtNumberTitle">اختر الرقم المحوّل منه</h2><div class="dt-number-options"></div><div class="dt-number-actions"><button type="button" data-number-close autofocus>إغلاق</button><button type="button" data-number-manage>إدارة الأرقام</button></div>';
+  picker.innerHTML='<h2 id="dtNumberTitle">اختر الرقم المحوّل منه</h2><div class="dt-number-options"></div><div class="dt-number-actions"><button type="button" data-number-close autofocus>'+svg('close')+'<span>إغلاق</span></button><button type="button" data-number-manage>'+svg('numbers')+'<span>إدارة الأرقام</span></button></div>';
   panel.appendChild(picker);
   function refreshSenderButton(){
     const value=sender.selectedOptions[0]?.textContent||'اختر رقم ليبيانا';
@@ -63,8 +67,12 @@
       if(!option.value||option.disabled)continue;
       const choice=document.createElement('button');
       choice.type='button';choice.dir='ltr';
-      choice.textContent=option.textContent;
-      choice.setAttribute('aria-pressed',String(option.value===sender.value));
+      const label=document.createElement('span');
+      label.textContent=option.textContent;
+      choice.appendChild(label);
+      const selected=option.value===sender.value;
+      if(selected)choice.insertAdjacentHTML('beforeend',svg('check'));
+      choice.setAttribute('aria-pressed',String(selected));
       choice.addEventListener('click',()=>{
         if(!Array.from(sender.options).some(current=>!current.disabled&&current.value===option.value)){picker.close();return;}
         if(sender.value!==option.value){
@@ -240,7 +248,7 @@
       const state=document.getElementById('dtInlineTopupStatus')?.dataset.state;
       if(state==='approved'){
         confirm.disabled=true;
-        confirm.querySelector('span').textContent='تم الشحن ✓';
+        confirm.querySelector('span').textContent='تم الشحن';
       }else{
         confirm.disabled=false;
         confirm.querySelector('span').textContent=
@@ -302,8 +310,13 @@
         sender.value=first.value;
       }
       addSender.hidden=false;
-      const action=phones.length>=3?'إدارة الأرقام':'+ إضافة رقم';
-      if(addSender.textContent!==action)addSender.textContent=action;
+      const full=phones.length>=3;
+      const label=addSender.querySelector('span');
+      const action=full?'إدارة الأرقام':'إضافة رقم';
+      if(label.textContent!==action){
+        label.textContent=action;
+        addSender.querySelector('svg').outerHTML=svg(full?'numbers':'addPhone');
+      }
       refreshSenderButton();
       senderCount.textContent='الأرقام المحفوظة: '+phones.length+' من 3'+(!available?' · أضف رقم ليبيانا للشحن':'');
       if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}

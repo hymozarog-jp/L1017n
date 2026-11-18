@@ -904,3 +904,26 @@ html,body{
 .dt-number-dialog [data-number-manage] { background: #514080; border-color: #a78ad5; }
 .dt-number-dialog button:focus-visible,
 #topupForm #dtPickSender:focus-visible { outline: 2px solid #d4b9ff; outline-offset: 2px; }
+
+#topupForm #dtAddSender,
+.dt-number-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+#topupForm #dtAddSender[hidden] { display: none !important; }
+#topupForm :is(#dtPickSender, #dtAddSender) svg,
+.dt-number-dialog button svg {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  color: #d7c5ff;
+}
+.dt-number-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: start;
+}

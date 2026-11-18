@@ -136,10 +136,11 @@ html body #gbCodePurchaseConfirm {
   inset: 0 !important;
   display: flex !important;
   box-sizing: border-box !important;
-  align-items: flex-end !important;
+  flex-direction: row !important;
+  align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
-  padding: 0 0 var(--checkout-bottom-gap, 0px) !important;
+  padding: var(--checkout-top-gap, 0px) 0 var(--checkout-bottom-gap, 0px) !important;
   background: #070912a8 !important;
   animation: none !important;
   color: #f9f7ff;
@@ -152,7 +153,7 @@ html body #pubgAccountCheckoutOverlay.gb-package-dialog .pubg-account-checkout,
 html body #gbCodePurchaseConfirm .gb-code-shell,
 html body #omnexCheckout[open] {
   box-sizing: border-box !important;
-  width: min(100%, 620px) !important;
+  width: min(calc(100% - 24px), 620px) !important;
   max-width: 100% !important;
   min-height: 0 !important;
   max-height: 56vh !important;
@@ -161,20 +162,20 @@ html body #omnexCheckout[open] {
   overflow: auto !important;
   overscroll-behavior: contain;
   margin: 0 !important;
-  padding: 14px 16px calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  padding: 14px 16px 16px !important;
   border: 1px solid #5b5670 !important;
-  border-bottom: 0 !important;
-  border-radius: 24px 24px 0 0 !important;
+  border-radius: 24px !important;
   background: #151829 !important;
   color: #f9f7ff !important;
-  box-shadow: 0 -14px 40px #0006 !important;
+  box-shadow: 0 14px 40px #0006 !important;
   animation: checkout-sheet-in 220ms ease-out both !important;
 }
 
 html body #omnexCheckout[open] {
   position: fixed !important;
-  inset: auto 0 var(--checkout-bottom-gap, 0px) !important;
-  margin-inline: auto !important;
+  inset: var(--checkout-top-gap, 0px) 0 var(--checkout-bottom-gap, 0px) !important;
+  height: fit-content !important;
+  margin: auto !important;
 }
 
 html body :is(.gb-package-dialog, #gbCodePurchaseConfirm) .gb-package-top,

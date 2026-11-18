@@ -1264,7 +1264,7 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 <script src="omnex-store.js?v=green-buy-20261118&psn-original-image-20261114-1&package-opening=1&package-back=1&balance-dialog=1&supplier-notice=1&live-supplier-refresh=1&matching-package-art=1" defer></script>
 <link rel="stylesheet" href="psn-store.css?v=psn-premium-three-columns-20261114-3">
 <script src="psn-store.js?v=green-buy-20261118&psn-square-cards-20261114-2&package-back=1&live-supplier-refresh=1&matching-package-art=1" defer></script>
-<link rel="stylesheet" href="package-opening.css?v=android-checkout-sheet-20261118&3">
+<link rel="stylesheet" href="package-opening.css?v=centered-checkout-20261118&3">
 <script>
 (() => {
   const viewport = window.visualViewport;
@@ -1273,13 +1273,17 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
   function syncCheckoutViewport() {
     if (Math.abs(viewport.scale - 1) > 0.01) {
       styles.removeProperty('--checkout-visible-half');
+      styles.removeProperty('--checkout-top-gap');
       styles.removeProperty('--checkout-bottom-gap');
       return;
     }
     const layoutHeight = document.documentElement.clientHeight;
-    const gap = Math.max(0, layoutHeight - viewport.height - viewport.offsetTop);
-    styles.setProperty('--checkout-visible-half', Math.round(viewport.height * 0.56) + 'px');
-    styles.setProperty('--checkout-bottom-gap', Math.round(gap) + 'px');
+    const topGap = Math.max(0, viewport.offsetTop);
+    const bottomGap = Math.max(0, layoutHeight - viewport.height - viewport.offsetTop);
+    const panelHeight = Math.max(0, Math.min(layoutHeight * 0.56, viewport.height - 24));
+    styles.setProperty('--checkout-visible-half', Math.round(panelHeight) + 'px');
+    styles.setProperty('--checkout-top-gap', Math.round(topGap) + 'px');
+    styles.setProperty('--checkout-bottom-gap', Math.round(bottomGap) + 'px');
   }
   viewport.addEventListener('resize', syncCheckoutViewport, {passive: true});
   viewport.addEventListener('scroll', syncCheckoutViewport, {passive: true});

@@ -67,37 +67,7 @@ Deno.serve(async(request:Request)=>{
     return reply({configured:true,phones:phones||[],current_phone:"0"+current,pending_phone:valid?"0"+s.new_phone:null,
       retry_after_seconds:secs,expires_in_seconds:exp,code_pending:!!(valid&&s.pin_hash&&exp>0)},200,origin);
   }
-  if(action==="send"){
-    const phone=canonicalPhone(body.phone);
-    if(!phone)return reply({error:"invalid_phone"},400,origin);
-    const token=crypto.randomUUID();
-    const {data:result,error:reserveError}=await client.rpc("reserve_phone_change",{p_user:auth.user.id,p_phone:phone,p_token:token});
-    if(reserveError)return reply({error:"database_unavailable"},503,origin);
-    if(result!=="reserved"){
-      let retry=0;
-      if(result==="cooldown"){
-        const {data:s}=await client.from("phone_change_requests").select("last_sent_at").eq("user_id",auth.user.id).maybeSingle();
-        retry=s?.last_sent_at?Math.max(0,Math.ceil((240000-(Date.now()-Date.parse(s.last_sent_at)))/1000)):240;
-      }
-      return reply({error:result||"send_unavailable",retry_after_seconds:retry},["cooldown","hour_limit","day_limit"].includes(result)?429:400,origin);
-    }
-    let sent:Response;
-    try{sent=await fetch("https://dev.resala.ly/api/v1/pins?service_name=L1017N&len=6",{
-      method:"POST",headers:{"authorization":"Bearer "+apiKey,"content-type":"application/json"},
-      body:JSON.stringify({phone:"218"+phone}),signal:AbortSignal.timeout(12000)
-    })}catch{return reply({error:"sms_gateway_unavailable"},502,origin)}
-    if(sent.status!==201){console.error("Change-phone SMS failed",sent.status);return reply({error:"sms_gateway_unavailable"},502,origin)}
-    let code:string;
-    try{const parsed=await sent.json();code=String(parsed.pin);if(!/^\d{6}$/.test(code))throw Error("bad_pin")}
-    catch{return reply({error:"sms_gateway_unavailable"},502,origin)}
-    const hash=await otpHash(apiKey,auth.user.id,phone,code);
-    const {data:saved,error:storeError}=await client.from("phone_change_requests")
-      .update({pin_hash:hash,expires_at:new Date(Date.now()+300000).toISOString()})
-      .eq("user_id",auth.user.id).eq("request_token",token).eq("new_phone",phone)
-      .select("user_id").maybeSingle();
-    if(storeError||!saved)return reply({error:"database_unavailable"},503,origin);
-    return reply({sent:true,pending_phone:"0"+phone,expires_in_seconds:300,retry_after_seconds:240},200,origin);
-  }
+  if(action==="send")return reply({error:"sms_disabled"},410,origin);
   const code=String(body.code||"").trim();
   if(!/^\d{6}$/.test(code))return reply({error:"invalid_format"},400,origin);
   const {data:pending,error:readError}=await client.from("phone_change_requests")

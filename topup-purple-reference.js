@@ -149,7 +149,7 @@
     const transfer=window.L1017nDirectTransfer;
     if(!transfer||!shopNumber()){message('خدمة التحويل لم تجهز بعد. تحقق من الإنترنت وحاول مرة ثانية.','error');return;}
     const from=senderNumber();
-    if(!from){message('اختر رقم ليبيانا موثّقًا أو أضف رقمًا أولًا.','error');sender.focus();return;}
+    if(!from){message('للتحويل الآلي اختر رقمًا مؤكدًا مسبقًا. تعبئة الكروت متاحة من المحفظة.','error');sender.focus();return;}
     const raw=enteredAmount.value.trim().replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
     const value=Number(raw);
     if(!/^\d+$/.test(raw)||!Number.isSafeInteger(value)||value<1||value>10000){
@@ -250,7 +250,7 @@
         if(!option.disabled)available++;
         sender.appendChild(option);
       });
-      if(!available)resetSenderOptions('لا يوجد رقم ليبيانا');
+      if(!available)resetSenderOptions('لا يوجد رقم مؤكد للتحويل الآلي');
       else{
         sender.disabled=false;
         const keep=Array.from(sender.options).find(o=>o.value===previous&&!o.disabled);
@@ -258,7 +258,7 @@
         sender.value=first.value;
       }
       addSender.hidden=phones.length>=3;
-      senderCount.textContent='الأرقام الموثّقة: '+phones.length+' من 3'+(!available?' · أضف رقم ليبيانا للشحن':'');
+      senderCount.textContent='الأرقام الموثّقة: '+phones.length+' من 3'+(!available?' · تعبئة الكروت متاحة من المحفظة':'');
       if(previous!==sender.value){prepared=null;fallback.hidden=true;resetApprovedPresentation()}
     }catch(_){
       if(generation===phoneGeneration){resetSenderOptions('تعذر تحميل الأرقام');senderCount.textContent='أعد فتح المحفظة أو حدّث الصفحة.';addSender.hidden=false}
@@ -266,7 +266,7 @@
   }
   addSender.addEventListener('click',()=>{
     prepared=null;fallback.hidden=true;
-    if(typeof window.openAccountPhonesPage==='function')window.openAccountPhonesPage();
+    if(typeof window.openPhoneRegistrationPage==='function')window.openPhoneRegistrationPage();
     else message('حدّث الصفحة لفتح إدارة أرقامك.','error');
   });
   window.addEventListener('l1017n:account-phones-updated',()=>{void loadSenderPhones()});

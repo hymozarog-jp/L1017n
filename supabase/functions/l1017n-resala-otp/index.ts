@@ -112,61 +112,7 @@ Deno.serve(async (request: Request) => {
   }
   if (!apiKey) return json({ error: "not_configured" }, 503, origin);
 
-  if (action === "send") {
-    const token = crypto.randomUUID();
-    const { data: reserved, error: reserveError } = await db.rpc("resala_otp_reserve",
-      { p_user: user.id, p_phone: phone, p_token: token });
-    if (reserveError) return json({ error: "database_unavailable" }, 503, origin);
-    if (reserved === "verified") return json({ verified: true }, 200, origin);
-    if (reserved !== "reserved") {
-      let retrySeconds = 0;
-      if (reserved === "cooldown") {
-        const { data: state } = await db.from("resala_otp_sessions")
-          .select("last_sent_at,phone").eq("user_id", user.id).maybeSingle();
-        if (state?.phone === phone && state?.last_sent_at) {
-          retrySeconds = Math.max(0, Math.ceil(
-            (240000 - (Date.now() - Date.parse(state.last_sent_at))) / 1000));
-        }
-      }
-      return json({ error: reserved || "send_unavailable", retry_after_seconds: retrySeconds },
-        ["cooldown", "hour_limit", "day_limit"].includes(reserved) ? 429 : 400, origin);
-    }
-
-    let result: Response;
-    try {
-      result = await fetch("https://dev.resala.ly/api/v1/pins?service_name=L1017N&len=6", {
-        method: "POST",
-        headers: { "authorization": "Bearer " + apiKey, "content-type": "application/json" },
-        body: JSON.stringify({ phone: "218" + phone }),
-        signal: AbortSignal.timeout(12000),
-      });
-    } catch {
-      return json({ error: "sms_gateway_unavailable" }, 502, origin);
-    }
-    if (result.status !== 201) {
-      console.error("Resala PIN request failed with status", result.status);
-      return json({ error: "sms_gateway_unavailable" }, 502, origin);
-    }
-
-    let code: string;
-    try {
-      const body = await result.json();
-      code = String(body.pin);
-      if (!/^\d{6}$/.test(code)) throw new Error("malformed PIN");
-    } catch {
-      return json({ error: "sms_gateway_unavailable" }, 502, origin);
-    }
-    const hash = await pinHmac(apiKey, user.id, phone, code);
-    const { data: saved, error: saveError } = await db.from("resala_otp_sessions")
-      .update({ pin_hash: hash, expires_at: new Date(Date.now() + 5 * 60000).toISOString() })
-      .eq("user_id", user.id).eq("request_token", token).eq("phone", phone)
-      .select("user_id").maybeSingle();
-    if (saveError || !saved) {
-      console.error("Resala OTP state persistence failed");
-      return json({ error: "database_unavailable" }, 503, origin);
-    }
-    return json({ sent: true, expires_in_seconds: 300, retry_after_seconds: 240 }, 200, origin);
-  }
+  if (action === "send") return json({ error: "sms_disabled" }, 410, origin);
 
   const code = String(payload.code ?? "").trim();
   if (!/^\d{6}$/.test(code)) return json({ error: "invalid_format" }, 400, origin);

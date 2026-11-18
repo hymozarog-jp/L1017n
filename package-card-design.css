@@ -4,7 +4,7 @@ html body #robuxModal.robux-fixed-packs .package-grid,
 #robloxGamePage .ox-catalog .ox-catalog-grid,
 #pubgCategoryPage.pubg-premium.pubg-inner-page .pubg-packages {
   --package-bg: #181920;
-  --package-border: #30313b;
+  --package-border: #414350;
   --package-gold: #ffd748;
   --package-text: #f6f6f8;
   --package-inset: 12px;
@@ -35,10 +35,10 @@ html body #robuxModal.robux-fixed-packs .package-grid .robux-package,
   padding: 0 !important;
   gap: 0 !important;
   border: 1px solid var(--package-border) !important;
-  border-radius: 16px !important;
+  border-radius: 20px !important;
   background: var(--package-bg) !important;
   text-align: start !important;
-  box-shadow: 0 6px 18px #0003 !important;
+  box-shadow: 0 8px 18px rgb(0 0 0 / 28%) !important;
   overflow: hidden !important;
   opacity: 1 !important;
 }
@@ -155,4 +155,13 @@ html body #robuxModal.robux-fixed-packs .package-grid .robux-package:disabled .r
   background: #218449 !important;
   border-color: #218449 !important;
   color: #fff !important;
+}
+
+#robloxGamePage .rgp-package:has(.mm2-item-art),
+#robloxGamePage .sab-item-card,
+#llLanding .ll-card:has(.ll-quickbuy) {
+  border-radius: 20px !important;
+  border: 1px solid #414350 !important;
+  box-shadow: 0 8px 18px rgb(0 0 0 / 28%) !important;
+  overflow: hidden;
 }

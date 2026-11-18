@@ -265,7 +265,7 @@
         if(typeof window.ensurePurchasePhone !== "function")
           throw new Error("خدمة توثيق الهاتف غير جاهزة. حدّث الصفحة وحاول مجددًا.");
         if(!await window.ensurePurchasePhone()){
-          throw new Error("لازم توثّق رقم هاتفك من «حسابي» قبل الدفع.");
+          throw new Error("أضف رقم هاتفك في حسابك قبل الدفع.");
         }
         const {data:order,error}=await supabaseClient.rpc("create_purchase_order",{
           p_product_id:product.id,p_roblox_username:uid

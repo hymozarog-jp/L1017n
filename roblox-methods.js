@@ -30,8 +30,7 @@
     if(!page)return;
     page.innerHTML=`
       <div class="rgp-method-banner">
-        <div class="rgp-method-emblem"><img src="game-covers/robux-100-tokens.svg?v=robux-art2" alt="" loading="lazy"></div>
-        <span class="rgp-method-eyebrow">ROBLOX / DIGITAL CODES</span>
+        <div class="rgp-method-emblem"><img src="game-covers/packages/roblox-code-card-20261118.webp" alt="" loading="lazy"></div>
         <h2>أكواد روبلوكس</h2>
         <p>الأكواد المدعومة تظهر هنا فقط عند إضافتها كمنتجات منفصلة في المتجر.</p>
       </div>

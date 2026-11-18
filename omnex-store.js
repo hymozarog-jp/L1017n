@@ -147,6 +147,7 @@ async function openProduct(product) {
     $('.ox-region').textContent = product.region || '';
     $('.ox-price').textContent = cash(product.price);
     const artwork = {
+      roblox: ROBLOX_CODE_ART,
       pubg: 'game-covers/pubg-battlefront.webp',
       psn: 'game-covers/packages/psn.webp'
     };
@@ -180,38 +181,28 @@ const regionLabels = new Map([
  ['أمريكي', 'روبلوكس أمريكا'],
 ]);
 
-const regionFlags = new Map([
- ['أمريكي', '🇺🇸'],
-]);
+const ROBLOX_CODE_ART = 'game-covers/packages/roblox-code-card-20261118.webp';
 
-function regionArtwork(key, label) {
- const art = make('span', 'ox-cover');
- const giftCard = make('span', 'ox-gift-card');
- const image = make('img', 'ox-gift-mark');
- image.src = 'game-covers/roblox-mark.svg';
+function regionArtwork(label) {
+ const art = make('span', 'ox-cover ox-code-cover');
+ const image = make('img', 'ox-code-art');
+ image.src = ROBLOX_CODE_ART;
  image.alt = '';
- image.width = 56;
- image.height = 56;
- const region = make('span', 'ox-gift-region');
- const flag = regionFlags.get(key);
- if (flag) {
-  const icon = make('span', '', flag);
-  icon.setAttribute('aria-hidden', 'true');
-  region.append(icon);
- }
- region.append(make('span', '', label.replace(/^روبلوكس /, '')));
- giftCard.append(image, make('span', 'ox-gift-brand', 'ROBLOX'), region);
- art.append(giftCard);
+ image.width = 768;
+ image.height = 768;
+ image.loading = 'lazy';
+ image.decoding = 'async';
+ art.append(image, make('span', 'ox-code-region', label.replace(/^روبلوكس /, '')));
  return art;
 }
 
-function productCard(product, regionLabel, regionKey) {
+function productCard(product, regionLabel) {
  const card = make('button', 'ox-product');
  card.type = 'button';
  card.disabled = !product.available;
  const availability = product.available ? 'شراء الآن' : 'الكمية نفدت';
  card.setAttribute('aria-label', [product.name, regionLabel, cash(product.price), availability].join('، '));
- const art = regionArtwork(regionKey, regionLabel);
+ const art = regionArtwork(regionLabel);
  if (!product.available) art.append(make('span', 'ox-sold-out', availability));
  const info = make('span', 'ox-product-info');
  info.append(
@@ -220,7 +211,7 @@ function productCard(product, regionLabel, regionKey) {
   make('span', 'ox-buy', availability),
  );
  card.append(art, info);
- card.onclick = () => openProduct(product);
+ card.onclick = () => openProduct({...product,game:'roblox'});
  return card;
 }
 
@@ -238,7 +229,10 @@ window.openRobloxCodesPage = async function(root) {
  window.setRobloxInnerHeader?.(root, 'باقات وأكواد Roblox', 'codes');
  root.scrollTop = 0;
  page.innerHTML = `
-  <header class="ox-catalog-head"><h2 tabindex="-1">أكواد روبلوكس</h2></header>
+  <header class="ox-catalog-head ox-code-header">
+   <img src="${ROBLOX_CODE_ART}" alt="" width="72" height="72" decoding="async">
+   <div><h2 tabindex="-1">أكواد روبلوكس</h2><p>اختار المنطقة، ثم اختار الباقة.</p></div>
+  </header>
   <p class="ox-catalog-status" role="status">جاري تحميل الأقسام…</p>
   <div class="ox-region-grid" aria-label="أقسام روبلوكس حسب المنطقة" hidden></div>
   <div class="ox-region-products" hidden>
@@ -250,6 +244,7 @@ window.openRobloxCodesPage = async function(root) {
    <button class="ox-more ox-soft" type="button" hidden>عرض المزيد</button>
   </div>`;
  const heading = page.querySelector('h2');
+ const hint = page.querySelector('.ox-code-header p');
  const status = page.querySelector('.ox-catalog-status');
  const menu = page.querySelector('.ox-region-grid');
  const products = page.querySelector('.ox-region-products');
@@ -266,7 +261,7 @@ window.openRobloxCodesPage = async function(root) {
   const matches = activeRegion.items.filter(product =>
    (!inStock.checked || product.available) && product.name.toLowerCase().includes(query)
   );
-  grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label, activeRegion.key)));
+  grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label)));
   status.textContent = matches.length ? '' : 'لا توجد باقات تطابق اختيارك.';
   more.hidden = matches.length <= limit;
  }
@@ -277,6 +272,7 @@ window.openRobloxCodesPage = async function(root) {
   regionScroll = root.scrollTop;
   back.setAttribute('aria-label', 'العودة إلى مناطق أكواد روبلوكس');
   heading.textContent = region.label;
+  hint.textContent = 'اختار الباقة المناسبة لك.';
   menu.hidden = true;
   products.hidden = false;
   search.value = '';
@@ -293,6 +289,7 @@ window.openRobloxCodesPage = async function(root) {
   activeRegion = null;
   back.setAttribute('aria-label', previousBackLabel);
   heading.textContent = 'أكواد روبلوكس';
+  hint.textContent = 'اختار المنطقة، ثم اختار الباقة.';
   products.hidden = true;
   grid.replaceChildren();
   status.textContent = '';
@@ -332,11 +329,12 @@ window.openRobloxCodesPage = async function(root) {
    button.type = 'button';
    const info = make('span', 'ox-region-info');
    info.append(make('strong', '', region.label), make('small', '', count ? 'المتوفر: ' + count : 'غير متوفر حاليًا'));
-   const arrow = make('span', 'ox-region-arrow', '←');
+   const arrow = make('span', 'ox-region-arrow');
+   arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>';
    arrow.setAttribute('aria-hidden', 'true');
    const footer = make('span', 'ox-region-footer');
    footer.append(info, arrow);
-   button.append(regionArtwork(key, region.label), footer);
+   button.append(regionArtwork(region.label), footer);
    button.onclick = () => openRegion(region, button);
    menu.append(button);
    if(activeRegion?.key===key)activeButton=button;

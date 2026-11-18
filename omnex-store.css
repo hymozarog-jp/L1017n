@@ -259,3 +259,52 @@
 .ox-supplier-orders {
   margin-top: 10px;
 }
+
+#robloxGamePage .ox-code-header {
+ display: grid;
+ grid-template-columns: 66px minmax(0, 1fr);
+ align-items: center;
+ gap: 12px;
+ padding: 12px;
+ background: linear-gradient(115deg, #211b36, #121929);
+ border: 1px solid #78639b70;
+ border-radius: 18px;
+}
+#robloxGamePage .ox-code-header img {
+ width: 66px;
+ height: 66px;
+ object-fit: cover;
+ border-radius: 12px;
+}
+#robloxGamePage .ox-code-header h2 { margin: 0; }
+#robloxGamePage .ox-code-header p { margin: 3px 0 0; }
+#robloxGamePage .ox-code-cover {
+ position: relative;
+ overflow: hidden;
+ aspect-ratio: 1;
+ background: #151126;
+}
+#robloxGamePage .ox-code-art { display: block; width: 100%; height: 100%; object-fit: cover; }
+#robloxGamePage .ox-code-region {
+ position: absolute;
+ inset-block-end: 8px;
+ inset-inline-end: 8px;
+ padding: 3px 8px;
+ border: 1px solid #c5a8f969;
+ border-radius: 8px;
+ background: #171224eb;
+ color: #efe3ff;
+ font-size: 11px;
+ font-weight: 750;
+}
+#robloxGamePage .ox-product:disabled .ox-code-art { filter: grayscale(.8) brightness(.55); }
+#robloxGamePage .ox-region-arrow {
+ display: grid;
+ place-items: center;
+ width: 30px;
+ height: 30px;
+ border: 1px solid #9b7bcb66;
+ border-radius: 9px;
+ background: #35294c;
+}
+#robloxGamePage .ox-region-arrow svg { width: 17px; height: 17px; }

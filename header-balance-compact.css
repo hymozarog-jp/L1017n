@@ -1,27 +1,58 @@
-/* Compact balance chip: reduce the numeral area and its surrounding whitespace. */
-@media(max-width:900px){
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
-  width:146px!important;max-width:146px!important;min-width:0!important;
-  grid-template-columns:24px minmax(0,1fr) 36px!important;
-  column-gap:4px!important;padding:4px 6px!important;
-  height:40px!important;min-height:40px!important;border-radius:19px!important;
- }
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden)::after{
-  font-size:12px!important;font-weight:500!important;
- }
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
-  font-size:min(var(--l1017-header-balance-font-size,18px),18px)!important;
-  font-weight:500!important;letter-spacing:0!important;line-height:1.2!important;
-  font-variant-numeric:tabular-nums lining-nums!important;
-  text-shadow:none!important;
- }
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut{
-  width:24px!important;height:24px!important;min-width:0!important;min-height:0!important;
- }
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut svg{
-  width:23px!important;height:23px!important;
- }
+/* Reference wallet pill: real carrier and balance; presentation only. */
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){
+ box-sizing:border-box!important;display:grid!important;direction:ltr!important;
+ grid-template-columns:28px minmax(0,1fr) 30px!important;grid-template-rows:1fr!important;
+ align-items:center!important;justify-items:center!important;column-gap:4px!important;
+ width:132px!important;min-width:0!important;max-width:160px!important;
+ height:40px!important;min-height:40px!important;padding:3px!important;margin:0!important;
+ border:2px solid #45474f!important;border-radius:999px!important;
+ background:linear-gradient(120deg,#282d35,#23272e)!important;
+ box-shadow:inset 0 0 0 1px #ffffff0b,0 2px 7px #0002!important;
+ overflow:hidden!important;color:#f7f6f9!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip::before,
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip::after{content:none!important;display:none!important}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip .gb-libyana-badge{
+ display:grid!important;position:relative!important;grid-column:3!important;grid-row:1!important;
+ width:30px!important;height:30px!important;min-width:30px!important;flex:0 0 30px!important;
+ place-items:center!important;overflow:hidden!important;box-sizing:border-box!important;
+ padding:1px!important;margin:0!important;border-radius:50%!important;
+ border:1px solid #f5e3f5!important;background:#fff!important;
+ box-shadow:0 0 0 1px #b4acbc88!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .gb-libyana-badge img{
+ width:100%!important;height:100%!important;object-fit:contain!important;border-radius:50%!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .gb-wallet-balance-content{
+ display:flex!important;grid-column:2!important;grid-row:1!important;width:100%!important;min-width:0!important;
+ align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;overflow:visible!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip .customer-wallet-label{display:none!important}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip #customerHeaderBalance{
+ display:block!important;width:100%!important;margin:0!important;padding:0!important;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+ font-size:min(var(--l1017-header-balance-font-size,16px),16px)!important;font-weight:800!important;
+ font-variant-numeric:tabular-nums lining-nums!important;font-feature-settings:"tnum" 1,"lnum" 1!important;
+ direction:ltr!important;unicode-bidi:isolate;text-align:center!important;line-height:1.2!important;
+ letter-spacing:.3px!important;color:#f7f6fa!important;text-shadow:none!important;
+ white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut{
+ display:grid!important;grid-column:1!important;grid-row:1!important;place-items:center!important;
+ width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;
+ flex:0 0 28px!important;padding:0!important;margin:0!important;border-radius:50%!important;
+ border:1px solid #e679d89c!important;background:linear-gradient(145deg,#dc45b6,#af2fa2)!important;
+ color:#fff!important;box-shadow:inset 0 1px #ffd9f44d,0 0 10px #dd36bd40!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut svg{
+ display:block!important;width:16px!important;height:16px!important;stroke:currentColor!important;
+ stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut:focus-visible{outline:2px solid #fff!important;outline-offset:2px!important}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip #customerTopupShortcut:active{transform:scale(.94)!important}
+@media(min-width:901px){
+ html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:148px!important}
 }
 @media(max-width:350px){
- html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:140px!important;max-width:140px!important;grid-template-columns:23px minmax(0,1fr) 34px!important;column-gap:3px!important;padding-inline:5px!important}
+ html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:128px!important;column-gap:2px!important}
 }

@@ -151,8 +151,7 @@ async function openProduct(product) {
       pubg: 'game-covers/pubg-battlefront.webp',
       psn: 'game-covers/packages/psn.webp'
     };
-    const supplierImage=String(product.image_url||product.category_image||'');
-    $('.ox-summary img').src = /^https:\/\/omnex\.ly\//.test(supplierImage)?supplierImage:(artwork[product.game] || 'game-covers/psn-card.svg');
+    $('.ox-summary img').src = artwork[product.game] || window.L1017nCompleteCatalog?.imageFor(product) || 'game-covers/l1017n-loading-logo-20261119.jpeg';
     $('.ox-form').hidden = true;
     $('.ox-progress').hidden = true;
     $('.ox-phone').hidden = true;

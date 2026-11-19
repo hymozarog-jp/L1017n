@@ -18,13 +18,6 @@
   let catalogError = "";
   let catalogRequest = 0;
   let omnexLive = false;
-  // Previously listed prices are informational when the live catalog is unavailable.
-  const SUPPLIER_REFERENCE = {
-    codes: [[60,12.468],[325,62.522],[660,125.045],[1800,312.977],[3850,622.881],[8100,1248.624],[16200,2496.915],[24300,3703.757],[32400,4905.841],[40500,6242.285]],
-    charge: [[60,12.597],[325,62.646],[660,124.162],[1800,312.844],[3850,625.225],[8100,1235.947]],
-    offers: [["Prime · شهر",12.209],["Prime · 3 أشهر",36.622],["Prime · 6 أشهر",73.244],["Prime · 12 شهرًا",146.486],
-      ["Prime Plus · شهر",122.072],["Prime Plus · 3 أشهر",366.215],["Prime Plus · 6 أشهر",721.332],["Prime Plus · 12 شهرًا",1456.534]]
-  };
 
   function safe(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) =>
@@ -52,7 +45,7 @@
       // to Omnex. No API keys, supplier purchase requests or financial writes in the browser.
       const supplier=await supabaseClient.rpc("get_public_omnex_pubg_catalog");
       if(requestId!==catalogRequest)return;
-      if(!supplier.error && supplier.data?.enabled && Array.isArray(supplier.data.products) && supplier.data.products.length){
+      if(!supplier.error && supplier.data?.enabled && Array.isArray(supplier.data.products)){
         omnexLive=true;
         pubgCatalog=supplier.data.products.map(p=>{
           const match=String(p.name||"").match(/(\d[\d,.]*)\s*(?:UC|شد[ةات])/i);
@@ -65,16 +58,7 @@
         catalogReady=true;
         refresh();return;
       }
-      omnexLive=false;
-      // Existing manually fulfilled products remain visible until the supplier is synced.
-      const {data,error}=await supabaseClient.from("products")
-        .select("id,product_key,name,description,game,amount,price,active,sort_order,image_url")
-        .eq("game","pubg").eq("active",true).order("sort_order");
-      if(error)throw error;
-      if(requestId!==catalogRequest)return;
-      pubgCatalog=(data||[]).filter(p=>String(p.game).toLowerCase()==="pubg"&&p.active===true&&String(p.product_key)!=="pubg-60");
-      catalogReady=true;
-      refresh();
+      throw new Error("supplier_catalog_unavailable");
     } catch(error) {
       if(requestId!==catalogRequest)return;
       pubgCatalog=[];
@@ -103,7 +87,7 @@
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
   function countLabel(count) {
-    return count ? count + " باقة" : "باقات قيد التجهيز";
+    return count + " باقة";
   }
   function tierFor(amount) {
     if(amount >= 8100) return { key:"legend", title:"باقة ضخمة", coins:3, flair:"تشكيلة UC كبيرة" };
@@ -174,21 +158,6 @@
         ? '<button type="button" class="pubg-buy" disabled>غير متوفر</button>'
         : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن</button>')
       + '</div></article>';
-  }
-  function referenceCard([packageName, cost], key, index) {
-    const amount=typeof packageName==="number"?packageName:0;
-    const tier=tierFor(amount),delivery=deliveryFor(key);
-    const title=amount?amount.toLocaleString("en-US")+" UC":packageName;
-    // A five-percent margin leaves 95% of the sale price to cover the listed cost.
-    const salePrice=(cost/0.95).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-    return '<article class="pubg-pack pubg-pack-detailed pubg-pack-preview pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index,8) + '">'
-      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(delivery.kind) + '</span>'
-      + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(key)
-      + '<div class="pubg-pack-headline"><h3 class="pubg-pack-name">' + safe(title) + '</h3></div>'
-      + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong dir="ltr">' + salePrice + ' <span>د.ل</span></strong></div>'
-      + '<button type="button" class="pubg-buy" disabled>غير متوفر</button></div>'
-      + '</article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
   // The existing secured purchase RPC authorizes and debits the wallet atomically.
@@ -298,13 +267,6 @@
     input.focus({preventScroll:true});
   }
 
-  function supplierReference(key){
-    const rows=SUPPLIER_REFERENCE[key];
-    if(!rows?.length)return "";
-    return '<div class="pubg-supplier-note"><strong>أسعار متجر L1017n لباقات Omnex</strong>'
-      + '<span>الأسعار للعرض إلى أن يتأكد التوفر من المورد.</span></div>'
-      + '<div class="pubg-packages pubg-reference-packages">' + rows.map((row,index)=>referenceCard(row,key,index)).join("") + '</div>';
-  }
   function paintOffers(panel, key) {
     const list = categoryProducts(key);
     const codes = key === "codes";
@@ -312,7 +274,7 @@
       + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : key==='offers'?'OFFERS':'DIRECT TOP-UP') + '</span>'
       + '<h2>' + (codes ? 'أكواد الشحن' : key==='offers'?'عروض ببجي':'شحن عن طريق ID') + '</h2>'
       + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : key==='offers'?'العروض الظاهرة من المورد عند توفرها.':'اختار الباقة وأدخل معرف اللاعب UID للشحن.') + '</p></div>'
-      + '<span class="pubg-results-count">' + countLabel(list.length + (!omnexLive ? (SUPPLIER_REFERENCE[key]?.length || 0) : 0)) + '</span></div>'
+      + '<span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError
@@ -320,8 +282,7 @@
         : list.length
         ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
         : "")
-      + (catalogReady && !omnexLive ? supplierReference(key) : "")
-      + (catalogReady && omnexLive && !list.length
+      + (catalogReady && omnexLive && !catalogError && !list.length
         ? '<p class="pubg-empty-state">لا توجد باقات متوفرة في هذه الفئة حاليًا.</p>' : "");
 
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{

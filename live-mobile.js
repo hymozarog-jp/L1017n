@@ -242,6 +242,7 @@
     giftSection.hidden=!showGifts;
     q("#llCatalogEmpty").hidden=showGames||showGifts||Boolean(otherCards);
     root.innerHTML=games;
+    window.L1017nSortGamesBySales?.(root);
     gifts.innerHTML=giftCards;
     reveal([...root.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal"),...other.querySelectorAll(".ll-reveal")]);
   }

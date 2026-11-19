@@ -1,0 +1,14 @@
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const supplier='a'.repeat(32);
+const card=(id,generic=false)=>({id,querySelector(selector){if(selector==='[data-supplier-category]')return generic?{dataset:{supplierCategory:id}}:null;if(selector==='[data-ll-game]')return generic?null:{dataset:{llGame:id}};return null;}});
+const originals=[card('pubg'),card(supplier,true),card('roblox'),card('new-game')];
+let moved=0;const root={children:[...originals],append(...cards){this.children=cards;moved++;}};
+const context={window:{addEventListener(){}},document:{readyState:'complete',hidden:false,getElementById:()=>root},setInterval(){},supabaseClient:{rpc:async()=>({data:{keys:[supplier,'roblox']},error:null})}};
+vm.createContext(context);vm.runInContext(readFileSync(new URL('../game-bestsellers.js',import.meta.url),'utf8'),context);
+await new Promise(resolve=>setImmediate(resolve));
+assert.deepEqual(root.children.map(x=>x.id),[supplier,'roblox','pubg','new-game']);
+assert.equal(root.children[0],originals[1]);
+assert.equal(moved,1);context.window.L1017nSortGamesBySales(root);assert.equal(moved,1);
+console.log('PASS: descending verified sales order; zero-sales order and existing image nodes preserved');

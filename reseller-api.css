@@ -1,0 +1,62 @@
+#resellerApiPage{box-sizing:border-box;position:fixed;inset:0;width:100%;max-width:none;height:100%;height:100dvh;max-height:none;margin:0;padding:0;border:0;background:#090b12;color:#f4f2fa;font-family:system-ui,-apple-system,sans-serif;overflow:auto;overscroll-behavior:contain;color-scheme:dark;scrollbar-width:thin;scrollbar-color:#494057 #090b12;text-align:right}
+#resellerApiPage::backdrop{background:#090b12}
+#resellerApiPage *{box-sizing:border-box}
+#resellerApiPage [hidden]{display:none!important}
+#resellerApiPage .rap-shell{max-width:880px;margin:auto;padding:0 20px max(30px,env(safe-area-inset-bottom))}
+#resellerApiPage .rap-header{display:flex;align-items:center;gap:12px;padding:calc(20px + env(safe-area-inset-top)) 0 18px;border-bottom:1px solid #ffffff0d;color:#aaa7bc;font-size:14px}
+#resellerApiPage .rap-wordmark{margin-inline-start:auto;font-size:18px;color:#f0eaff;font-weight:800;font-style:italic;letter-spacing:-.6px}
+#resellerApiPage button{font-family:inherit;font-size:14px;font-weight:600;line-height:1.5;cursor:pointer;min-height:46px;border-radius:13px;padding:11px 16px;border:1px solid #b188ff4d;background:#8557e8;color:white;box-shadow:none}
+#resellerApiPage button:disabled{opacity:.55;cursor:wait}
+#resellerApiPage button:focus-visible,#resellerApiPage summary:focus-visible,#resellerApiPage textarea:focus-visible{outline:3px solid #d6c2ff;outline-offset:3px}
+#resellerApiPage .rap-back{display:grid;place-items:center;width:45px;height:45px;min-height:45px;padding:10px;background:#251d39;border-color:#8c61cc5e}
+#resellerApiPage .rap-back svg{width:23px;height:23px}
+#resellerApiPage .rap-hero{text-align:center;padding:44px 0 30px;background:radial-gradient(ellipse at 50% 15%,#793fe619,transparent 70%)}
+#resellerApiPage .rap-emblem{display:grid;place-items:center;width:68px;height:68px;margin:0 auto 20px;border-radius:21px;background:linear-gradient(135deg,#503288,#201c30);border:1px solid #be97ff38;color:#d8c2ff;box-shadow:0 12px 40px #6c37bf1c}
+#resellerApiPage .rap-emblem svg{width:32px;height:32px}
+#resellerApiPage .rap-kicker{display:block;color:#ac89e7;font-size:12px;letter-spacing:2px;font-weight:700}
+#resellerApiPage h1{margin:12px 0 10px;font-size:clamp(30px,6vw,44px);line-height:1.4;letter-spacing:-1px}
+#resellerApiPage .rap-hero p{max-width:440px;margin:0 auto;color:#aaa7bb;font-size:16px;line-height:1.9}
+#resellerApiPage .rap-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-top:23px}
+#resellerApiPage .rap-pills span{font-size:12px;color:#c3bbd6;padding:6px 10px;border:1px solid #ffffff12;border-radius:999px;background:#ffffff04}
+#resellerApiPage .rap-card{padding:24px;margin:0 0 16px;border:1px solid #ffffff12;border-radius:23px;background:linear-gradient(130deg,#181823,#11131d);min-width:0}
+#resellerApiPage .rap-key-card{border-color:#a978ed45;background:radial-gradient(ellipse at 100% 0,#6735a51c,transparent 70%),#14141f}
+#resellerApiPage .rap-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+#resellerApiPage small{color:#a6a0b6;font-size:13px;line-height:1.7}
+#resellerApiPage h2{margin:2px 0 14px;font-size:20px;line-height:1.6;font-weight:750}
+#resellerApiPage .rap-card-heading h2{margin:2px 0 0}
+#resellerApiPage .rap-key-status{white-space:nowrap;font-size:12px;color:#b2a8c4;background:#ffffff05;border:1px solid #ffffff10;padding:5px 10px;border-radius:99px}
+#resellerApiPage .rap-key-status.rap-active{background:#246a4229;color:#7ed6a4;border-color:#498b604d}
+#resellerApiPage .rap-keyinfo{color:#bbb5ca;font-size:14px;line-height:1.8;overflow-wrap:anywhere;margin-bottom:18px}
+#resellerApiPage .rap-keyinfo code{display:block;font-size:16px;color:#e2d3f6;letter-spacing:.5px;padding:12px 15px;background:#090b135e;border:1px solid #ffffff0c;border-radius:12px;text-align:left}
+#resellerApiPage .rap-keyinfo p{color:#9d95af;font-size:12px}
+#resellerApiPage .rap-actions{display:flex;gap:8px;flex-wrap:wrap}
+#resellerApiPage .rap-secondary{background:#ffffff05;border-color:#ffffff1c;color:#d6cee4}
+#resellerApiPage .rap-danger{background:#7e263425;border-color:#d8697255;color:#ffafb5}
+#resellerApiPage .rap-confirm{border:1px solid #db627355;border-radius:16px;padding:17px;background:#691c2821;margin-top:18px;color:#ffb8c0;font-size:14px;line-height:1.8}
+#resellerApiPage .rap-confirm>svg{width:23px;height:23px;vertical-align:middle;margin-inline-end:6px}
+#resellerApiPage .rap-confirm p{color:#c49ba6}
+#resellerApiPage .rap-secret{margin-bottom:18px;padding:17px;border:1px solid #9c71e26b;border-radius:16px;background:#7046b016;font-size:14px;line-height:1.8}
+#resellerApiPage .rap-secret p{color:#c3b3dc;margin:7px 0 12px}
+#resellerApiPage textarea{width:100%;resize:none;height:90px;background:#090b13;border:1px solid #9b7eb652;border-radius:11px;color:#e7dbff;font:14px/1.65 ui-monospace,monospace;padding:12px;word-break:break-all;user-select:all;margin-bottom:10px}
+#resellerApiPage .rap-feedback{color:#c1b2d9;font-size:14px;line-height:1.8}
+#resellerApiPage .rap-feedback:empty{display:none}
+#resellerApiPage .rap-method{font:700 12px/1 ui-monospace,monospace;color:#bc9df4;letter-spacing:1px}
+#resellerApiPage .rap-endpoint{display:block;overflow-wrap:anywhere;text-align:left;direction:ltr;padding:14px;margin-bottom:14px;border:1px solid #ffffff0b;border-radius:12px;background:#090b13;color:#c7badf;font:13px/1.9 ui-monospace,monospace}
+#resellerApiPage .rap-muted{color:#a29aac;font-size:14px;line-height:1.85}
+#resellerApiPage .rap-steps{display:grid;gap:17px}
+#resellerApiPage .rap-steps>div{padding-inline-start:15px;border-inline-start:2px solid #8c5ed34d;font-size:15px;line-height:1.8}
+#resellerApiPage .rap-steps b{color:#dfd7ec}
+#resellerApiPage .rap-steps p{margin:5px 0 0;color:#aaa1b9}
+#resellerApiPage code{font-family:ui-monospace,SFMono-Regular,monospace;direction:ltr;unicode-bidi:isolate;color:#c8adef}
+#resellerApiPage .rap-note{margin:20px 0 0;padding:13px;background:#a178db0a;border:1px solid #a178db22;border-radius:12px;color:#bdafcc;font-size:14px;line-height:1.85}
+#resellerApiPage .rap-table-scroll{overflow:auto;border:1px solid #ffffff0c;border-radius:13px}
+#resellerApiPage table{width:100%;border-collapse:collapse;font-size:14px;text-align:right}
+#resellerApiPage th,#resellerApiPage td{padding:13px;border-bottom:1px solid #ffffff0a;vertical-align:top}
+#resellerApiPage th{background:#ffffff04;color:#bfb4cf;font-size:12px}
+#resellerApiPage td code{display:block;min-width:200px;font-size:12px;text-align:left;overflow-wrap:anywhere}
+#resellerApiPage details{margin-top:13px;border:1px solid #ffffff0f;border-radius:13px;padding:0 14px;font-size:14px;line-height:1.9;color:#afa6bc}
+#resellerApiPage summary{cursor:pointer;padding:13px 0;color:#e0d5ef;font-size:14px}
+#resellerApiPage pre{overflow:auto;font:12px/1.9 ui-monospace,monospace;text-align:left;background:#090b13;border-radius:10px;padding:14px;color:#cbb5e9;white-space:pre-wrap;overflow-wrap:anywhere}
+#resellerApiPage .rap-footer{text-align:center;font-size:12px;color:#756d84;padding:18px 0}
+@media(max-width:480px){#resellerApiPage .rap-shell{padding-inline:16px}#resellerApiPage .rap-card{padding:19px;border-radius:20px}#resellerApiPage .rap-hero{padding-top:32px}#resellerApiPage .rap-actions>button{flex:1 1 auto}}
+@media(prefers-reduced-motion:no-preference){#resellerApiPage[open] .rap-hero{animation:rap-enter .3s ease-out}@keyframes rap-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}}

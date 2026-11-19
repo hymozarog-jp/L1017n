@@ -1118,7 +1118,7 @@ setInterval(()=>{
    void refreshVisibleOrderStatuses();
 },5000);
 window.addEventListener('l1017n:omnex-order-settled',()=>{void refreshVisibleOrderStatuses()});
-$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}switchView('wallet')});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
+$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',async()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}const user=await currentUser();if(!user){switchView('account');toast('سجّل دخولك أولاً لشحن المحفظة');return}if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();return}openTopupModal()});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');
    if(OAUTH_ERROR){

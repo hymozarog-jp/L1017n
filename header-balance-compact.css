@@ -56,3 +56,21 @@ html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #cus
 @media(max-width:350px){
  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group #customerWalletChip.gb-libyana-wallet-chip:not(.hidden){width:128px!important;column-gap:2px!important}
 }
+
+/* Circular notifications button matching the wallet's charcoal finish. */
+html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden){
+ display:grid!important;place-items:center!important;box-sizing:border-box!important;
+ width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+ flex:0 0 40px!important;padding:0!important;margin:0!important;border-radius:50%!important;
+ border:1.5px solid #575a63!important;background:linear-gradient(140deg,#474b53,#292e36)!important;
+ color:#c7cbd3!important;box-shadow:inset 0 1px 1px #ffffff20,0 2px 7px #0002!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden) svg{
+ width:23px!important;height:23px!important;animation:none!important;transform:none!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:not(.hidden):active{
+ transform:scale(.95)!important;background:linear-gradient(140deg,#525760,#323841)!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster > #headerNotificationBell:focus-visible{
+ outline:2px solid #e8deff!important;outline-offset:3px!important;
+}

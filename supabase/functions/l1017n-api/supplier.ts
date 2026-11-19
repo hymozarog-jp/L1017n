@@ -112,10 +112,10 @@ function fieldsSchema(raw){
  if(!Array.isArray(raw)||raw.length>10)throw Error('unsupported_product_fields');
  return raw.map(field=>{
   const key=String(field.key||field.code||'');if(!/^[A-Za-z0-9_]{1,60}$/.test(key)||/password|passwd|secret|otp|token/i.test(key))throw Error('unsupported_product_fields');
-  const type=String(field.type||'text');if(!['text','number','select'].includes(type))throw Error('unsupported_product_fields');
+  const rawType=String(field.type||'text');const type=['string','email','textarea','tel'].includes(rawType)?'text':rawType;if(!['text','number','select'].includes(type))throw Error('unsupported_product_fields');
   const options=Array.isArray(field.options)?field.options.map(v=>typeof v==='object'?{value:String(v.value??v.id??''),label:String(v.label??v.name??v.value??'').slice(0,100)}:{value:String(v),label:String(v)}).filter(o=>o.value&&o.value.length<=200):[];
   if(type==='select'&&!options.length)throw Error('unsupported_product_fields');
-  return {key,label:String(field.label||field.name||key).slice(0,100),required:field.required===true,type,options};
+  return {key,label:String(field.label||field.name||key).slice(0,100),required:field.required!==false,type,options};
  });
 }
 function checkFields(schema,values){

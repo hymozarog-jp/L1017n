@@ -41,7 +41,7 @@ export function createHandler({database,rpc,supplier,fieldsSchema,checkFields,sc
     const id=body.product_id.slice(8);const known=await rpc(db,'omnex_product_for_service',{p_product:id});if(!known)throw Error('product_not_available');
     const res=await supplier(db,'product',id),p=res.body?.product;
     if(res.status!==200||!p||p.id!==id||res.body.price_status!=='fresh')throw Error('supplier_price_unavailable');
-    const category=known.game==='psn'?known.supplier_category_id:known.game==='pubg'?'30faee6b9893e3f424961c15a785efc3':'cd40561b622c4fa9ed9984c31f0c697f';
+    const category=known.supplier_category_id|| (known.game==='pubg'?'30faee6b9893e3f424961c15a785efc3':'cd40561b622c4fa9ed9984c31f0c697f');
     if(!category||p.category!==category)throw Error('product_not_available');
     if(p.purchase_available===false||[0,'0'].includes(res.body.stock)||[0,'0'].includes(p.stock))throw Error('supplier_out_of_stock');
     const quote=await call('quote_digital',{product_id:body.product_id,cost:p.price,wallet:res.body.wallet||p.wallet,stock:res.body.stock??p.stock??null,schema:fieldsSchema(res.body.fields||[])});

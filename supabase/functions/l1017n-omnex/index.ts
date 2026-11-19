@@ -1,3 +1,4 @@
+import {normalizeCatalog} from "./catalog.mjs";
 import {createClient} from "npm:@supabase/supabase-js@2.75.0";
 import {processSupplierJob,millis} from "./engine.js";
 const allowed=new Set(["https://hymozarog-jp.github.io","https://l1017n.ct.ws"]);
@@ -91,31 +92,19 @@ async function syncPubg(db,cat){
 async function worker(db){
  const tasks=[];for(let i=0;i<6;i++){const job=await rpc(db,'claim_omnex_job');if(!job)break;tasks.push(runJob(db,job));}
  await Promise.allSettled(tasks);
- const catalogs=[
-  ['omnex_catalog_sync_due',syncCatalog],
-  ['omnex_psn_catalog_sync_due',syncPsn],
-  ['omnex_pubg_catalog_sync_due',syncPubg]
- ];
- const checks=await Promise.allSettled(catalogs.map(([due])=>rpc(db,due)));
- const pending=catalogs.filter((_,index)=>checks[index].status==='fulfilled'&&checks[index].value===true);
- if(!pending.length)return;
- try{
-  const catalog=await fetchCatalog(db);
-  // Reuse one supplier response, and keep each category's failure isolated.
-  for(const [name,sync] of pending){
-   try{await sync(db,catalog)}
-   catch(error){console.warn('[omnex-catalog-sync]',name,String(error?.message||'unknown').slice(0,100))}
-  }
- }catch(error){console.warn('[omnex-catalog-sync]',String(error?.message||'unknown').slice(0,100))}
+ if(!await rpc(db,'omnex_complete_catalog_sync_due'))return;
+ try{const cat=await fetchCatalog(db);await rpc(db,'sync_omnex_complete_catalog',{p_items:normalizeCatalog(cat),p_wallet:cat.wallet});}
+ catch(error){console.warn('[omnex-catalog-sync]',String(error?.message||'unknown').slice(0,100))}
 }
+
 function fieldsSchema(raw){
  if(!Array.isArray(raw)||raw.length>10)throw Error('unsupported_product_fields');
  return raw.map(field=>{
   const key=String(field.key||field.code||'');if(!/^[A-Za-z0-9_]{1,60}$/.test(key)||/password|passwd|secret|otp|token/i.test(key))throw Error('unsupported_product_fields');
-  const type=String(field.type||'text');if(!['text','number','select'].includes(type))throw Error('unsupported_product_fields');
+  const rawType=String(field.type||'text');const type=['string','email','textarea','tel'].includes(rawType)?'text':rawType;if(!['text','number','select'].includes(type))throw Error('unsupported_product_fields');
   const options=Array.isArray(field.options)?field.options.map(v=>typeof v==='object'?{value:String(v.value??v.id??''),label:String(v.label??v.name??v.value??'').slice(0,100)}:{value:String(v),label:String(v)}).filter(o=>o.value&&o.value.length<=200):[];
   if(type==='select'&&!options.length)throw Error('unsupported_product_fields');
-  return {key,label:String(field.label||field.name||key).slice(0,100),required:field.required===true,type,options};
+  return {key,label:String(field.label||field.name||key).slice(0,100),required:field.required!==false,type,options};
  });
 }
 function checkFields(schema,values){
@@ -144,7 +133,7 @@ Deno.serve(async req=>{
    const known=await rpc(service,'omnex_product_for_service',{p_product:body.id});if(!known)throw Error('product_not_available');
    const r=await supplier(service,'product',body.id),p=r.body?.product;
    if(r.status!==200||!p||p.id!==body.id||r.body.price_status!=='fresh')throw Error('supplier_price_unavailable');
-   const expectedCategory=known.game==='psn'?known.supplier_category_id:known.game==='pubg'?'30faee6b9893e3f424961c15a785efc3':'cd40561b622c4fa9ed9984c31f0c697f';
+   const expectedCategory=known.supplier_category_id|| (known.game==='pubg'?'30faee6b9893e3f424961c15a785efc3':'cd40561b622c4fa9ed9984c31f0c697f');
    if(!expectedCategory||p.category!==expectedCategory)throw Error('product_not_available');
    if(p.purchase_available===false||[0,'0'].includes(r.body.stock)||[0,'0'].includes(p.stock))throw Error('supplier_out_of_stock');
    const cost=millis(p.price);if(cost===null||cost<=0)throw Error('supplier_price_unavailable');
@@ -169,8 +158,8 @@ Deno.serve(async req=>{
   if(await rpc(userDb,'is_store_admin')!==true)return reply({error:'forbidden'},403,origin);
   if(body.action==='status'){const state=await rpc(userDb,'get_omnex_roblox_admin_catalog');return reply({configured:!!Deno.env.get('OMNEX_API_KEY'),scope:'roblox',purchasing_enabled:state.purchasing_enabled},200,origin)}
   if(body.action==='catalog')return reply(await rpc(userDb,'get_omnex_roblox_admin_catalog'),200,origin);
-  if(body.action==='sync')return reply({ok:true,imported:await syncCatalog(service),scope:'roblox'},200,origin);
-  if(body.action==='sync_psn')return reply({ok:true,imported:await syncPsn(service),scope:'psn'},200,origin);
+  if(body.action==='sync'||body.action==='sync_psn'){const cat=await fetchCatalog(service);return reply({ok:true,imported:await rpc(service,'sync_omnex_complete_catalog',{p_items:normalizeCatalog(cat),p_wallet:cat.wallet}),scope:'all'},200,origin);}
+  
   return reply({error:'invalid_action'},400,origin);
  }catch(error){
   const known=new Set(['invalid_product','product_not_available','unsupported_product_fields','invalid_product_fields','missing_product_field','invalid_purchase','quote_expired','supplier_sales_paused','supplier_price_unavailable','supplier_out_of_stock','supplier_wallet_changed','supplier_price_requires_review','insufficient_balance','phone_verification_required_before_purchase','too_many_pending_orders','supplier_order_already_pending','idempotency_conflict','quote_rate_limit']);

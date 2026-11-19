@@ -51,7 +51,7 @@ function showOrder(order){
 async function quoteProduct(product,seq){
  $('.ox-form').hidden=true;$('.ox-progress').hidden=true;$('.ox-refresh').hidden=true;status('جاري التحقق من الباقة والسعر…');
  try{const data=await invoke({action:'quote',id:product.id});if(seq!==generation||!dialog.open||owner!==liveUser)return;quote=data;
- $('.ox-name').textContent=data.name;$('.ox-region').textContent=data.region||(currentProduct?.game==='pubg'?'ببجي موبايل':'روبلوكس');$('.ox-price').textContent=cash(data.price);
+ $('.ox-name').textContent=data.name;$('.ox-region').textContent=data.region||currentProduct?.category_name||(currentProduct?.game==='pubg'?'ببجي موبايل':'روبلوكس');$('.ox-price').textContent=cash(data.price);
  $('.ox-fields').replaceChildren();for(const field of data.fields||[]){const label=make('label','ox-field',field.label);label.htmlFor='ox-'+field.key;let input;if(field.type==='select'){input=make('select');const blank=make('option','','اختر');blank.value='';input.append(blank);for(const op of field.options){const o=make('option','',op.label);o.value=op.value;input.append(o)}}else{input=make('input');input.type='text';input.inputMode=field.type==='number'?'numeric':'text';input.maxLength=200;input.autocomplete='off'}input.id=label.htmlFor;input.name=field.key;input.required=field.required;label.append(input);$('.ox-fields').append(label)}
  $('.ox-terms').checked=false;$('.ox-submit').disabled=false;$('.ox-submit').textContent='تأكيد الشراء · '+cash(data.price);$('.ox-form').hidden=false;status('');
  }catch(err){
@@ -151,7 +151,8 @@ async function openProduct(product) {
       pubg: 'game-covers/pubg-battlefront.webp',
       psn: 'game-covers/packages/psn.webp'
     };
-    $('.ox-summary img').src = artwork[product.game] || 'game-covers/robux-100-tokens.svg';
+    const supplierImage=String(product.image_url||product.category_image||'');
+    $('.ox-summary img').src = /^https:\/\/omnex\.ly\//.test(supplierImage)?supplierImage:(artwork[product.game] || 'game-covers/psn-card.svg');
     $('.ox-form').hidden = true;
     $('.ox-progress').hidden = true;
     $('.ox-phone').hidden = true;

@@ -231,16 +231,19 @@
     const gamesSection=q("#llGamesSection");
     const giftSection=q("#llGiftSection");
     const gifts=q("#llGiftCatalog");
-    const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"");
-    const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"");
+    const extra=window.L1017nCompleteCatalog; const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
+    const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(window.L1017nCompleteCatalog?.homeCards("cards",query,chosen)||"");
+    const otherCards=window.L1017nCompleteCatalog?.homeCards("other",query,chosen)||"";
+    let other=q("#llOtherSupplierSection");if(!other){giftSection.insertAdjacentHTML("afterend",'<section id="llOtherSupplierSection"><div class="ll-title-row ll-products-title"><h2>خدمات وبطاقات أخرى</h2></div><div class="ll-catalog" id="llOtherSupplierCatalog"></div><button type="button" class="sc-all-link" data-supplier-all>جميع منتجات المتجر</button></section>');other=q("#llOtherSupplierSection");}
+    other.hidden=!otherCards; q("#llOtherSupplierCatalog").innerHTML=otherCards;
     const showGames=Boolean(games);
     const showGifts=Boolean(giftCards);
     gamesSection.hidden=!showGames;
     giftSection.hidden=!showGifts;
-    q("#llCatalogEmpty").hidden=showGames||showGifts;
+    q("#llCatalogEmpty").hidden=showGames||showGifts||Boolean(otherCards);
     root.innerHTML=games;
     gifts.innerHTML=giftCards;
-    reveal([...root.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal")]);
+    reveal([...root.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal"),...other.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {
     chosen = key;
@@ -459,6 +462,7 @@
       setTimeout(() => updateNavigation(view), 0);
     }, false);
   }
+  window.addEventListener("l1017n:catalog-updated",renderCatalog);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build, {once:true});
   else build();
 })();

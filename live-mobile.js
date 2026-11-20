@@ -33,6 +33,7 @@
   const normalize = value => String(value ?? "").toLowerCase().normalize("NFKC").replace(/[\u064b-\u065f\u0670]/g, "").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
   const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const price = value => Number(value || 0).toFixed(2) + " د.ل";
+  let moreGamesExpanded = false;
   let chosen = "all", query = "", lastCatalog = "", activeSlide = 0, observer = null, refreshTimer = null;
 
   function catalog() {
@@ -243,8 +244,33 @@
     q("#llCatalogEmpty").hidden=showGames||showGifts||Boolean(otherCards);
     root.innerHTML=games;
     window.L1017nSortGamesBySales?.(root);
+    // Keep six prominent games up front; reveal the remaining categories on request.
+    let more=q("#llMoreGames");
+    if(!more){
+      root.insertAdjacentHTML("afterend",'<div id="llMoreGames"><button type="button" class="sc-all-link" id="llMoreGamesButton" aria-expanded="false" aria-controls="llMoreGamesGrid">المزيد من الألعاب</button><div class="ll-catalog" id="llMoreGamesGrid" hidden></div></div>');
+      more=q("#llMoreGames");
+      q("#llMoreGamesButton").addEventListener("click",()=>{
+        moreGamesExpanded=!moreGamesExpanded;
+        const grid=q("#llMoreGamesGrid"), button=q("#llMoreGamesButton");
+        grid.hidden=!moreGamesExpanded;
+        button.setAttribute("aria-expanded",String(moreGamesExpanded));
+        button.textContent=moreGamesExpanded?"عرض ألعاب أقل":"المزيد من الألعاب";
+        if(moreGamesExpanded)reveal([...grid.querySelectorAll(".ll-reveal")]);
+      });
+    }
+    const moreGrid=q("#llMoreGamesGrid"), moreButton=q("#llMoreGamesButton");
+    moreGrid.replaceChildren();
+    const compact=chosen==="all"&&!query;
+    const remaining=compact?[...root.children].slice(6):[];
+    if(remaining.length)moreGrid.append(...remaining);
+    more.hidden=!remaining.length;
+    moreGrid.hidden=!moreGamesExpanded;
+    moreButton.textContent=moreGamesExpanded?"عرض ألعاب أقل":"المزيد من الألعاب";
+    moreButton.setAttribute("aria-expanded",String(moreGamesExpanded));
+    const heading=q("#llGamesHeading");
+    if(heading)heading.textContent=compact?"الأكثر طلبًا":"الألعاب";
     gifts.innerHTML=giftCards;
-    reveal([...root.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal"),...other.querySelectorAll(".ll-reveal")]);
+    reveal([...root.querySelectorAll(".ll-reveal"),...moreGrid.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal"),...other.querySelectorAll(".ll-reveal")]);
   }
   function setCategory(key) {
     chosen = key;

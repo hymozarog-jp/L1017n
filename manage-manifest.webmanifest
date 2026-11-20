@@ -1,0 +1,45 @@
+{
+  "name": "L1017n Admin — إدارة المتجر",
+  "short_name": "L1017n Admin",
+  "description": "تطبيق إدارة متجر L1017n على أندرويد",
+  "lang": "ar",
+  "dir": "rtl",
+  "id": "./manage.html",
+  "start_url": "./manage.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#100c20",
+  "background_color": "#0b0914",
+  "icons": [
+    {
+      "src": "./manage-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./game-covers/l1017n-loading-logo-20261119.jpeg",
+      "sizes": "1254x1254",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "طلبات الشراء",
+      "short_name": "الطلبات",
+      "url": "./index.html?admin=1&section=orders"
+    },
+    {
+      "name": "المنتجات والأسعار",
+      "short_name": "المنتجات",
+      "url": "./index.html?admin=1&section=products"
+    },
+    {
+      "name": "الأرباح والمبيعات",
+      "short_name": "الأرباح",
+      "url": "./index.html?admin=1&section=finance"
+    }
+  ]
+}

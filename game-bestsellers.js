@@ -7,7 +7,7 @@
 const gamePatterns=[
  /روبلوكس|روبوكس|roblox|robux/i,
  /فري\s*فاير|free\s*fire/i,
- /ببجي|pubg/i,
+ /ببجي موبايل|شدات ببجي|pubg mobile/i,
  /شرف\s*الملوك|honor\s*of\s*kings/i,
  /موبايل\s*ليجند|mobile\s*legends/i,
  /فورت\s*نايت|fortnite/i,

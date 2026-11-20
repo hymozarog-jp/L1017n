@@ -58,7 +58,7 @@ function mount(){
  if(root)return;
  root=make('section','sc-screen');root.id='completeSupplierCatalog';root.hidden=true;root.dir='rtl';
  root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','منتجات المتجر');
- root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><p>L1017N STORE</p><h1>منتجات المتجر</h1><p class="sc-breadcrumb"></p></div></header><div class="sc-tools" hidden><label class="sc-search-label">ابحث داخل الباقات<input class="sc-search" type="search" placeholder="اسم الباقة أو قيمتها"></label><label class="sc-stock"><input class="sc-only" type="checkbox" checked> المتوفر فقط</label></div><p class="sc-note">اختر الدولة أو نوع البطاقة لعرض باقاتها.</p><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
+ root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><h1>منتجات المتجر</h1></div></header><div class="sc-tools" hidden><label class="sc-search-label">ابحث داخل الباقات<input class="sc-search" type="search" placeholder="اسم الباقة أو قيمتها"></label><label class="sc-stock"><input class="sc-only" type="checkbox" checked> المتوفر فقط</label></div><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
  document.body.append(root);
  root.querySelector('.sc-back').onclick=goBack;
  for(const selector of ['.sc-search','.sc-only'])root.querySelector(selector).addEventListener(selector==='.sc-search'?'input':'change',()=>{limit=24;draw();});
@@ -78,7 +78,7 @@ function drawGroups(){
  const products=entries.filter(p=>!category||p.category_id===category);
  const choices=category?groupChoices(products):categories().map(p=>({key:p.category_id,product:p,count:entries.filter(x=>x.category_id===p.category_id).length,available:p.count}));
  const key=JSON.stringify({category,choices:choices.map(x=>[x.key,x.count,x.available])});
- root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'اختر '+(category?'الدولة أو النوع':'القسم'):'لا توجد أقسام متاحة حاليًا.';
+ root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'':'لا توجد أقسام متاحة حاليًا.';
  if(panel.dataset.renderKey===key)return;
  panel.dataset.renderKey=key;panel.replaceChildren();
  for(const row of choices){
@@ -96,15 +96,13 @@ function drawGroups(){
   };
   panel.append(button);
  }
- root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'اختر '+(category?'الدولة أو النوع':'القسم'):'لا توجد أقسام متاحة حاليًا.';
+ root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'':'لا توجد أقسام متاحة حاليًا.';
 }
 function draw(){
  if(!root||root.hidden)return;
  const grouped=selectedGroup===null;
  const categoryName=entries.find(p=>p.category_id===category)?.category_name||'جميع منتجات المتجر';
  root.querySelector('h1').textContent=grouped?categoryName:groupLabel(selectedGroup);
- root.querySelector('.sc-breadcrumb').textContent=grouped?'':categoryName;
- root.querySelector('.sc-note').textContent=grouped?'اختر الدولة أو نوع البطاقة لعرض باقاتها.':'تأكد من دولة الحساب ووصف المنتج قبل الشراء. السعر والتوفر يُراجعان عند التأكيد.';
  root.querySelector('.sc-tools').hidden=grouped;
  root.querySelector('.sc-groups').hidden=!grouped;
  root.querySelector('.sc-grid').hidden=grouped;

@@ -1,7 +1,7 @@
 /* Complete server-priced OMNEX catalog. Checkout always revalidates with the supplier. */
 (function(){
 'use strict';
-let entries=[],root=null,category=null,limit=24,sequence=0,homeReady=false,bootAttempts=0,renderKey='',returnFocus=null,scrolls=new Map();
+let entries=[],root=null,category=null,limit=24,sequence=0,homeReady=false,bootAttempts=0,renderKey='',returnFocus=null,scrolls=new Map(),selectedGroup=null,entryCategory=null,groupScroll=0,allScroll=0,lastGroupButton=null;
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cash=v=>Number(v).toFixed(2)+' د.ل';
@@ -37,63 +37,115 @@ function homeCards(section,query='',chosen='all'){
   return '<article class="ll-game-section ll-reveal sc-home-card" dir="rtl"><button type="button" class="ll-game-section-link" data-supplier-category="'+escape(p.category_id)+'" aria-label="فتح '+escape(p.category_name)+'"><span class="ll-game-section-art sc-home-art">'+(src?'<img src="'+escape(src)+'" alt="" loading="lazy" decoding="auto" width="480" height="480">':'')+'</span><span class="ll-game-section-details"><strong>'+escape(p.category_name)+'</strong><small>'+p.count+' باقة متوفرة</small></span></button></article>';
  }).join('');
 }
+function groupChoices(products){
+ const groups=new Map();
+ for(const p of products){
+  const key=p.group||'الباقات';
+  if(!groups.has(key))groups.set(key,{key,product:p,count:0,available:0});
+  const row=groups.get(key);row.count++;if(p.available)row.available++;
+ }
+ const preferred=['أمريكا','أمريكي','US','USA','السعودية','الإمارات','بريطانيا','تركيا'];
+ const rank=s=>{const index=preferred.indexOf(s);return index<0?99:index;};
+ return [...groups.values()].sort((a,b)=>rank(a.key)-rank(b.key)||a.key.localeCompare(b.key,'ar'));
+}
+function groupLabel(name){
+ const labels={'أمريكا':'أمريكي','أمريكي':'أمريكي','US':'أمريكي','USA':'أمريكي','United States':'أمريكي','السعودية':'سعودي','الإمارات':'إماراتي','بريطانيا':'بريطاني','تركيا':'تركي'};
+ const suffix=String(name).match(/\((US|USA|UK|GB|SA|AE|TR)\)\s*$/i)?.[1]?.toUpperCase();
+ const suffixLabels={US:'أمريكي',USA:'أمريكي',UK:'بريطاني',GB:'بريطاني',SA:'سعودي',AE:'إماراتي',TR:'تركي'};
+ return labels[name]||suffixLabels[suffix]||name;
+}
 function mount(){
  if(root)return;
  root=make('section','sc-screen');root.id='completeSupplierCatalog';root.hidden=true;root.dir='rtl';
  root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','منتجات المتجر');
- root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><p>L1017N STORE</p><h1>منتجات المتجر</h1></div></header><div class="sc-tools"><label class="sc-search-label">ابحث عن منتج<input class="sc-search" type="search" placeholder="اسم البطاقة، الدولة أو الفئة"></label><label>الدولة أو المجموعة<select class="sc-group"><option value="">جميع المجموعات</option></select></label><label class="sc-stock"><input class="sc-only" type="checkbox" checked> المتوفر فقط</label></div><p class="sc-note">تأكد من دولة الحساب ووصف المنتج قبل الشراء. السعر والتوفر يُراجعان عند التأكيد.</p><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-grid"></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
+ root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><p>L1017N STORE</p><h1>منتجات المتجر</h1><p class="sc-breadcrumb"></p></div></header><div class="sc-tools" hidden><label class="sc-search-label">ابحث داخل الباقات<input class="sc-search" type="search" placeholder="اسم الباقة أو قيمتها"></label><label class="sc-stock"><input class="sc-only" type="checkbox" checked> المتوفر فقط</label></div><p class="sc-note">اختر الدولة أو نوع البطاقة لعرض باقاتها.</p><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
  document.body.append(root);
- root.querySelector('.sc-back').onclick=close;
- for(const selector of ['.sc-search','.sc-group','.sc-only'])root.querySelector(selector).addEventListener(selector==='.sc-search'?'input':'change',()=>{limit=24;draw();});
+ root.querySelector('.sc-back').onclick=goBack;
+ for(const selector of ['.sc-search','.sc-only'])root.querySelector(selector).addEventListener(selector==='.sc-search'?'input':'change',()=>{limit=24;draw();});
  root.querySelector('.sc-more').onclick=()=>{limit+=24;draw();};
  root.querySelector('.sc-retry').onclick=()=>void refresh();
  root.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&!e.defaultPrevented){e.preventDefault();close();}
+  if(e.key==='Escape'&&!e.defaultPrevented){e.preventDefault();goBack();}
   if(e.key==='Tab'&&!document.querySelector('#omnexCheckout[open]')){
-   const buttons=[...root.querySelectorAll('button:not([hidden]):not([disabled]),input,select')].filter(x=>x.getClientRects().length);
+   const buttons=[...root.querySelectorAll('button:not([hidden]):not([disabled]),input')].filter(x=>x.getClientRects().length);
    if(e.shiftKey&&document.activeElement===buttons[0]){e.preventDefault();buttons.at(-1)?.focus();}
    else if(!e.shiftKey&&document.activeElement===buttons.at(-1)){e.preventDefault();buttons[0]?.focus();}
   }
  });
 }
+function drawGroups(){
+ const panel=root.querySelector('.sc-groups');
+ const products=entries.filter(p=>!category||p.category_id===category);
+ const choices=category?groupChoices(products):categories().map(p=>({key:p.category_id,product:p,count:entries.filter(x=>x.category_id===p.category_id).length,available:p.count}));
+ const key=JSON.stringify({category,choices:choices.map(x=>[x.key,x.count,x.available])});
+ root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'اختر '+(category?'الدولة أو النوع':'القسم'):'لا توجد أقسام متاحة حاليًا.';
+ if(panel.dataset.renderKey===key)return;
+ panel.dataset.renderKey=key;panel.replaceChildren();
+ for(const row of choices){
+  const button=make('button','sc-group-card');button.type='button';
+  button.dataset.groupKey=row.key;
+  button.append(art(row.product,true));
+  const copy=make('span','sc-group-copy');
+  copy.append(make('strong','',category?groupLabel(row.key):row.product.category_name),make('small','',row.available?row.available+' باقة متوفرة':'غير متوفر حاليًا'));
+  button.append(copy);
+  button.onclick=()=>{
+   if(!category){allScroll=root.scrollTop;category=row.key;groupScroll=0;panel.dataset.renderKey='';draw();root.scrollTop=0;return;}
+   groupScroll=root.scrollTop;lastGroupButton=row.key;selectedGroup=row.key;limit=24;renderKey='';
+   root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=row.available>0;
+   draw();root.scrollTop=0;root.querySelector('.sc-back').focus({preventScroll:true});
+  };
+  panel.append(button);
+ }
+ root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'اختر '+(category?'الدولة أو النوع':'القسم'):'لا توجد أقسام متاحة حاليًا.';
+}
 function draw(){
  if(!root||root.hidden)return;
- const q=root.querySelector('.sc-search').value.trim().toLocaleLowerCase(),group=root.querySelector('.sc-group').value,only=root.querySelector('.sc-only').checked;
- const items=entries.filter(p=>(!category||p.category_id===category)&&(!only||p.available)&&(!group||p.group===group)&&(!q||[p.name,p.group,p.category_name].join(' ').toLocaleLowerCase().includes(q)));
+ const grouped=selectedGroup===null;
+ const categoryName=entries.find(p=>p.category_id===category)?.category_name||'جميع منتجات المتجر';
+ root.querySelector('h1').textContent=grouped?categoryName:groupLabel(selectedGroup);
+ root.querySelector('.sc-breadcrumb').textContent=grouped?'':categoryName;
+ root.querySelector('.sc-note').textContent=grouped?'اختر الدولة أو نوع البطاقة لعرض باقاتها.':'تأكد من دولة الحساب ووصف المنتج قبل الشراء. السعر والتوفر يُراجعان عند التأكيد.';
+ root.querySelector('.sc-tools').hidden=grouped;
+ root.querySelector('.sc-groups').hidden=!grouped;
+ root.querySelector('.sc-grid').hidden=grouped;
+ root.querySelector('.sc-more').hidden=grouped;
+ root.querySelector('.sc-back').setAttribute('aria-label',!grouped?'العودة إلى اختيار الدولة':!entryCategory&&category?'العودة إلى الأقسام':'العودة إلى المتجر');
+ if(grouped){drawGroups();return;}
+ const q=root.querySelector('.sc-search').value.trim().toLocaleLowerCase(),only=root.querySelector('.sc-only').checked;
+ const items=entries.filter(p=>p.category_id===category&&(p.group||'الباقات')===selectedGroup&&(!only||p.available)&&(!q||p.name.toLocaleLowerCase().includes(q)));
  const grid=root.querySelector('.sc-grid');
- const nextKey=JSON.stringify({category,q,group,only,limit,items:items.slice(0,limit)});
- if(nextKey===renderKey){root.querySelector('.sc-status').textContent=items.length?items.length+' منتج':'لا توجد منتجات مطابقة حاليًا.';return;}
+ const nextKey=JSON.stringify({category,q,selectedGroup,only,limit,items:items.slice(0,limit)});
+ root.querySelector('.sc-status').textContent=items.length?items.length+' باقة':'لا توجد باقات مطابقة حاليًا.';
+ root.querySelector('.sc-more').hidden=items.length<=limit;
+ if(nextKey===renderKey)return;
  renderKey=nextKey;grid.replaceChildren();
- const seen=new Set();
  for(const p of items.slice(0,limit)){
-  const card=make('article','sc-product');
-  card.append(art(p));
-  const info=make('div','sc-info');info.append(make('small','sc-region',p.group||p.category_name),make('h2','',p.name),make('span','sc-availability'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر'),make('strong','sc-price',cash(p.price)));
+  const card=make('article','sc-product');card.append(art(p));
+  const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),make('span','sc-availability'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر'),make('strong','sc-price',cash(p.price)));
   const button=make('button','sc-buy',p.available?'شراء الآن':'غير متوفر');button.type='button';button.disabled=!p.available;
   button.onclick=()=>{if(typeof window.openOmnexProductCheckout==='function')window.openOmnexProductCheckout({...p,region:p.group||p.category_name});};
-  info.append(button);card.append(info);grid.append(card);seen.add(p.id);
+  info.append(button);card.append(info);grid.append(card);
  }
- root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل المنتجات…':items.length?items.length+' منتج':'لا توجد منتجات مطابقة حاليًا.';
- root.querySelector('.sc-more').hidden=items.length<=limit;
 }
-function groups(){
- const select=root.querySelector('.sc-group'),before=select.value;
- select.replaceChildren(new Option('جميع المجموعات',''));
- const keys=[...new Set(entries.filter(p=>!category||p.category_id===category).map(p=>p.group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
- for(const key of keys)select.add(new Option(key,key));
- select.value=keys.includes(before)?before:'';
- select.parentElement.hidden=!keys.length;
+function goBack(){
+ if(selectedGroup!==null){
+  selectedGroup=null;renderKey='';draw();root.scrollTop=groupScroll;
+  [...root.querySelectorAll('.sc-group-card')].find(button=>button.dataset.groupKey===lastGroupButton)?.focus({preventScroll:true});return;
+ }
+ if(!entryCategory&&category){category=null;root.querySelector('.sc-groups').dataset.renderKey='';draw();root.scrollTop=allScroll;return;}
+ close();
 }
 function open(id=null){
- mount();category=id;limit=24;returnFocus=document.activeElement;
- const p=entries.find(x=>x.category_id===id);
- root.querySelector('h1').textContent=p?.category_name||'جميع منتجات المتجر';
- root.querySelector('.sc-search').value='';root.querySelector('.sc-group').value='';root.querySelector('.sc-only').checked=true;
- root.hidden=false;document.body.classList.add('sc-open');renderKey='';groups();draw();root.scrollTop=scrolls.get(id)||0;
+ mount();entryCategory=id;category=id;selectedGroup=null;limit=24;returnFocus=document.activeElement;groupScroll=0;
+ root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=true;
+ root.querySelector('.sc-groups').dataset.renderKey='';
+ root.hidden=false;document.body.classList.add('sc-open');renderKey='';draw();root.scrollTop=scrolls.get(id)||0;
  root.querySelector('.sc-back').focus({preventScroll:true});void refresh(true);
 }
 function close(){
- if(!root)return;scrolls.set(category,root.scrollTop);root.hidden=true;document.body.classList.remove('sc-open');
+ if(!root)return;
+ scrolls.set(entryCategory,selectedGroup===null?root.scrollTop:groupScroll);
+ root.hidden=true;document.body.classList.remove('sc-open');
  returnFocus?.focus?.({preventScroll:true});
 }
 async function refresh(quiet=false){
@@ -108,7 +160,7 @@ async function refresh(quiet=false){
   const changed=!homeReady||JSON.stringify(nextEntries)!==JSON.stringify(entries);
   entries=nextEntries;homeReady=true;
   if(changed)window.dispatchEvent(new Event('l1017n:catalog-updated'));
-  if(root&&!root.hidden){if(changed)groups();draw();root.querySelector('.sc-retry').hidden=true;}
+  if(root&&!root.hidden){draw();root.querySelector('.sc-retry').hidden=true;}
  }catch{
   if(seq!==sequence)return;
   if(root&&!root.hidden){root.querySelector('.sc-status').textContent='تعذر تحديث المنتجات. أعد المحاولة قبل الشراء.';root.querySelector('.sc-retry').hidden=false;}
@@ -119,7 +171,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('[data-supplier-all]'))open();
 });
 document.addEventListener('error',e=>{if(e.target.matches?.('.sc-home-art img,.sc-art img,#omnexCheckout .ox-summary img'))fallbackImage(e.target);},true);
-window.L1017nCompleteCatalog={homeCards,open,refresh,categories,imageFor:localImage};
+window.L1017nCompleteCatalog={homeCards,open,refresh,categories,imageFor:localImage,groupChoices,groupLabel};
 const boot=()=>{void refresh();setInterval(()=>{if(!document.hidden)void refresh(true);},60000);};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

@@ -1,33 +1,64 @@
-/* Curated storefront priority based on prominent game categories, not third-party sales figures. */
+/* L1017n — curated popular worldwide game top-ups and gift cards, Nov 2026.
+ * Editorial priority derived from published market trends, NOT exact global sales ranks.
+ * Only supplier-confirmed available categories enter the homepage.
+ * No pricing/stock/order database mutations. */
 (function(){
 'use strict';
-const featured=[
- /^(?:ببجي موبايل|شدات ببجي)$/i,
+const gamePatterns=[
+ /روبلوكس|روبوكس|roblox|robux/i,
  /فري\s*فاير|free\s*fire/i,
- /روبلوكس|roblox/i,
- /فورت\s*نايت|fortnite/i,
- /eafc|ea\s*fc|fc\s*mobile/i,
- /call\s*of\s*duty|كول\s*اوف\s*ديوتي/i,
+ /ببجي|pubg/i,
+ /شرف\s*الملوك|honor\s*of\s*kings/i,
  /موبايل\s*ليجند|mobile\s*legends/i,
- /جينشين|genshin/i,
+ /فورت\s*نايت|fortnite/i,
+ /call\s*of\s*duty|كول\s*اوف\s*ديوتي/i,
+ /eafc\s*mobile|ea\s*fc|fc\s*mobile|فيفا/i,
  /فالورانت|valorant/i,
- /ماين\s*كرافت|minecraft/i,
- /بلود\s*سترايك|blood\s*strike/i
+ /جينشين|genshin/i
 ];
-function priority(card){
- const key=card.querySelector('[data-ll-game]')?.dataset.llGame;
- if(key==='pubg')return 0;if(key==='roblox')return 2;
- const name=card.querySelector('.ll-game-section-details strong')?.textContent||'';
- const rank=featured.findIndex(pattern=>pattern.test(name));return rank<0?Infinity:rank;
+const giftPatterns=[
+ /بلايستيشن|بلاستيشن|playstation|psn/i,
+ /ستيم|steam/i,
+ /ايتونز|itunes|apple|app\s*store/i,
+ /اكس\s*بوكس|xbox/i,
+ /امازون|amazon/i,
+ /رايزر\s*جولد|razer\s*gold/i,
+ /نينتندو|نيتندو|nintendo/i,
+ /نتفلكس|netflix/i,
+ /riot\s*games|ريوت\s*جيمز/i,
+ /eneba|اينبا/i
+];
+function normalize(text){
+ return String(text||'').toLowerCase().normalize('NFKC')
+   .replace(/[\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه');
 }
-function sortGames(root=document.getElementById('llCatalog')){
+function rankFor(section,name){
+ const patterns=section==='cards'?giftPatterns:section==='games'?gamePatterns:[];
+ const target=normalize(name);
+ return patterns.findIndex(pattern=>pattern.test(target));
+}
+function sortSection(root,section){
  if(!root)return;
- const cards=[...root.children];
- const sorted=cards.map((card,index)=>({card,index,rank:priority(card)})).sort((a,b)=>a.rank-b.rank||a.index-b.index).map(x=>x.card);
- if(sorted.some((card,index)=>card!==cards[index]))root.append(...sorted);
+ const nodes=[...root.children];
+ const entries=nodes.map((node,index)=>{
+   const name=node.querySelector('.ll-game-section-details strong')?.textContent||'';
+   const key=node.querySelector('[data-ll-game]')?.dataset.llGame||'';
+   const rank=rankFor(section,name+' '+key);
+   return {node,index,rank:rank<0?999:rank};
+ });
+ entries.sort((a,b)=>a.rank-b.rank||a.index-b.index);
+ if(entries.some((x,i)=>x.node!==nodes[i]))root.append(...entries.map(x=>x.node));
 }
-// Preserve the existing renderer hook; this priority does not claim market sales statistics.
-window.L1017nSortGamesBySales=sortGames;
-window.addEventListener('l1017n:catalog-updated',()=>sortGames());
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>sortGames(),{once:true});else sortGames();
+window.L1017nFeaturedCatalog={
+ rankFor,
+ // Only show packages supplied by categories whose status is available.
+ maxPerSection:10,
+ sources:['Sensor Tower mobile games, October 2026','G2A gaming gift cards, H1 2026']
+};
+window.L1017nSortGamesBySales=root=>sortSection(root||document.getElementById('llCatalog'),'games');
+window.L1017nSortGiftCardsByPopularity=root=>sortSection(root||document.getElementById('llGiftCatalog'),'cards');
+window.addEventListener('l1017n:catalog-updated',()=>{
+ window.L1017nSortGamesBySales();
+ window.L1017nSortGiftCardsByPopularity();
+});
 })();

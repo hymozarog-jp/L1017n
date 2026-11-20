@@ -38,3 +38,24 @@
 #madarTopupDialog [data-madar-manage] { margin-top: 10px; }
 #madarTopupDialog button[aria-pressed="true"], #madarTopupDialog button[type="submit"]:not(:disabled) { background: #b098f0; color: #181025; font-weight: 700; }
 #madarTopupDialog button:disabled { opacity: .45; }
+
+#llLanding > #llMadarCatalog { display: none; }
+body[data-checkout-wallet="almadar"] #llLanding > :not(#llMadarCatalog),
+body[data-checkout-wallet="almadar"] #llHeaderSearch { display: none!important; }
+body[data-checkout-wallet="almadar"] #llLanding > #llMadarCatalog { display: block; }
+#llMadarCatalog { max-width: 620px; margin-inline: auto; }
+#llMadarCatalog .ll-madar-offer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #211b30;
+  color: #faf3ff;
+  border: 1px solid #655781;
+  border-radius: 20px;
+  padding: 16px;
+  margin-block: 14px;
+}
+#llMadarCatalog .ll-madar-offer img { width: clamp(64px,24vw,96px); height: auto; border-radius: 12px; }
+#llMadarCatalog .ll-madar-offer h3, #llMadarCatalog .ll-madar-offer p { margin-block: 0 8px; }
+#llMadarCatalog button { min-height: 44px; border-radius: 12px; padding-inline: 12px; font: inherit; cursor: pointer; }
+#llMadarCatalog #madarCatalogPurchase { background: #b098f0; color: #181025; border: 0; font-weight: 700; }

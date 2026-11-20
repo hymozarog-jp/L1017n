@@ -23,6 +23,14 @@
   let submitted = false;
   let revision = 0;
 
+  function renderPurchase() {
+    const madarSelected = window.L1017nPrimaryWallets?.getSelectedFor(customer) === 'madar';
+    buy.disabled = !customer || !madarSelected || salePending;
+    if (customer && !madarSelected) {
+      purchaseStatus.textContent = 'اختار المدار كمحفظة أساسية من صفحة المحفظة باش تشتري الباقة.';
+    }
+  }
+
   function render() {
     const value = amount.valueAsNumber;
     const valid = Number.isInteger(value) && value >= 1 && value <= 20;
@@ -65,7 +73,7 @@
       const user = await currentUser();
       if (token !== revision) return;
       customer = user?.id ?? null;
-      buy.disabled = !customer || salePending;
+      renderPurchase();
       if (!user) {
         status.textContent = 'سجّل دخولك أولاً لشحن محفظة المدار.';
         manage.textContent = 'اذهب إلى حسابي';
@@ -96,13 +104,18 @@
   }
 
   document.addEventListener('click', event => {
-    if (event.target.closest('#madarWalletTopup, #madarTopupProvider, #customerWalletChip[data-wallet-carrier="madar"] #customerTopupShortcut')) {
+    if (event.target.closest('#madarCatalogPurchase, #madarWalletTopup, #madarTopupProvider, #customerWalletChip[data-wallet-carrier="madar"] #customerTopupShortcut')) {
       event.preventDefault();
       event.stopImmediatePropagation();
       void open();
     }
   }, true);
   dialog.querySelector('[data-madar-close]').addEventListener('click', () => dialog.close());
+  window.addEventListener('l1017n:checkout-wallet-changed', () => {
+    if (!dialog.open) return;
+    purchaseStatus.textContent = '';
+    renderPurchase();
+  });
   dialog.addEventListener('close', () => { revision++; });
   manage.addEventListener('click', () => {
     dialog.close();
@@ -191,10 +204,14 @@
       if (message === 'insufficient_madar_balance') purchaseStatus.textContent = 'رصيد المدار أقل من 20 د.ل. عبّي المحفظة أولاً.';
       else if (message === 'robux_out_of_stock' || message === 'product_not_available') purchaseStatus.textContent = '100 روبوكس غير متوفرة حاليًا.';
       else if (message === 'phone_required_before_purchase') purchaseStatus.textContent = 'أضف رقم هاتف أساسي في حسابك أولاً.';
+      else if (message === 'checkout_wallet_mismatch') {
+        purchaseStatus.textContent = 'المدار مش المحفظة الأساسية حاليًا. راجع اختيارك في المحفظة.';
+        void window.L1017nPrimaryWallets?.refresh();
+      }
       else purchaseStatus.textContent = 'تعذر تأكيد الطلب. اضغط شراء مرة ثانية بنفس اسم المستخدم للتحقق.';
     } finally {
       salePending = false;
-      buy.disabled = !customer;
+      renderPurchase();
     }
   });
 })();

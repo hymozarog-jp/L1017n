@@ -340,7 +340,12 @@
     if (!store || q("#llLanding")) return;
     const container = document.createElement("div");
     container.id = "llLanding";
-    container.innerHTML = '<section class="ll-carousel" aria-label="مختارات المتجر">'
+    container.innerHTML = '<section id="llMadarCatalog" aria-labelledby="llMadarHeading">'
+      + '<h2 id="llMadarHeading">متجر محفظة المدار</h2>'
+      + '<article class="ll-madar-offer"><img src="game-covers/packages/robux-100.webp" alt="" width="96" height="96"><div><h3>100 روبوكس</h3>'
+      + '<p>20 د.ل من رصيد المدار</p><button type="button" id="madarCatalogPurchase" aria-haspopup="dialog">شراء 100 روبوكس</button></div></article>'
+      + '<button type="button" data-ll-wallet>إدارة المحافظ</button></section>'
+      + '<section class="ll-carousel" aria-label="مختارات المتجر">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
@@ -470,6 +475,7 @@
       const game=e.target.closest("[data-ll-game]");
       if (game) { openGame(game.dataset.llGame); return; }
       if (e.target.closest("[data-ll-show-orders]")) { routeView("orders"); return; }
+      if (e.target.closest("[data-ll-wallet]")) { routeView("wallet"); return; }
       const buy=e.target.closest("[data-ll-buy]");
       if (!buy || buy.disabled) return;
       const item=catalog().find(p => String(p.id)===String(buy.dataset.llBuy));

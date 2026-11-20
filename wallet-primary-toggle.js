@@ -1,5 +1,4 @@
-/* Primary badges for each swipeable carrier wallet.
-   Display preference only. Never modifies wallet_accounts, ledger or checkout. */
+/* The selected carrier controls the catalog and the server-side checkout. */
 (function(){
  "use strict";
  const choices=["libyana","madar"];
@@ -7,8 +6,9 @@
  let identity=null;
  let selected={libyana:false,madar:false};
  let updateCounter=0;
- let toggleCounter=0;
+ let saving=false;
  let loadRetryCount=0;
+ let authListening=false;
  const cardByName=name=>document.querySelector(name==="libyana"?"#walletView .wallet-carousel>.wallet-hero":"#walletView .wallet-carousel>.madar-wallet-card");
  const track=()=>document.querySelector("#walletView .wallet-carousel");
  function getActive(){
@@ -52,9 +52,11 @@
   try{if(typeof toast==="function")toast(message)}catch(_){}
  }
  function update(){
+  document.body.dataset.checkoutWallet=getSelected()==="madar"?"almadar":"libyana";
   choices.forEach(name=>{
    const button=document.querySelector('[data-wallet-primary="'+name+'"]');
    if(button){
+    button.disabled=saving;
     const active=selected[name]===true;
     button.setAttribute("aria-pressed",String(active));
     button.innerHTML=active?'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> الأساسية':'اجعلها أساسية';
@@ -66,6 +68,7 @@
   });
   const action=document.getElementById("walletActionPrimary");
   if(action){
+   action.disabled=saving;
    const wallet=getActive(),active=selected[wallet]===true;
    action.setAttribute("aria-pressed",String(active));
    action.setAttribute("aria-label",(active?"إلغاء الأساسية عن ":"تعيين الأساسية في ")+names[wallet]);
@@ -74,7 +77,20 @@
    if(caption)caption.innerHTML=active?'<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> الأساسية':'اجعلها أساسية';
   }
  }
+ function applySelection(wallet,user){
+  const previous=getSelected();
+  identity=user?.id||null;
+  selected={libyana:wallet==="libyana",madar:wallet==="almadar"};
+  if(user){
+   try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
+   catch(error){console.warn("[wallet/primary/storage]",error)}
+  }
+  update();
+  refreshTopWallet(user);
+  if(previous!==getSelected())window.dispatchEvent(new Event("l1017n:checkout-wallet-changed"));
+ }
  async function load(){
+  if(saving)return;
   const sequence=++updateCounter;
   try{
    if(typeof currentUser!=="function"){
@@ -83,49 +99,49 @@
     return;
    }
    loadRetryCount=0;
+   if(!authListening){
+    supabaseClient.auth.onAuthStateChange(event=>{
+     if(event==="SIGNED_IN"||event==="SIGNED_OUT")window.setTimeout(()=>void load(),0);
+    });
+    authListening=true;
+   }
    const user=await currentUser();
    if(sequence!==updateCounter)return;
-   identity=user?.id||null;
-   selected=identity?safeRead(storageKey()):{libyana:false,madar:false};
-   // Repair preferences saved by the prior version that allowed both selected.
-   if(identity){
-    try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
-    catch(error){console.warn("[wallet/primary/storage]",error)}
+   if(!user){applySelection(null,null);return;}
+   if(identity&&identity!==user.id)applySelection(null,null);
+   const cached=safeRead("l1017n-primary-wallets-v1:"+user.id);
+   let {data:wallet,error}=await supabaseClient.rpc("get_checkout_wallet");
+   if(sequence!==updateCounter)return;
+   if(error)throw error;
+   if(!wallet&&(cached.madar||cached.libyana)){
+    ({data:wallet,error}=await supabaseClient.rpc("set_checkout_wallet",{p_wallet:cached.madar?"almadar":"libyana",p_initialize:true}));
+    if(sequence!==updateCounter)return;
+    if(error)throw error;
    }
-   update();
-   refreshTopWallet(user);
+   applySelection(wallet||"libyana",user);
   }catch(error){console.warn("[wallet/primary/load]",error)}
  }
  async function toggle(name){
-  if(!choices.includes(name))return;
-  const sequence=++toggleCounter;
+  if(!choices.includes(name)||saving)return;
+  saving=true;
+  ++updateCounter;
+  update();
   try{
    if(typeof currentUser!=="function")throw new Error("not_ready");
    const user=await currentUser();
-   if(sequence!==toggleCounter)return;
    if(!user){
     flash("سجّل دخولك باش تختار المحفظة الأساسية.");
     if(typeof switchView==="function")switchView("account");
     return;
    }
-   if(identity!==user.id){
-    identity=user.id;
-    selected=safeRead(storageKey());
-   }
-   // Exactly one active wallet, or none if the active one is tapped again.
-   // Switching wallets never affects their money or payment functions.
-   const activate=!selected[name];
-   selected={libyana:activate&&name==="libyana",madar:activate&&name==="madar"};
-   ++updateCounter; // Reject a previously started load that could restore stale state.
-   try{window.localStorage.setItem(storageKey(),JSON.stringify(selected))}
-   catch(error){console.warn("[wallet/primary/storage]",error)}
-   update();
-   refreshTopWallet(user);
-   flash(selected[name]?"تم تعيين محفظة "+names[name]+" كأساسية في العرض":"تم إلغاء الأساسية عن محفظة "+names[name]);
+   const {data:wallet,error}=await supabaseClient.rpc("set_checkout_wallet",{p_wallet:name==="madar"?"almadar":"libyana"});
+   if(error)throw error;
+   applySelection(wallet,user);
+   flash("الشراء الآن بمحفظة "+names[getSelected()]);
   }catch(error){
    flash("تعذر تحديث اختيار المحفظة. جرّب تحديث الصفحة.");
    console.warn("[wallet/primary/toggle]",error);
-  }
+  }finally{saving=false;update();}
  }
  function bind(){
   const carousel=track();

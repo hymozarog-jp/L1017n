@@ -1,81 +1,65 @@
-/* L1017n header brand — original code-drawn SVG logo at right of wordmark.
-   Display only: no authentication, checkout or wallet behavior changes. */
+/* L1017n compact wordmark: name + elegant vector sparkle, without a logo tile. */
 html body .topbar #l1017HeaderBrand.l1017-header-brand{
-  display:inline-flex!important;
-  flex-flow:row nowrap!important;
-  direction:rtl!important;
-  justify-content:center!important;
-  align-items:center!important;
-  gap:7px!important;
-  flex:0 0 auto!important;
-  order:-2!important;
-  min-width:0!important;
-  min-height:38px!important;
-  padding:3px 5px!important;
-  margin:0!important;
-  border:0!important;
-  outline-offset:3px!important;
-  border-radius:12px!important;
-  background:transparent!important;
-  color:#fff!important;
-  cursor:pointer!important;
-  text-decoration:none!important;
-  position:relative!important;
-  z-index:2!important;
-}
-html body .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
-  display:block!important;
-  box-sizing:border-box!important;
-  width:38px!important;
-  height:38px!important;
-  min-width:38px!important;
-  overflow:visible!important;
-  border-radius:12px!important;
-  border:1px solid #bb8afa6a!important;
-  background:transparent!important;
-  box-shadow:0 3px 12px #8e50dc38!important;
+ display:inline-flex!important;flex-flow:row nowrap!important;direction:rtl!important;
+ justify-content:center!important;align-items:center!important;gap:6px!important;
+ flex:0 0 auto!important;order:-2!important;min-width:0!important;
+ min-height:38px!important;width:max-content!important;padding:3px 4px!important;margin:0!important;
+ border:0!important;outline-offset:3px!important;border-radius:12px!important;
+ background:transparent!important;color:#fff!important;cursor:pointer!important;
+ text-decoration:none!important;position:relative!important;z-index:2!important;
 }
 html body .topbar #l1017HeaderBrand .l1017-site-logo-name{
-  display:block!important;
-  direction:ltr!important;
-  unicode-bidi:isolate!important;
-  font:900 19px/1.2 system-ui,-apple-system,sans-serif!important;
-  letter-spacing:-.65px!important;
-  color:#f5eeff!important;
-  white-space:nowrap!important;
-  text-shadow:0 1px 10px #b77aff30!important;
+ display:block!important;direction:ltr!important;unicode-bidi:isolate!important;
+ font:900 19px/1.2 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:-.7px!important;color:#f5eeff!important;white-space:nowrap!important;
+ text-shadow:0 0 15px #b77aff3d!important;
 }
-html body .topbar #l1017HeaderBrand:focus-visible{
-  outline:2px solid #d6a6ff!important;
+html body .topbar #l1017HeaderBrand .l1017-site-wordmark-mark{
+ display:block!important;width:24px!important;height:24px!important;
+ flex:0 0 24px!important;min-width:24px!important;min-height:24px!important;
+ border:0!important;background:none!important;box-shadow:none!important;
+ filter:drop-shadow(0 1px 5px #b56bff68);
 }
+html body .topbar #l1017HeaderBrand:focus-visible{outline:2px solid #d6a6ff!important}
 @media(max-width:900px){
-  html body.l1017-live-ui .topbar #l1017HeaderBrand.l1017-header-brand{
-    order:-2!important;
-    flex:0 0 34px!important;
-    width:34px!important;
-    min-width:34px!important;
-    min-height:36px!important;
-    padding:0!important;
-    margin:0!important;
-  }
-  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
-    width:34px!important;height:34px!important;min-width:34px!important;
-    border-radius:10px!important;
-  }
-  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-name{
-    display:none!important;
-  }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand.l1017-header-brand{
+  order:-2!important;flex:0 0 auto!important;width:max-content!important;
+  min-width:0!important;max-width:110px!important;min-height:37px!important;
+  gap:4px!important;padding:0 2px!important;margin:0!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-name{
+  display:block!important;font-size:clamp(13px,3.7vw,16px)!important;
+  letter-spacing:-.8px!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-wordmark-mark{
+  width:19px!important;height:19px!important;min-width:19px!important;
+  min-height:19px!important;flex-basis:19px!important;
+ }
 }
 @media(max-width:380px){
-  html body.l1017-live-ui .topbar #l1017HeaderBrand.l1017-header-brand{
-    flex-basis:29px!important;width:29px!important;min-width:29px!important;
-    min-height:30px!important;
-  }
-  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
-    width:29px!important;height:29px!important;min-width:29px!important;
-    border-radius:9px!important;
-  }
-  html body.l1017-live-ui .topbar #phMenuButton{
-    width:34px!important;height:34px!important;flex-basis:34px!important;
-  }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand.l1017-header-brand{
+  max-width:88px!important;min-height:30px!important;gap:3px!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-name{
+  font-size:12.5px!important;letter-spacing:-1px!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-wordmark-mark{
+  width:15px!important;height:15px!important;min-width:15px!important;
+  min-height:15px!important;flex-basis:15px!important;
+ }
+ html body.l1017-live-ui .topbar #phMenuButton{
+  width:34px!important;height:34px!important;flex-basis:34px!important;
+ }
+}
+@media(max-width:340px){
+ html body.l1017-live-ui .topbar #l1017HeaderBrand.l1017-header-brand{
+  max-width:77px!important;gap:2px!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-name{
+  font-size:11px!important;
+ }
+ html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-wordmark-mark{
+  width:13px!important;height:13px!important;min-width:13px!important;
+  min-height:13px!important;flex-basis:13px!important;
+ }
 }

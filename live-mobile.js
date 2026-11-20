@@ -378,7 +378,7 @@
     const nav = document.createElement("nav");
     nav.id = "llBottomNav";
     nav.setAttribute("aria-label", "التنقل الرئيسي");
-    nav.innerHTML = '<span class="ll-nav-glider" aria-hidden="true"></span>' + [
+    nav.innerHTML = [
       ["home", "الرئيسية", "home"],
       ["orders", "طلباتي", "orders"],
       ["leaderboard", "التصنيف", "leaderboard"],
@@ -394,6 +394,32 @@
     toast.setAttribute("role", "status");
     toast.setAttribute("aria-live", "polite");
     document.body.appendChild(toast);
+    // Screen-level navigation feedback: never render loading/decoration beneath the dock.
+    const navScreenLoader = document.createElement("div");
+    navScreenLoader.id = "l1017nScreenNavLoader";
+    navScreenLoader.hidden = true;
+    navScreenLoader.setAttribute("role", "status");
+    navScreenLoader.setAttribute("aria-live", "polite");
+    navScreenLoader.setAttribute("aria-label", "فتح القسم");
+    navScreenLoader.innerHTML = '<div class="ll-screen-load-card"><span class="ll-screen-load-ring" aria-hidden="true"></span><span class="ll-screen-load-label">جاري فتح القسم…</span></div>';
+    document.body.appendChild(navScreenLoader);
+    let navScreenTimer = 0, navScreenHideTimer = 0;
+    function showNavScreenLoading(label) {
+      if (reduceMotion()) return;
+      const loader = navScreenLoader;
+      const text = loader.querySelector(".ll-screen-load-label");
+      if (text) text.textContent = "جاري فتح " + (label || "القسم") + "…";
+      clearTimeout(navScreenTimer);
+      clearTimeout(navScreenHideTimer);
+      loader.hidden = false;
+      requestAnimationFrame(() => loader.classList.add("is-visible"));
+      // Navigation uses the existing synchronous switchView; this brief in-screen
+      // transition must not pretend an async payment or request has completed.
+      navScreenTimer = setTimeout(() => {
+        loader.classList.remove("is-visible");
+        navScreenHideTimer = setTimeout(() => { if (!loader.classList.contains("is-visible")) loader.hidden = true; }, 190);
+      }, 330);
+    }
     // Prefer existing site's functional animated hamburger drawer.
     const bar = q(".topbar");
     if (bar && !q("#llHeaderSearch")) {
@@ -502,7 +528,15 @@
       const btn=e.target.closest("[data-ll-nav]");
       if (!btn) return;
       const wasActive=btn.classList.contains("active");
-      routeView(btn.dataset.llNav);
+      if(!wasActive)showNavScreenLoading(btn.getAttribute("aria-label") || btn.dataset.llNav);
+      try { routeView(btn.dataset.llNav); }
+      catch (error) {
+        navScreenLoader.classList.remove("is-visible");
+        navScreenLoader.hidden=true;
+        console.error("[live-ui] Navigation",error);
+        notify("تعذّر فتح القسم. حاول مرة أخرى.");
+        return;
+      }
       if(wasActive||!btn.classList.contains("active")||reduceMotion())return;
       navFeedback?.cancel();
       navFeedback=btn.querySelector(".ll-nav-icon svg")?.animate?.([

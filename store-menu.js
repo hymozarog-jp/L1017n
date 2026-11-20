@@ -231,30 +231,30 @@ var styleId='robloxGamePageStyles';
       // the actual one-unit reservation is enforced atomically in PostgreSQL.
       var r=await client.rpc('get_mm2_product_stock');
       if(r.error)throw r.error;
-      var list=r.data||[];
+      var list=(r.data||[]).filter(function(product){
+        return product.active===true&&Number(product.price)>0;
+      });
+      if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 متوفرة حالياً.</div>';return}
       // Preserve the existing stock RPC; image URLs are read from public products.
       var images=await client.from('products').select('id,image_url').eq('game','mm2').eq('active',true);
       if(!images.error){
         var urls=new Map((images.data||[]).map(function(p){return [String(p.id),p.image_url]}));
         list=list.map(function(p){return Object.assign({},p,{image_url:urls.get(String(p.id))||null})});
       }
-      if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 مضافة حالياً.</div>';return}
       grid.innerHTML=list.map(function(x){
         var image=mm2Artwork(x);
         var art=image
           ? '<span class="mm2-item-art"><img class="l1017n-catalog-image" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+escapeHtml(image)+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
-        var priced=Number(x.price)>0;
-        var available=x.active===true&&priced;
-        return '<button class="rgp-package'+(available?'':' rgp-soldout')+'" type="button"'+
-          (available?' data-mm2-id="'+escapeHtml(x.id)+'"':' disabled aria-disabled="true"')+'>'+art+
+        return '<button class="rgp-package" type="button" data-mm2-id="'+escapeHtml(x.id)+'">'+art+
           '<strong>'+escapeHtml(x.name)+'</strong>'+
-          '<span class="mm2-price">'+(priced?Number(x.price).toFixed(2)+' د.ل':'السعر قريبًا')+'</span>'+
-          '<small class="mm2-delivery">'+(!priced?'بانتظار تحديد السعر':available?'الكمية المتوفرة: 1 · التسليم داخل اللعبة':'غير متوفر حاليًا · نفدت الكمية')+'</small>'+(available?'<span class="gb-card-open">شراء الآن</span>':'')+'</button>';
+          '<span class="mm2-price">'+Number(x.price).toFixed(2)+' د.ل</span>'+
+          '<small class="mm2-delivery">الكمية المتوفرة: 1 · التسليم داخل اللعبة</small>'+
+          '<span class="gb-card-open">شراء الآن</span></button>';
       }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;
-        var product=list.find(function(p){return p.active===true&&String(p.id)===String(b.dataset.mm2Id)});
+        var product=list.find(function(p){return String(p.id)===String(b.dataset.mm2Id)});
         if(product)showMm2Checkout(product);
       });
     }catch(err){grid.innerHTML='<div class="rgp-empty">تعذر تحميل باقات MM2. حاول مرة ثانية.</div>'}

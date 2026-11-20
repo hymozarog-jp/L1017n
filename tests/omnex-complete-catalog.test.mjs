@@ -16,6 +16,8 @@ test('home adds iTunes under gift cards, escapes supplier text, and hides unavai
  vm.createContext(context);vm.runInContext(source,context);await context.window.L1017nCompleteCatalog.refresh();
  const cards=context.window.L1017nCompleteCatalog.homeCards('cards');
  assert.ok(cards.includes('بطاقات ايتونز'));assert.ok(cards.includes('1 باقة متوفرة'));assert.ok(!cards.includes('Unavailable'));assert.equal(context.window.L1017nCompleteCatalog.categories().length,1);assert.equal(context.window.L1017nCompleteCatalog.homeCards('games'),'');
+ await context.window.L1017nCompleteCatalog.refresh();
+ assert.deepEqual(events.map(event=>event.type),['l1017n:catalog-updated','l1017n:supplier-catalog-settled']);
 });
 test('reseller API supports new category IDs and blocks supplier category mismatch',async()=>{
  let mismatch=false,quotes=0;

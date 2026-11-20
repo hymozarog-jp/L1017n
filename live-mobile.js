@@ -34,7 +34,8 @@
   const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const price = value => Number(value || 0).toFixed(2) + " د.ل";
   let moreGamesExpanded = false;
-  let chosen = "all", query = "", lastCatalog = "", activeSlide = 0, observer = null, refreshTimer = null;
+  let chosen = "all", query = "", lastCatalog = null, activeSlide = 0;
+  let observer = null, refreshTimer = null;
 
   function catalog() {
     try { return typeof products !== "undefined" && Array.isArray(products) ? products : []; }
@@ -234,7 +235,11 @@
     const gifts=q("#llGiftCatalog");
     const extra=window.L1017nCompleteCatalog; const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
     const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(window.L1017nCompleteCatalog?.homeCards("cards",query,chosen)||"");
-    const otherCards=window.L1017nCompleteCatalog?.homeCards("other",query,chosen)||"";
+    const otherCards=extra?.homeCards("other",query,chosen)||"";
+    const compact=chosen==="all"&&!query;
+    const nextCatalog=JSON.stringify([compact,games,giftCards,otherCards]);
+    if(nextCatalog===lastCatalog)return;
+    lastCatalog=nextCatalog;
     let other=q("#llOtherSupplierSection");if(!other){giftSection.insertAdjacentHTML("afterend",'<section id="llOtherSupplierSection"><div class="ll-title-row ll-products-title"><h2>خدمات وبطاقات أخرى</h2></div><div class="ll-catalog" id="llOtherSupplierCatalog"></div><button type="button" class="sc-all-link" data-supplier-all>جميع منتجات المتجر</button></section>');other=q("#llOtherSupplierSection");}
     other.hidden=!otherCards; q("#llOtherSupplierCatalog").innerHTML=otherCards;
     const showGames=Boolean(games);
@@ -255,12 +260,10 @@
         grid.hidden=!moreGamesExpanded;
         button.setAttribute("aria-expanded",String(moreGamesExpanded));
         button.textContent=moreGamesExpanded?"عرض ألعاب أقل":"المزيد من الألعاب";
-        if(moreGamesExpanded)reveal([...grid.querySelectorAll(".ll-reveal")]);
       });
     }
     const moreGrid=q("#llMoreGamesGrid"), moreButton=q("#llMoreGamesButton");
     moreGrid.replaceChildren();
-    const compact=chosen==="all"&&!query;
     const remaining=compact?[...root.children].slice(6):[];
     if(remaining.length)moreGrid.append(...remaining);
     more.hidden=!remaining.length;
@@ -270,7 +273,9 @@
     const heading=q("#llGamesHeading");
     if(heading)heading.textContent=compact?"الأكثر طلبًا":"الألعاب";
     gifts.innerHTML=giftCards;
-    reveal([...root.querySelectorAll(".ll-reveal"),...moreGrid.querySelectorAll(".ll-reveal"),...gifts.querySelectorAll(".ll-reveal"),...other.querySelectorAll(".ll-reveal")]);
+    for(const grid of [root,moreGrid,gifts,other]){
+      grid.querySelectorAll(".ll-reveal").forEach(card=>card.classList.add("ll-shown"));
+    }
   }
   function setCategory(key) {
     chosen = key;
@@ -395,19 +400,18 @@
     nav.dataset.scrollMotion='visible';
     bindEvents(container, nav);
     renderCatalog();
-    reveal([...container.querySelectorAll(".ll-reveal")]);
+    reveal([...container.querySelectorAll(".ll-reveal:not(.ll-shown)")]);
 
     const legacyGrid = q("#productGrid");
     if (legacyGrid) {
       // Catalog refresh happens when loadProducts() redraws the real game tiles.
-      new MutationObserver(() => { clearTimeout(refreshTimer); refreshTimer = setTimeout(renderCatalog, 80); })
+      new MutationObserver(() => {
+        if(!query)return;
+        clearTimeout(refreshTimer);
+        refreshTimer=setTimeout(renderCatalog,80);
+      })
         .observe(legacyGrid, {childList:true,subtree:false});
     }
-    // Works even if legacy app finishes loading after the new shell mounts.
-    let attempts=0; const timer=setInterval(() => {
-      renderCatalog();
-      if (catalog().length || ++attempts >= 16) clearInterval(timer);
-    }, 500);
   }
   // Scroll events intentionally do not change #llBottomNav visibility.
   // Its fixed layout stays visible while scrolling up or down.

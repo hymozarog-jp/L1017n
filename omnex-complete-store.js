@@ -1,7 +1,7 @@
 /* Complete server-priced OMNEX catalog. Checkout always revalidates with the supplier. */
 (function(){
 'use strict';
-let entries=[],root=null,category=null,limit=24,sequence=0,homeReady=false,bootAttempts=0,renderKey='',returnFocus=null,scrolls=new Map(),selectedGroup=null,entryCategory=null,groupScroll=0,allScroll=0,lastGroupButton=null;
+let entries=[],root=null,category=null,limit=24,sequence=0,homeReady=false,initialLoadSettled=false,bootAttempts=0,renderKey='',returnFocus=null,scrolls=new Map(),selectedGroup=null,entryCategory=null,groupScroll=0,allScroll=0,lastGroupButton=null;
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cash=v=>Number(v).toFixed(2)+' د.ل';
@@ -162,6 +162,11 @@ async function refresh(quiet=false){
  }catch{
   if(seq!==sequence)return;
   if(root&&!root.hidden){root.querySelector('.sc-status').textContent='تعذر تحديث المنتجات. أعد المحاولة قبل الشراء.';root.querySelector('.sc-retry').hidden=false;}
+ }finally{
+  if(seq===sequence&&!initialLoadSettled){
+   initialLoadSettled=true;
+   window.dispatchEvent(new Event('l1017n:supplier-catalog-settled'));
+  }
  }
 }
 document.addEventListener('click',e=>{

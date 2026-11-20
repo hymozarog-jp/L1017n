@@ -126,14 +126,15 @@
   var splash=document.getElementById('l1017EntrySplash');
   if(!splash)return;
   var status=document.getElementById('l1017EntryStatus');
-  var started=Date.now(),closed=false,watch=0,hardStop=0;
-  var minShow=1550,maxShow=6000;
+  var started=Date.now(),closed=false,watch=0,hardStop=0,supplierSettled=false;
+  var minShow=700,maxShow=3500;
   function close(){
     if(closed)return;
     closed=true;
     clearTimeout(watch);
     clearTimeout(hardStop);
     window.removeEventListener('l1017n:storefront-ready',readyCheck);
+    window.removeEventListener('l1017n:supplier-catalog-settled',supplierReady);
     splash.classList.add('l1017-entry-done');
     setTimeout(function(){if(splash.parentNode)splash.parentNode.removeChild(splash);},330);
   }
@@ -141,10 +142,10 @@
     if(closed)return;
     clearTimeout(watch);
     var elapsed=Date.now()-started;
-    var catalogReady=window.L1017nStorefrontReady===true;
+    var catalogReady=window.L1017nStorefrontReady===true&&supplierSettled;
     var shellReady=!!document.getElementById('llLanding');
     var loadingError=!!document.getElementById('site-load-error');
-    if(elapsed>=minShow&&(catalogReady||loadingError||(shellReady&&elapsed>=3500))){
+    if(elapsed>=minShow&&((shellReady&&catalogReady)||loadingError)){
       close();return;
     }
     if(status&&elapsed>=1700&&!catalogReady){
@@ -153,9 +154,11 @@
     if(elapsed>=maxShow){close();return}
     watch=setTimeout(readyCheck,120);
   }
+  function supplierReady(){supplierSettled=true;readyCheck();}
   // Always let the customer browse or see the real error, even on a bad network.
   hardStop=setTimeout(close,maxShow);
   window.addEventListener('l1017n:storefront-ready',readyCheck);
+  window.addEventListener('l1017n:supplier-catalog-settled',supplierReady);
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',readyCheck,{once:true});
   }else readyCheck();
@@ -909,7 +912,8 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <script src="wallet-luxe.js?v=arrival-verify-20261108&two-primary-wallets-1&balance-dialog=1" defer></script>
 <script src="wallet-primary-toggle.js?v=unified-ui-icons-20261103-1" defer></script>
 <script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
-<script src="live-mobile.js?v=featured-more-games-20261120" defer></script>
+<script src="game-bestsellers.js?v=featured-market-order-20261120" defer></script>
+<script src="live-mobile.js?v=stable-entry-20261120&featured-more-games-20261120" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=privacy-beside-ranking-20261109-1">
@@ -1218,4 +1222,4 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 <script src="card-topup-admin.js?v=restore-cards-1" defer></script>
 <link rel="stylesheet" href="reseller-api.css?v=supplier-api-20261119-1">
 <script src="reseller-api.js?v=supplier-api-20261119-1" defer></script>
-<script src="omnex-complete-store.js?v=clean-package-header-20261120" defer></script><script src="game-bestsellers.js?v=featured-market-order-20261120" defer></script></body></html>
+<script src="omnex-complete-store.js?v=entry-ready-20261120&clean-package-header-20261120" defer></script></body></html>

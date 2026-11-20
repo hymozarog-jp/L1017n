@@ -439,7 +439,7 @@
     // Only authentication and full-screen overlays may hide the navigation.
     nav.classList.remove('ll-nav-scroll-away');
     nav.dataset.scrollMotion='visible';
-    bindEvents(container, nav);
+    bindEvents(container, nav, showNavScreenLoading, navScreenLoader);
     renderCatalog();
     q("#storeStartupFallback")?.remove();
     window.dispatchEvent(new Event("l1017n:catalog-shell-ready"));
@@ -458,7 +458,7 @@
   }
   // Scroll events intentionally do not change #llBottomNav visibility.
   // Its fixed layout stays visible while scrolling up or down.
-  function bindEvents(container, nav) {
+  function bindEvents(container, nav, showNavScreenLoading, navScreenLoader) {
     const search = q("#llSearch");
     search.addEventListener("input", () => {
       query = normalize(search.value.trim());

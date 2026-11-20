@@ -137,7 +137,7 @@
   function openGame(key) {
     try {
       if(key==="roblox"){
-        if(typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
+        if(document.body.dataset.checkoutWallet!=="almadar"&&typeof window.openRobloxGameMenu==="function")window.openRobloxGameMenu();
         else if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
         else notify("قسم روبلوكس غير جاهز حاليًا.");
         return;
@@ -235,15 +235,17 @@
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
-    const visibleRoblox=SHOP_SECTIONS.filter(matchesSection).length > 0;
-    const visiblePubg=matchesPubg();
+    const madar=document.body.dataset.checkoutWallet==="almadar";
+    const visibleRoblox=madar||SHOP_SECTIONS.some(matchesSection);
+    const visiblePubg=!madar&&matchesPubg();
     const gamesSection=q("#llGamesSection");
     const giftSection=q("#llGiftSection");
     const gifts=q("#llGiftCatalog");
-    const extra=window.L1017nCompleteCatalog; const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
-    const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(window.L1017nCompleteCatalog?.homeCards("cards",query,chosen)||"");
+    const extra=madar?null:window.L1017nCompleteCatalog;
+    const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
+    const giftCards=madar?"":(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(extra?.homeCards("cards",query,chosen)||"");
     const moreSections=["local","voice","other"].map(section=>[section,extra?.homeCards(section,query,chosen)||""]);
-    const compact=chosen==="all"&&!query;
+    const compact=!madar&&chosen==="all"&&!query;
     const nextCatalog=JSON.stringify([compact,games,giftCards,moreSections]);
     if(nextCatalog===lastCatalog)return;
     lastCatalog=nextCatalog;
@@ -340,12 +342,7 @@
     if (!store || q("#llLanding")) return;
     const container = document.createElement("div");
     container.id = "llLanding";
-    container.innerHTML = '<section id="llMadarCatalog" aria-labelledby="llMadarHeading">'
-      + '<h2 id="llMadarHeading">شحن روبوكس</h2>'
-      + '<article class="ll-madar-offer"><img src="game-covers/packages/robux-100.webp" alt="" width="96" height="96"><div><h3>100 روبوكس</h3>'
-      + '<p>20 د.ل من رصيد المدار</p><button type="button" id="madarCatalogPurchase" aria-haspopup="dialog">اختيار الباقة</button></div></article>'
-      + '<button type="button" data-ll-wallet>إدارة المحافظ</button></section>'
-      + '<section class="ll-carousel" aria-label="مختارات المتجر">'
+    container.innerHTML = '<section class="ll-carousel" aria-label="مختارات المتجر">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
@@ -472,15 +469,9 @@
       if (dot) { scrollSlide(Number(dot.dataset.llDot)); return; }
       const direction=e.target.closest("[data-ll-slide-step]");
       if (direction) { scrollSlide(activeSlide+Number(direction.dataset.llSlideStep)); return; }
-      if(e.target.closest("#madarCatalogPurchase")){
-        if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
-        else notify("جاري تجهيز الباقات. حاول مرة ثانية.");
-        return;
-      }
       const game=e.target.closest("[data-ll-game]");
       if (game) { openGame(game.dataset.llGame); return; }
       if (e.target.closest("[data-ll-show-orders]")) { routeView("orders"); return; }
-      if (e.target.closest("[data-ll-wallet]")) { routeView("wallet"); return; }
       const buy=e.target.closest("[data-ll-buy]");
       if (!buy || buy.disabled) return;
       const item=catalog().find(p => String(p.id)===String(buy.dataset.llBuy));
@@ -511,6 +502,7 @@
     }, false);
   }
   window.addEventListener("l1017n:catalog-updated",renderCatalog);
+  window.addEventListener("l1017n:checkout-wallet-changed",renderCatalog);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build, {once:true});
   else build();
 })();

@@ -37,6 +37,10 @@
     catalogError="";
     const refresh=()=> {
       if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
+      root.querySelectorAll("[data-pubg-category]").forEach(button=>{
+        const label=button.querySelector("[data-pubg-count]");
+        if(label)label.textContent=catalogError?"تعذر تحديث الباقات":countLabel(categoryProducts(button.dataset.pubgCategory).length);
+      });
       if (root.classList.contains("pubg-inner-page")) setCategory(root,currentCategory,false);
     };
     try {
@@ -401,8 +405,7 @@
         + '<img class="pubg-choice-battle" src="'+safe(PACKAGE_ART[item.key]||PUBG_ART)+'" alt="" loading="lazy" decoding="async">'
         + '</span>'
         + '<span class="pubg-choice-info"><strong>' + item.title + '</strong>'
-        + '<small>' + (item.key==="codes"?"أكواد شدات PUBG المتوفرة في المخزون":item.key==="offers"?"باقات وعروض خاصة":"نجهز الشحن باستخدام معرف UID") + '</small>'
-        + '<span class="pubg-choice-action">' + (item.key==="codes"?"عرض أكواد الشحن":item.key==="offers"?"عرض العروض":"عرض باقات الشحن") + '<span aria-hidden="true">←</span></span></span>'
+        + '<small class="pubg-package-count"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM3 4h18v3H3zm6 7h6"/></svg><span data-pubg-count>جاري التحميل…</span></small></span>'
         + '</button>').join("")
       + '</div></section>'
       + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite" aria-hidden="true"></div>'

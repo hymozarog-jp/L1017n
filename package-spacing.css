@@ -1,0 +1,106 @@
+/* Mobile spacing shared by the storefront's catalog screens. */
+@media (max-width: 680px) {
+  html body :is(#pubgCategoryPage.pubg-premium, #robloxGamePage, #psnStoreScreen, #completeSupplierCatalog, #robuxModal.robux-fixed-packs) {
+    --package-gutter: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+    --package-screen-top: calc(12px + env(safe-area-inset-top, 0px));
+    --package-heading-space: 20px;
+    --package-grid-space: 22px;
+    --package-card-gap: 8px;
+  }
+
+  html body :is(#pubgCategoryPage.pubg-premium, #robloxGamePage.rgp-category-hub:not(.rgp-inner-page), #robloxGamePage.rgp-inner-page, #psnStoreScreen.psn-screen, #completeSupplierCatalog.sc-screen),
+  html body #robuxModal.robux-full-page.robux-fixed-packs:not(.robux-checkout-mode) .package-box.robux-store-box {
+    padding-inline: var(--package-gutter) !important;
+    padding-block-start: var(--package-screen-top) !important;
+  }
+
+  html body :is(#pubgCategoryPage.pubg-premium.pubg-inner-page .pubg-topbar, #pubgCategoryPage.pubg-premium .pubg-topbar, #robloxGamePage.rgp-category-hub:not(.rgp-inner-page) .rgp-top, #robloxGamePage.rgp-inner-page .rgp-top) {
+    min-height: 44px !important;
+    padding-block: 0 !important;
+    margin-block: 0 var(--package-heading-space) !important;
+  }
+
+  /* The PUBG landing has a single title above its three choices. */
+  html body #pubgCategoryPage.pubg-premium:not(.pubg-inner-page) :is(.pubg-brand, .pubg-hero, .pubg-footer) {
+    display: none !important;
+  }
+  html body #pubgCategoryPage.pubg-premium:not(.pubg-inner-page) .pubg-category-section {
+    margin-block-start: 0 !important;
+  }
+  html body #pubgCategoryPage.pubg-premium .pubg-category-section .pubg-section-label,
+  html body #pubgCategoryPage.pubg-premium.pubg-inner-page .pubg-results-heading {
+    padding-block-end: 0 !important;
+    margin-block: 0 var(--package-grid-space) !important;
+  }
+  html body #pubgCategoryPage.pubg-premium .pubg-category-section .pubg-section-label h2 {
+    font-size: clamp(24px, 6vw, 30px);
+    margin: 0;
+  }
+  html body #pubgCategoryPage.pubg-premium .pubg-choice {
+    padding: 4px !important;
+  }
+  html body #pubgCategoryPage.pubg-premium .pubg-choice .pubg-choice-art {
+    aspect-ratio: 3 / 4 !important;
+    border-radius: 10px !important;
+  }
+  html body #pubgCategoryPage.pubg-premium .pubg-choice .pubg-choice-art img {
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+  }
+
+  html body :is(#psnStoreScreen .psn-head, #completeSupplierCatalog .sc-head) {
+    display: grid;
+    justify-items: start;
+    gap: var(--package-heading-space);
+    padding: 0 !important;
+    margin: 0 0 var(--package-grid-space) !important;
+  }
+  html body #completeSupplierCatalog .sc-groups {
+    max-width: none;
+  }
+  html body #psnStoreScreen .psn-region-title {
+    margin-block-end: var(--package-grid-space);
+  }
+
+  html body #robloxGamePage.rgp-category-hub:not(.rgp-inner-page) .rgp-title {
+    text-align: start !important;
+    margin-block: 0 4px !important;
+  }
+  html body #robloxGamePage.rgp-category-hub:not(.rgp-inner-page) .rgp-hub-subtitle {
+    text-align: start;
+    margin-block-end: var(--package-grid-space) !important;
+  }
+  html body #robloxGamePage.rgp-inner-page :is(.rgp-mm2-subcategory .rgp-inner-heading, .sab-section-title, .ox-catalog-head) {
+    margin-block: 0 var(--package-grid-space) !important;
+  }
+  html body #robloxGamePage.rgp-inner-page :is(.rgp-mm2-subcategory .rgp-packages, .ox-region-grid) {
+    margin-block-start: 0 !important;
+  }
+
+  html body #robuxModal.robux-fixed-packs:not(.robux-checkout-mode) button.package-close {
+    position: relative !important;
+    inset: auto !important;
+    margin: 0 0 var(--package-heading-space) !important;
+  }
+  html body #robuxModal.robux-fixed-packs:not(.robux-checkout-mode) .robux-reference-section {
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin-block: 0 var(--package-grid-space) !important;
+  }
+
+  html body :is(
+    #robuxModal.robux-fixed-packs .package-grid,
+    #pubgCategoryPage.pubg-premium .pubg-choice-grid,
+    #pubgCategoryPage.pubg-premium.pubg-inner-page .pubg-packages,
+    #robloxGamePage.rgp-category-hub:not(.rgp-inner-page) .rgp-grid,
+    #robloxGamePage.rgp-inner-page :is(.rgp-packages, .sab-products-grid, .ox-region-grid, .ox-catalog-grid, .rgp-codes-list),
+    #psnStoreScreen :is(.psn-regions, .psn-products),
+    #completeSupplierCatalog :is(.sc-groups, .sc-grid)
+  ) {
+    gap: var(--package-card-gap) !important;
+  }
+}

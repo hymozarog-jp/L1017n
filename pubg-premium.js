@@ -393,7 +393,7 @@
       + '<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM8 5H5v16h14V5h-3M8 14l3 3 5-6"/></svg><small>تابع طلبك</small></span>'
       + '</div>'
       + '<section class="pubg-category-section" aria-label="طرق شحن ببجي">'
-      + '<div class="pubg-section-label"><div><h2>اختر الفئة</h2></div></div>'
+      + '<div class="pubg-section-label"><div><h2>شدات ببجي</h2></div></div>'
       + '<div class="pubg-choice-grid" role="group" aria-label="خيارات شحن ببجي">'
       + CATEGORIES.map(item =>
         '<button type="button" class="pubg-choice pubg-choice-' + item.key + '" data-pubg-category="' + item.key + '" aria-pressed="false">'

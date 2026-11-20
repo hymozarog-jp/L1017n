@@ -23,6 +23,7 @@
     if(key==='mm2-nightblade')return mm2NightbladeImage;
     if(key==='mm2-pixel-knife')return mm2PixelKnifeImage;
     if(key==='mm2-phantom')return mm2PhantomImage;
+    if(key==='mm2-embersickle'||key==='mm2-immortal'||key==='mm2-mortal')return 'game-covers/'+key+'.webp';
     return '';
   }
 var styleId='robloxGamePageStyles';

@@ -1,4 +1,4 @@
-/* L1017n header brand — existing store logo at right of wordmark.
+/* L1017n header brand — original code-drawn SVG logo at right of wordmark.
    Display only: no authentication, checkout or wallet behavior changes. */
 html body .topbar #l1017HeaderBrand.l1017-header-brand{
   display:inline-flex!important;
@@ -23,16 +23,16 @@ html body .topbar #l1017HeaderBrand.l1017-header-brand{
   position:relative!important;
   z-index:2!important;
 }
-html body .topbar #l1017HeaderBrand .l1017-site-logo-image{
+html body .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
   display:block!important;
   box-sizing:border-box!important;
   width:38px!important;
   height:38px!important;
   min-width:38px!important;
-  object-fit:contain!important;
+  overflow:visible!important;
   border-radius:12px!important;
   border:1px solid #bb8afa6a!important;
-  background:#19142a!important;
+  background:transparent!important;
   box-shadow:0 3px 12px #8e50dc38!important;
 }
 html body .topbar #l1017HeaderBrand .l1017-site-logo-name{
@@ -58,7 +58,7 @@ html body .topbar #l1017HeaderBrand:focus-visible{
     padding:0!important;
     margin:0!important;
   }
-  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-image{
+  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
     width:34px!important;height:34px!important;min-width:34px!important;
     border-radius:10px!important;
   }
@@ -71,7 +71,7 @@ html body .topbar #l1017HeaderBrand:focus-visible{
     flex-basis:29px!important;width:29px!important;min-width:29px!important;
     min-height:30px!important;
   }
-  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-image{
+  html body.l1017-live-ui .topbar #l1017HeaderBrand .l1017-site-logo-drawing{
     width:29px!important;height:29px!important;min-width:29px!important;
     border-radius:9px!important;
   }

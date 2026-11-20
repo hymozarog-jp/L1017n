@@ -1,0 +1,44 @@
+{
+  "name": "L1017n Admin — تطبيق الإدارة المستقل",
+  "short_name": "L1017n Admin",
+  "description": "تطبيق مستقل لإدارة L1017n. لا يفتح متجر الزبائن.",
+  "lang": "ar",
+  "dir": "rtl",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "theme_color": "#100c20",
+  "background_color": "#0b0914",
+  "icons": [
+    {
+      "src": "../manage-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../game-covers/l1017n-loading-logo-20261119.jpeg",
+      "sizes": "1254x1254",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "الطلبات",
+      "url": "./index.html#orders"
+    },
+    {
+      "name": "المنتجات والأسعار",
+      "url": "./index.html#products"
+    },
+    {
+      "name": "الأرباح والمبيعات",
+      "url": "./index.html#finance"
+    }
+  ]
+}

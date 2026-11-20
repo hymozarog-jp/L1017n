@@ -14,6 +14,10 @@
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>'
   };
   ICONS.gift = '<path d="M3 10h18v11H3zM2 6h20v4H2zM12 6v15M12 6c-2.4-4-6.5-5.2-7.5-2.2C3.6 6 7 7 12 6Zm0 0c2.4-4 6.5-5.2 7.5-2.2C20.4 6 17 7 12 6Z"/>';
+  ICONS.grid = '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>';
+  ICONS.games = '<path d="M8 7h8a4 4 0 0 1 4 3l1 5a2 2 0 0 1-3 2l-2-2H8l-2 2a2 2 0 0 1-3-2l1-5a4 4 0 0 1 4-3Z"/><path d="M8 10v4m-2-2h4m6-1h.01m2 2h.01"/>';
+  ICONS.local = '<path d="M3 9 5 4h14l2 5v2a3 3 0 0 1-3 3h-1a3 3 0 0 1-2.5-1.4A3 3 0 0 1 12 14a3 3 0 0 1-2.5-1.4A3 3 0 0 1 7 14H6a3 3 0 0 1-3-3V9Zm2 5v6h14v-6M3 9h18"/>';
+  ICONS.voice = '<path d="M3 11v2m4-5v8m5-12v16m5-12v8m4-5v2"/>';
   const SVG = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
   const GAME_META = {
     roblox: {name:"Roblox",tag:"روبلوكس",color:"purple",art:"R"},
@@ -22,13 +26,16 @@
     pubg: {name:"PUBG Mobile",tag:"ببجي موبايل",color:"gold",art:"UC"},
     psn: {name:"PlayStation Store",tag:"بطاقات بلايستيشن",color:"blue",art:"PS"}
   };
-  const FILTERS = [["all","الكل"],["roblox","روبلوكس"],["pubg","ببجي"],["psn","بلايستيشن"]];
+  const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","البطاقات","gift"],["local","محلية","local"],["voice","صوتية","voice"]];
   const HEROES = [
-    {headline:"باقات الروبوكس",more:"بسهولة وأمان",desc:"اختار باقتك من روبوكس وتابع طلبك من حسابك.",label:"GAMEBOX LY · ROBUX",action:"roblox",button:"باقات روبوكس",theme:"violet",art:"R",image:"game-covers/roblox-mark.svg?v=logo-square1"},
-    {headline:"أسلحة MM2",more:"داخل متجرك",desc:"تصفح أسلحة ومستلزمات Murder Mystery 2 المتوفرة.",label:"GAMEBOX LY · MM2",action:"mm2",button:"أسلحة MM2",theme:"gold",art:"M",image:"game-covers/official/mobile/mm2.webp?v=official-art-20261102"},
-    {headline:"ماب السرقة",more:"شخصيات وأغراض",desc:"تصفح شخصيات Steal a Brainrot مع الأسعار والتوفر.",label:"GAMEBOX LY · BRAINROT",action:"steal-a-brainrot",button:"الشخصيات",theme:"aqua",art:"01",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102"}
+    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"},
+    {headline:"شدّات ببجي",action:"pubg",button:"تصفّح الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"},
+    {headline:"بطاقات بلايستيشن",action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"}
   ];
   const q = selector => document.querySelector(selector);
+  const includesFilter = section => chosen === "all" || chosen === section;
+  const sectionHeading = (id, icon, title) =>
+    '<div class="ll-title-row ll-products-title ll-section-heading" data-ll-tone="' + icon + '"><span class="ll-category-icon">' + SVG(icon) + '</span><h2 id="' + id + '">' + title + '</h2></div>';
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const normalize = value => String(value ?? "").toLowerCase().normalize("NFKC").replace(/[\u064b-\u065f\u0670]/g, "").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
   const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -59,7 +66,7 @@
     {key:"steal-a-brainrot",title:"ماب السرقة",subtitle:"شخصيات Steal a Brainrot",image:"game-covers/official/mobile/brainrot.webp?v=official-art-20261102",tag:"STEAL A BRAINROT"}
   ];
   function matchesSection(section) {
-    if (chosen !== "all" && chosen !== "roblox") return false;
+    if (!includesFilter("games")) return false;
     if (!query) return true;
     const aliases = {
       roblox:"روبوكس روبلوكس roblox robux شحن",
@@ -71,17 +78,17 @@
       ...items.map(p=>[p.name,p.game,p.product_key].join(" "))].join(" ")).includes(query);
   }
   function matchesPubg(){
-    if(chosen!=="all"&&chosen!=="pubg")return false;
+    if(!includesFilter("games"))return false;
     if(!query)return true;
     const aliases="ببجي ببجي موبايل شدات شدة شحن معرف حساب uid uc pubg mobile";
     return normalize(aliases).includes(query);
   }
   function matchesPsn(){
-    if(chosen!=="all"&&chosen!=="psn")return false;
+    if(!includesFilter("cards"))return false;
     return !query || normalize("بلايستيشن بلاستيشن بلاي ستيشن بطاقات الهدايا شحن اكواد psn playstation store PS4 PS5 امريكا السعودية تركيا الامارات").includes(query);
   }
   function matchesRobloxCodes(){
-    if(chosen!=="all"&&chosen!=="roblox")return false;
+    if(!includesFilter("cards"))return false;
     return !query || normalize("بطاقات الهدايا أكواد روبلوكس بطاقات روبلوكس روبوكس roblox robux gift cards").includes(query);
   }
   function robloxCodesCard(){
@@ -235,18 +242,22 @@
     const gifts=q("#llGiftCatalog");
     const extra=window.L1017nCompleteCatalog; const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
     const giftCards=(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(window.L1017nCompleteCatalog?.homeCards("cards",query,chosen)||"");
-    const otherCards=extra?.homeCards("other",query,chosen)||"";
+    const moreSections=["local","voice","other"].map(section=>[section,extra?.homeCards(section,query,chosen)||""]);
     const compact=chosen==="all"&&!query;
-    const nextCatalog=JSON.stringify([compact,games,giftCards,otherCards]);
+    const nextCatalog=JSON.stringify([compact,games,giftCards,moreSections]);
     if(nextCatalog===lastCatalog)return;
     lastCatalog=nextCatalog;
-    let other=q("#llOtherSupplierSection");if(!other){giftSection.insertAdjacentHTML("afterend",'<section id="llOtherSupplierSection"><div class="ll-title-row ll-products-title"><h2>خدمات وبطاقات أخرى</h2></div><div class="ll-catalog" id="llOtherSupplierCatalog"></div><button type="button" class="sc-all-link" data-supplier-all>جميع منتجات المتجر</button></section>');other=q("#llOtherSupplierSection");}
-    other.hidden=!otherCards; q("#llOtherSupplierCatalog").innerHTML=otherCards;
+    for(const [section,cards] of moreSections){
+      const panel=q('[data-ll-section="' + section + '"]');
+      panel.hidden=!cards;
+      panel.querySelector(".ll-catalog").innerHTML=cards;
+    }
     const showGames=Boolean(games);
     const showGifts=Boolean(giftCards);
     gamesSection.hidden=!showGames;
     giftSection.hidden=!showGifts;
-    q("#llCatalogEmpty").hidden=showGames||showGifts||Boolean(otherCards);
+    q("#llCatalogEmpty").hidden=showGames||showGifts||moreSections.some(([,cards])=>Boolean(cards));
+    q("#llAllSupplierProducts").hidden=!compact||!moreSections.some(([,cards])=>Boolean(cards));
     root.innerHTML=games;
     window.L1017nSortGamesBySales?.(root);
     // Keep six prominent games up front; reveal the remaining categories on request.
@@ -271,11 +282,9 @@
     moreButton.textContent=moreGamesExpanded?"عرض ألعاب أقل":"المزيد من الألعاب";
     moreButton.setAttribute("aria-expanded",String(moreGamesExpanded));
     const heading=q("#llGamesHeading");
-    if(heading)heading.textContent=compact?"الأكثر طلبًا":"الألعاب";
+    if(heading)heading.textContent=compact?"الألعاب الأكثر طلبًا":"شحن الألعاب";
     gifts.innerHTML=giftCards;
-    for(const grid of [root,moreGrid,gifts,other]){
-      grid.querySelectorAll(".ll-reveal").forEach(card=>card.classList.add("ll-shown"));
-    }
+    q("#llLanding").querySelectorAll(".ll-catalog .ll-reveal").forEach(card=>card.classList.add("ll-shown"));
   }
   function setCategory(key) {
     chosen = key;
@@ -321,10 +330,8 @@
     updateNavigation("home");
   }
   function makeHeroSlides() {
-    return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + slide.theme + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.label) + '">'
-      + '<div class="ll-slide-copy"><span class="ll-slide-eyebrow">' + esc(slide.label) + '</span>'
-      + '<h2>' + esc(slide.headline) + '<br><span>' + esc(slide.more) + '</span></h2>'
-      + '<p>' + esc(slide.desc) + '</p>'
+    return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + slide.theme + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.headline) + '">'
+      + '<div class="ll-slide-copy"><h2>' + esc(slide.headline) + '</h2>'
       + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta">' + esc(slide.button) + ' <span aria-hidden="true">←</span></button></div>'
       + '<img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="lazy" decoding="async"></article>').join("");
   }
@@ -333,27 +340,24 @@
     if (!store || q("#llLanding")) return;
     const container = document.createElement("div");
     container.id = "llLanding";
-    container.innerHTML = '<div class="ll-intro ll-reveal">'
-      + '<div class="ll-intro-text"><span class="ll-overline">متجر L1017n</span>'
-      + '<h1>تسوّق واشحن <span>بسهولة.</span></h1><p>روبلوكس وببجي موبايل وبطاقات بلايستيشن، وباقات الروبوكس وMM2 وماب السرقة وشدات UC.</p></div>'
-      + '<div class="ll-intro-star" aria-hidden="true"><svg class="l1017-icon" focusable="false"><use href="#l1017-icon-sparkles"></use></svg></div></div>'
-      + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
-      + '<label class="ll-sr-only" for="llSearch">البحث عن الألعاب والمنتجات</label>'
-      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن قسم أو منتج…"></div>'
-      + '<div class="ll-title-row ll-title-offers"><div><small>كل الخيارات ظاهرة بدون سحب</small><h2>العروض السريعة</h2></div></div>'
-      + '<section class="ll-carousel ll-reveal" aria-label="العروض السريعة">'
+    container.innerHTML = '<section class="ll-carousel" aria-label="مختارات المتجر">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
       + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
-      + '<div class="ll-title-row ll-products-title"><div><small>اختار القسم وشوف الأسعار</small></div></div>'
+      + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
+      + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
+      + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
-      + FILTERS.map(([key, label]) => '<button type="button" data-ll-category="' + esc(key) + '" aria-pressed="' + (key==='all') + '" class="' + (key==='all'?'selected':'') + '">' + esc(label) + '</button>').join("") + '</div>'
-      + '<section id="llGamesSection" aria-labelledby="llGamesHeading"><div class="ll-title-row ll-products-title"><h2 id="llGamesHeading">الألعاب</h2></div>'
+      + FILTERS.map(([key,label,icon]) => '<button type="button" data-ll-category="' + key + '" data-ll-tone="' + icon + '" aria-pressed="' + (key==="all") + '" class="' + (key==="all"?"selected":"") + '"><span class="ll-category-icon">' + SVG(icon) + '</span><span>' + label + '</span></button>').join("") + '</div>'
+      + '<section id="llGamesSection" aria-labelledby="llGamesHeading">' + sectionHeading("llGamesHeading","games","شحن الألعاب")
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div></section>'
-      + '<section id="llGiftSection" aria-labelledby="llGiftHeading"><div class="ll-title-row ll-products-title"><h2 id="llGiftHeading">بطاقات الهدايا</h2></div>'
+      + '<section id="llGiftSection" aria-labelledby="llGiftHeading">' + sectionHeading("llGiftHeading","gift","بطاقات الهدايا")
       + '<div class="ll-catalog" id="llGiftCatalog" aria-live="polite"></div></section>'
-      + '<div id="llCatalogEmpty" hidden><p class="ll-empty">ما فيش قسم يطابق بحثك. جرّب كلمة ثانية أو اختَر «الكل».</p></div>'
+      + [["local","local","البطاقات المحلية"],["voice","voice","الخدمات الصوتية"],["other","grid","خدمات أخرى"]].map(([key,icon,title]) =>
+        '<section data-ll-section="' + key + '" aria-labelledby="ll-section-' + key + '">' + sectionHeading("ll-section-" + key,icon,title) + '<div class="ll-catalog" aria-live="polite"></div></section>').join("")
+      + '<button type="button" class="sc-all-link" id="llAllSupplierProducts" data-supplier-all hidden>جميع منتجات المتجر</button>'
+      + '<div id="llCatalogEmpty" hidden><p class="ll-empty">ما فيش نتائج هنا. جرّب كلمة ثانية أو اختَر «الجميع».</p></div>'
       + '<p class="ll-safety-note">الأسعار والتوفر يُعرضان داخل كل قسم، ويتأكد الطلب عند الدفع.</p>'
       + '<section class="ll-help ll-reveal"><div><h2>تحتاج مساعدة؟</h2><p>تابع الطلبات من حسابك، أو افتح القائمة للوصول إلى المحفظة والدعم.</p></div>'
       + '<button type="button" data-ll-show-orders>طلباتي ←</button></section>';

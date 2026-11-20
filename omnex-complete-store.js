@@ -26,12 +26,20 @@ function categories(){
  }
  return [...grouped.values()].sort((a,b)=>Number(itunes(b))-Number(itunes(a))||a.category_name.localeCompare(b.category_name,'ar'));
 }
+function homeSection(product){
+ const section=String(product.section||'').toLowerCase();
+ if(section==='games')return 'games';
+ if(section.startsWith('local'))return 'local';
+ if(/card|gift/.test(section))return 'cards';
+ if(/voice|audio/.test(section)||/hello\s*yo|yalla\s*(?:voice|chat)|غرف\s+صوتية/i.test(product.category_name))return 'voice';
+ return 'other';
+}
+const searchText=value=>String(value).toLowerCase().normalize('NFKC').replace(/[\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه');
 function homeCards(section,query='',chosen='all'){
- if(chosen!=='all')return '';
- const q=String(query).trim().toLocaleLowerCase();
+ if(chosen!=='all'&&chosen!==section)return '';
+ const q=searchText(query.trim());
  return categories().filter(p=>!['roblox','pubg','psn'].includes(p.game)).filter(p=>{
-  const kind=p.section==='games'?'games':/card|gift/i.test(p.section)&&!/local/i.test(p.section)?'cards':'other';
-  return kind===section&&(!q||[p.category_name,...entries.filter(x=>x.category_id===p.category_id).map(x=>x.name+' '+x.group)].join(' ').toLocaleLowerCase().includes(q));
+  return homeSection(p)===section&&(!q||searchText([p.category_name,...entries.filter(x=>x.category_id===p.category_id).map(x=>x.name+' '+x.group)].join(' ')).includes(q));
  }).map(p=>{
   const src=localImage(p);
   return '<article class="ll-game-section ll-reveal sc-home-card" dir="rtl"><button type="button" class="ll-game-section-link" data-supplier-category="'+escape(p.category_id)+'" aria-label="فتح '+escape(p.category_name)+'"><span class="ll-game-section-art sc-home-art">'+(src?'<img src="'+escape(src)+'" alt="" loading="lazy" decoding="auto" width="480" height="480">':'')+'</span><span class="ll-game-section-details"><strong>'+escape(p.category_name)+'</strong><small>'+p.count+' باقة متوفرة</small></span></button></article>';

@@ -18,6 +18,18 @@ test('home adds iTunes under gift cards, escapes supplier text, and hides unavai
  assert.ok(cards.includes('بطاقات ايتونز'));assert.ok(cards.includes('1 باقة متوفرة'));assert.ok(!cards.includes('Unavailable'));assert.equal(context.window.L1017nCompleteCatalog.categories().length,1);assert.equal(context.window.L1017nCompleteCatalog.homeCards('games'),'');
  await context.window.L1017nCompleteCatalog.refresh();
  assert.deepEqual(events.map(event=>event.type),['l1017n:catalog-updated','l1017n:supplier-catalog-settled']);
+ const catalog=context.window.L1017nCompleteCatalog;
+ context.supabaseClient.rpc=async()=>({data:{enabled:true,products:[
+  p,
+  {...p,id:'d'.repeat(32),category_id:'e'.repeat(32),category_name:'شركات الإتصالات',section:'local-cards'},
+  {...p,id:'f'.repeat(32),category_id:'c'.repeat(32),category_name:'Hello Yo',section:'topup'}
+ ]}});
+ await catalog.refresh();
+ assert.match(catalog.homeCards('local','اتصالات','local'),/شركات الإتصالات/);
+ assert.match(catalog.homeCards('voice','','voice'),/Hello Yo/);
+ assert.equal(catalog.homeCards('other'), '');
+ assert.equal(catalog.homeCards('cards','','voice'), '');
+ assert.match(catalog.homeCards('cards','آيتونز','cards'),/بطاقات ايتونز/);
 });
 test('reseller API supports new category IDs and blocks supplier category mismatch',async()=>{
  let mismatch=false,quotes=0;

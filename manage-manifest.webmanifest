@@ -29,17 +29,17 @@
     {
       "name": "طلبات الشراء",
       "short_name": "الطلبات",
-      "url": "./index.html?admin=1&section=orders"
+      "url": "./manage.html#orders"
     },
     {
       "name": "المنتجات والأسعار",
       "short_name": "المنتجات",
-      "url": "./index.html?admin=1&section=products"
+      "url": "./manage.html#products"
     },
     {
       "name": "الأرباح والمبيعات",
       "short_name": "الأرباح",
-      "url": "./index.html?admin=1&section=finance"
+      "url": "./manage.html#finance"
     }
   ]
 }

@@ -26,7 +26,7 @@
     pubg: {name:"PUBG Mobile",tag:"ببجي موبايل",color:"gold",art:"UC"},
     psn: {name:"PlayStation Store",tag:"بطاقات بلايستيشن",color:"blue",art:"PS"}
   };
-  const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","البطاقات","gift"],["local","محلية","local"],["voice","صوتية","voice"]];
+  const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","بطاقات الهدايا","gift"]];
   const HEROES = [
     {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"},
     {headline:"شدّات ببجي",action:"pubg",button:"تصفّح الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"},
@@ -236,15 +236,21 @@
     const root=q("#llCatalog");
     if(!root)return;
     const madar=document.body.dataset.checkoutWallet==="almadar";
-    const visibleRoblox=madar||SHOP_SECTIONS.some(matchesSection);
-    const visiblePubg=!madar&&matchesPubg();
     const gamesSection=q("#llGamesSection");
     const giftSection=q("#llGiftSection");
     const gifts=q("#llGiftCatalog");
     const extra=madar?null:window.L1017nCompleteCatalog;
+    const available=extra?.categories?.()||[];
+    const supplierHas=game=>available.some(p=>p.game===game&&Number(p.count)>0);
+    const visibleRoblox=(madar||matchesSection(SHOP_SECTIONS[0]))&&(madar||catalog().some(p=>gameKey(p)==="roblox")||supplierHas("roblox"));
+    const visiblePubg=!madar&&matchesPubg()&&supplierHas("pubg");
+    const visiblePsn=!madar&&matchesPsn()&&supplierHas("psn");
     const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
-    const giftCards=madar?"":(matchesRobloxCodes()?robloxCodesCard():"")+(matchesPsn()?psnParentCard():"")+(extra?.homeCards("cards",query,chosen)||"");
-    const moreSections=["local","voice","other"].map(section=>[section,extra?.homeCards(section,query,chosen)||""]);
+    // No active Roblox gift-card code products in the verified store inventory.
+    // Keep the old code page and data intact; do not promote an unavailable gift card.
+    const giftCards=madar?"":(visiblePsn?psnParentCard():"")+(extra?.homeCards("cards",query,chosen)||"");
+    // Lower-demand catalogs remain at the supplier/admin level instead of crowding the homepage.
+    const moreSections=["local","voice","other"].map(section=>[section,""]);
     const compact=!madar&&chosen==="all"&&!query;
     const nextCatalog=JSON.stringify([compact,games,giftCards,moreSections]);
     if(nextCatalog===lastCatalog)return;
@@ -277,15 +283,18 @@
     }
     const moreGrid=q("#llMoreGamesGrid"), moreButton=q("#llMoreGamesButton");
     moreGrid.replaceChildren();
-    const remaining=compact?[...root.children].slice(6):[];
+    const remaining=[]; // All selected popular game categories fit on the homepage.
     if(remaining.length)moreGrid.append(...remaining);
     more.hidden=!remaining.length;
     moreGrid.hidden=!moreGamesExpanded;
     moreButton.textContent=moreGamesExpanded?"عرض ألعاب أقل":"المزيد من الألعاب";
     moreButton.setAttribute("aria-expanded",String(moreGamesExpanded));
     const heading=q("#llGamesHeading");
-    if(heading)heading.textContent=compact?"الألعاب الأكثر طلبًا":"شحن الألعاب";
+    if(heading)heading.textContent="أشهر 10 ألعاب للشحن";
     gifts.innerHTML=giftCards;
+    window.L1017nSortGiftCardsByPopularity?.(gifts);
+    const giftHeading=q("#llGiftHeading");
+    if(giftHeading)giftHeading.textContent="أشهر 10 بطاقات هدايا";
     q("#llLanding").querySelectorAll(".ll-catalog .ll-reveal").forEach(card=>card.classList.add("ll-shown"));
   }
   function setCategory(key) {

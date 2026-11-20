@@ -13,6 +13,7 @@
 
   let lastFocused = null;
   let currentCategory = "codes";
+  let stockFilter = "all";
   let pubgCatalog = [];
   let catalogReady = false;
   let catalogError = "";
@@ -93,39 +94,11 @@
   function countLabel(count) {
     return count + " باقة";
   }
-  function tierFor(amount) {
-    if(amount >= 8100) return { key:"legend", title:"باقة ضخمة", coins:3, flair:"تشكيلة UC كبيرة" };
-    if(amount >= 3850) return { key:"elite", title:"باقة كبيرة جدًا", coins:3, flair:"كمية كبيرة من الشدات" };
-    if(amount >= 1800) return { key:"pro", title:"باقة كبيرة", coins:3, flair:"1800 شدة أو أكثر" };
-    if(amount >= 660) return { key:"plus", title:"باقة متوسطة", coins:2, flair:"كمية متوسطة من الشدات" };
-    if(amount >= 325) return { key:"medium", title:"باقة صغيرة", coins:2, flair:"مناسبة للشحنات الصغيرة" };
-    return { key:"starter", title:"باقة أساسية", coins:1, flair:"شحن UC أساسي" };
+  function canBuyPubg(product) {
+    return String(product.product_key || "").toLowerCase() !== "pubg-60"
+      && (product.source !== "omnex" || product.available === true);
   }
-  function deliveryFor(key) {
-    return key === "codes"
-      ? {kind:"كود شحن", detail:"استلام كود رقمي", icon:"ticket", note:"يظهر الكود بعد تنفيذ الطلب إذا كان متوفرًا"}
-      : key === "offers"
-      ? {kind:"عرض ببجي", detail:"حسب العرض", icon:"spark", note:"التفاصيل تعتمد على العرض المتوفر"}
-      : {kind:"شحن عبر ID", detail:"يتطلب معرف اللاعب UID", icon:"id", note:"راجع معرف اللاعب قبل تأكيد أي طلب"};
-  }
-  // A single real product image, as in the Roblox catalog. Keep the original
-  // PUBG cover when no product-specific image has been uploaded.
-  function artForPack(kind) {
-    const src=PACKAGE_ART[kind]||PUBG_ART;
-    return '<div class="pubg-pack-cover">'
-      + '<img class="pubg-pack-cover-image" src="' + safe(src) + '" alt="صورة باقة شدات ببجي" loading="lazy" decoding="async">'
-      + '</div>';
-  }
-  function infoForPack(mode, availability, description) {
-    const delivery=deliveryFor(mode);
-    return '<div class="pubg-pack-facts">'
-      + '<div><span>المنتج</span><strong>شدات PUBG Mobile</strong></div>'
-      + '<div><span>طريقة الشحن</span><strong>' + safe(delivery.kind) + '</strong></div>'
-      + '<div><span>الاستلام</span><strong>' + safe(delivery.detail) + '</strong></div>'
-      + '</div>'
-      + '<p class="pubg-pack-explainer">' + safe(description||delivery.note) + '</p>'
-      + '<span class="pubg-pack-availability">' + safe(availability) + '</span>';
-  }
+
   function page() {
     let element = document.getElementById(PAGE_ID);
     if (!element) {
@@ -135,32 +108,22 @@
     }
     return element;
   }
-  function productCard(product, index) {
-    const amount = Number(product.amount);
-    const hasAmount = Number.isFinite(amount) && amount > 0;
-    const amountText = hasAmount ? Math.trunc(amount).toLocaleString("en-US") : "UC";
-    const tier = tierFor(hasAmount ? amount : 60);
+  function productCard(product) {
     const name = safe(product.name || "شدات PUBG Mobile");
     const price = Number(product.price);
     const mode = categoryFor(product);
-    const isVoucher = mode === "codes";
-    const noCodeAvailable = String(product.product_key || "").toLowerCase() === "pubg-60";
-    const supplierUnavailable = product.source === "omnex" && product.available !== true;
-    const isDisabled = noCodeAvailable || supplierUnavailable;
-    const currentStatus = noCodeAvailable || supplierUnavailable ? "غير متوفر" : "متوفر للطلب";
-    return '<article class="pubg-pack pubg-pack-detailed pubg-tier-' + tier.key + '" style="--pubg-index:' + Math.min(index, 8) + '">'
-      + '<div class="pubg-pack-top"><span class="pubg-pack-kind">' + safe(deliveryFor(mode).kind) + '</span>'
-      + '<span class="pubg-pack-tier">' + safe(tier.title) + '</span></div>'
-      + artForPack(mode)
-      + '<div class="pubg-pack-headline"><div class="pubg-pack-quantity">' + amountText + (hasAmount ? '<small> UC</small>' : '') + '</div>'
-      + '<h3 class="pubg-pack-name">' + name + '</h3></div>'
-      + infoForPack(mode, currentStatus)
-      + '<div class="pubg-pack-bottom"><div class="pubg-price"><small>سعر البيع</small><strong>'
+    const available = canBuyPubg(product);
+    const delivery = {codes:"كود رقمي", charge:"شحن مباشر · UID", offers:"عرض ببجي"}[mode];
+    return '<article class="pubg-pack pubg-pack-detailed">'
+      + '<div class="pubg-pack-cover"><img class="pubg-pack-cover-image" src="' + safe(PACKAGE_ART[mode] || PUBG_ART) + '" alt="" loading="lazy" decoding="async">'
+      + (available ? '' : '<span class="pubg-stock-badge">غير متوفر</span>') + '</div>'
+      + '<div class="pubg-pack-headline"><span class="pubg-pack-kind">' + delivery + '</span><h3 class="pubg-pack-name">' + name + '</h3></div>'
+      + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong>'
       + (Number.isFinite(price) && price > 0 ? price.toFixed(2) + ' <span>د.ل</span>' : 'عند التوفر')
       + '</strong></div>'
-      + (isDisabled
-        ? '<button type="button" class="pubg-buy" disabled>غير متوفر</button>'
-        : '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن</button>')
+      + (available
+        ? '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن</button>'
+        : '<button type="button" class="pubg-buy" disabled>غير متوفر</button>')
       + '</div></article>';
   }
   // PUBG UC is manually fulfilled to the player's ID; never deliver a test code.
@@ -273,31 +236,42 @@
 
   function paintOffers(panel, key) {
     const list = categoryProducts(key);
-    const codes = key === "codes";
-    panel.innerHTML = '<div class="pubg-results-heading"><div>'
-      + '<span class="pubg-eyebrow">L1017N / PUBG MOBILE / ' + (codes ? 'REDEEM CODES' : key==='offers'?'OFFERS':'DIRECT TOP-UP') + '</span>'
-      + '<h2>' + (codes ? 'أكواد الشحن' : key==='offers'?'عروض ببجي':'شحن عن طريق ID') + '</h2>'
-      + '<p>' + (codes ? 'اختار الكود اللي تبيه واستلمه من طلباتك بعد الشراء.' : key==='offers'?'العروض الظاهرة من المورد عند توفرها.':'اختار الباقة وأدخل معرف اللاعب UID للشحن.') + '</p></div>'
-      + '<span class="pubg-results-count">' + countLabel(list.length) + '</span></div>'
+    const available = list.filter(canBuyPubg);
+    const unavailable = list.filter(product => !canBuyPubg(product));
+    const sections = {all:list, available, unavailable};
+    const visible = sections[stockFilter];
+    const labels = {all:"الكل", available:"متوفر", unavailable:"غير متوفر"};
+    const filters = '<div class="pubg-stock-filters" role="group" aria-label="فلترة الباقات حسب التوفر">'
+      + Object.entries(sections).map(([value, products]) =>
+        '<button type="button" data-pubg-stock="' + value + '" aria-pressed="' + (stockFilter === value) + '">'
+        + labels[value] + ' (' + products.length + ')</button>').join('') + '</div>';
+    panel.innerHTML = '<div class="pubg-results-heading"><div><h2>'
+      + safe(CATEGORIES.find(category => category.key === key).title) + '</h2></div></div>'
       + (!catalogReady
-        ? '<div class="pubg-empty-state" role="status"><div class="pubg-empty-icon" aria-hidden="true">UC</div><strong>جاري تحميل باقات ببجي…</strong></div>'
+        ? '<div class="pubg-empty-state" role="status"><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError
         ? '<div class="pubg-empty-state" role="alert"><strong>' + safe(catalogError) + '</strong><button type="button" class="pubg-retry-catalog">إعادة المحاولة</button></div>'
-        : list.length
-        ? '<div class="pubg-packages">' + list.map(productCard).join("") + '</div>'
-        : "")
-      + (catalogReady && omnexLive && !catalogError && !list.length
-        ? '<p class="pubg-empty-state">لا توجد باقات متوفرة في هذه الفئة حاليًا.</p>' : "");
+        : filters + (visible.length
+          ? '<div class="pubg-packages">' + visible.map(productCard).join("") + '</div>'
+          : '<p class="pubg-empty-state">' + (omnexLive && !list.length ? 'لا توجد باقات في هذه الفئة حاليًا.' : 'لا توجد باقات تطابق الفلتر.') + '</p>'));
 
+    panel.querySelectorAll("[data-pubg-stock]").forEach(button => {
+      button.addEventListener("click", () => {
+        const selected = button.dataset.pubgStock;
+        if (selected === stockFilter) return;
+        stockFilter = selected;
+        paintOffers(panel, key);
+        panel.querySelector('[data-pubg-stock="' + selected + '"]')?.focus({preventScroll:true});
+      });
+    });
     panel.querySelector(".pubg-retry-catalog")?.addEventListener("click",()=>{
       void fetchPubgProducts(document.getElementById(PAGE_ID));
     });
     panel.querySelectorAll("[data-pubg-buy]").forEach((button) => {
       button.addEventListener("click", () => {
         const selected = list.find((p) => String(p.id) === button.dataset.pubgBuy);
-        if (!selected || String(selected.product_key || "").toLowerCase() === "pubg-60") return;
+        if (!selected || !canBuyPubg(selected)) return;
         if (selected.source === "omnex") {
-          if (selected.available !== true) return;
           if(typeof window.openOmnexProductCheckout === "function") void window.openOmnexProductCheckout(selected);
           else window.alert("خدمة المورد غير جاهزة للشراء حاليًا.");
         } else if (categoryFor(selected) === "charge") {
@@ -330,6 +304,7 @@
   }
   function setCategory(root, key, shouldScroll = true) {
     if(!CATEGORIES.some(item => item.key === key)) return;
+    if (shouldScroll) stockFilter = "all";
     currentCategory = key;
     root.classList.add("pubg-inner-page");
     root.classList.toggle("pubg-codes-page",key==="codes");
@@ -371,6 +346,7 @@
     lastFocused = document.activeElement;
     const root = page();
     currentCategory="codes";
+    stockFilter="all";
     catalogReady=false;
     catalogError="";
     omnexLive=false;

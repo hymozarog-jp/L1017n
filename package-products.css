@@ -1,0 +1,125 @@
+/* Product cards inside package lists. Category tiles keep their portrait covers. */
+html body :is(
+  #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover,
+  #robuxModal.robux-fixed-packs .package-grid .robux-pack-visual,
+  #robloxGamePage.rgp-inner-page :is(.ox-product .ox-cover, .rgp-package .mm2-item-art, .sab-item-card .sab-card-art),
+  #psnStoreScreen .psn-product .psn-product-art,
+  #completeSupplierCatalog .sc-product .sc-art
+) {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 4 / 3 !important;
+}
+
+html body #pubgCategoryPage.pubg-premium.pubg-inner-page .pubg-results-heading {
+  border-bottom: 0 !important;
+  padding: 0 !important;
+  margin-block-end: 16px !important;
+}
+#pubgCategoryPage .pubg-stock-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-block-end: 16px;
+}
+#pubgCategoryPage .pubg-stock-filters button {
+  min-height: 40px;
+  padding: 6px clamp(7px, 2vw, 14px);
+  border: 1px solid #4a3c61;
+  border-radius: 12px;
+  background: #211b31;
+  color: #f4eaff;
+  font: inherit;
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 700;
+}
+#pubgCategoryPage .pubg-stock-filters button[aria-pressed="true"] {
+  background: #d6baff;
+  border-color: #d6baff;
+  color: #231438;
+}
+#pubgCategoryPage .pubg-stock-filters button:focus-visible {
+  outline: 2px solid #d6baff;
+  outline-offset: 2px;
+}
+
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-cover-image {
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+}
+#pubgCategoryPage .pubg-stock-badge {
+  position: absolute;
+  inset-block-start: 7px;
+  inset-inline-start: 7px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: #361f35;
+  color: #ffd1da;
+  font-size: 11px;
+  font-weight: 750;
+}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-headline,
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-bottom {
+  padding: 8px 5px !important;
+  gap: 8px !important;
+  border: 0 !important;
+}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-name {
+  margin: 0 !important;
+  min-height: 0 !important;
+  text-align: start !important;
+  font-size: clamp(13px, 3.4vw, 16px) !important;
+}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-kind {
+  justify-self: start;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  color: #ead8ff !important;
+  border: 1px solid #604979 !important;
+  border-radius: 7px !important;
+  background: #30233f !important;
+  padding: 4px 6px !important;
+}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-pack-bottom {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+html body :is(
+  #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-price strong,
+  #robuxModal.robux-fixed-packs .package-grid .robux-pack-price,
+  #psnStoreScreen .psn-products .psn-price,
+  #robloxGamePage .ox-catalog .ox-product-price,
+  #robloxGamePage .rgp-package .mm2-price,
+  #robloxGamePage .sab-card-footer > strong,
+  #completeSupplierCatalog .sc-product .sc-price
+) {
+  color: #d9baff !important;
+  font-variant-numeric: tabular-nums;
+}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed:has(.pubg-buy:disabled) .pubg-price strong {
+  color: #b8adbf !important;
+}
+
+html body :is(
+  #pubgCategoryPage.pubg-premium .pubg-pack-detailed .pubg-buy:not(:disabled),
+  #psnStoreScreen .psn-product:not(:disabled) .psn-buy,
+  #robloxGamePage .ox-product:not(:disabled) .ox-buy,
+  #robloxGamePage .rgp-package:not(:disabled) .gb-card-open,
+  #robloxGamePage .sab-available .sab-buy,
+  #completeSupplierCatalog .sc-product .sc-buy:not(:disabled)
+) {
+  min-height: 40px !important;
+  background: #d6baff !important;
+  border-color: #d6baff !important;
+  border-radius: 10px !important;
+  color: #231438 !important;
+}

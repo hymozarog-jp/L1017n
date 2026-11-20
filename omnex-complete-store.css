@@ -12,3 +12,13 @@
 .sc-group-card:focus-visible{outline:3px solid #bb94ff;outline-offset:3px}
 @media(min-width:700px){.sc-groups{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:420px){.sc-groups{gap:12px}.sc-group-copy{padding:14px 8px}.sc-group-copy strong{font-size:18px}}
+
+/* Compact category and package cards, with two columns retained on phones. */
+.sc-head{gap:14px;padding:6px 0 14px}.sc-head h1{font-size:28px}.sc-back{min-height:44px;padding:8px 16px;border-radius:14px}
+.sc-status:empty{display:none}
+.sc-groups{gap:12px;max-width:940px;margin-inline:auto}
+.sc-group-card{border-radius:20px}.sc-group-card .sc-art{aspect-ratio:5/4}
+.sc-group-copy{gap:5px;padding:12px 10px}.sc-group-copy strong{font-size:17px;line-height:1.45}.sc-group-copy small{font-size:12px}
+.sc-product{border-radius:18px}.sc-product .sc-art{aspect-ratio:5/4}.sc-info{padding:12px;gap:8px}.sc-price{font-size:18px}
+.sc-tools{padding:14px;gap:10px;border-radius:18px}
+@media(max-width:699px){.sc-head h1{font-size:22px}.sc-groups{max-width:360px;gap:10px}.sc-group-copy{padding:11px 8px}.sc-group-copy strong{font-size:16px}.sc-grid{gap:10px}}

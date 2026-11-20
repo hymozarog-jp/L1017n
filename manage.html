@@ -38,7 +38,7 @@
  <form id="loginForm"><div class="field"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" dir="ltr" required placeholder="name@example.com"></div><div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div><div class="login-actions"><button type="submit" class="primary" id="loginButton">تسجيل الدخول</button><a class="ghost" href="./index.html?admin=1">الدخول باستخدام Google في المتجر</a></div><p id="loginMsg" class="state" role="status" hidden></p></form>
  <p class="hint">إذا دخلت عبر Google في المتجر، افتح هذا التطبيق مجددًا بنفس المتصفح. صلاحيات الإدارة تُفحص من الخادم.</p></div></section>
  <main id="dashboard" hidden>
-  <div class="welcome"><span class="eyebrow">L1017N CONTROL CENTER</span><h1>أهلاً بمدير المتجر 👋</h1><p>كل شيء في مكان واضح: الزبائن، الطلبات، شحن الرصيد، المنتجات، والمبيعات.</p><div class="welcome-actions"><a class="primary" href="./index.html?admin=1">افتح لوحة الإدارة الكاملة ←</a><button type="button" id="signOut" class="ghost">تسجيل الخروج</button></div></div>
+  <div class="welcome"><span class="eyebrow">L1017N CONTROL CENTER</span><h1>أهلاً بمدير المتجر 👋</h1><p>كل شيء في مكان واضح: الزبائن، الطلبات، شحن الرصيد، المنتجات، والمبيعات.</p><div class="welcome-actions"><a class="primary" href="./index.html?admin=1">افتح لوحة الإدارة الكاملة ←</a><button type="button" id="installApp" class="ghost">📲 تثبيت على أندرويد</button><button type="button" id="signOut" class="ghost">تسجيل الخروج</button></div></div>
   <div id="dataState" class="state" role="status" hidden></div>
   <div class="section-title"><h2>ملخص المتجر</h2><button type="button" id="refreshStats">تحديث الأرقام ↻</button></div>
   <div class="metrics" aria-live="polite"><div class="metric"><small>الحسابات المسجّلة</small><strong id="mUsers">—</strong><span>حساب فعلي</span></div><div class="metric"><small>زوار اليوم</small><strong id="mVisitors">—</strong><span>متصفح مميز</span></div><div class="metric"><small>طلبات الشراء</small><strong id="mOrders">—</strong><span>لا تشمل الطلبات الملغاة</span></div><div class="metric"><small>إجمالي الزيارات</small><strong id="mVisits">—</strong><span>منذ بدء العدّاد</span></div></div>
@@ -175,6 +175,19 @@
   try{await api.auth.signOut();view('login');authMessage('تم تسجيل الخروج.')}
   catch(_){state('تعذر تسجيل الخروج؛ حاول مرة أخرى.','error')}
   finally{btn.disabled=false}
+ });
+ let pendingInstall=null;
+ window.addEventListener('beforeinstallprompt',event=>{
+  event.preventDefault();pendingInstall=event;
+ });
+ q('#installApp').addEventListener('click',async()=>{
+  if(pendingInstall){
+   const prompt=pendingInstall;pendingInstall=null;
+   try{await prompt.prompt();await prompt.userChoice}
+   catch(_){state('لتثبيت التطبيق: افتح قائمة Chrome ثم اختر إضافة إلى الشاشة الرئيسية.','ok')}
+  }else{
+   state('لتثبيت التطبيق في أندرويد: من Chrome اضغط ⋮ ثم «إضافة إلى الشاشة الرئيسية» أو «تثبيت التطبيق».','ok');
+  }
  });
  q('#refresh').addEventListener('click',stats);
  q('#refreshStats').addEventListener('click',stats);

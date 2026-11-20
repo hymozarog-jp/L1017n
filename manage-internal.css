@@ -1,0 +1,48 @@
+/* L1017n native-feeling management screens. No links to the customer storefront. */
+#dashboard.ma-section-open>:not(#manageInternal){display:none!important}
+#dashboard.ma-section-open>#manageInternal{display:block!important}
+.ma-panel{padding:0 0 20px;min-height:65vh}
+.ma-header{position:sticky;top:0;z-index:9;display:flex;align-items:center;gap:10px;padding:13px 0 14px;margin:0 0 14px;background:#0b0914f4;backdrop-filter:blur(14px);border-bottom:1px solid #7e5caa44}
+.ma-header>div{flex:1;min-width:0}.ma-header h2{font-size:20px;line-height:1.4;margin:0 0 2px}.ma-header small{font-size:11px;color:#b1a2c8}
+.ma-back,.ma-reload{min-height:42px;padding:8px 12px;border:1px solid #9572c16e;background:#2a2040;border-radius:12px;color:#fff;font-size:12px;font-weight:800}
+.ma-reload{font-size:22px;width:43px;padding:5px}
+.ma-content{display:grid;gap:13px}.ma-list{display:grid;gap:12px;min-width:0}
+.ma-loading,.ma-hint{font-size:13px;line-height:1.85;color:#b8accb;background:#ffffff07;padding:12px;border-radius:12px}
+.ma-status{margin:12px 0;padding:12px 14px;border:1px solid #9070c0;background:#271b41;border-radius:12px;font-size:12px;line-height:1.7;white-space:pre-wrap}
+.ma-status.error{border-color:#ff8eaa88;color:#ffd9e3;background:#452334}.ma-status.ok{border-color:#72dcb380;color:#cdf9e4;background:#143a30}
+.ma-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ma-kpi{background:linear-gradient(135deg,#28193d,#171323);border:1px solid #8a66b659;border-radius:16px;padding:13px;min-height:90px}
+.ma-kpi small{display:block;color:#baa9d1;font-size:11px}.ma-kpi strong{display:block;font-size:23px;margin-top:5px;font-variant-numeric:tabular-nums}
+.ma-group-title{font-size:17px;margin:15px 0 2px}.ma-card{min-width:0;border:1px solid #8368a85b;border-radius:18px;padding:16px 14px;background:linear-gradient(145deg,#241933,#151421);box-shadow:0 8px 23px #0002}
+.ma-card h3{margin:0 0 12px;font-size:17px;overflow-wrap:anywhere}
+.ma-row{display:flex;justify-content:space-between;gap:11px;padding:8px 0;border-bottom:1px solid #ffffff13;align-items:flex-start;font-size:12px}
+.ma-row:last-child{border-bottom:0}
+.ma-row small{font-size:12px;color:#b2a5c6;flex:0 0 41%}
+.ma-row strong{text-align:left;overflow-wrap:anywhere;max-width:60%;font-weight:700;direction:auto}
+.ma-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
+.ma-action,.ma-save{min-height:44px;border-radius:12px;background:linear-gradient(125deg,#a55bf3,#693bd0);border:1px solid #ac7eee;color:white;padding:8px 12px;font-weight:800;font-size:12px}
+.ma-action.danger{border-color:#dc647a;background:#4b2639;color:#ffe0e8}
+.ma-filter{width:100%;min-height:46px;padding:11px 13px;color:#f7f3ff;background:#181327;border:1px solid #8263b0;border-radius:13px;font-size:14px;outline:0}
+.ma-filter:focus{border-color:#d3a5ff;box-shadow:0 0 0 3px #ae6dff28}
+.ma-product-edit,.ma-edit-form,.ma-single-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.ma-product-edit label,.ma-edit-form label,.ma-single-form label{display:grid;gap:6px;font-size:12px;color:#d4c9e1;font-weight:700;min-width:0}
+.ma-product-edit input:not([type=checkbox]),.ma-edit-form input,.ma-single-form input,.ma-reason textarea{width:100%;min-height:43px;padding:9px 10px;border:1px solid #7a60a9;border-radius:11px;background:#171223;color:#fff;outline:0;font:inherit;font-size:14px}
+.ma-checkbox{display:flex!important;flex-direction:row;align-items:center;gap:7px}
+.ma-checkbox input{width:19px;height:19px;accent-color:#aa69ff}
+.ma-product-edit button,.ma-edit-form button,.ma-single-form button{grid-column:1/-1}
+.ma-add-form{border:1px solid #a77ad06d;border-radius:16px;padding:13px;background:#271c3b}
+.ma-add-form summary{cursor:pointer;font-size:14px;font-weight:800;color:#e8d6ff}
+.ma-frame{display:block;border:1px solid #705a97;border-radius:15px;background:#13121a;width:100%;height:640px}
+.ma-frame-big{height:75vh;min-height:500px}
+.ma-confirm{border:1px solid #ba89ff;border-radius:22px;color:#fff;padding:0;background:linear-gradient(145deg,#29203e,#12101c);box-shadow:0 16px 60px #0009;width:min(420px,calc(100% - 26px));max-height:88vh}
+.ma-confirm::backdrop{background:#05040ada;backdrop-filter:blur(4px)}
+.ma-confirm-body{padding:22px}
+.ma-confirm h3{font-size:21px;margin:0 0 8px}.ma-confirm p{line-height:1.85;font-size:13px;color:#d5c8e8;margin:0 0 15px}
+.ma-reason{display:grid;gap:7px;font-size:12px;margin-bottom:14px}
+.ma-reason textarea{resize:vertical;min-height:76px}
+.ma-confirm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ma-confirm-buttons button{min-height:45px;color:white;border-radius:12px;border:1px solid #8e71b1;background:#382b50;font-size:13px;font-weight:850}
+.ma-confirm-buttons .ma-yes{background:#8644dc;border-color:#c189ff}
+@media(min-width:650px){.ma-list{grid-template-columns:repeat(2,minmax(0,1fr))}.ma-stat-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:365px){.ma-header h2{font-size:17px}.ma-back{font-size:11px;padding:7px}.ma-row small{flex-basis:35%}}
+@media(prefers-reduced-motion:reduce){.ma-panel *{scroll-behavior:auto}}

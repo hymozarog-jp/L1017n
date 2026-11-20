@@ -32,10 +32,16 @@
     return dialog;
   }
 
-  window.showInsufficientBalance = function (beforeTopup) {
+  window.showInsufficientBalance = function (beforeTopup, wallet) {
     const dialog = document.getElementById('insufficientBalanceDialog') || createDialog();
     if (dialog.open) return;
     dialog.querySelector('.balance-topup').onclick = () => {
+      if(wallet==='almadar'){
+        dialog.close();
+        beforeTopup?.();
+        void window.openMadarTopup?.();
+        return;
+      }
       window.openDedicatedTopup?.();
       const page = document.getElementById('topupDedicatedPage');
       if (!page) return;

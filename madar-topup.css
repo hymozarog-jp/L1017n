@@ -17,7 +17,6 @@
 #madarTopupDialog .madar-topup-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 #madarTopupDialog h2 { font-size: 1.25rem; margin: 0; }
 #madarTopupDialog h3 { font-size: 1rem; margin: 0; }
-#madarTopupDialog .madar-topup-purchase { margin: 16px 0; padding-bottom: 16px; border-bottom: 1px solid #57506c; }
 #madarTopupDialog form { display: grid; gap: 12px; margin-top: 16px; }
 #madarTopupDialog label:not(.madar-topup-confirm) { display: grid; gap: 5px; }
 #madarTopupDialog select, #madarTopupDialog input:not([type="checkbox"]), #madarTopupDialog button {

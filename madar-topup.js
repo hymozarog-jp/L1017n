@@ -8,33 +8,17 @@
   const fields = form.querySelector('.madar-transfer-fields');
   const review = form.querySelector('.madar-transfer-review');
   const prepare = form.querySelector('[data-madar-prepare]');
-  const title = dialog.querySelector('h2');
-  const purchaseSection = dialog.querySelector('.madar-topup-purchase');
   const submit = form.querySelector('[type="submit"]');
   const copy = form.querySelector('[data-madar-copy]');
   const code = form.querySelector('output');
   const status = dialog.querySelector('#madarTransferStatus');
   const manage = dialog.querySelector('[data-madar-manage]');
-  const purchaseForm = dialog.querySelector('#madarPurchaseForm');
-  const username = purchaseForm.elements.username;
-  const buy = purchaseForm.querySelector('[type="submit"]');
-  const purchaseStatus = purchaseForm.querySelector('[role="status"]');
   let customer = null;
-  let sale = null;
-  let salePending = false;
   let request = null;
   let loading = false;
   let submitted = false;
   let reviewing = false;
   let revision = 0;
-
-  function renderPurchase() {
-    const madarSelected = window.L1017nPrimaryWallets?.getSelectedFor(customer) === 'madar';
-    buy.disabled = !customer || !madarSelected || salePending;
-    if (customer && !madarSelected) {
-      purchaseStatus.textContent = 'اختار المدار كمحفظة أساسية من صفحة المحفظة باش تشتري الباقة.';
-    }
-  }
 
   function render() {
     const value = amount.valueAsNumber;
@@ -60,19 +44,13 @@
     render();
   }
 
-  async function open(purchaseMode) {
+  async function open() {
     if (dialog.open) return;
     const token = ++revision;
     loading = true;
     submitted = false;
     reviewing = false;
-    title.textContent = purchaseMode ? 'شحن روبوكس' : 'شحن محفظة المدار';
-    purchaseSection.hidden = !purchaseMode;
-    form.hidden = purchaseMode;
     customer = null;
-    purchaseForm.reset();
-    purchaseStatus.textContent = '';
-    buy.disabled = true;
     form.reset();
     sender.replaceChildren(new Option('جاري تحميل أرقامك…', ''));
     manage.hidden = true;
@@ -84,14 +62,12 @@
       const user = await currentUser();
       if (token !== revision) return;
       customer = user?.id ?? null;
-      renderPurchase();
       if (!user) {
         status.textContent = 'سجّل دخولك أولاً لشحن محفظة المدار.';
         manage.textContent = 'اذهب إلى حسابي';
         manage.hidden = false;
         return;
       }
-      if (purchaseMode) return;
       const {data, error} = await supabaseClient.rpc('get_my_saved_sender_phones');
       if (token !== revision) return;
       if (error) throw error;
@@ -116,18 +92,13 @@
   }
 
   document.addEventListener('click', event => {
-    if (event.target.closest('#madarCatalogPurchase, #madarWalletTopup, #madarTopupProvider, #customerWalletChip[data-wallet-carrier="madar"] #customerTopupShortcut')) {
+    if (event.target.closest('#madarWalletTopup, #madarTopupProvider, #customerWalletChip[data-wallet-carrier="madar"] #customerTopupShortcut')) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      void open(Boolean(event.target.closest('#madarCatalogPurchase')));
+      void open();
     }
   }, true);
   dialog.querySelector('[data-madar-close]').addEventListener('click', () => dialog.close());
-  window.addEventListener('l1017n:checkout-wallet-changed', () => {
-    if (!dialog.open) return;
-    purchaseStatus.textContent = '';
-    renderPurchase();
-  });
   dialog.addEventListener('close', () => { revision++; });
   manage.addEventListener('click', () => {
     dialog.close();
@@ -198,42 +169,5 @@
     }
   });
 
-  purchaseForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    if (!customer || salePending || buy.disabled) return;
-    const name = username.value.trim();
-    const key = customer + ':' + name;
-    const token = revision;
-    if (sale?.key !== key) sale = {key, id: crypto.randomUUID()};
-    salePending = true;
-    buy.disabled = true;
-    purchaseStatus.textContent = 'جاري تسجيل طلب الروبوكس…';
-    try {
-      const {data: orderId, error} = await supabaseClient.rpc('purchase_madar_robux', {
-        p_request_id: sale.id, p_roblox_username: name
-      });
-      if (error) throw error;
-      sale = null;
-      if (token === revision) {
-        purchaseStatus.textContent = 'تم الطلب وخصم 20 د.ل من محفظة المدار. تابع الشحن من طلباتي.';
-        purchaseForm.reset();
-      }
-      void supabaseClient.functions.invoke('l1017n-purchase-notify', {body: {order_id: orderId}}).catch(() => {});
-      if (typeof renderWallet === 'function') void renderWallet().catch(() => {});
-    } catch (error) {
-      if (token !== revision) return;
-      const message = error?.message;
-      if (message === 'insufficient_madar_balance') purchaseStatus.textContent = 'رصيد المدار أقل من 20 د.ل. عبّي المحفظة أولاً.';
-      else if (message === 'robux_out_of_stock' || message === 'product_not_available') purchaseStatus.textContent = '100 روبوكس غير متوفرة حاليًا.';
-      else if (message === 'phone_required_before_purchase') purchaseStatus.textContent = 'أضف رقم هاتف أساسي في حسابك أولاً.';
-      else if (message === 'checkout_wallet_mismatch') {
-        purchaseStatus.textContent = 'المدار مش المحفظة الأساسية حاليًا. راجع اختيارك في المحفظة.';
-        void window.L1017nPrimaryWallets?.refresh();
-      }
-      else purchaseStatus.textContent = 'تعذر تأكيد الطلب. اضغط شراء مرة ثانية بنفس اسم المستخدم للتحقق.';
-    } finally {
-      salePending = false;
-      renderPurchase();
-    }
-  });
+  window.openMadarTopup = open;
 })();

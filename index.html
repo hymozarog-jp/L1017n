@@ -512,7 +512,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=madar-topup-1&header-direct-topup-20261119&saved-phone-checkout-20261118&restore-transfer-code-20261118&saved-sender-20261118&phone-registration-20261118&green-buy-20261118&omnex-roblox-catalog-20261111-1&one-review-per-customer-20261110-2&three-verified-phones-20261110-1&latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&reference-wallet-digits-20261110-1&points-progress-20261110-1&compact-pack-cards-20261110-1&three-stages-20261110-1&fixed-robux-packs-20261110-1&compact-purchases-20261110-1&wallet-fullscreen-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1&compact-admin-topups-20261109-1&points-account-menu-20261109-4&inline-real-credit-20261108-2&restored-original-digits-20261108-4&animated-order-cards-20261108-1&account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1&custom-robux-quantity=20261108-1&verified-ussd-orders=20261108-1&sms-auto-amount-20261109=1&robux-stock-live-20261109=2&visitor-dashboard-20261109=1&sales-loyalty-reviews=20261109-1&fullscreen-admin-pages=20261109-1&admin-reports-fullscreen=1&robux-sold-count=2-direct-total&robux-profit-report=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1&admin-product-images-20261109=2-iphone&registered-phone-account-id-20261110=1&roblox-subcategories-20261111=1&pubg-home-visible-20261112-1&omnex-live-codes-in-orders-20261112-1&playstation-omnex-20261114=1&psn-user-art-20261114=1&balance-dialog=1&supplier-notice=1&public-review-form=1&matching-package-art=1';
+      var s=document.createElement('script');s.src='app.js?v=madar-topup-1&shared-packages=1&header-direct-topup-20261119&saved-phone-checkout-20261118&restore-transfer-code-20261118&saved-sender-20261118&phone-registration-20261118&green-buy-20261118&omnex-roblox-catalog-20261111-1&one-review-per-customer-20261110-2&three-verified-phones-20261110-1&latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&reference-wallet-digits-20261110-1&points-progress-20261110-1&compact-pack-cards-20261110-1&three-stages-20261110-1&fixed-robux-packs-20261110-1&compact-purchases-20261110-1&wallet-fullscreen-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1&compact-admin-topups-20261109-1&points-account-menu-20261109-4&inline-real-credit-20261108-2&restored-original-digits-20261108-4&animated-order-cards-20261108-1&account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1&custom-robux-quantity=20261108-1&verified-ussd-orders=20261108-1&sms-auto-amount-20261109=1&robux-stock-live-20261109=2&visitor-dashboard-20261109=1&sales-loyalty-reviews=20261109-1&fullscreen-admin-pages=20261109-1&admin-reports-fullscreen=1&robux-sold-count=2-direct-total&robux-profit-report=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1&admin-product-images-20261109=2-iphone&registered-phone-account-id-20261110=1&roblox-subcategories-20261111=1&pubg-home-visible-20261112-1&omnex-live-codes-in-orders-20261112-1&playstation-omnex-20261114=1&psn-user-art-20261114=1&balance-dialog=1&supplier-notice=1&public-review-form=1&matching-package-art=1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -631,16 +631,7 @@ window.openDedicatedTopup=openDedicatedTopup;
     <h2 id="madarTopupTitle">شحن محفظة المدار</h2>
     <button type="button" data-madar-close aria-label="إغلاق شحن المدار">×</button>
   </div>
-  <section class="madar-topup-purchase" aria-labelledby="madarPurchaseTitle" hidden>
-    <h3 id="madarPurchaseTitle">100 روبوكس</h3>
-    <p>20 د.ل من محفظة المدار · شحن باسم المستخدم</p>
-    <form id="madarPurchaseForm">
-      <label>اسم المستخدم في روبلوكس <input name="username" type="text" dir="ltr" pattern="[A-Za-z0-9_]{3,20}" required maxlength="20" autocomplete="off"></label>
-      <button type="submit" disabled>شراء 100 روبوكس</button>
-      <p role="status"></p>
-    </form>
-  </section>
-  <form id="madarTransferForm" hidden>
+  <form id="madarTransferForm">
     <h3>تعبئة رصيد المدار</h3>
     <div class="madar-transfer-fields">
       <label>الرقم المحوّل منه <select name="sender" dir="ltr" required></select></label>
@@ -666,8 +657,8 @@ window.openDedicatedTopup=openDedicatedTopup;
   <p role="status" id="madarTransferStatus"></p>
   <button type="button" data-madar-manage hidden>إدارة أرقام الهاتف</button>
 </dialog>
-<link rel="stylesheet" href="madar-topup.css?v=simple-transfer-1">
-<script src="madar-topup.js?v=simple-transfer-1" defer></script>
+<link rel="stylesheet" href="madar-topup.css?v=shared-packages-1">
+<script src="madar-topup.js?v=shared-packages-1" defer></script>
 <style>
 /* Wallet reference-inspired mobile design */
 #walletView{background:#070d19!important;color:#eef3ff!important;padding-bottom:110px!important}
@@ -950,7 +941,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 <script src="wallet-primary-toggle.js?v=checkout-wallet-1" defer></script>
 <script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
 <script src="game-bestsellers.js?v=featured-market-order-20261120" defer></script>
-<script src="live-mobile.js?v=catalog-menu-20261120&startup-shell=1&checkout-wallet=1&simple-madar=1" defer></script>
+<script src="live-mobile.js?v=catalog-menu-20261120&startup-shell=1&checkout-wallet=1&shared-packages=1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=privacy-beside-ranking-20261109-1">
@@ -1234,7 +1225,7 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 <link rel="stylesheet" href="package-opening.css?v=fullscreen-checkout-20261118">
 
 <link rel="stylesheet" href="insufficient-balance.css?v=2">
-<script src="insufficient-balance.js?v=2" defer></script>
+<script src="insufficient-balance.js?v=2&madar-wallet=1" defer></script>
 <link rel="stylesheet" href="package-art.css?v=1">
 <style id="public-review-actions-style">
 #l1017PublicReviews .crr-actions{display:grid;gap:9px;margin-top:14px}

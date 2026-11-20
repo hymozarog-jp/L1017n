@@ -472,6 +472,11 @@
       if (dot) { scrollSlide(Number(dot.dataset.llDot)); return; }
       const direction=e.target.closest("[data-ll-slide-step]");
       if (direction) { scrollSlide(activeSlide+Number(direction.dataset.llSlideStep)); return; }
+      if(e.target.closest("#madarCatalogPurchase")){
+        if(typeof window.openRobuxPackages==="function")window.openRobuxPackages();
+        else notify("جاري تجهيز الباقات. حاول مرة ثانية.");
+        return;
+      }
       const game=e.target.closest("[data-ll-game]");
       if (game) { openGame(game.dataset.llGame); return; }
       if (e.target.closest("[data-ll-show-orders]")) { routeView("orders"); return; }

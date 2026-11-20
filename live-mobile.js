@@ -28,7 +28,7 @@
   };
   const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","البطاقات","gift"],["local","محلية","local"],["voice","صوتية","voice"]];
   const HEROES = [
-    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/brand-orange/gaming.webp"},
+    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"},
     {headline:"شدّات ببجي",action:"pubg",button:"تصفّح الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"},
     {headline:"بطاقات بلايستيشن",action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"}
   ];
@@ -488,10 +488,20 @@
         setTimeout(() => { if (buy.isConnected) { buy.disabled=false;buy.classList.remove("loading"); } }, 400);
       }
     });
+    let navFeedback;
     nav.addEventListener("click", e => {
       const btn=e.target.closest("[data-ll-nav]");
       if (!btn) return;
+      const wasActive=btn.classList.contains("active");
       routeView(btn.dataset.llNav);
+      if(wasActive||!btn.classList.contains("active")||reduceMotion())return;
+      navFeedback?.cancel();
+      navFeedback=btn.querySelector(".ll-nav-icon svg")?.animate?.([
+        {transform:"translateX(0) rotate(0)"},
+        {transform:"translateX(-1px) rotate(-6deg)"},
+        {transform:"translateX(1px) rotate(4deg)"},
+        {transform:"translateX(0) rotate(0)"}
+      ],{duration:240,easing:"ease-out"});
     });
     // Keep custom nav highlighting consistent with existing account/wallet/drawer navigation.
     document.addEventListener("click", e => {

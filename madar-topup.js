@@ -5,7 +5,11 @@
   const form = dialog.querySelector('#madarTransferForm');
   const amount = form.elements.amount;
   const sender = form.elements.sender;
-  const confirmTransfer = form.elements.confirmTransfer;
+  const fields = form.querySelector('.madar-transfer-fields');
+  const review = form.querySelector('.madar-transfer-review');
+  const prepare = form.querySelector('[data-madar-prepare]');
+  const title = dialog.querySelector('h2');
+  const purchaseSection = dialog.querySelector('.madar-topup-purchase');
   const submit = form.querySelector('[type="submit"]');
   const copy = form.querySelector('[data-madar-copy]');
   const code = form.querySelector('output');
@@ -21,6 +25,7 @@
   let request = null;
   let loading = false;
   let submitted = false;
+  let reviewing = false;
   let revision = 0;
 
   function renderPurchase() {
@@ -35,12 +40,14 @@
     const value = amount.valueAsNumber;
     const valid = Number.isInteger(value) && value >= 1 && value <= 20;
     const ready = !loading && !submitted && Boolean(sender.value) && valid;
-    code.textContent = ready ? '*140*4*1*1*' + receiver + '*' + value + '#' : '';
-    copy.disabled = !ready;
-    submit.disabled = !ready || !confirmTransfer.checked;
+    fields.hidden = reviewing || submitted;
+    review.hidden = !reviewing || submitted;
+    prepare.disabled = !ready;
+    code.textContent = reviewing && ready ? '*140*4*1*1*' + receiver + '*' + value + '#' : '';
+    copy.disabled = !ready || !reviewing;
+    submit.disabled = !ready || !reviewing;
     sender.disabled = loading || submitted;
     amount.disabled = loading || submitted;
-    confirmTransfer.disabled = !ready;
     form.querySelectorAll('[data-madar-amount]').forEach(button => {
       button.disabled = loading || submitted;
       button.setAttribute('aria-pressed', String(Number(button.dataset.madarAmount) === value));
@@ -48,16 +55,20 @@
   }
 
   function changeTransfer() {
-    confirmTransfer.checked = false;
+    reviewing = false;
     status.textContent = '';
     render();
   }
 
-  async function open() {
+  async function open(purchaseMode) {
     if (dialog.open) return;
     const token = ++revision;
     loading = true;
     submitted = false;
+    reviewing = false;
+    title.textContent = purchaseMode ? 'شحن روبوكس' : 'شحن محفظة المدار';
+    purchaseSection.hidden = !purchaseMode;
+    form.hidden = purchaseMode;
     customer = null;
     purchaseForm.reset();
     purchaseStatus.textContent = '';
@@ -80,6 +91,7 @@
         manage.hidden = false;
         return;
       }
+      if (purchaseMode) return;
       const {data, error} = await supabaseClient.rpc('get_my_saved_sender_phones');
       if (token !== revision) return;
       if (error) throw error;
@@ -107,7 +119,7 @@
     if (event.target.closest('#madarCatalogPurchase, #madarWalletTopup, #madarTopupProvider, #customerWalletChip[data-wallet-carrier="madar"] #customerTopupShortcut')) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      void open();
+      void open(Boolean(event.target.closest('#madarCatalogPurchase')));
     }
   }, true);
   dialog.querySelector('[data-madar-close]').addEventListener('click', () => dialog.close());
@@ -130,7 +142,17 @@
   });
   amount.addEventListener('input', changeTransfer);
   sender.addEventListener('change', changeTransfer);
-  confirmTransfer.addEventListener('change', render);
+  prepare.addEventListener('click', () => {
+    if (prepare.disabled) return;
+    reviewing = true;
+    render();
+    copy.focus();
+  });
+  form.querySelector('[data-madar-edit]').addEventListener('click', () => {
+    if (loading) return;
+    changeTransfer();
+    prepare.focus();
+  });
 
   copy.addEventListener('click', async () => {
     if (!code.textContent) return;
@@ -146,7 +168,7 @@
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (submit.disabled) return;
-    const key = amount.valueAsNumber + ':' + sender.value;
+    const key = customer + ':' + amount.valueAsNumber + ':' + sender.value;
     const token = revision;
     if (request?.key !== key) request = {key, id: crypto.randomUUID()};
     const pending = request;
@@ -160,7 +182,7 @@
       if (request === pending) request = null;
       if (token === revision) {
         submitted = true;
-        status.textContent = 'تم تسجيل الطلب وهو قيد المراجعة. تقدر تتابعه من طلباتي.';
+        status.textContent = 'تم تسجيل الطلب وهو قيد المراجعة. تابع حالته من «طلباتي».';
       }
       if (typeof renderWallet === 'function') void renderWallet().catch(() => {});
     } catch (error) {

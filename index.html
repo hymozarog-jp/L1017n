@@ -631,7 +631,7 @@ window.openDedicatedTopup=openDedicatedTopup;
     <h2 id="madarTopupTitle">شحن محفظة المدار</h2>
     <button type="button" data-madar-close aria-label="إغلاق شحن المدار">×</button>
   </div>
-  <section class="madar-topup-purchase" aria-labelledby="madarPurchaseTitle">
+  <section class="madar-topup-purchase" aria-labelledby="madarPurchaseTitle" hidden>
     <h3 id="madarPurchaseTitle">100 روبوكس</h3>
     <p>20 د.ل من محفظة المدار · شحن باسم المستخدم</p>
     <form id="madarPurchaseForm">
@@ -640,29 +640,34 @@ window.openDedicatedTopup=openDedicatedTopup;
       <p role="status"></p>
     </form>
   </section>
-  <form id="madarTransferForm">
+  <form id="madarTransferForm" hidden>
     <h3>تعبئة رصيد المدار</h3>
-    <label>رقم المدار المحوّل <select name="sender" dir="ltr" required></select></label>
-    <label>مبلغ التحويل بالدينار <input name="amount" type="number" min="1" max="20" step="1" value="1" inputmode="numeric" dir="ltr" required></label>
-    <div class="madar-topup-amounts" aria-label="مبالغ سريعة" role="group" dir="ltr">
-      <button type="button" data-madar-amount="1">1</button>
-      <button type="button" data-madar-amount="5">5</button>
-      <button type="button" data-madar-amount="10">10</button>
-      <button type="button" data-madar-amount="15">15</button>
-      <button type="button" data-madar-amount="20">20</button>
+    <div class="madar-transfer-fields">
+      <label>الرقم المحوّل منه <select name="sender" dir="ltr" required></select></label>
+      <label>الرقم المحوّل إليه <span class="madar-transfer-receiver" dir="ltr">0910005566</span></label>
+      <label>المبلغ المحوّل بالدينار <input name="amount" type="number" min="1" max="20" step="1" value="1" inputmode="numeric" dir="ltr" required></label>
+      <div class="madar-topup-amounts" aria-label="مبالغ سريعة" role="group" dir="ltr">
+        <button type="button" data-madar-amount="1">1</button>
+        <button type="button" data-madar-amount="5">5</button>
+        <button type="button" data-madar-amount="10">10</button>
+        <button type="button" data-madar-amount="15">15</button>
+        <button type="button" data-madar-amount="20">20</button>
+      </div>
+      <button type="button" data-madar-prepare disabled>متابعة التحويل</button>
     </div>
-    <p>حوّل من خط المدار المختار إلى <bdi dir="ltr">0910005566</bdi>. طابق الرقم والمبلغ قبل التأكيد.</p>
-    <output dir="ltr" aria-label="كود تحويل المدار"></output>
-    <button type="button" data-madar-copy disabled>نسخ كود التحويل</button>
-    <label class="madar-topup-confirm"><input type="checkbox" name="confirmTransfer"> أتممت التحويل من الرقم المختار</label>
-    <button type="submit" disabled>إرسال الطلب للمراجعة</button>
-    <p>يُضاف الرصيد بعد مطابقة التحويل واعتماده.</p>
+    <div class="madar-transfer-review" hidden>
+      <p>الصق الكود في تطبيق الهاتف واتصل من خط المدار المختار. بعد نجاح التحويل، ارجع واضغط «تم التحويل».</p>
+      <output dir="ltr" aria-label="كود تحويل المدار"></output>
+      <button type="button" data-madar-copy>نسخ كود التحويل</button>
+      <button type="submit" disabled>تم التحويل</button>
+      <button type="button" data-madar-edit>رجوع لتعديل المبلغ أو الرقم</button>
+    </div>
   </form>
   <p role="status" id="madarTransferStatus"></p>
   <button type="button" data-madar-manage hidden>إدارة أرقام الهاتف</button>
 </dialog>
-<link rel="stylesheet" href="madar-topup.css?v=wallet-isolation-1">
-<script src="madar-topup.js?v=wallet-isolation-1" defer></script>
+<link rel="stylesheet" href="madar-topup.css?v=simple-transfer-1">
+<script src="madar-topup.js?v=simple-transfer-1" defer></script>
 <style>
 /* Wallet reference-inspired mobile design */
 #walletView{background:#070d19!important;color:#eef3ff!important;padding-bottom:110px!important}
@@ -945,7 +950,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 <script src="wallet-primary-toggle.js?v=checkout-wallet-1" defer></script>
 <script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
 <script src="game-bestsellers.js?v=featured-market-order-20261120" defer></script>
-<script src="live-mobile.js?v=catalog-menu-20261120&startup-shell=1&checkout-wallet=1" defer></script>
+<script src="live-mobile.js?v=catalog-menu-20261120&startup-shell=1&checkout-wallet=1&simple-madar=1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=privacy-beside-ranking-20261109-1">

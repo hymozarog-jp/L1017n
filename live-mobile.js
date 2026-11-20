@@ -341,9 +341,9 @@
     const container = document.createElement("div");
     container.id = "llLanding";
     container.innerHTML = '<section id="llMadarCatalog" aria-labelledby="llMadarHeading">'
-      + '<h2 id="llMadarHeading">متجر محفظة المدار</h2>'
+      + '<h2 id="llMadarHeading">شحن روبوكس</h2>'
       + '<article class="ll-madar-offer"><img src="game-covers/packages/robux-100.webp" alt="" width="96" height="96"><div><h3>100 روبوكس</h3>'
-      + '<p>20 د.ل من رصيد المدار</p><button type="button" id="madarCatalogPurchase" aria-haspopup="dialog">شراء 100 روبوكس</button></div></article>'
+      + '<p>20 د.ل من رصيد المدار</p><button type="button" id="madarCatalogPurchase" aria-haspopup="dialog">اختيار الباقة</button></div></article>'
       + '<button type="button" data-ll-wallet>إدارة المحافظ</button></section>'
       + '<section class="ll-carousel" aria-label="مختارات المتجر">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'

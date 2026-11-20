@@ -305,6 +305,27 @@ async function visitors(root){
  (data?.daily||[]).slice().reverse().forEach(day=>rows.append(card(day.date,[['جلسات',fmt(day.sessions)],['زوار مميزون',fmt(day.visitors)]])));
  root.append(rows);note(root,'هذه متصفحات مميزة وليست بالضرورة أشخاصًا أو ضيوفًا غير مسجلين.');
 }
+function keepFrameInsideApp(frame){
+ frame.addEventListener('load',()=>{
+  try{
+   const doc=frame.contentDocument;
+   if(!doc)return;
+   // Only the admin report/OMNEX screens are embedded, never the customer storefront.
+   if(/\/index\.html$/.test(frame.contentWindow.location.pathname)){
+    frame.src='about:blank';location.hash='';show('overview');return;
+   }
+   doc.addEventListener('click',event=>{
+    const a=event.target.closest?.('a[href]');
+    if(!a)return;
+    const href=a.getAttribute('href')||'';
+    if(/(?:^|\/)index\.html(?:[?#]|$)/i.test(href)){
+     event.preventDefault();event.stopPropagation();
+     location.hash='';show('overview');
+    }
+   },true);
+  }catch(e){console.warn('[L1017n Admin] Embedded admin page navigation guard unavailable',e)}
+ });
+}
 async function finance(root){
  const orders=await records('purchase_orders','id,total_amount,status,created_at,product_name',150);
  const completed=orders.filter(x=>x.status==='completed');
@@ -314,7 +335,7 @@ async function finance(root){
  note(root,'الإيراد لا يساوي صافي الربح؛ لا يُحتسب الربح دون تكاليف المنتجات والمورد.');
  title(root,'تقرير المبيعات التفصيلي');
  const frame=make('iframe','ma-frame');
- frame.title='تفاصيل المبيعات داخل تطبيق الإدارة';frame.loading='lazy';frame.src='./admin-reports.html?embedded=1&sales-only=1&v=manage-native-1';
+ frame.title='تفاصيل المبيعات داخل تطبيق الإدارة';frame.loading='lazy';frame.src='./admin-reports.html?embedded=1&sales-only=1&v=manage-native-1';keepFrameInsideApp(frame);
  root.append(frame);
 }
 async function reviews(root){
@@ -339,7 +360,7 @@ async function omnex(root){
  note(root,'يمكنك التحكم في أسعار المورد ومزامنة منتجاته داخل التطبيق، باستخدام لوحة المورد المحمية الموجودة.');
  const frame=make('iframe','ma-frame ma-frame-big');
  frame.title='إدارة المورد OMNEX داخل التطبيق';
- frame.src='./admin-omnex.html?embedded=1&v=manage-native-1';
+ frame.src='./admin-omnex.html?embedded=1&v=manage-native-1';keepFrameInsideApp(frame);
  frame.loading='lazy';root.append(frame);
 }
 async function load(key){

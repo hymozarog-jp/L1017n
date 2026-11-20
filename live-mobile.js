@@ -28,7 +28,7 @@
   };
   const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","البطاقات","gift"],["local","محلية","local"],["voice","صوتية","voice"]];
   const HEROES = [
-    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"},
+    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/brand-orange/gaming.webp"},
     {headline:"شدّات ببجي",action:"pubg",button:"تصفّح الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"},
     {headline:"بطاقات بلايستيشن",action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"}
   ];

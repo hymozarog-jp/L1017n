@@ -1,0 +1,40 @@
+#walletView .madar-wallet-card #madarWalletTopup { width: auto; cursor: pointer; }
+#topupDedicatedPage .tp-providers:not(.is-expanded) #madarTopupProvider { display: none; }
+#topupDedicatedPage #madarTopupProvider { cursor: pointer; }
+#madarTopupDialog {
+  box-sizing: border-box;
+  width: min(460px, calc(100% - 28px));
+  max-height: calc(100% - 28px);
+  overflow: auto;
+  border: 1px solid #57506c;
+  border-radius: 22px;
+  background: #171423;
+  color: #f7f1ff;
+  padding: 22px;
+  font-family: inherit;
+}
+#madarTopupDialog::backdrop { background: #080610cc; }
+#madarTopupDialog .madar-topup-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+#madarTopupDialog h2 { font-size: 1.25rem; margin: 0; }
+#madarTopupDialog h3 { font-size: 1rem; margin: 0; }
+#madarTopupDialog .madar-topup-purchase { margin: 16px 0; padding-bottom: 16px; border-bottom: 1px solid #57506c; }
+#madarTopupDialog form { display: grid; gap: 12px; margin-top: 16px; }
+#madarTopupDialog label:not(.madar-topup-confirm) { display: grid; gap: 5px; }
+#madarTopupDialog select, #madarTopupDialog input:not([type="checkbox"]), #madarTopupDialog button {
+  font: inherit;
+  min-height: 44px;
+  border: 1px solid #655781;
+  border-radius: 11px;
+  background: #211b30;
+  color: inherit;
+  padding: 6px 10px;
+}
+#madarTopupDialog .madar-topup-amounts { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 5px; }
+#madarTopupDialog .madar-topup-confirm { display: flex; gap: 8px; align-items: center; }
+#madarTopupDialog output { text-align: center; font-family: system-ui, sans-serif; overflow-wrap: anywhere; user-select: all; }
+#madarTopupDialog output:empty, #madarTopupDialog [role="status"]:empty { display: none; }
+#madarTopupDialog p { margin: 0; color: #dfd1f0; }
+#madarTopupDialog [role="status"] { margin-top: 12px; }
+#madarTopupDialog [data-madar-manage] { margin-top: 10px; }
+#madarTopupDialog button[aria-pressed="true"], #madarTopupDialog button[type="submit"]:not(:disabled) { background: #b098f0; color: #181025; font-weight: 700; }
+#madarTopupDialog button:disabled { opacity: .45; }

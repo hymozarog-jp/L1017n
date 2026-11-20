@@ -716,8 +716,8 @@ async function renderCustomerHeaderWallet(user){
    logo.alt='شعار '+(isMadar?'المدار':'ليبيانا');
  }
  if(topup){
-   topup.setAttribute('aria-label',isMadar?'شحن المدار غير متاح حاليًا':'شحن محفظة ليبيانا');
-   topup.title=isMadar?'شحن المدار قريبًا':'شحن محفظة ليبيانا';
+   topup.setAttribute('aria-label',isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا');
+   topup.title=isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا';
  }
  if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
  chip.classList.remove('hidden');
@@ -1118,7 +1118,7 @@ setInterval(()=>{
    void refreshVisibleOrderStatuses();
 },5000);
 window.addEventListener('l1017n:omnex-order-settled',()=>{void refreshVisibleOrderStatuses()});
-$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',async()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar'){toast('شحن المدار غير متاح حاليًا. شحن ليبيانا فقط هو المفعّل.');return}const user=await currentUser();if(!user){switchView('account');toast('سجّل دخولك أولاً لشحن المحفظة');return}if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();return}openTopupModal()});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
+$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',async()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar')return;const user=await currentUser();if(!user){switchView('account');toast('سجّل دخولك أولاً لشحن المحفظة');return}if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();return}openTopupModal()});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');
    if(OAUTH_ERROR){
@@ -1205,6 +1205,7 @@ function compactAdminTopup(x,name){
  const pending=x.status==='pending';
  return '<article class="history-item admin-request compact-topup"><div class="compact-topup-identity"><b>'+escapeHtml(name||'اسم الحساب غير متاح')+'</b><span dir="ltr">'+escapeHtml(x.phone||'الرقم غير متاح')+'</span></div>'+
  '<details class="compact-topup-details"><summary>التفاصيل</summary><div class="compact-topup-info"><b>'+Number(x.amount||0).toFixed(2)+' د.ل</b><span>'+escapeHtml(statusText[x.status]||x.status)+'</span></div>'+
+ (x.method==='almadar'?'<p>المدار · طابق الرقم والمبلغ مع رسالة التحويل الواردة، وتأكد إنك ما اعتمدتهاش قبل.</p>':'')+
  (pending?'<div class="admin-request-actions"><button class="btn btn-primary" data-topup-action="approved" data-id="'+id+'">موافقة</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+id+'">رفض</button></div>':'')+'</details></article>';
 }
 function compactAdminPurchase(x,name){

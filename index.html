@@ -233,7 +233,7 @@
     <span>الرصيد المتاح</span>
     <div><strong id="madarWalletBalance">0.000</strong><b>د.ل</b></div>
   </div>
-  <span class="madar-candy-status" role="note">شحن المدار قريبًا</span>
+  <button type="button" class="madar-candy-status" id="madarWalletTopup" aria-haspopup="dialog">شحن المدار +</button>
   <span class="wallet-candy-gain" role="status" aria-live="polite"></span>
 </div></div><div class="wallet-carousel-dots"><span class="active"></span><span></span></div><a class="wallet-madar-logo-credit" href="https://commons.wikimedia.org/wiki/File:Almadar_Aljadid_Logo.png" target="_blank" rel="noopener noreferrer">شعار المدار الجديد: ILibya10 · CC BY-SA 4.0 · مقتطع للبطاقة</a><div class="wallet-actions" aria-label="خيارات المحفظة"><button type="button" class="wallet-action" id="walletActionTopup"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b>شحن</b></button><button type="button" class="wallet-action" id="walletActionTransfer"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14l-4-4M21 7l-4 4"/><path d="M17 17H3l4 4M3 17l4-4"/></svg></span><b>تحويل</b></button><button type="button" class="wallet-action" id="walletActionSend" aria-haspopup="dialog" aria-controls="walletSendSheet"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></span><b>إرسال</b></button><button type="button" class="wallet-action" id="walletActionPrimary" aria-pressed="false" aria-label="تعيين المحفظة المعروضة كأساسية" title="الأساسية للمحفظة المعروضة"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><b>اجعلها أساسية</b></button></div><button type="button" id="walletActionCard" class="wallet-card-topup-entry" aria-haspopup="dialog"><span class="ct-wallet-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h5"/></svg></span><span><b>تعبئة عبر الكروت</b><small>أضف كرت ليبيانا أو أكثر</small></span><span class="ct-wallet-arrow" aria-hidden="true">‹</span></button><div class="wallet-recent-head"><h3>آخر المعاملات</h3><div class="wallet-filter-tabs"><button type="button" class="active" data-wallet-filter="all">الكل</button><button type="button" data-wallet-filter="approved">إيداع</button><button type="button" data-wallet-filter="pending">معلق</button><button type="button" data-wallet-filter="rejected">مرفوض</button></div></div></div><div class="wallet-layout"><div class="panel balance-panel"><div class="balance-top"><span>الرصيد الحالي</span><span class="balance-icon">◈</span></div><div class="balance-amount"><strong id="balanceAmount">0.00</strong><span>د.ل</span></div><div class="balance-line"></div><div class="balance-foot"><span>الحساب</span><b id="walletUserState"><i></i> غير مسجل</b></div></div><div id="topupForm" class="panel topup-form" aria-label="شحن المحفظة من ليبيانا">
   <nav class="tp-progress" aria-label="خطوات الشحن">
@@ -245,7 +245,7 @@
     <button type="button" class="tp-change-provider" aria-expanded="false">تغيير ⇄</button>
     <div class="tp-provider-grid">
       <div class="tp-provider-card is-selected" aria-current="true"><span class="tp-provider-logo tp-libyana-logo">Li<span><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></span><strong>ليبيانا</strong><small>رصيد خطك</small></div>
-      <div class="tp-provider-card is-disabled" aria-label="المدار غير متاح حاليًا"><span class="tp-provider-logo tp-madar-logo">المدار</span><strong>المدار</strong><small>قريبًا</small></div>
+      <button type="button" class="tp-provider-card" id="madarTopupProvider" aria-haspopup="dialog"><span class="tp-provider-logo tp-madar-logo">المدار</span><strong>المدار</strong><small>تحويل رصيد</small></button>
       <div class="tp-provider-card is-disabled" aria-label="التحويل البنكي غير متاح حاليًا"><span class="tp-provider-logo tp-bank-logo">▥</span><strong>المصرف</strong><small>قريبًا</small></div>
     </div>
   </section>
@@ -512,7 +512,7 @@
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
     try{
-      var s=document.createElement('script');s.src='app.js?v=header-direct-topup-20261119&saved-phone-checkout-20261118&restore-transfer-code-20261118&saved-sender-20261118&phone-registration-20261118&green-buy-20261118&omnex-roblox-catalog-20261111-1&one-review-per-customer-20261110-2&three-verified-phones-20261110-1&latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&reference-wallet-digits-20261110-1&points-progress-20261110-1&compact-pack-cards-20261110-1&three-stages-20261110-1&fixed-robux-packs-20261110-1&compact-purchases-20261110-1&wallet-fullscreen-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1&compact-admin-topups-20261109-1&points-account-menu-20261109-4&inline-real-credit-20261108-2&restored-original-digits-20261108-4&animated-order-cards-20261108-1&account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1&custom-robux-quantity=20261108-1&verified-ussd-orders=20261108-1&sms-auto-amount-20261109=1&robux-stock-live-20261109=2&visitor-dashboard-20261109=1&sales-loyalty-reviews=20261109-1&fullscreen-admin-pages=20261109-1&admin-reports-fullscreen=1&robux-sold-count=2-direct-total&robux-profit-report=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1&admin-product-images-20261109=2-iphone&registered-phone-account-id-20261110=1&roblox-subcategories-20261111=1&pubg-home-visible-20261112-1&omnex-live-codes-in-orders-20261112-1&playstation-omnex-20261114=1&psn-user-art-20261114=1&balance-dialog=1&supplier-notice=1&public-review-form=1&matching-package-art=1';
+      var s=document.createElement('script');s.src='app.js?v=madar-topup-1&header-direct-topup-20261119&saved-phone-checkout-20261118&restore-transfer-code-20261118&saved-sender-20261118&phone-registration-20261118&green-buy-20261118&omnex-roblox-catalog-20261111-1&one-review-per-customer-20261110-2&three-verified-phones-20261110-1&latest-order-review-once-20261110-1&reviewer-names-20261110-1&reference-customer-reviews-20261110-1&reference-wallet-digits-20261110-1&points-progress-20261110-1&compact-pack-cards-20261110-1&three-stages-20261110-1&fixed-robux-packs-20261110-1&compact-purchases-20261110-1&wallet-fullscreen-20261110-1&unified-finance-20261110-1&completion-rating-20261110-1&robux-cost-calculator-20261109-1&compact-admin-topups-20261109-1&points-account-menu-20261109-4&inline-real-credit-20261108-2&restored-original-digits-20261108-4&animated-order-cards-20261108-1&account-admin-shortcut-20261108-1&compact-verification-20261108&arrival-verify-20261108&dial-code-telegram-20261105-1&orders-status-sync=20261105-1&phone-change=20261105-1&remove-unverified-phone=20261105-1&wallet-card-topup=20261105-1&private-admin-cards=20261105-1&inline-phone-profile=20261105-1&wallet-compact-balanced-20261106=1&fix-leaderboard-recursion-20261107=1&robux-sold-out-20261107=1&rank-general-friends-20261106=1&hide-home-offers=20261105-1&full-header-balance=20261105-1&large-pretty-balance=20261105-1&larger-wallet-amount=20261105-2&accurate-balance-fit=20261105-1&balanced-wallet-font=20261105-1&custom-robux-quantity=20261108-1&verified-ussd-orders=20261108-1&sms-auto-amount-20261109=1&robux-stock-live-20261109=2&visitor-dashboard-20261109=1&sales-loyalty-reviews=20261109-1&fullscreen-admin-pages=20261109-1&admin-reports-fullscreen=1&robux-sold-count=2-direct-total&robux-profit-report=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1&admin-product-images-20261109=2-iphone&registered-phone-account-id-20261110=1&roblox-subcategories-20261111=1&pubg-home-visible-20261112-1&omnex-live-codes-in-orders-20261112-1&playstation-omnex-20261114=1&psn-user-art-20261114=1&balance-dialog=1&supplier-notice=1&public-review-form=1&matching-package-art=1';
       s.onload=function(){var b=document.getElementById('site-load-error');if(b&&b.textContent.indexOf('تم تنزيل app.js')===0)b.remove()};
       s.onerror=function(){showError('تعذر تحميل ملف وظائف المتجر app.js. حاول تحديث الصفحة بعد قليل.')};
       document.body.appendChild(s);
@@ -626,9 +626,43 @@ window.openDedicatedTopup=openDedicatedTopup;
 .madar-wallet-card{background:linear-gradient(145deg,#153a2d,#0d201a);border:1px solid #4d9574;border-radius:22px;padding:22px;margin:18px 0;color:#f0fff7;box-shadow:0 10px 28px #0002}
 .madar-wallet-card-top{display:flex;align-items:center;gap:14px}.madar-wallet-logo{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:#348f63;color:#fff;font-size:29px;font-weight:800}.madar-wallet-card strong{display:block;font-size:20px}.madar-wallet-card small{display:block;color:#b5d5c4;margin-top:4px}.madar-wallet-card p{color:#bdd0c4;font-size:13px;margin:18px 0}.madar-wallet-card button{width:100%;background:#77d59e;color:#092118;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:800}
 </style>
-<script>
-document.addEventListener('click',function(e){var btn=e.target.closest('#madarWalletTopup');if(!btn)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();var radio=document.querySelector('#topupForm input[name="provider"][value="madar"]');if(radio){radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}))}}},true);
-</script>
+<dialog id="madarTopupDialog" dir="rtl" aria-labelledby="madarTopupTitle">
+  <div class="madar-topup-head">
+    <h2 id="madarTopupTitle">شحن محفظة المدار</h2>
+    <button type="button" data-madar-close aria-label="إغلاق شحن المدار">×</button>
+  </div>
+  <section class="madar-topup-purchase" aria-labelledby="madarPurchaseTitle">
+    <h3 id="madarPurchaseTitle">100 روبوكس</h3>
+    <p>20 د.ل من محفظة المدار · شحن باسم المستخدم</p>
+    <form id="madarPurchaseForm">
+      <label>اسم المستخدم في روبلوكس <input name="username" type="text" dir="ltr" pattern="[A-Za-z0-9_]{3,20}" required maxlength="20" autocomplete="off"></label>
+      <button type="submit" disabled>شراء 100 روبوكس</button>
+      <p role="status"></p>
+    </form>
+  </section>
+  <form id="madarTransferForm">
+    <h3>تعبئة رصيد المدار</h3>
+    <label>رقم المدار المحوّل <select name="sender" dir="ltr" required></select></label>
+    <label>مبلغ التحويل بالدينار <input name="amount" type="number" min="1" max="20" step="1" value="1" inputmode="numeric" dir="ltr" required></label>
+    <div class="madar-topup-amounts" aria-label="مبالغ سريعة" role="group" dir="ltr">
+      <button type="button" data-madar-amount="1">1</button>
+      <button type="button" data-madar-amount="5">5</button>
+      <button type="button" data-madar-amount="10">10</button>
+      <button type="button" data-madar-amount="15">15</button>
+      <button type="button" data-madar-amount="20">20</button>
+    </div>
+    <p>حوّل من خط المدار المختار إلى <bdi dir="ltr">0910005566</bdi>. طابق الرقم والمبلغ قبل التأكيد.</p>
+    <output dir="ltr" aria-label="كود تحويل المدار"></output>
+    <button type="button" data-madar-copy disabled>نسخ كود التحويل</button>
+    <label class="madar-topup-confirm"><input type="checkbox" name="confirmTransfer"> أتممت التحويل من الرقم المختار</label>
+    <button type="submit" disabled>إرسال الطلب للمراجعة</button>
+    <p>يُضاف الرصيد بعد مطابقة التحويل واعتماده.</p>
+  </form>
+  <p role="status" id="madarTransferStatus"></p>
+  <button type="button" data-madar-manage hidden>إدارة أرقام الهاتف</button>
+</dialog>
+<link rel="stylesheet" href="madar-topup.css?v=1">
+<script src="madar-topup.js?v=1" defer></script>
 <style>
 /* Wallet reference-inspired mobile design */
 #walletView{background:#070d19!important;color:#eef3ff!important;padding-bottom:110px!important}

@@ -1,0 +1,83 @@
+/* L1017n — orange active-navigation orb.
+   Reuses existing #llBottomNav .ll-nav-glider positioning and RTL click handlers.
+   Purely visual: no changes to navigation, wallet or checkout logic. */
+@media (max-width:680px) {
+  html body.l1017-live-ui #llBottomNav > .ll-nav-glider {
+    display:block!important;
+    position:absolute!important;
+    top:0!important;
+    left:0!important;
+    width:43px!important;
+    height:43px!important;
+    min-width:43px!important;
+    min-height:43px!important;
+    border-radius:50%!important;
+    border:1px solid #ffca72!important;
+    background:linear-gradient(145deg,#ffd365 0%,#ffab2c 38%,#fb8413 100%)!important;
+    box-shadow:inset 0 2px 3px #fff5b663,0 3px 11px #ff8f254a,0 0 18px #ff991938!important;
+    pointer-events:none!important;
+    z-index:0!important;
+    will-change:transform!important;
+    opacity:0!important;
+    transition:transform .43s cubic-bezier(.18,.78,.19,1),
+               opacity .16s ease!important;
+  }
+  html body.l1017-live-ui #llBottomNav > .ll-nav-glider.is-ready {
+    opacity:1!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] {
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] .ll-nav-icon {
+    position:relative!important;
+    z-index:1!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transition:transform .23s ease!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active .ll-nav-icon {
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active .ll-nav-icon svg {
+    color:#3a220b!important;
+    stroke:currentColor!important;
+    fill:none!important;
+    stroke-width:2.2!important;
+    filter:drop-shadow(0 1px 0 #fff4ac33);
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active small {
+    color:#ffc06b!important;
+    font-weight:850!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:not(.active) svg {
+    color:#9ca5ba!important;
+    stroke:currentColor!important;
+    fill:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:not(.active) small {
+    color:#adb4c8!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:focus-visible {
+    outline:2px solid #ffcf83!important;
+    outline-offset:2px!important;
+  }
+}
+@media (max-width:350px) {
+  html body.l1017-live-ui #llBottomNav > .ll-nav-glider {
+    width:39px!important;
+    height:39px!important;
+    min-width:39px!important;
+    min-height:39px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  html body.l1017-live-ui #llBottomNav > .ll-nav-glider,
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] .ll-nav-icon {
+    transition:none!important;
+    animation:none!important;
+  }
+}

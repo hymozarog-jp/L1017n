@@ -29,16 +29,17 @@
 @media(min-width:690px){.wrap{padding-inline:24px}.metrics{grid-template-columns:repeat(4,1fr)}.modules{grid-template-columns:repeat(3,minmax(0,1fr))}.module{min-height:155px}.top{padding-top:28px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.module{transition:none}}
 </style>
+<link rel="stylesheet" href="./manage-internal.css?v=native-sections-20261120-1">
 </head>
 <body>
 <div class="wrap">
  <header class="top"><div class="mark" aria-label="L1017n Admin">L</div><div class="brand"><b>L1017n Admin</b><small>لوحة الإدارة • Android</small></div><button class="top-btn" id="refresh" type="button" hidden>↻ تحديث</button></header>
  <section id="checking" class="login"><div class="login-card"><span class="eyebrow">اتصال آمن</span><h1>جاري التحقق من حسابك…</h1><p>نجهز لوحة إدارتك من قاعدة بيانات المتجر.</p></div></section>
  <section id="login" class="login" hidden><div class="login-card"><div class="lock" aria-hidden="true">🔒</div><span class="eyebrow">ADMIN ACCESS</span><h1>دخول مدير المتجر</h1><p>ادخل بنفس حساب المتجر المخوّل بالإدارة. لن يستطيع أي زبون الوصول إلى الإحصائيات أو التعديل.</p>
- <form id="loginForm"><div class="field"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" dir="ltr" required placeholder="name@example.com"></div><div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div><div class="login-actions"><button type="submit" class="primary" id="loginButton">تسجيل الدخول</button><a class="ghost" href="./index.html?admin=1">الدخول باستخدام Google في المتجر</a></div><p id="loginMsg" class="state" role="status" hidden></p></form>
- <p class="hint">إذا دخلت عبر Google في المتجر، افتح هذا التطبيق مجددًا بنفس المتصفح. صلاحيات الإدارة تُفحص من الخادم.</p></div></section>
+ <form id="loginForm"><div class="field"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" dir="ltr" required placeholder="name@example.com"></div><div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div><div class="login-actions"><button type="submit" class="primary" id="loginButton">تسجيل الدخول</button><button type="button" class="ghost" id="googleAdminButton">تسجيل الدخول بحساب Google</button></div><p id="loginMsg" class="state" role="status" hidden></p></form>
+ <p class="hint">الدخول بحساب Google يبقى داخل تطبيق الإدارة بعد العودة من التحقق، وصلاحيات الإدارة يفحصها الخادم.</p></div></section>
  <main id="dashboard" hidden>
-  <div class="welcome"><span class="eyebrow">L1017N CONTROL CENTER</span><h1>أهلاً بمدير المتجر 👋</h1><p>كل شيء في مكان واضح: الزبائن، الطلبات، شحن الرصيد، المنتجات، والمبيعات.</p><div class="welcome-actions"><a class="primary" href="./index.html?admin=1">افتح لوحة الإدارة الكاملة ←</a><button type="button" id="installApp" class="ghost">📲 تثبيت على أندرويد</button><button type="button" id="signOut" class="ghost">تسجيل الخروج</button></div></div>
+  <div class="welcome"><span class="eyebrow">L1017N CONTROL CENTER</span><h1>أهلاً بمدير المتجر 👋</h1><p>كل شيء في مكان واضح: الزبائن، الطلبات، شحن الرصيد، المنتجات، والمبيعات.</p><div class="welcome-actions"><a class="primary" href="./manage.html#orders">إدارة الطلبات ←</a><button type="button" id="installApp" class="ghost">📲 تثبيت على أندرويد</button><button type="button" id="signOut" class="ghost">تسجيل الخروج</button></div></div>
   <div id="dataState" class="state" role="status" hidden></div>
   <div class="section-title"><h2>ملخص المتجر</h2><button type="button" id="refreshStats">تحديث الأرقام ↻</button></div>
   <div class="metrics" aria-live="polite"><div class="metric"><small>الحسابات المسجّلة</small><strong id="mUsers">—</strong><span>حساب فعلي</span></div><div class="metric"><small>زوار اليوم</small><strong id="mVisitors">—</strong><span>متصفح مميز</span></div><div class="metric"><small>طلبات الشراء</small><strong id="mOrders">—</strong><span>لا تشمل الطلبات الملغاة</span></div><div class="metric"><small>إجمالي الزيارات</small><strong id="mVisits">—</strong><span>منذ بدء العدّاد</span></div></div>
@@ -46,11 +47,11 @@
   <input type="search" id="filter" class="search" placeholder="ابحث عن طلبات، منتجات، زوار..." aria-label="البحث في أقسام الإدارة">
   <div id="modules" class="modules"></div>
   <div class="section-title"><h2>وصول سريع</h2></div>
-  <div class="quick"><a href="./index.html?admin=1&section=orders">راجع طلبات الشراء <span>‹</span></a><a href="./index.html?admin=1&section=topups">راجع طلبات شحن المحافظ <span>‹</span></a><a href="./admin-omnex.html">إعدادات المورد والأسعار <span>‹</span></a><a href="./index.html" target="_blank" rel="noopener">افتح واجهة الزبائن <span>‹</span></a></div>
+  <div class="quick"><a href="./manage.html#orders">راجع طلبات الشراء <span>‹</span></a><a href="./manage.html#topups">راجع طلبات شحن المحافظ <span>‹</span></a><a href="./manage.html#omnex">إعدادات المورد والأسعار <span>‹</span></a><a href="./manage.html#accounts" target="_blank" rel="noopener">حسابات الزبائن <span>‹</span></a></div>
   <p class="footer">التغييرات المالية وتنفيذ الطلبات تتم عبر أنظمة متجرك الموجودة والمحمية — لا توجد صلاحيات جديدة أو رصيد وهمي.</p>
  </main>
 </div>
-<nav class="bottom" id="bottomNav" aria-label="تنقل سريع" hidden><div><a class="active" href="./manage.html" aria-label="الرئيسية"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v11H3zM9 21v-8h6v8"/></svg>الرئيسية</a><a href="./index.html?admin=1&section=orders" aria-label="الطلبات"><svg viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4"/></svg>الطلبات</a><a href="./index.html?admin=1&section=products" aria-label="المنتجات"><svg viewBox="0 0 24 24"><path d="M3 6h18v15H3zM3 6l4-4h10l4 4M9 11h6M9 15h6"/></svg>المنتجات</a><a href="./index.html?admin=1&section=finance" aria-label="الأرباح"><svg viewBox="0 0 24 24"><path d="M4 20V9M9 20V4M14 20v-7M19 20v-9"/></svg>الأرباح</a></div></nav>
+<nav class="bottom" id="bottomNav" aria-label="تنقل سريع" hidden><div><a class="active" href="./manage.html" aria-label="الرئيسية"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v11H3zM9 21v-8h6v8"/></svg>الرئيسية</a><a href="./manage.html#orders" aria-label="الطلبات"><svg viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4"/></svg>الطلبات</a><a href="./manage.html#products" aria-label="المنتجات"><svg viewBox="0 0 24 24"><path d="M3 6h18v15H3zM3 6l4-4h10l4 4M9 11h6M9 15h6"/></svg>المنتجات</a><a href="./manage.html#finance" aria-label="الأرباح"><svg viewBox="0 0 24 24"><path d="M4 20V9M9 20V4M14 20v-7M19 20v-9"/></svg>الأرباح</a></div></nav>
 <script>
 (function(){
  'use strict';
@@ -85,7 +86,7 @@
   ['reviews','التقييمات','عرض ومراجعة آراء الزبائن'],
   ['overview','الإدارة الكاملة','جميع أدوات الإدارة في مكان واحد']
  ];
- const route=id=>id==='omnex'?'./admin-omnex.html':id==='wallets'?'./admin-wallets.html':'./index.html?admin=1'+(id==='overview'?'':'&section='+encodeURIComponent(id));
+ const route=id=>'./manage.html#'+encodeURIComponent(id);
  function drawModules(query=''){
   const holder=q('#modules');holder.replaceChildren();
   const wanted=query.trim().toLowerCase();
@@ -106,6 +107,7 @@
  function view(which){
   checking.hidden=which!=='checking';login.hidden=which!=='login';main.hidden=which!=='dashboard';
   bottom.hidden=which!=='dashboard';q('#refresh').hidden=which!=='dashboard';
+  window.dispatchEvent(new CustomEvent('l1017n:manage-view',{detail:{which}}));
  }
  function authMessage(message){
   const node=q('#loginMsg');node.hidden=!message;node.textContent=message||'';
@@ -149,6 +151,7 @@
   while(!window.supabase&&tries++<40){await new Promise(done=>setTimeout(done,200))}
   if(!window.supabase){view('login');authMessage('تعذّر تحميل خدمة تسجيل الدخول؛ افحص اتصال الإنترنت.');return}
   api=window.supabase.createClient(project,publishable,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  window.L1017nAdminApi=api;
   await check();
   api.auth.onAuthStateChange((event)=>{
    if(event==='SIGNED_IN'||event==='SIGNED_OUT'||event==='TOKEN_REFRESHED'){
@@ -157,6 +160,18 @@
    }
   });
  }
+ q('#googleAdminButton').addEventListener('click',async()=>{
+  if(!api){authMessage('خدمة تسجيل الدخول غير جاهزة.');return}
+  const button=q('#googleAdminButton');button.disabled=true;
+  try{
+   authMessage('يتم توجيهك إلى Google للتحقق، ثم العودة لتطبيق الإدارة.');
+   const {error}=await api.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});
+   if(error)throw error;
+  }catch(err){
+   button.disabled=false;
+   authMessage('تعذّر بدء تسجيل الدخول عبر Google. جرّب البريد وكلمة المرور.');
+  }
+ });
  q('#loginForm').addEventListener('submit',async event=>{
   event.preventDefault();
   if(!api){authMessage('الاتصال بالخدمة غير جاهز، حدّث الصفحة.');return}
@@ -197,5 +212,6 @@
  void initialize();
 })();
 </script>
+<script src="./manage-internal.js?v=native-sections-20261120-1"></script>
 </body>
 </html>

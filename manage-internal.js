@@ -40,7 +40,7 @@ function route(href){
   const url=new URL(href,location.href);
   if(url.origin!==location.origin)return null;
   const file=url.pathname.split('/').pop();
-  if(file==='manage.html')return url.hash.slice(1)||'overview';
+  if(file==='manage.html'||(file==='index.html'&&location.pathname.includes('/admin/')))return url.hash.slice(1)||'overview';
   if(file==='admin-omnex.html')return 'omnex';
   if(file==='admin-wallets.html')return 'wallets';
   if(file==='admin-reports.html')return 'finance';

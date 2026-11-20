@@ -33,6 +33,7 @@
 .login{min-height:65svh;display:grid;place-items:center;padding:20px 0}.login-card{width:min(430px,100%);background:linear-gradient(155deg,#281d3e,#14111f);border:1px solid #865caf90;border-radius:27px;padding:24px 20px;box-shadow:0 22px 50px #0006}.login-card .lock{font-size:31px}.login-card h1{font-size:24px;margin:10px 0 5px}.login-card p{font-size:12px;line-height:1.9;color:#bdb0cf}.field{display:grid;gap:7px;margin-top:14px}.field label{font-size:13px;font-weight:750}.field input{border:1px solid #8063b0;background:#151226;color:#fff;border-radius:13px;min-height:47px;padding:11px 12px;width:100%;font-size:16px}.field input:focus{outline:2px solid #b780ff}.login-actions{display:grid;gap:10px;margin-top:19px}.login-actions button{width:100%;min-height:48px}.hint{color:#a99abb;font-size:11px;line-height:1.8}.footer{padding:25px 4px 5px;font-size:11px;color:#9083a3;text-align:center;line-height:1.8}
 @media(min-width:690px){.wrap{padding-inline:24px}.metrics{grid-template-columns:repeat(4,1fr)}.modules{grid-template-columns:repeat(3,minmax(0,1fr))}.module{min-height:155px}.top{padding-top:28px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.module{transition:none}}
+.auth-utilities{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0 3px;color:#d7c6e9;font-size:12px}.auth-utilities label{display:flex;align-items:center;gap:7px;cursor:pointer}.auth-utilities input[type=checkbox]{width:18px;height:18px;accent-color:#b26fff}.auth-utilities button{border:1px solid #8a6cac;background:#ffffff0a;color:#efd9ff;min-height:34px;border-radius:10px;padding:6px 10px;font-size:12px}
 </style>
 <link rel="stylesheet" href="../manage-internal.css?v=native-sections-20261120-2">
 </head>
@@ -41,8 +42,8 @@
  <header class="top"><div class="mark" aria-label="L1017n Admin">L</div><div class="brand"><b>L1017n Admin</b><small>لوحة الإدارة • Android</small></div><button class="top-btn" id="refresh" type="button" hidden>↻ تحديث</button></header>
  <section id="checking" class="login"><div class="login-card"><span class="eyebrow">اتصال آمن</span><h1>جاري التحقق من حسابك…</h1><p>نجهز لوحة إدارتك من قاعدة بيانات المتجر.</p></div></section>
  <section id="login" class="login" hidden><div class="login-card"><div class="lock" aria-hidden="true">🔒</div><span class="eyebrow">ADMIN ACCESS</span><h1>دخول مدير المتجر</h1><p>ادخل بنفس حساب المتجر المخوّل بالإدارة. لن يستطيع أي زبون الوصول إلى الإحصائيات أو التعديل.</p>
- <form id="loginForm"><div class="field"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" dir="ltr" required placeholder="name@example.com"></div><div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div><div class="login-actions"><button type="submit" class="primary" id="loginButton">تسجيل الدخول</button><button type="button" class="ghost" id="googleAdminButton">تسجيل الدخول بحساب Google</button></div><p id="loginMsg" class="state" role="status" hidden></p></form>
- <p class="hint">لإضافة هذا التطبيق إلى شاشة الآيفون، افتحه في Safari ثم المشاركة ← إضافة إلى الشاشة الرئيسية. احذف الأيقونة القديمة إذا كانت تفتح المتجر.</p></div></section>
+ <form id="loginForm" autocomplete="on"><div class="field"><label for="email">البريد الإلكتروني</label><input id="email" name="username" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" dir="ltr" required placeholder="name@example.com"></div><div class="field"><label for="password">كلمة المرور</label><input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div><div class="auth-utilities"><label for="rememberEmail"><input id="rememberEmail" type="checkbox" checked> تذكّر بريدي على هذا الجهاز</label><button type="button" id="togglePassword" aria-pressed="false" aria-controls="password">إظهار كلمة المرور</button></div><div class="login-actions"><button type="submit" class="primary" id="loginButton">الدخول إلى الإدارة</button></div><p id="loginMsg" class="state" role="status" aria-live="polite" hidden></p><p class="hint">يمكن حفظ كلمة المرور بأمان عبر تطبيق «كلمات السر» في الآيفون. التطبيق يحفظ البريد فقط، وليس كلمة المرور.</p></form>
+ <p class="hint">الدخول هنا بالبريد وكلمة المرور فقط. لن يتم توجيهك إلى Google أو موقع الزبائن أثناء تسجيل الدخول.</p></div></section>
  <main id="dashboard" hidden>
   <div class="welcome"><span class="eyebrow">L1017N CONTROL CENTER</span><h1>أهلاً بمدير المتجر 👋</h1><p>كل شيء في مكان واضح: الزبائن، الطلبات، شحن الرصيد، المنتجات، والمبيعات.</p><div class="welcome-actions"><a class="primary" href="./index.html#orders">إدارة الطلبات ←</a><button type="button" id="installApp" class="ghost">📲 تثبيت على أندرويد</button><button type="button" id="signOut" class="ghost">تسجيل الخروج</button></div></div>
   <div id="dataState" class="state" role="status" hidden></div>
@@ -154,40 +155,58 @@
  async function initialize(){
   let tries=0;
   while(!window.supabase&&tries++<40){await new Promise(done=>setTimeout(done,200))}
-  if(!window.supabase){view('login');authMessage('تعذّر تحميل خدمة تسجيل الدخول؛ افحص اتصال الإنترنت.');return}
+  if(!window.supabase){
+   await new Promise(resolve=>{
+    const script=document.createElement('script');
+    script.src='https://unpkg.com/@supabase/supabase-js@2.75.0/dist/umd/supabase.min.js';
+    script.onload=resolve;script.onerror=resolve;document.head.append(script);
+   });
+  }
+  if(!window.supabase){view('login');authMessage('تعذر تحميل خدمة الدخول. تأكد من الإنترنت وأعد فتح التطبيق.');return}
   api=window.supabase.createClient(project,publishable,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   window.L1017nAdminApi=api;
   await check();
   api.auth.onAuthStateChange((event)=>{
    if(event==='SIGNED_IN'||event==='SIGNED_OUT'||event==='TOKEN_REFRESHED'){
     if(event==='SIGNED_OUT'){loadId++;view('login');return}
-    if(event==='SIGNED_IN')setTimeout(check,100);
+    // Form submission performs the login role check once.
    }
   });
  }
- q('#googleAdminButton').addEventListener('click',async()=>{
-  if(!api){authMessage('خدمة تسجيل الدخول غير جاهزة.');return}
-  const button=q('#googleAdminButton');button.disabled=true;
-  try{
-   authMessage('يتم توجيهك إلى Google للتحقق، ثم العودة لتطبيق الإدارة.');
-   const {error}=await api.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});
-   if(error)throw error;
-  }catch(err){
-   button.disabled=false;
-   authMessage('تعذّر بدء تسجيل الدخول عبر Google. جرّب البريد وكلمة المرور.');
-  }
+ // Save only the email, never a password.
+ const REMEMBER_KEY='l1017n_admin_remembered_email';
+ try{const saved=localStorage.getItem(REMEMBER_KEY);if(saved){q('#email').value=saved;q('#rememberEmail').checked=true}}catch(_){}
+ q('#togglePassword').addEventListener('click',()=>{
+   const field=q('#password'),wasVisible=field.type==='text';
+   field.type=wasVisible?'password':'text';
+   q('#togglePassword').textContent=wasVisible?'إظهار كلمة المرور':'إخفاء كلمة المرور';
+   q('#togglePassword').setAttribute('aria-pressed',String(!wasVisible));
  });
+ function saveEmail(){
+   try{if(q('#rememberEmail').checked)localStorage.setItem(REMEMBER_KEY,q('#email').value.trim());
+       else localStorage.removeItem(REMEMBER_KEY)}catch(_){}
+ }
+ function loginError(err){
+   const code=String(err?.code||''),details=String(err?.message||'').toLowerCase();
+   if(code==='invalid_credentials'||details.includes('invalid login credentials'))return 'البريد الإلكتروني أو كلمة المرور غير صحيحة. راجع بيانات حساب المدير.';
+   if(code==='email_not_confirmed'||details.includes('email not confirmed'))return 'يجب تأكيد البريد الإلكتروني أولًا.';
+   if(details.includes('rate limit')||code.includes('rate_limit'))return 'محاولات كثيرة. أعد المحاولة لاحقًا.';
+   if(details.includes('fetch')||details.includes('network')||details.includes('connection'))return 'تعذر الاتصال بالخادم. تأكد من اتصال الإنترنت.';
+   return 'تعذر الدخول، راجع البريد وكلمة المرور وأعد المحاولة.';
+ }
  q('#loginForm').addEventListener('submit',async event=>{
   event.preventDefault();
-  if(!api){authMessage('الاتصال بالخدمة غير جاهز، حدّث الصفحة.');return}
-  const submit=q('#loginButton');submit.disabled=true;authMessage('جاري تسجيل الدخول والتحقق من الصلاحية...');
+  if(!api){authMessage('خدمة تسجيل الدخول غير جاهزة. أعد فتح التطبيق.');return}
+  const button=q('#loginButton'),email=q('#email').value.trim(),password=q('#password').value;
+  button.disabled=true;authMessage('جاري التحقق من بيانات الدخول…');saveEmail();
   try{
-   const {error}=await api.auth.signInWithPassword({email:q('#email').value.trim(),password:q('#password').value});
-   q('#password').value='';
+   const {error}=await api.auth.signInWithPassword({email,password});
    if(error)throw error;
-   view('checking');await check();
-  }catch(err){view('login');authMessage('فشل الدخول. راجع البريد وكلمة المرور أو استخدم تسجيل Google من المتجر.')}
-  finally{submit.disabled=false}
+   q('#password').value='';
+   view('checking');
+   await check();
+  }catch(error){view('login');authMessage(loginError(error))}
+  finally{button.disabled=false}
  });
  q('#signOut').addEventListener('click',async()=>{
   if(!api)return;

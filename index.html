@@ -16,6 +16,8 @@
 #l1017EntrySplash .l1017-entry-track{display:block;position:relative;width:148px;height:3px;overflow:hidden;border-radius:99px;background:#d2b4ff18;direction:ltr}
 #l1017EntrySplash .l1017-entry-track::after{content:"";display:block;width:45%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#7941d7,#e8d4ff,#a966ff);animation:l1017-track-travel 1.4s ease-in-out infinite alternate}
 #l1017EntrySplash .l1017-entry-status{display:block;min-height:24px;max-width:100%;margin-top:19px;font:500 14px/1.8 system-ui,-apple-system,sans-serif;color:#bcb2cb;text-align:center;direction:rtl}
+#storeView > #productGrid,#storeStartupFallback[hidden]{display:none!important}
+#storeStartupFallback{padding:18px 0}
 #l1017EntrySplash.l1017-entry-done{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 @keyframes l1017-logo-reveal{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes l1017-track-travel{from{transform:translateX(-100%)}to{transform:translateX(325%)}}
@@ -115,59 +117,55 @@
 <link rel="stylesheet" href="robux-fixed-packs.css?v=compact-pack-cards-20261110-1&token-art-2&20261110-1">
 <style id="account-charge-hidden">[data-rgp-choice="account"],.rgp-method-account{display:none!important}</style>
 <link rel="stylesheet" href="omnex-complete-store.css?v=compact-category-cards-20261120"><style id="ll-more-games-style">#llMoreGames{margin-top:18px}#llMoreGamesButton{display:block;width:100%;min-height:48px;margin:0 0 18px;border:1px solid #7860b8;border-radius:16px;background:#211a36;color:#f5f1ff;font:inherit;font-weight:700;cursor:pointer}#llLanding #llMoreGamesGrid[hidden],#llLanding #llMoreGames[hidden]{display:none!important}</style>
+<noscript><style>#l1017EntrySplash{display:none!important}</style></noscript>
 </head>
 <body>
 <svg class="l1017-icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" focusable="false"><defs><symbol id="l1017-icon-package" viewBox="0 0 24 24"><path d="m12 2 9 4.8v10.4L12 22 3 17.2V6.8zM3.5 7 12 11.6 20.5 7M12 11.5V22"/></symbol><symbol id="l1017-icon-trophy" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0V4zM8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 4h8m-6-4h4"/></symbol><symbol id="l1017-icon-shield-check" viewBox="0 0 24 24"><path d="M12 2 4.5 5.5v6c0 5 3 8.5 7.5 10.5 4.5-2 7.5-5.5 7.5-10.5v-6zM9 12l2 2 4-4"/></symbol><symbol id="l1017-icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.3 1A7 7 0 0 0 14 5.4L13.7 3h-3.4L10 5.4a7 7 0 0 0-2.6 1.4l-2.3-1-2 3.5 2 1.5a7 7 0 0 0 0 2.4l-2 1.5 2 3.5 2.3-1A7 7 0 0 0 10 18.6l.3 2.4h3.4l.3-2.4a7 7 0 0 0 2.6-1.4l2.3 1 2-3.5-2-1.5A7 7 0 0 0 19 12z"/></symbol><symbol id="l1017-icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol><symbol id="l1017-icon-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 8l12-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="18" cy="16" rx="3" ry="2"/></symbol><symbol id="l1017-icon-check" viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></symbol><symbol id="l1017-icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-5"/></symbol><symbol id="l1017-icon-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol><symbol id="l1017-icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol><symbol id="l1017-icon-phone" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a14 14 0 0 1-7-7l3-2z"/></symbol><symbol id="l1017-icon-smartphone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></symbol><symbol id="l1017-icon-gamepad" viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.7 4l.7 4a3 3 0 0 1-5.1 2.7l-2.5-2H9.2l-2.5 2A3 3 0 0 1 1.6 16l.7-4A5 5 0 0 1 7 8zM6.5 12h4M8.5 10v4"/><circle cx="16" cy="12" r=".6"/><circle cx="18.5" cy="14" r=".6"/></symbol><symbol id="l1017-icon-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9 2 2-2 2-2-2-2 2 2 2-3 3"/></symbol><symbol id="l1017-icon-coins" viewBox="0 0 24 24"><circle cx="9" cy="10" r="6"/><path d="M11 15a6 6 0 1 0 3-11M9 7v6M7 9h3m3 8v2m-3-2h6"/></symbol><symbol id="l1017-icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.6a2 2 0 0 1 3.4 0L22 19a1.8 1.8 0 0 1-1.6 2H3.6A1.8 1.8 0 0 1 2 19zM12 9v5M12 18h.01"/></symbol><symbol id="l1017-icon-mail" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></symbol><symbol id="l1017-icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="l1017-icon-sparkles" viewBox="0 0 24 24"><path d="m12 2 2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2zM19 18l.7 2 .6.8.7-2 2-.6-2-.7-.7-2z"/></symbol><symbol id="l1017-icon-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol><symbol id="l1017-icon-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol><symbol id="l1017-icon-gift" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M2 6h20v4H2zM12 6v15M12 6c-2-3-5.5-5-7.3-2.3C3.8 6.2 7 7 12 6zM12 6c2-3 5.5-5 7.3-2.3C20.2 6.2 17 7 12 6z"/></symbol><symbol id="l1017-icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol><symbol id="l1017-icon-link" viewBox="0 0 24 24"><path d="M10 13.5a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2M14 10.5a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"/></symbol><symbol id="l1017-icon-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/></symbol></defs></svg>
 <div id="l1017EntrySplash" role="status" aria-label="جاري تجهيز متجر L1017n" aria-live="polite"><div class="l1017-entry-stage"><div class="l1017-entry-art" aria-hidden="true"><span class="l1017-entry-fallback">L1017n</span><img class="l1017-entry-logo" src="game-covers/l1017n-loading-logo-20261119.jpeg" alt="" width="1254" height="1254" loading="eager" fetchpriority="high" decoding="async"></div><span class="l1017-entry-track" aria-hidden="true"></span><span class="l1017-entry-status" id="l1017EntryStatus">جاري تجهيز المتجر…</span></div></div>
 <script>
-/* Show useful startup feedback while catalog/auth scripts load, never block indefinitely. */
 (function(){
   'use strict';
   var splash=document.getElementById('l1017EntrySplash');
-  if(!splash)return;
   var status=document.getElementById('l1017EntryStatus');
-  var started=Date.now(),closed=false,watch=0,hardStop=0,supplierSettled=false;
-  var minShow=700,maxShow=3500;
+  var started=Date.now(),closed=false,shellReady=false,supplierSettled=false;
+  var minShow=450,maxShow=3500;
   function close(){
     if(closed)return;
     closed=true;
-    clearTimeout(watch);
-    clearTimeout(hardStop);
-    window.removeEventListener('l1017n:storefront-ready',readyCheck);
+    clearTimeout(minimum);
+    clearTimeout(slow);
+    clearTimeout(deadline);
+    window.removeEventListener('l1017n:catalog-shell-ready',shellMounted);
     window.removeEventListener('l1017n:supplier-catalog-settled',supplierReady);
+    if(!shellReady){
+      var fallback=document.getElementById('storeStartupFallback');
+      if(fallback){
+        fallback.hidden=false;
+        document.getElementById('storeStartupRetry').addEventListener('click',function(){location.reload();});
+      }
+    }
     splash.classList.add('l1017-entry-done');
-    setTimeout(function(){if(splash.parentNode)splash.parentNode.removeChild(splash);},330);
+    setTimeout(function(){splash.remove();},330);
   }
   function readyCheck(){
-    if(closed)return;
-    clearTimeout(watch);
-    var elapsed=Date.now()-started;
-    var catalogReady=window.L1017nStorefrontReady===true&&supplierSettled;
-    var shellReady=!!document.getElementById('llLanding');
-    var loadingError=!!document.getElementById('site-load-error');
-    if(elapsed>=minShow&&((shellReady&&catalogReady)||loadingError)){
-      close();return;
-    }
-    if(status&&elapsed>=1700&&!catalogReady){
-      status.textContent=loadingError?'جاري فتح الصفحة…':'جاري تحميل بيانات المتجر…';
-    }
-    if(elapsed>=maxShow){close();return}
-    watch=setTimeout(readyCheck,120);
+    if(shellReady&&supplierSettled&&Date.now()-started>=minShow)close();
   }
+  function shellMounted(){shellReady=true;readyCheck();}
   function supplierReady(){supplierSettled=true;readyCheck();}
-  // Always let the customer browse or see the real error, even on a bad network.
-  hardStop=setTimeout(close,maxShow);
-  window.addEventListener('l1017n:storefront-ready',readyCheck);
+  var minimum=setTimeout(readyCheck,minShow);
+  var slow=setTimeout(function(){status.textContent='جاري تحميل بيانات المتجر…';},1700);
+  var deadline=setTimeout(close,maxShow);
+  window.addEventListener('l1017n:catalog-shell-ready',shellMounted);
   window.addEventListener('l1017n:supplier-catalog-settled',supplierReady);
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',readyCheck,{once:true});
-  }else readyCheck();
-  window.addEventListener('pageshow',function(e){if(e.persisted)close();},{once:true});
+  window.addEventListener('pageshow',function(e){if(e.persisted&&shellReady)close();});
 })();
 </script>
 <header class="topbar"><div id="headerAccountCluster" class="header-account-cluster" dir="ltr"><button type="button" id="googleProfileButton" class="google-profile-button hidden no-image" data-view="account" aria-label="فتح حسابي" title="حسابي"><img id="googleProfileImage" alt="صورة حساب Google" referrerpolicy="no-referrer" loading="eager"><span id="googleProfileFallback" class="google-profile-fallback" aria-hidden="true">م</span></button><button type="button" id="headerNotificationBell" class="header-notification-button hidden" data-account-action="notifications" aria-label="الإشعارات والتنبيهات" title="الإشعارات والتنبيهات"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 6-3 6-3 9h18c0-3-3-3-3-9Z" fill="currentColor" stroke="none"/><path d="M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="headerNotificationCount" class="header-notification-count" hidden aria-hidden="true"></span></button><div class="account-wallet-group"><div class="customer-wallet-chip gb-libyana-wallet-chip hidden" id="customerWalletChip" role="group" aria-label="محفظة المتجر وشحنها عبر ليبيانا"><span class="gb-libyana-badge" title="شحن عبر ليبيانا"><img id="gbLibyanaHeaderLogo" src="data:image/webp;base64,UklGRuAEAABXRUJQVlA4INQEAABwFgCdASpQAFAAPsFSn0qnpKKhrhXeQPAYCWwAv62u3R6Bdqvs73LtZXi/6N6gP9Vus/MB5xfpE/0fpwdSb+qvVUf9v9u/iIwBbsgx085MMDsazLFYE0TyM2RrcMLUUp72qjLrQ11BDkvm5tJR25g1fwcNNCnlDeuWXOGOVJ5SRQJbwG6WaxRqgIFJpnAt/l6+aq3BIkKl+eyHsL073/YI24qRQbsh6NV2H1mZqiwW0eqaEn83LzTT2KHKAAD+oILT+CBwY3rSv8zRxZwdzKMSZZ5Ycyx3dFvUsosw0d1LKUS9wlKpSSbGYddXPZWltJdXqsbZzpcEmwFGCKQYOKVCh1a/k+SwQeXGEO5YooCnb0ogrxFadiLgsU8RWnYeT/IxaGz5jXcB83gfkWrSwFHOdCmiQvq+pE2t7ABFUXLuFVypKrzQ3yQyIW4oh0E/9A/7mFV7zOBfWFxx3qlhCu7zrRPK0csGGJxzNooR8Pjup1WnFDJPvqH2M4txkPKlacKjhjcHgwVcp+RD5dMr3/MktKFj3nr/mUcSp4ObVY3TFR+UtsxlLfAL/1nUpcfnWdv8Y84uHrILJ9TwwyRnbmsnnFK9pFr7nduXcjheypzWCLbYHWmakSgLRIiv2PSPKjWX7APLYIrKsRJQtNKY94C47163Fqt2ZIjoWi0FMq6D3AEPd2s+VFYAarwTSdGH2MRP0GxYVFOe0itDqZwGmfX+j4WmxiSDnnNp/qxpWYQGGOLX31GlzL9QDxTAN+mrhWJimp8qjIxv6ADXEou6XfEbqh00oiDdLRi6pFKIQ0187uysN60UteyLygMjJHmN+i896Iu0T+4s95CUTHwA7B17/Gbinx8siKCMRdZlr9ASOWy8/8xEPJP0+eCBb3elrg+rioKR988X3IvqSXdxEFtM2J8z1DdbZ9X5YTmpJKJg8igVK4oJB3HriSe0WFPvai0YyYmTnE+BtMRTX0maLwVpe/F6g7nQGgR1cJqWdjR5Fp7269Od7H+e64OQIvvFt4nRUkLMDfXp3xfbLhQTCu9hDH5ZDjFV9nWdvyd7+nYubEyZTdQRhnYgXFFyJhxEP1v6EI07pWm3PzNboB1RyM56wS1olbHSpQsQxhDOf3W0887H0j9q8mRBA8kTuJS6kkWsXt9MrpK2qWjvZD4sLxQmeWuH60NXSj8ulqyMV0L5yrQwY1Crf1fsJ+c7SZG5Y8GmgBOAZu1fWT9gA7S/KrYktNOiABsqk4HMSC5IMgXtvhtAlsXH18TQ//bzFHbTjZA7pFfDHURoPG99ZdS7kijHDnLHjLqIC7cuyq5VZoNs78D5uQ0wvPzV8TpfxmwHAA5bSVcVWUkVe32fYz4j2zZT2mYLnWFoBa6BcXKkFrNKtcqbJ73sdDDsY4zRsCHxx2RkG8t/AzefEQotN7uMV3DAFpLenqTRP2zYxxbkUp3zL56c50G2lQlftCJzBITmTKbqKbfIHdPI/t6JbluJJiXLdY6UfLQOGeVSuaJ8NQKPgjxMpLbYbKHq4/Vy+hUzS8kRjM+WF9aWydRT8iwTkQHn/8pO6KTIaK3PTy/7n20KqDQ7lZZe8NIk8urv/hFiX8f0RcRGtUqvLKE3W0Sb+ZQ86U/dRO9UHlXYBSlFyvHmw7aAAAA=" alt="شعار ليبيانا" decoding="async"><span class="gb-libyana-fallback" aria-hidden="true">Li</span></span><span class="gb-wallet-balance-content"><span class="customer-wallet-label">رصيد المحفظة</span><strong id="customerHeaderBalance" dir="rtl">— د.ل</strong></span><button type="button" id="customerTopupShortcut" aria-label="فتح المحفظة وشحنها" title="فتح المحفظة"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg></button></div><button class="btn btn-outline" id="accountBtn">حسابي ↗</button></div></div><span id="googleWelcome" class="google-welcome hidden" aria-live="polite"><span class="google-welcome-label">أهلاً بيك <svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-user"></use></svg></span><strong id="googleWelcomeName"></strong></span><nav class="desktop-nav"><button data-view="home" class="nav-link active">الرئيسية</button><button data-view="store" class="nav-link">المتجر</button><button data-view="wallet" class="nav-link"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg>المحفظة</button><button data-view="orders" class="nav-link">طلباتي</button><button data-view="leaderboard" class="nav-link"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg>التصنيف</button></nav></header>
 <main id="app">
-<section class="section" id="storeView" aria-label="أقسام الألعاب"><div class="section-head"><div><h2>الألعاب</h2><p>اختر روبلوكس أو ببجي موبايل أو بطاقات بلايستيشن وشوف الباقات.</p></div></div><div class="product-grid" id="productGrid" aria-live="polite"><div class="game-tiles"><article class="game-tile" data-game-group="روبلوكس"><button type="button" class="game-tile-btn" data-game-open="roblox" aria-label="فتح روبلوكس"><div class="game-tile-art game-art-roblox"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></div><div class="game-tile-info"><strong>روبلوكس</strong></div></button></article><article class="game-tile" data-game-group="ببجي"><button type="button" class="game-tile-btn" data-game-open="pubg" aria-label="فتح ببجي موبايل"><div class="game-tile-art game-art-pubg"><img src="game-covers/pubg-battlefront.webp" alt="ببجي موبايل" loading="eager" decoding="async"></div><div class="game-tile-info"><strong>ببجي موبايل</strong></div></button></article><article class="game-tile" data-game-group="بلايستيشن"><button type="button" class="game-tile-btn" data-game-open="psn" aria-label="فتح بطاقات بلايستيشن"><div class="game-tile-art game-art-psn"><img src="game-covers/packages/psn.webp" alt="بطاقات بلايستيشن" loading="eager" decoding="async"></div><div class="game-tile-info"><strong>بلايستيشن</strong></div></button></article></div></div><div id="storePurchaseBox"></div><section id="storeRecentPurchases" class="recent-purchases-section" aria-labelledby="recentPurchasesHeading" dir="rtl">
+<section class="section" id="storeView" aria-label="أقسام الألعاب">
+<div id="storeStartupFallback" hidden><p role="status">واجهة المتجر تأخرت في التحميل. تقدر تعيد المحاولة.</p><button type="button" id="storeStartupRetry">إعادة المحاولة</button></div>
+<noscript><p>فعّل JavaScript لعرض أقسام المتجر.</p></noscript>
+<div class="product-grid" id="productGrid" hidden></div><div id="storePurchaseBox"></div><section id="storeRecentPurchases" class="recent-purchases-section" aria-labelledby="recentPurchasesHeading" dir="rtl">
  <div class="recent-purchase-shell">
   <header class="recent-purchase-header">
    <div class="recent-purchase-heading">
@@ -490,7 +488,7 @@
 <nav class="mobile-nav" aria-label="التنقل السفلي"><button data-view="home" class="active" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button><button data-view="orders"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10M7 8h10M7 12h10M7 16h6"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg><span>طلباتي</span></button><button data-view="leaderboard"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5m-4 3h8m-6-3h4"/></svg><span>التصنيف</span></button><button data-view="wallet"><svg class="nav-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H20v14H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 8h13a2 2 0 0 1 2 2v1h-4a2 2 0 0 0 0 4h4v1"/><path d="M16 13h.01"/></svg><span>المحفظة</span></button><button data-view="account"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>حسابي</span></button></nav>
 <div class="topup-modal hidden" id="topupModal" role="dialog" aria-modal="true" aria-labelledby="topupModalTitle" dir="rtl"><div class="topup-modal-sheet"><div class="topup-modal-heading"><button type="button" id="topupModalClose" class="topup-modal-close" aria-label="إغلاق"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-x"></use></svg></button><span class="topup-modal-tag">L1017n WALLET</span></div><div class="topup-modal-hero"><div class="topup-modal-symbol">＋</div><h2 id="topupModalTitle">شحن المحفظة</h2><p>الشحن الآلي متاح لرقم ليبيانا المفعّل في حسابك.</p></div><div class="topup-modal-content"><h3>طريقة الشحن الآلي</h3><button type="button" class="topup-modal-provider selected" data-modal-provider="libyana"><span class="topup-modal-provider-logo libyana">L</span><span><strong>ليبيانا</strong><small>شحن رصيد المحفظة عبر ليبيانا</small></span><span class="topup-modal-check"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></button><div class="topup-modal-info"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-lock"></use></svg> اختار المبلغ، افتح كود USSD وأكد التحويل من ليبيانا. إذا وصل إشعار ليبيانا مطابق للطلب والرقم الموثّق، يُعتمد الشحن المؤهّل تلقائيًا. العمليات غير المطابقة أو الكبيرة تحتاج مراجعة.</div><button type="button" id="topupModalContinue" class="topup-modal-continue">متابعة للشحن الآلي <span>←</span></button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="gamebox-loading.js?v=entry-splash-20261102-1"></script>
+<script src="gamebox-loading.js?v=entry-splash-20261120"></script>
 <script>
 (function(){
   function showError(text){
@@ -913,7 +911,7 @@ document.addEventListener('click',function(e){var btn=e.target.closest('#madarWa
 <script src="wallet-primary-toggle.js?v=unified-ui-icons-20261103-1" defer></script>
 <script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
 <script src="game-bestsellers.js?v=featured-market-order-20261120" defer></script>
-<script src="live-mobile.js?v=catalog-menu-20261120" defer></script>
+<script src="live-mobile.js?v=catalog-menu-20261120&startup-shell=1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=privacy-beside-ranking-20261109-1">

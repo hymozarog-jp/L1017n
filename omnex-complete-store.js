@@ -38,9 +38,30 @@ const searchText=value=>String(value).toLowerCase().normalize('NFKC').replace(/[
 function homeCards(section,query='',chosen='all'){
  if(chosen!=='all'&&chosen!==section)return '';
  const q=searchText(query.trim());
- return categories().filter(p=>!['roblox','pubg','psn'].includes(p.game)).filter(p=>{
-  return homeSection(p)===section&&(!q||searchText([p.category_name,...entries.filter(x=>x.category_id===p.category_id).map(x=>x.name+' '+x.group)].join(' ')).includes(q));
- }).map(p=>{
+ const popular=window.L1017nFeaturedCatalog;
+ const ranked=[];
+ for(const p of categories()){
+  if(['roblox','pubg','psn'].includes(p.game))continue; // Existing direct game/card entries remain the originals.
+  if(homeSection(p)!==section)continue;
+  if(q&&!searchText([p.category_name,...entries.filter(x=>x.category_id===p.category_id).map(x=>x.name+' '+x.group)].join(' ')).includes(q))continue;
+  const rank=popular?.rankFor(section,p.category_name)??-1;
+  // Avoid inventing any of the worldwide Top 10 categories. Keep older products in the supplier database.
+  if((section==='games'||section==='cards')&&rank<0)continue;
+  ranked.push({...p,popularityRank:rank});
+ }
+ if(section==='games'||section==='cards'){
+  ranked.sort((a,b)=>a.popularityRank-b.popularityRank||b.count-a.count);
+  const seen=new Set();
+  const limit=section==='games'?8:9; // Roblox and PUBG occupy 2 game slots, PlayStation occupies 1 card slot.
+  const selected=[];
+  for(const p of ranked){
+   if(seen.has(p.popularityRank))continue;
+   seen.add(p.popularityRank);selected.push(p);
+   if(selected.length>=limit)break;
+  }
+  ranked.length=0;ranked.push(...selected);
+ }
+ return ranked.map(p=>{
   const src=localImage(p);
   return '<article class="ll-game-section ll-reveal sc-home-card" dir="rtl"><button type="button" class="ll-game-section-link" data-supplier-category="'+escape(p.category_id)+'" aria-label="فتح '+escape(p.category_name)+'"><span class="ll-game-section-art sc-home-art">'+(src?'<img src="'+escape(src)+'" alt="" loading="lazy" decoding="auto" width="480" height="480">':'')+'</span><span class="ll-game-section-details"><strong>'+escape(p.category_name)+'</strong><small>'+p.count+' باقة متوفرة</small></span></button></article>';
  }).join('');

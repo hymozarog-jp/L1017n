@@ -1,0 +1,113 @@
+/* L1017n: color-coded premium edges. Change appearance only, never price/stock/order. */
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section{
+ --ll-edge:#8d70ed;
+ --ll-edge-rgb:141,112,237;
+}
+/* Distinct but tasteful accent for each game/card, resolved from its visible title. */
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="roblox"]{--ll-edge:#a26aff;--ll-edge-rgb:162,106,255}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="pubg"]{--ll-edge:#ffb444;--ll-edge-rgb:255,180,68}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="freefire"]{--ll-edge:#ff7650;--ll-edge-rgb:255,118,80}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="genshin"]{--ll-edge:#70c8ed;--ll-edge-rgb:112,200,237}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="mlbb"]{--ll-edge:#638eff;--ll-edge-rgb:99,142,255}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="ludo"]{--ll-edge:#45dfac;--ll-edge-rgb:69,223,172}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="bloodstrike"]{--ll-edge:#ff6078;--ll-edge-rgb:255,96,120}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="fortnite"]{--ll-edge:#ad83ff;--ll-edge-rgb:173,131,255}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="cod"]{--ll-edge:#8bbeb6;--ll-edge-rgb:139,190,182}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="valorant"]{--ll-edge:#fa6c83;--ll-edge-rgb:250,108,131}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="psn"]{--ll-edge:#5f9dff;--ll-edge-rgb:95,157,255}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="steam"]{--ll-edge:#5cc4e8;--ll-edge-rgb:92,196,232}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="apple"]{--ll-edge:#ec90d7;--ll-edge-rgb:236,144,215}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="xbox"]{--ll-edge:#77d966;--ll-edge-rgb:119,217,102}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="amazon"]{--ll-edge:#eab55d;--ll-edge-rgb:234,181,93}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="nintendo"]{--ll-edge:#fa6978;--ll-edge-rgb:250,105,120}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="netflix"]{--ll-edge:#e85975;--ll-edge-rgb:232,89,117}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other0"]{--ll-edge:#aa87fa;--ll-edge-rgb:170,135,250}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other1"]{--ll-edge:#5bc4ec;--ll-edge-rgb:91,196,236}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other2"]{--ll-edge:#f1a25e;--ll-edge-rgb:241,162,94}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other3"]{--ll-edge:#e786c1;--ll-edge-rgb:231,134,193}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other4"]{--ll-edge:#66d5a2;--ll-edge-rgb:102,213,162}
+body.l1017-live-ui #llLanding .ll-game-section[data-ll-accent="other5"]{--ll-edge:#e1c272;--ll-edge-rgb:225,194,114}
+
+/* Colored thin outline, soft outside glow; keep image aspect ratio and original shape. */
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-link{
+ border:2px solid var(--ll-edge,#8d70ed)!important;
+ border-radius:21px!important;
+ background:#171e27!important;
+ box-shadow:0 0 0 1px rgba(var(--ll-edge-rgb,141,112,237),.16),
+            0 10px 26px rgba(0,0,0,.29),
+            0 6px 18px rgba(var(--ll-edge-rgb,141,112,237),.12)!important;
+ transition:transform .23s ease,box-shadow .23s ease,border-color .23s ease!important;
+}
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-details{
+ border-top:6px solid var(--ll-edge,#8d70ed)!important;
+ background:linear-gradient(180deg,rgba(var(--ll-edge-rgb,141,112,237),.095),#171d28 36%,#151a23 100%)!important;
+}
+@media(hover:hover){
+ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-link:hover{
+  border-color:var(--ll-edge)!important;
+  box-shadow:0 0 0 1px rgba(var(--ll-edge-rgb),.36),
+             0 13px 30px #0006,
+             0 6px 22px rgba(var(--ll-edge-rgb),.26)!important;
+  transform:translateY(-2px)!important;
+ }
+}
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-link:focus-visible{
+ outline:2px solid var(--ll-edge,#b68fff)!important;
+ outline-offset:3px!important;
+}
+@media(max-width:440px){
+ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-link{
+  border-width:1.5px!important;
+  border-radius:19px!important;
+ }
+ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-details{
+  border-top-width:5px!important;
+ }
+}
+/* The same accent language on the actual purchase/package cards. */
+html body #robuxModal.robux-fixed-packs .robux-package{--l1017-pack-edge:#9973ff;--l1017-pack-rgb:153,115,255}
+html body #pubgCategoryPage.pubg-premium .pubg-pack-detailed{--l1017-pack-edge:#eab34c;--l1017-pack-rgb:234,179,76}
+html body #psnStoreScreen .psn-product{--l1017-pack-edge:#66a3f5;--l1017-pack-rgb:102,163,245}
+html body #robloxGamePage .ox-product{--l1017-pack-edge:#b47cff;--l1017-pack-rgb:180,124,255}
+html body #robloxGamePage .rgp-package{--l1017-pack-edge:#91b5ff;--l1017-pack-rgb:145,181,255}
+html body #robloxGamePage .sab-item-card{--l1017-pack-edge:#ec9561;--l1017-pack-rgb:236,149,97}
+html body #completeSupplierCatalog .sc-product{--l1017-pack-edge:#8b76ed;--l1017-pack-rgb:139,118,237}
+html body #completeSupplierCatalog .sc-product:nth-child(5n + 2){--l1017-pack-edge:#56c7cd;--l1017-pack-rgb:86,199,205}
+html body #completeSupplierCatalog .sc-product:nth-child(5n + 3){--l1017-pack-edge:#e6a565;--l1017-pack-rgb:230,165,101}
+html body #completeSupplierCatalog .sc-product:nth-child(5n + 4){--l1017-pack-edge:#d784c1;--l1017-pack-rgb:215,132,193}
+html body #completeSupplierCatalog .sc-product:nth-child(5n){--l1017-pack-edge:#84ca91;--l1017-pack-rgb:132,202,145}
+html body #robuxModal.robux-fixed-packs .robux-package:nth-child(5n + 2){--l1017-pack-edge:#58b8ed;--l1017-pack-rgb:88,184,237}
+html body #robuxModal.robux-fixed-packs .robux-package:nth-child(5n + 3){--l1017-pack-edge:#5cd7aa;--l1017-pack-rgb:92,215,170}
+html body #robuxModal.robux-fixed-packs .robux-package:nth-child(5n + 4){--l1017-pack-edge:#f3ad66;--l1017-pack-rgb:243,173,102}
+html body #robuxModal.robux-fixed-packs .robux-package:nth-child(5n){--l1017-pack-edge:#e487c8;--l1017-pack-rgb:228,135,200}
+html body :is(
+ #robuxModal.robux-fixed-packs .package-grid .robux-package,
+ #pubgCategoryPage.pubg-premium .pubg-packages .pubg-pack-detailed,
+ #psnStoreScreen .psn-products .psn-product,
+ #robloxGamePage .ox-catalog .ox-product,
+ #robloxGamePage .rgp-package,
+ #robloxGamePage .sab-item-card,
+ #completeSupplierCatalog .sc-product
+){
+ border:1.5px solid var(--l1017-pack-edge,#8b76ed)!important;
+ box-shadow:0 8px 19px rgba(0,0,0,.28),
+            0 0 0 1px rgba(var(--l1017-pack-rgb,139,118,237),.14),
+            0 4px 14px rgba(var(--l1017-pack-rgb,139,118,237),.09)!important;
+ transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;
+}
+html body :is(
+ #robuxModal.robux-fixed-packs .robux-package:disabled,
+ #pubgCategoryPage.pubg-premium .pubg-pack-detailed:has(.pubg-buy:disabled),
+ #psnStoreScreen .psn-product:disabled,
+ #robloxGamePage .ox-product:disabled,
+ #robloxGamePage .rgp-package.rgp-soldout,
+ #robloxGamePage .sab-item-card.sab-pending,
+ #completeSupplierCatalog .sc-product:has(.sc-availability:not(.is-available))
+){
+ border-color:#9e5668!important;
+ box-shadow:0 8px 19px #0004,0 0 0 1px rgba(233,80,113,.11)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-link,
+ html body :is(#robuxModal .robux-package,#pubgCategoryPage .pubg-pack-detailed,#psnStoreScreen .psn-product,#robloxGamePage .ox-product,#robloxGamePage .rgp-package,#robloxGamePage .sab-item-card,#completeSupplierCatalog .sc-product){transition:none!important}
+}

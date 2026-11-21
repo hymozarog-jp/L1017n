@@ -1,5 +1,5 @@
 /* L1017n: color-coded premium edges. Change appearance only, never price/stock/order. */
-body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section{
+body.l1017-live-ui #llLanding .ll-game-section{
  --ll-edge:#8d70ed;
  --ll-edge-rgb:141,112,237;
 }

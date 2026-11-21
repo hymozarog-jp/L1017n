@@ -232,6 +232,35 @@
     }
     elements.forEach(el => observer.observe(el));
   }
+  // Color each category border by its actual game name (not grid position).
+  // Pure presentation: does not change catalog, prices, stock or checkout.
+  function applyCatalogEdgeColors(panel) {
+    if (!panel) return;
+    const colors = [
+      [/روبلوكس|روبوكس|roblox|robux/i,"roblox"],
+      [/ببجي|pubg/i,"pubg"],
+      [/فري\s*فاير|free\s*fire/i,"freefire"],
+      [/جينشن|genshin/i,"genshin"],
+      [/موبايل\s*ليجند|mobile\s*legends/i,"mlbb"],
+      [/يلا\s*لودو|yalla\s*ludo/i,"ludo"],
+      [/بلود\s*سترايك|blood\s*strike/i,"bloodstrike"],
+      [/فورت\s*نايت|fortnite/i,"fortnite"],
+      [/كول\s*اوف\s*ديوتي|call\s*of\s*duty|cod\s*mobile/i,"cod"],
+      [/فالورانت|valorant/i,"valorant"],
+      [/بلايستيشن|playstation|psn/i,"psn"],
+      [/ستيم|steam/i,"steam"],
+      [/ايتونز|آيتونز|itunes|apple/i,"apple"],
+      [/اكس\s*بوكس|إكس\s*بوكس|xbox/i,"xbox"],
+      [/أمازون|امازون|amazon/i,"amazon"],
+      [/نينتندو|nintendo/i,"nintendo"],
+      [/نتفلكس|نيتفليكس|netflix/i,"netflix"]
+    ];
+    panel.querySelectorAll(".ll-game-section").forEach((card,index) => {
+      const title=card.querySelector(".ll-game-section-details strong")?.textContent || "";
+      const matched=colors.find(([pattern]) => pattern.test(title));
+      card.dataset.llAccent=matched ? matched[1] : "other"+(index%6);
+    });
+  }
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
@@ -268,6 +297,7 @@
     q("#llAllSupplierProducts").hidden=!compact||!moreSections.some(([,cards])=>Boolean(cards));
     root.innerHTML=games;
     window.L1017nSortGamesBySales?.(root);
+    applyCatalogEdgeColors(root);
     // Keep six prominent games up front; reveal the remaining categories on request.
     let more=q("#llMoreGames");
     if(!more){
@@ -293,6 +323,7 @@
     if(heading)heading.textContent="أشهر 10 ألعاب للشحن";
     gifts.innerHTML=giftCards;
     window.L1017nSortGiftCardsByPopularity?.(gifts);
+    applyCatalogEdgeColors(gifts);
     const giftHeading=q("#llGiftHeading");
     if(giftHeading)giftHeading.textContent="أشهر 10 بطاقات هدايا";
     q("#llLanding").querySelectorAll(".ll-catalog .ll-reveal").forEach(card=>card.classList.add("ll-shown"));

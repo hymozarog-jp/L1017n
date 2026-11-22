@@ -29,19 +29,25 @@
   const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","بطاقات الهدايا","gift"]];
   const HEROES = [
     {
-      eyebrow:"ROBLOX • GAME TOP-UP",headline:"روبلوكس",highlight:"باقات على كيفك",
-      description:"اختار باقة الروبوكس المناسبة لك، وأكمل طلبك بسهولة.",
-      action:"roblox",button:"استكشف الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"
+      eyebrow:"ROBLOX • GAME TOP-UP",headline:"عالم روبلوكس",highlight:"باقات شحن لكل لاعب",
+      description:"روبوكس وألعاب روبلوكس في مكان واحد.",
+      action:"roblox",button:"استكشف روبلوكس",theme:"violet",
+      image:"game-covers/mobile/order-robux-premium.webp",
+      imageHigh:"game-covers/4k/order-robux-premium.webp",imageMobileWidth:960,imageHighWidth:3840
     },
     {
-      eyebrow:"PUBG MOBILE • UC",headline:"شدّات ببجي",highlight:"خلك جاهز للعب",
-      description:"تصفّح باقات الشدّات، واختر الشحن المناسب لحسابك.",
-      action:"pubg",button:"شوف الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"
+      eyebrow:"PUBG MOBILE • UC",headline:"شدّات ببجي",highlight:"جهّز حسابك للمعركة",
+      description:"تصفح باقات شدات ببجي المتاحة.",
+      action:"pubg",button:"شوف الشدّات",theme:"gold",
+      image:"game-covers/mobile/pubg-battlefront.webp",
+      imageHigh:"game-covers/4k/pubg-battlefront.webp",imageMobileWidth:640,imageHighWidth:2560
     },
     {
-      eyebrow:"PLAYSTATION • GIFT CARDS",headline:"بلايستيشن",highlight:"عالمك يبدأ هنا",
-      description:"بطاقات بلايستيشن بأقسامها المختلفة، في مكان واحد.",
-      action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"
+      eyebrow:"PLAYSTATION • GIFT CARDS",headline:"بطاقات بلايستيشن",highlight:"كل الألعاب أقرب لك",
+      description:"اختار البطاقة المناسبة لدولة حسابك.",
+      action:"psn",button:"تصفّح البطاقات",theme:"aqua",
+      image:"game-covers/mobile/psn-user-card.webp",
+      imageHigh:"game-covers/4k/psn-user-card.webp",imageMobileWidth:700,imageHighWidth:2799
     }
   ];
   const q = selector => document.querySelector(selector);
@@ -385,16 +391,16 @@
   }
   function makeHeroSlides() {
     return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + esc(slide.theme) + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.headline) + '">'
-      + '<span class="ll-hero-light-lines" aria-hidden="true"></span>'
-      + '<span class="ll-hero-top-edge" aria-hidden="true"></span>'
+      + '<span class="ll-hero-light-lines" aria-hidden="true"></span><span class="ll-hero-top-edge" aria-hidden="true"></span>'
+      + '<span class="ll-hero-lightning" aria-hidden="true"></span>'
+      + '<div class="ll-hero-art-stage" aria-hidden="true"><span class="ll-hero-orbit ll-hero-orbit-one"></span><span class="ll-hero-orbit ll-hero-orbit-two"></span>'
+      + '<span class="ll-hero-light-spark"></span>'
+      + '<img class="ll-compact-art" src="' + esc(slide.image) + '" srcset="' + esc(slide.image) + ' ' + slide.imageMobileWidth + 'w, ' + esc(slide.imageHigh) + ' ' + slide.imageHighWidth + 'w" sizes="(max-width: 520px) 178px, (max-width: 1024px) 340px, 490px" alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
       + '<div class="ll-slide-copy"><span class="ll-hero-eyebrow"><span class="ll-hero-eyebrow-dot"></span>' + esc(slide.eyebrow) + '</span>'
       + '<h2>' + esc(slide.headline) + '<span class="ll-hero-highlight">' + esc(slide.highlight) + '</span></h2>'
       + '<p>' + esc(slide.description) + '</p>'
-      + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta"><span>' + esc(slide.button) + '</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13.5 5-7 7 7 7M7 12h11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-      + '</div>'
-      + '<div class="ll-hero-art-stage" aria-hidden="true"><span class="ll-hero-orbit ll-hero-orbit-one"></span><span class="ll-hero-orbit ll-hero-orbit-two"></span>'
-      + '<span class="ll-hero-light-spark"></span><img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
-      + '<span class="ll-hero-index" aria-hidden="true">' + String(index+1).padStart(2,"0") + ' / ' + String(HEROES.length).padStart(2,"0") + '</span></article>').join("");
+      + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta"><span>' + esc(slide.button) + '</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13.5 5-7 7 7 7M7 12h11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
+      + '<span class="ll-hero-index" aria-hidden="true">L1017N • ' + String(index+1).padStart(2,"0") + '</span></article>').join("");
   }
   function build() {
     const store = q("#storeView");
@@ -403,8 +409,9 @@
     container.id = "llLanding";
     container.innerHTML = '<section class="ll-carousel" aria-label="مختارات المتجر">'
       + '<div id="llSlideTrack" class="ll-carousel-track" tabindex="0">' + makeHeroSlides() + '</div>'
-      + '<div class="ll-carousel-controls"><button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
-      + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((s,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
+      + '<div class="ll-carousel-controls"><span class="ll-hero-progress-count" id="llHeroProgressCount" aria-hidden="true">01 <i>/</i> ' + String(HEROES.length).padStart(2,"0") + '</span>'
+      + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((slide,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + ' من ' + HEROES.length + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
+      + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
@@ -523,6 +530,8 @@
     const slides = [...track.querySelectorAll("[data-ll-slide]")];
     function updateDot(index) {
       activeSlide = index;
+      const progressCount=q("#llHeroProgressCount");
+      if(progressCount)progressCount.innerHTML=String(index+1).padStart(2,"0")+' <i>/</i> '+String(slides.length).padStart(2,"0");
       q("#llLanding")?.querySelectorAll("[data-ll-dot]").forEach((b,i) => {
         b.classList.toggle("selected", i === index);
         b.setAttribute("aria-current", String(i === index));

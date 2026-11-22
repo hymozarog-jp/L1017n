@@ -97,7 +97,7 @@
       root.querySelector('.psn-region-title').textContent = countryFlag(selectedRegion)+' بلايستيشن '+selectedRegion;
       for (const product of filtered.filter(p=>p.region===selectedRegion)) {
         const b = el('button','psn-product');
-        b.type = 'button'; b.disabled = !product.available;
+        b.type = 'button'; b.disabled = !product.available; b.dataset.favId = String(product.id || product.name || "");
         const art = el('span','psn-product-art');
         const photo=el('img','psn-package-image'); photo.src=cardArt; photo.alt='بطاقة بلايستيشن'; photo.loading='lazy'; photo.decoding='async';
         art.append(photo,el('span','psn-product-country',countryFlag(selectedRegion)));

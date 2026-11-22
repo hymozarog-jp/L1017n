@@ -86,7 +86,7 @@ function getClient(){
     const limitedStock=product?.stock_quantity!=null || ["steal-garama","steal-dragon"].includes(item.key);
     const remaining=Number(product?.stock_quantity);
     const available=quantityLimit(product)>0;
-    return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'">'
+    return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'" data-fav-id="'+escapeHtml(item.key)+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
       +'<div class="sab-card-art">'+(item.emoji&&!customImage
         ?'<span class="sab-character-emoji" role="img" aria-label="'+escapeHtml(item.name)+'">'+escapeHtml(item.emoji)+'</span>'

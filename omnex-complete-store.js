@@ -87,7 +87,7 @@ function mount(){
  if(root)return;
  root=make('section','sc-screen');root.id='completeSupplierCatalog';root.hidden=true;root.dir='rtl';
  root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','منتجات المتجر');
- root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><h1>منتجات المتجر</h1></div></header><div class="sc-tools" hidden><label class="sc-search-label">ابحث داخل الباقات<input class="sc-search" type="search" placeholder="اسم الباقة أو قيمتها"></label><label class="sc-stock"><input class="sc-only" type="checkbox" checked> المتوفر فقط</label></div><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
+ root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><h1>منتجات المتجر</h1></div></header><div class="sc-tools" hidden aria-hidden="true"><input class="sc-search" type="hidden" value=""><input class="sc-only" type="checkbox" hidden></div><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
  document.body.append(root);
  root.querySelector('.sc-back').onclick=goBack;
  for(const selector of ['.sc-search','.sc-only'])root.querySelector(selector).addEventListener(selector==='.sc-search'?'input':'change',()=>{limit=24;draw();});
@@ -120,7 +120,7 @@ function drawGroups(){
   button.onclick=()=>{
    if(!category){allScroll=root.scrollTop;category=row.key;groupScroll=0;panel.dataset.renderKey='';draw();root.scrollTop=0;return;}
    groupScroll=root.scrollTop;lastGroupButton=row.key;selectedGroup=row.key;limit=24;renderKey='';
-   root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=row.available>0;
+   root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=false;
    draw();root.scrollTop=0;root.querySelector('.sc-back').focus({preventScroll:true});
   };
   panel.append(button);
@@ -132,7 +132,7 @@ function draw(){
  const grouped=selectedGroup===null;
  const categoryName=entries.find(p=>p.category_id===category)?.category_name||'جميع منتجات المتجر';
  root.querySelector('h1').textContent=grouped?categoryName:groupLabel(selectedGroup);
- root.querySelector('.sc-tools').hidden=grouped;
+ root.querySelector('.sc-tools').hidden=true;
  root.querySelector('.sc-groups').hidden=!grouped;
  root.querySelector('.sc-grid').hidden=grouped;
  root.querySelector('.sc-more').hidden=grouped;
@@ -164,7 +164,7 @@ function goBack(){
 }
 function open(id=null){
  mount();entryCategory=id;category=id;selectedGroup=null;limit=24;returnFocus=document.activeElement;groupScroll=0;
- root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=true;
+ root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=false;
  root.querySelector('.sc-groups').dataset.renderKey='';
  root.hidden=false;document.body.classList.add('sc-open');renderKey='';draw();root.scrollTop=scrolls.get(id)||0;
  root.querySelector('.sc-back').focus({preventScroll:true});void refresh(true);

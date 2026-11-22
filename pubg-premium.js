@@ -114,7 +114,7 @@
     const mode = categoryFor(product);
     const available = canBuyPubg(product);
     const delivery = {codes:"كود رقمي", charge:"شحن مباشر · UID", offers:"عرض ببجي"}[mode];
-    return '<article class="pubg-pack pubg-pack-detailed">'
+    return '<article class="pubg-pack pubg-pack-detailed" data-fav-id="' + safe(product.id || product.name || "") + '">'
       + '<div class="pubg-pack-cover"><img class="pubg-pack-cover-image" src="' + safe(PACKAGE_ART[mode] || PUBG_ART) + '" alt="" loading="lazy" decoding="async">'
       + (available ? '' : '<span class="pubg-stock-badge">غير متوفر</span>') + '</div>'
       + '<div class="pubg-pack-headline"><span class="pubg-pack-kind">' + delivery + '</span><h3 class="pubg-pack-name">' + name + '</h3></div>'

@@ -211,11 +211,12 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
     z-index:2147482050!important;
   }
   body.l1017-rank-open #leaderboardView.l1017-rank-ready:not(.hidden){
-    bottom:calc(69px + env(safe-area-inset-bottom))!important;
-    height:calc(100dvh - 69px - env(safe-area-inset-bottom))!important;
+    /* The floating dock sits 12px above the safe area and is 78px tall. */
+    bottom:calc(100px + env(safe-area-inset-bottom,0px))!important;
+    height:calc(100dvh - 100px - env(safe-area-inset-bottom,0px))!important;
     min-height:0!important;
-    padding-bottom:25px!important;
-    scroll-padding-bottom:25px;
+    padding-bottom:32px!important;
+    scroll-padding-bottom:32px;
   }
 }
 

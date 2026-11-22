@@ -237,9 +237,9 @@ window.openRobloxCodesPage = async function(root) {
   <p class="ox-catalog-status" role="status">جاري تحميل الأقسام…</p>
   <div class="ox-region-grid" aria-label="أقسام روبلوكس حسب المنطقة" hidden></div>
   <div class="ox-region-products" hidden>
-   <div class="ox-filters">
-    <input type="search" class="ox-search" aria-label="ابحث في باقات المنطقة" placeholder="ابحث في الباقات">
-    <label><input type="checkbox" class="ox-instock" checked> المتوفر فقط</label>
+   <div class="ox-filters" hidden aria-hidden="true">
+    <input type="hidden" class="ox-search" value="">
+    <input type="checkbox" class="ox-instock" hidden>
    </div>
    <div class="ox-catalog-grid"></div>
    <button class="ox-more ox-soft" type="button" hidden>عرض المزيد</button>

@@ -28,9 +28,21 @@
   };
   const FILTERS = [["all","الجميع","grid"],["games","الألعاب","games"],["cards","بطاقات الهدايا","gift"]];
   const HEROES = [
-    {headline:"اشحن روبوكس",action:"roblox",button:"تصفّح الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"},
-    {headline:"شدّات ببجي",action:"pubg",button:"تصفّح الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"},
-    {headline:"بطاقات بلايستيشن",action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"}
+    {
+      eyebrow:"ROBLOX • GAME TOP-UP",headline:"روبلوكس",highlight:"باقات على كيفك",
+      description:"اختار باقة الروبوكس المناسبة لك، وأكمل طلبك بسهولة.",
+      action:"roblox",button:"استكشف الباقات",theme:"violet",image:"game-covers/packages/robux-100.webp"
+    },
+    {
+      eyebrow:"PUBG MOBILE • UC",headline:"شدّات ببجي",highlight:"خلك جاهز للعب",
+      description:"تصفّح باقات الشدّات، واختر الشحن المناسب لحسابك.",
+      action:"pubg",button:"شوف الشدّات",theme:"gold",image:"game-covers/packages/pubg-charge.webp"
+    },
+    {
+      eyebrow:"PLAYSTATION • GIFT CARDS",headline:"بلايستيشن",highlight:"عالمك يبدأ هنا",
+      description:"بطاقات بلايستيشن بأقسامها المختلفة، في مكان واحد.",
+      action:"psn",button:"تصفّح البطاقات",theme:"aqua",image:"game-covers/packages/psn.webp"
+    }
   ];
   const q = selector => document.querySelector(selector);
   const includesFilter = section => chosen === "all" || chosen === section;
@@ -372,10 +384,17 @@
     updateNavigation("home");
   }
   function makeHeroSlides() {
-    return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + slide.theme + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.headline) + '">'
-      + '<div class="ll-slide-copy"><h2>' + esc(slide.headline) + '</h2>'
-      + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta">' + esc(slide.button) + ' <span aria-hidden="true">←</span></button></div>'
-      + '<img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="lazy" decoding="async"></article>').join("");
+    return HEROES.map((slide, index) => '<article class="ll-slide ll-hero-' + esc(slide.theme) + '" data-ll-slide="' + index + '" aria-label="' + esc(slide.headline) + '">'
+      + '<span class="ll-hero-light-lines" aria-hidden="true"></span>'
+      + '<span class="ll-hero-top-edge" aria-hidden="true"></span>'
+      + '<div class="ll-slide-copy"><span class="ll-hero-eyebrow"><span class="ll-hero-eyebrow-dot"></span>' + esc(slide.eyebrow) + '</span>'
+      + '<h2>' + esc(slide.headline) + '<span class="ll-hero-highlight">' + esc(slide.highlight) + '</span></h2>'
+      + '<p>' + esc(slide.description) + '</p>'
+      + '<button type="button" data-ll-game="' + esc(slide.action) + '" class="ll-slide-cta"><span>' + esc(slide.button) + '</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13.5 5-7 7 7 7M7 12h11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+      + '</div>'
+      + '<div class="ll-hero-art-stage" aria-hidden="true"><span class="ll-hero-orbit ll-hero-orbit-one"></span><span class="ll-hero-orbit ll-hero-orbit-two"></span>'
+      + '<span class="ll-hero-light-spark"></span><img class="ll-compact-art" src="' + esc(slide.image) + '" alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
+      + '<span class="ll-hero-index" aria-hidden="true">' + String(index+1).padStart(2,"0") + ' / ' + String(HEROES.length).padStart(2,"0") + '</span></article>').join("");
   }
   function build() {
     const store = q("#storeView");
@@ -509,10 +528,37 @@
         b.setAttribute("aria-current", String(i === index));
       });
     }
-    function scrollSlide(index) {
+    let lastManualSlideAt=0;
+    function scrollSlide(index,manual=true) {
+      if(!slides.length)return;
       const next = (index + slides.length) % slides.length;
+      if(manual)lastManualSlideAt=Date.now();
       updateDot(next);
       slides[next].scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "nearest", inline: "start" });
+    }
+    // Advance only while this banner is visible. Manual swipes/taps pause autoplay.
+    let carouselVisible=false;
+    const carousel=track.closest(".ll-carousel");
+    if("IntersectionObserver" in window && carousel){
+      const carouselObserver=new IntersectionObserver(entries=>{
+        carouselVisible=entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>=0.45);
+      },{threshold:[0,0.45,0.8]});
+      carouselObserver.observe(carousel);
+    }else{
+      carouselVisible=true;
+    }
+    const pauseAutoplay=()=>{lastManualSlideAt=Date.now();};
+    track.addEventListener("pointerdown",pauseAutoplay,{passive:true});
+    track.addEventListener("touchstart",pauseAutoplay,{passive:true});
+    track.addEventListener("focusin",pauseAutoplay);
+    if(!reduceMotion()){
+      window.setInterval(()=>{
+        if(!carouselVisible || document.hidden || !track.isConnected || slides.length<2)return;
+        if(Date.now()-lastManualSlideAt<14000)return;
+        if(track.matches(":hover")||track.contains(document.activeElement))return;
+        if(!q("#storeView")||q("#storeView").classList.contains("hidden"))return;
+        scrollSlide(activeSlide+1,false);
+      },6500);
     }
     let raf = 0;
     track.addEventListener("scroll", () => {

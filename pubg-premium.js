@@ -239,12 +239,9 @@
     const available = list.filter(canBuyPubg);
     const unavailable = list.filter(product => !canBuyPubg(product));
     const sections = {all:list, available, unavailable};
-    const visible = sections[stockFilter];
+    const visible = list;
     const labels = {all:"الكل", available:"متوفر", unavailable:"غير متوفر"};
-    const filters = '<div class="pubg-stock-filters" role="group" aria-label="فلترة الباقات حسب التوفر">'
-      + Object.entries(sections).map(([value, products]) =>
-        '<button type="button" data-pubg-stock="' + value + '" aria-pressed="' + (stockFilter === value) + '">'
-        + labels[value] + ' (' + products.length + ')</button>').join('') + '</div>';
+    const filters = ''; // Display every package; redundant stock filter UI removed.
     panel.innerHTML = '<div class="pubg-results-heading"><div><h2>'
       + safe(CATEGORIES.find(category => category.key === key).title) + '</h2></div></div>'
       + (!catalogReady

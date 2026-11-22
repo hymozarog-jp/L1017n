@@ -1,0 +1,135 @@
+/* L1017n — favorites beside the buy button, as in the supplied reference. */
+.l1017-fav-shell{
+ position:relative!important;
+ display:flex!important;
+ flex-direction:column!important;
+ min-width:0!important;
+ width:100%!important;
+ height:100%!important;
+ box-sizing:border-box!important;
+}
+.l1017-fav-shell > :is(.robux-package,.psn-product,.ox-product,.rgp-package){
+ width:100%!important;
+ min-width:0!important;
+ flex:1 1 auto!important;
+ height:100%!important;
+ box-sizing:border-box!important;
+}
+/* Reserve space for the star rather than covering the call-to-action. */
+.l1017-fav-shell:has(.robux-package) .robux-pack-copy>.stock-label,
+.l1017-fav-shell:has(.psn-product) .psn-buy,
+.l1017-fav-shell:has(.ox-product) .ox-buy,
+.l1017-fav-shell:has(.rgp-package) .gb-card-open{
+ width:calc(100% - 49px)!important;
+ max-width:calc(100% - 49px)!important;
+ margin-left:49px!important;
+ margin-right:0!important;
+ align-self:flex-start!important;
+ box-sizing:border-box!important;
+}
+.l1017-fav-shell >.l1017-fav-toggle{
+ position:absolute!important;
+ left:9px!important;
+ bottom:9px!important;
+ z-index:20!important;
+}
+.l1017-fav-row{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) 41px!important;
+ gap:8px!important;
+ width:100%!important;
+ min-width:0!important;
+ align-items:stretch!important;
+ direction:rtl!important;
+}
+.l1017-fav-row > :is(.pubg-buy,.sab-buy,.sc-buy){
+ grid-column:1!important;
+ grid-row:1!important;
+ min-width:0!important;
+ width:100%!important;
+ max-width:none!important;
+ margin:0!important;
+}
+.l1017-fav-row >.l1017-fav-toggle{
+ grid-column:2!important;
+ grid-row:1!important;
+}
+/* Keep the price above the two adjacent actions on narrow cards. */
+#pubgCategoryPage .pubg-pack-bottom,
+#robloxGamePage .sab-card-footer{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ gap:8px!important;
+}
+#pubgCategoryPage .pubg-pack-bottom >.pubg-price,
+#robloxGamePage .sab-card-footer >strong{
+ flex:0 0 auto!important;
+ width:100%!important;
+}
+#completeSupplierCatalog .sc-info .l1017-fav-row{
+ margin-top:0!important;
+}
+.l1017-fav-toggle{
+ appearance:none!important;
+ -webkit-appearance:none!important;
+ display:grid!important;
+ place-items:center!important;
+ flex:none!important;
+ padding:0!important;
+ margin:0!important;
+ min-width:41px!important;
+ width:41px!important;
+ height:41px!important;
+ min-height:41px!important;
+ border:1px solid #626572a3!important;
+ border-radius:13px!important;
+ background:linear-gradient(160deg,#303341,#202632)!important;
+ color:#e5e8f2!important;
+ box-shadow:inset 0 1px #ffffff19,0 3px 9px #0003!important;
+ cursor:pointer!important;
+ touch-action:manipulation;
+ user-select:none;
+ -webkit-tap-highlight-color:transparent;
+ transition:transform .16s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+.l1017-fav-toggle svg{
+ display:block!important;
+ width:22px!important;
+ height:22px!important;
+ stroke:currentColor!important;
+ stroke-width:1.9!important;
+ fill:transparent!important;
+ transition:fill .2s ease,filter .2s ease,transform .2s ease;
+}
+.l1017-fav-toggle.is-favorite{
+ border-color:#ffcc5c!important;
+ background:linear-gradient(140deg,#55321e,#2a2533)!important;
+ color:#ffd569!important;
+ box-shadow:inset 0 1px #ffdc7b42,0 4px 14px #ffa92932!important;
+}
+.l1017-fav-toggle.is-favorite svg{
+ fill:#ffb22e!important;
+ stroke:#ffe39e!important;
+ filter:drop-shadow(0 0 4px #ffb94475);
+}
+.l1017-fav-toggle:active{transform:scale(.93)!important}
+.l1017-fav-toggle:focus-visible{outline:2px solid #ffe190!important;outline-offset:2px!important}
+@media(max-width:420px){
+ .l1017-fav-toggle{min-width:37px!important;width:37px!important;height:37px!important;min-height:37px!important;border-radius:11px!important}
+ .l1017-fav-row{grid-template-columns:minmax(0,1fr) 37px!important;gap:6px!important}
+ .l1017-fav-shell >.l1017-fav-toggle{bottom:7px!important;left:7px!important}
+ .l1017-fav-shell:has(.robux-package) .robux-pack-copy>.stock-label,
+ .l1017-fav-shell:has(.psn-product) .psn-buy,
+ .l1017-fav-shell:has(.ox-product) .ox-buy,
+ .l1017-fav-shell:has(.rgp-package) .gb-card-open{
+  width:calc(100% - 45px)!important;
+  max-width:calc(100% - 45px)!important;
+  margin-left:45px!important;
+ }
+}
+/* Preserve click affordance on favorite even for disabled purchase cards. */
+.l1017-fav-shell:has(>.robux-package:disabled)>.l1017-fav-toggle,
+.l1017-fav-shell:has(>.psn-product:disabled)>.l1017-fav-toggle,
+.l1017-fav-shell:has(>.ox-product:disabled)>.l1017-fav-toggle{opacity:1!important;pointer-events:auto!important}
+@media(prefers-reduced-motion:reduce){.l1017-fav-toggle,.l1017-fav-toggle svg{transition:none!important}}

@@ -198,6 +198,7 @@ function regionArtwork(label) {
 
 function productCard(product, regionLabel) {
  const card = make('button', 'ox-product');
+ card.dataset.favId = String(product.id || product.name || "");
  card.type = 'button';
  card.disabled = !product.available;
  const availability = product.available ? 'شراء الآن' : 'الكمية نفدت';

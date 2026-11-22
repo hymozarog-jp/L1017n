@@ -1,0 +1,22 @@
+/* L1017n 2026-11-22 — Hide redundant search and stock filters inside package screens.
+   Hidden JS state inputs are intentionally retained to prevent crashes;
+   availability, price, purchasing, and inventory checks remain unchanged. */
+#completeSupplierCatalog .sc-tools,
+#psnStoreScreen .psn-tools,
+#robloxGamePage .ox-region-products .ox-filters,
+#pubgCategoryPage .pubg-stock-filters{
+ display:none!important;
+ visibility:hidden!important;
+ padding:0!important;
+ margin:0!important;
+ border:0!important;
+ min-height:0!important;
+ height:0!important;
+}
+#completeSupplierCatalog .sc-grid,
+#psnStoreScreen .psn-regions,
+#psnStoreScreen .psn-list,
+#robloxGamePage .ox-catalog-grid,
+#pubgCategoryPage .pubg-packages{
+ scroll-margin-top:12px;
+}

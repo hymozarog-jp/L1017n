@@ -285,3 +285,46 @@ html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
  html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
  #customerWalletChip.gb-libyana-wallet-chip #customerTopupShortcut{transition:none!important}
 }
+/* L1017N-MADAR-GREEN-CHOICE2 — selected primary Madar wallet only.
+   This is strictly CSS: no account balance, payment, checkout, or click handler changes. */
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"]:not(.hidden){
+ border:1.6px solid #3ee18e!important;
+ background:radial-gradient(ellipse at 1% 105%,rgba(39,214,116,.37),transparent 55%),
+ linear-gradient(120deg,#10271e 0%,#153c2d 44%,#0b211a 100%)!important;
+ box-shadow:inset 0 1px 0 #caffe538,inset 0 -2px 6px #16804633,
+ 0 0 0 1px #1c9f5a40,0 7px 19px #1bba6a48,0 11px 20px #0006!important;
+ color:#fff!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .gb-libyana-badge{
+ background:radial-gradient(circle at 40% 30%,#69edaa38,#126a4631 70%,transparent 78%)!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .gb-libyana-badge::after{
+ background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22a%22%20x1%3D%229%22%20y1%3D%2212%22%20x2%3D%2257%22%20y2%3D%2255%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%23B7FFD1%22%2F%3E%3Cstop%20offset%3D%22.42%22%20stop-color%3D%22%2326CE80%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23075438%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x1%3D%228%22%20y1%3D%2221%22%20x2%3D%2258%22%20y2%3D%2252%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%235BE6A0%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23168953%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23073D31%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22c%22%20x1%3D%2241%22%20y1%3D%2234%22%20x2%3D%2259%22%20y2%3D%2248%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%23D5FFE7%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2323C178%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M16%2018%2040%209c2.4-.9%204.9.3%205.7%202.8l2%208.2%22%20stroke%3D%22%23B8FFD9%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M16%2020%2035%2012l2.6%208%22%20stroke%3D%22%2337CF88%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Crect%20x%3D%227.5%22%20y%3D%2219.5%22%20width%3D%2249%22%20height%3D%2236%22%20rx%3D%229%22%20fill%3D%22url(%23b)%22%20stroke%3D%22url(%23a)%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M9.5%2029c3-3.7%206-5%2013-5h31%22%20stroke%3D%22%23C0F5D3%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.6%22%2F%3E%3Cpath%20d%3D%22M11%2045v2c0%203.5%202.8%205.4%206.6%205.4h30%22%20stroke%3D%22%2372E7A7%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.7%22%2F%3E%3Crect%20x%3D%2239%22%20y%3D%2232%22%20width%3D%2220%22%20height%3D%2216%22%20rx%3D%225%22%20fill%3D%22url(%23c)%22%20stroke%3D%22%23EBFFF2%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2249.4%22%20cy%3D%2240%22%20r%3D%223.1%22%20fill%3D%22%23148650%22%20stroke%3D%22%23F2FFF4%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m14%2014%2019-7%22%20stroke%3D%22%23C8FFE1%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.68%22%2F%3E%3C%2Fsvg%3E") center/contain no-repeat!important;
+ filter:drop-shadow(0 1px 5px #20c8709e)!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] .customer-wallet-label{
+ color:#bff7d6!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] #customerHeaderBalance{
+ color:#fff!important;
+ text-shadow:0 1px 8px #37cf8a55!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] #customerTopupShortcut{
+ border:1px solid #9effbe!important;
+ background:radial-gradient(circle at 30% 22%,#8bf4b3 0%,#1bba6b 44%,#0c7948 100%)!important;
+ color:#fff!important;
+ box-shadow:inset 0 2px 2px #ffffff67,0 2px 0 #074b2e,0 2px 13px #2ad97e66!important;
+ filter:none!important;
+}
+html body.l1017-live-ui .topbar #headerAccountCluster .account-wallet-group
+#customerWalletChip.gb-libyana-wallet-chip[data-wallet-carrier="madar"] #customerTopupShortcut svg{
+ stroke:#fff!important;
+}

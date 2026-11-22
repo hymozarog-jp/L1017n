@@ -1,0 +1,182 @@
+/* L1017n — floating violet capsule navigation, based on approved design mockup.
+   Visual-only override: all five original tabs and route handlers stay unchanged. */
+@media (max-width:680px) {
+  html body.l1017-live-ui:not(.auth-screen) #llBottomNav {
+    position:fixed!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:stretch!important;
+    justify-content:space-between!important;
+    direction:rtl!important;
+    left:max(10px,env(safe-area-inset-left,0px))!important;
+    right:max(10px,env(safe-area-inset-right,0px))!important;
+    bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+    top:auto!important;
+    width:auto!important;
+    max-width:620px!important;
+    min-width:0!important;
+    min-height:86px!important;
+    height:86px!important;
+    margin:0 auto!important;
+    padding:7px!important;
+    box-sizing:border-box!important;
+    border:1px solid rgba(142,132,190,.31)!important;
+    border-radius:30px!important;
+    background:linear-gradient(145deg,rgba(20,24,46,.98) 0%,rgba(14,17,34,.98) 62%,rgba(22,15,40,.98) 100%)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.13),
+               0 0 0 1px rgba(86,62,143,.1),
+               0 16px 37px rgba(0,0,0,.54),
+               0 0 19px rgba(142,78,230,.09)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(145%)!important;
+    backdrop-filter:blur(20px) saturate(145%)!important;
+    opacity:1!important;
+    visibility:visible!important;
+    transform:none!important;
+    pointer-events:auto!important;
+    z-index:1300!important;
+  }
+  html body.l1017-live-ui #llBottomNav > .ll-nav-glider {
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] {
+    position:relative!important;
+    z-index:1!important;
+    display:flex!important;
+    flex:1 1 0!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:5px!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:69px!important;
+    height:69px!important;
+    padding:6px 1px 5px!important;
+    margin:0!important;
+    border-radius:25px!important;
+    border:1px solid transparent!important;
+    color:#9899b1!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    text-align:center!important;
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .22s ease,color .2s ease,transform .18s ease,box-shadow .22s ease!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] .ll-nav-icon {
+    position:relative!important;
+    display:grid!important;
+    flex:0 0 auto!important;
+    place-items:center!important;
+    width:31px!important;
+    height:29px!important;
+    min-width:31px!important;
+    min-height:29px!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    color:inherit!important;
+    transition:transform .22s ease,color .22s ease,filter .22s ease!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] svg {
+    width:25px!important;
+    height:25px!important;
+    color:inherit!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.9!important;
+    filter:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] small {
+    display:block!important;
+    flex:0 0 auto!important;
+    max-width:100%!important;
+    margin:0!important;
+    font:800 10px/1.3 "IBM Plex Sans Arabic",system-ui,sans-serif!important;
+    letter-spacing:0!important;
+    color:inherit!important;
+    white-space:nowrap!important;
+    text-align:center!important;
+    text-shadow:none!important;
+  }
+  /* Selected item is its own glowing rounded violet capsule, not a glider. */
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active {
+    color:#fff8ff!important;
+    border:1px solid #bb53ffb3!important;
+    background:radial-gradient(ellipse at 47% 8%,rgba(227,144,255,.52),transparent 68%),
+               linear-gradient(160deg,#6c299f 0%,#491779 55%,#321256 100%)!important;
+    box-shadow:inset 0 1px 1px rgba(255,245,255,.45),
+               inset 0 -2px 8px rgba(26,4,54,.4),
+               0 0 0 1px rgba(172,53,255,.18),
+               0 0 18px rgba(173,51,255,.42)!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active .ll-nav-icon {
+    color:#fff!important;
+    background:transparent!important;
+    filter:drop-shadow(0 0 5px rgba(255,211,255,.8))!important;
+    box-shadow:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active svg {
+    color:#fff!important;
+    stroke:#fff!important;
+    fill:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav=home].active svg path {
+    fill:rgba(255,255,255,.95)!important;
+    stroke:#fff!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav].active small {
+    color:#fff!important;
+    font-weight:900!important;
+    text-shadow:0 0 9px rgba(234,165,255,.5)!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:not(.active) svg{
+    color:#9899b1!important;
+    stroke:currentColor!important;
+    fill:none!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:not(.active) small {
+    color:#a7a6bc!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:active{
+    transform:scale(.94)!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]:focus-visible{
+    outline:2px solid #eac8ff!important;
+    outline-offset:2px!important;
+  }
+}
+@media(max-width:385px) {
+  html body.l1017-live-ui:not(.auth-screen) #llBottomNav{
+    left:8px!important;
+    right:8px!important;
+    padding:5px!important;
+    border-radius:26px!important;
+    height:78px!important;
+    min-height:78px!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav]{
+    height:66px!important;
+    min-height:66px!important;
+    border-radius:21px!important;
+    gap:3px!important;
+  }
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] svg{width:23px!important;height:23px!important}
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] small{font-size:9px!important}
+}
+@media(min-width:681px) {
+  /* Keep the existing desktop experience untouched. */
+}
+@media(prefers-reduced-motion:reduce) {
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav],
+  html body.l1017-live-ui #llBottomNav > button[data-ll-nav] .ll-nav-icon {
+    transition:none!important;
+    animation:none!important;
+  }
+}

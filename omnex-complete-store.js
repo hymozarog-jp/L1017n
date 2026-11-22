@@ -147,7 +147,7 @@ function draw(){
  if(nextKey===renderKey)return;
  renderKey=nextKey;grid.replaceChildren();
  for(const p of items.slice(0,limit)){
-  const card=make('article','sc-product');card.append(art(p));
+  const card=make('article','sc-product');card.dataset.favId=String(p.id||p.name||"");card.append(art(p));
   const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),make('span','sc-availability'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر'),make('strong','sc-price',cash(p.price)));
   const button=make('button','sc-buy',p.available?'شراء الآن':'غير متوفر');button.type='button';button.disabled=!p.available;
   button.onclick=()=>{if(typeof window.openOmnexProductCheckout==='function')window.openOmnexProductCheckout({...p,region:p.group||p.category_name});};

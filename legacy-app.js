@@ -1673,8 +1673,10 @@ setTimeout(refreshAdminAccess,0);
  else if(action==='change-phone'){if(typeof window.openPhoneChangePage==='function')window.openPhoneChangePage();else toast('خدمة تغيير رقم الهاتف غير متاحة. حدّث الصفحة.');return}
  else if(action==='notifications')show('<h3>الإشعارات والتنبيهات</h3><p>تابع حالة طلباتك من قسم طلباتي. إعدادات إشعارات الهاتف غير متاحة حالياً.</p><button type="button" id="detailOrders">فتح طلباتي</button>'),detail.querySelector('#detailOrders').onclick=()=>switchView('orders');
  else if(action==='help'){
-   // Open the official WhatsApp chat directly instead of a local help panel.
-   window.location.assign('https://wa.me/218910005566');
+   const links=root.querySelector('#accountSupportLinks');
+   if(!links)return;
+   links.hidden=!links.hidden;
+   btn.setAttribute('aria-expanded',String(!links.hidden));
    return;
  }
  });

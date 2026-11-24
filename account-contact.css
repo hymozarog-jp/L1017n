@@ -106,3 +106,40 @@
 @media(prefers-reduced-motion:reduce){
   #accountModern .account-contact-options :is(button,a){transition:none!important}
 }
+
+#accountModern .account-support-links[hidden]{display:none!important}
+#accountModern .account-support-links{
+  display:grid;
+  gap:8px;
+  padding:9px 12px 12px;
+  border-bottom:1px solid #263652;
+}
+#accountModern .account-support-link{
+  min-height:44px;
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:7px 11px;
+  border:1px solid #465477;
+  border-radius:11px;
+  background:#1a2540;
+  color:#f3f6ff;
+  text-decoration:none;
+  font-weight:750;
+}
+#accountModern .account-support-link svg{
+  width:21px;
+  height:21px;
+  fill:none;
+  stroke:var(--support-accent);
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#accountModern .support-instagram{--support-accent:#f4a9dd}
+#accountModern .support-facebook{--support-accent:#9aceff}
+#accountModern .support-whatsapp{--support-accent:#91e9b1}
+#accountModern .account-support-arrow{color:var(--support-accent)}
+#accountModern .account-support-link:hover{background:#223050}
+#accountModern [data-account-action="help"][aria-expanded="true"] .account-row-arrow{transform:rotate(-90deg)}

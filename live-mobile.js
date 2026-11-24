@@ -295,9 +295,11 @@
     const markup=items.map(item=>{
       const image=madar?"game-covers/packages/robux-100.webp":supplier.imageFor(item);
       const action=madar?"data-ll-buy":"data-ll-supplier-package";
+      const category=madar?"روبلوكس":item.category_name;
       return '<article class="ll-available-card" data-fav-kind="'+(madar?"robux":"supplier")+'" data-fav-id="'+esc(item.id)+'">'
         +'<img src="'+esc(image)+'" alt="" width="112" height="88" loading="lazy" decoding="async">'
-        +'<div class="ll-available-copy"><span class="ll-available-stock">متوفر</span><h3>'+esc(item.name)+'</h3>'
+        +'<div class="ll-available-copy"><div class="ll-available-meta"><small class="ll-available-category">'+esc(category)+'</small>'
+        +'<span class="ll-available-stock">متوفر</span></div><h3>'+esc(item.name)+'</h3>'
         +'<strong>'+price(item.price)+'</strong><button type="button" class="ll-available-buy" '+action+'="'+esc(item.id)+'">عرض الباقة</button></div></article>';
     }).join("");
     if(markup!==lastAvailablePackages){

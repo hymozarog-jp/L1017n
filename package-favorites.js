@@ -85,6 +85,12 @@
       image.addEventListener("error",()=>{image.src=source[1];},{once:true});
       const title=document.createElement("strong");
       title.textContent=name;
+      if(item?.category_name&&item.category_name!==name){
+        const category=document.createElement("small");
+        category.className="account-favorite-category";
+        category.textContent=item.category_name;
+        title.prepend(category);
+      }
       const actions=document.createElement("div");
       actions.className="account-favorite-actions";
       const open=document.createElement("button");

@@ -224,3 +224,8 @@
 @media(min-width:720px){
  .ll-available-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+
+.ll-available-meta{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.ll-available-category,.account-favorite-category{color:#ccbbdf;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.account-favorite-category{display:block;margin-bottom:3px}
+.ll-available-stock{flex:none}

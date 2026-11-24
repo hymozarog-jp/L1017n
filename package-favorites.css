@@ -209,3 +209,80 @@
 .account-favorite-card>strong{padding:8px 8px 4px}
 .account-favorite-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:4px 8px 8px}
 .account-favorite-category{display:block;margin-bottom:3px;color:#ccbbdf;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+
+/* Compact Robux cards: title, price and availability, then adjacent actions. */
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package {
+  --robux-card-action: 38px;
+  --robux-card-star-space: 45px;
+  --robux-card-padding: 9px;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package::after {
+  display: none !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package > .robux-pack-copy {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto auto 1fr;
+  align-items: center !important;
+  gap: 6px 4px !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 7px var(--robux-card-padding) var(--robux-card-padding) !important;
+  direction: rtl;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package .robux-pack-copy > strong {
+  grid-column: 1 / -1;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package .robux-pack-copy > .robux-pack-price {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
+  font-size: clamp(12px, 3.7vw, 18px) !important;
+  white-space: nowrap !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package .robux-pack-copy > .ll-stock-state {
+  display: inline-flex !important;
+  align-self: center !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 2px 4px !important;
+  border: 1px solid #a47de33b !important;
+  border-radius: 6px !important;
+  background: #9570d31b !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package .ll-stock-state::before {
+  width: 12px;
+  height: 12px;
+  flex-basis: 12px;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .robux-package .robux-pack-copy > .stock-label {
+  grid-column: 1 / -1;
+  align-self: end !important;
+  justify-self: start;
+  height: var(--robux-card-action) !important;
+  min-height: var(--robux-card-action) !important;
+  margin: 0 !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .l1017-fav-shell > .robux-package .robux-pack-copy > .stock-label {
+  width: calc(100% - var(--robux-card-star-space)) !important;
+  max-width: none !important;
+}
+html body #robuxModal.robux-fixed-packs .package-grid .l1017-fav-shell:has(> .robux-package) > .l1017-fav-toggle {
+  left: 10px !important;
+  bottom: 10px !important;
+  min-width: 38px !important;
+  width: 38px !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+}
+#robuxModal .l1017-fav-shell:has(> .robux-package) > .l1017-fav-toggle svg {
+  width: 18px !important;
+  height: 18px !important;
+}

@@ -110,7 +110,7 @@
     return !query || normalize("بطاقات الهدايا أكواد روبلوكس بطاقات روبلوكس روبوكس roblox robux gift cards").includes(query);
   }
   function packageAvailability(count){
-    return '<small class="ll-stock-count">'+count+' باقة متوفرة</small>';
+    return count == null ? '' : '<small class="ll-stock-count">'+count+' باقة متوفرة</small>';
   }
   function robloxPackageCount(madar,supplierCount){
     const robux=typeof robuxPackagesForWallet==="function"?robuxPackagesForWallet(madar?"almadar":"libyana"):[];
@@ -303,21 +303,32 @@
     const giftSection=q("#llGiftSection");
     const gifts=q("#llGiftCatalog");
     const extra=madar?null:window.L1017nCompleteCatalog;
+    const catalogStatus=madar?"ready":extra?.status?.()||"loading";
+    const waitingForCatalog=catalogStatus!=="ready";
+    const showDirectLinks=waitingForCatalog&&!query;
     const available=extra?.categories?.()||[];
     const supplierCount=game=>available.reduce((total,p)=>p.game===game?total+(Number(p.count)||0):total,0);
     const pubgCount=supplierCount("pubg");
     const psnCount=supplierCount("psn");
     const robloxSupplierCount=supplierCount("roblox");
-    const visibleRoblox=(madar||matchesSection(SHOP_SECTIONS[0]))&&(madar||catalog().some(p=>gameKey(p)==="roblox")||robloxSupplierCount>0);
-    const visiblePubg=!madar&&matchesPubg()&&pubgCount>0;
-    const visiblePsn=!madar&&matchesPsn()&&psnCount>0;
-    const games=(visibleRoblox?robloxParentCard(robloxPackageCount(madar,robloxSupplierCount)):"")+(visiblePubg?pubgParentCard(pubgCount):"")+(extra?.homeCards("games",query,chosen)||"");
+    const visibleRoblox=(madar||matchesSection(SHOP_SECTIONS[0]))&&(madar||showDirectLinks||catalog().some(p=>gameKey(p)==="roblox")||robloxSupplierCount>0);
+    const visiblePubg=!madar&&matchesPubg()&&(showDirectLinks||pubgCount>0);
+    const visiblePsn=!madar&&matchesPsn()&&(showDirectLinks||psnCount>0);
+    const games=(visibleRoblox?robloxParentCard(waitingForCatalog?null:robloxPackageCount(madar,robloxSupplierCount)):"")+(visiblePubg?pubgParentCard(waitingForCatalog?null:pubgCount):"")+(extra?.homeCards("games",query,chosen)||"");
     // No active Roblox gift-card code products in the verified store inventory.
     // Keep the old code page and data intact; do not promote an unavailable gift card.
-    const giftCards=madar?"":(visiblePsn?psnParentCard(psnCount):"")+(extra?.homeCards("cards",query,chosen)||"");
+    const giftCards=madar?"":(visiblePsn?psnParentCard(waitingForCatalog?null:psnCount):"")+(extra?.homeCards("cards",query,chosen)||"");
     // Lower-demand catalogs remain at the supplier/admin level instead of crowding the homepage.
     const moreSections=["local","voice","other"].map(section=>[section,""]);
     const compact=!madar&&chosen==="all"&&!query;
+    const hasResults=Boolean(games||giftCards||moreSections.some(([,cards])=>Boolean(cards)));
+    const status=q("#llCatalogStatus");
+    status.hidden=!waitingForCatalog;
+    status.querySelector("p").textContent=catalogStatus==="error"
+      ?"تعذّر تحميل قائمة الباقات. جرّب إعادة المحاولة."
+      :"جاري تحميل الباقات…";
+    q("#llCatalogRetry").hidden=catalogStatus!=="error";
+    q("#llCatalogEmpty").hidden=waitingForCatalog||hasResults;
     const nextCatalog=JSON.stringify([compact,games,giftCards,moreSections]);
     if(nextCatalog===lastCatalog)return;
     lastCatalog=nextCatalog;
@@ -330,7 +341,6 @@
     const showGifts=Boolean(giftCards);
     gamesSection.hidden=!showGames;
     giftSection.hidden=!showGifts;
-    q("#llCatalogEmpty").hidden=showGames||showGifts||moreSections.some(([,cards])=>Boolean(cards));
     q("#llAllSupplierProducts").hidden=!compact||!moreSections.some(([,cards])=>Boolean(cards));
     root.innerHTML=games;
     window.L1017nSortGamesBySales?.(root);
@@ -402,6 +412,7 @@
   }
   function goSearch() {
     routeView("home");
+    q("#llCatalogRetry").addEventListener("click",()=>window.L1017nCompleteCatalog?.refresh());
     const search = q("#llSearch");
     if (!search) return;
     q("#llSearchWrap")?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
@@ -443,6 +454,7 @@
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
       + FILTERS.map(([key,label,icon]) => '<button type="button" data-ll-category="' + key + '" data-ll-tone="' + icon + '" aria-pressed="' + (key==="all") + '" class="' + (key==="all"?"selected":"") + '"><span class="ll-category-icon">' + SVG(icon) + '</span><span>' + label + '</span></button>').join("") + '</div>'
+      + '<div id="llCatalogStatus" class="ll-empty" hidden><p role="status"></p><button type="button" class="btn btn-soft" id="llCatalogRetry" hidden>إعادة المحاولة</button></div>'
       + '<section id="llGamesSection" aria-labelledby="llGamesHeading">' + sectionHeading("llGamesHeading","games","شحن الألعاب")
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div></section>'
       + '<section id="llGiftSection" aria-labelledby="llGiftHeading">' + sectionHeading("llGiftHeading","gift","بطاقات الهدايا")
@@ -541,6 +553,7 @@
   // Scroll events intentionally do not change #llBottomNav visibility.
   // Its fixed layout stays visible while scrolling up or down.
   function bindEvents(container, nav, showNavScreenLoading, navScreenLoader) {
+    q("#llCatalogRetry").addEventListener("click",()=>window.L1017nCompleteCatalog?.refresh());
     const search = q("#llSearch");
     search.addEventListener("input", () => {
       query = normalize(search.value.trim());
@@ -666,6 +679,7 @@
     }, false);
   }
   window.addEventListener("l1017n:catalog-updated",renderCatalog);
+  window.addEventListener("l1017n:catalog-status",renderCatalog);
   window.addEventListener("l1017n:storefront-ready",renderCatalog);
   window.addEventListener("l1017n:checkout-wallet-changed",renderCatalog);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build, {once:true});

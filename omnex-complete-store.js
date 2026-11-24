@@ -2,6 +2,12 @@
 (function(){
 'use strict';
 let entries=[],root=null,category=null,limit=24,sequence=0,homeReady=false,initialLoadSettled=false,bootAttempts=0,renderKey='',returnFocus=null,scrolls=new Map(),selectedGroup=null,entryCategory=null,groupScroll=0,allScroll=0,lastGroupButton=null;
+let catalogStatus='loading';
+function setCatalogStatus(status){
+ if(catalogStatus===status)return;
+ catalogStatus=status;
+ window.dispatchEvent(new Event('l1017n:catalog-status'));
+}
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cash=v=>Number(v).toFixed(2)+' د.ل';
@@ -178,22 +184,32 @@ function close(){
  returnFocus?.focus?.({preventScroll:true});
 }
 async function refresh(quiet=false){
- if(typeof supabaseClient==='undefined'){if(bootAttempts++<20)setTimeout(()=>void refresh(quiet),750);return;}
+ if(!homeReady)setCatalogStatus('loading');
+ if(typeof supabaseClient==='undefined'){
+  if(bootAttempts++<20)setTimeout(()=>void refresh(quiet),750);
+  else {bootAttempts=0;setCatalogStatus('error');}
+  return;
+ }
  bootAttempts=0;
  const seq=++sequence;
+ const controller=new AbortController();
+ const deadline=setTimeout(()=>controller.abort(),10000);
  try{
-  const {data,error}=await supabaseClient.rpc('get_public_omnex_complete_catalog');
+  const {data,error}=await supabaseClient.rpc('get_public_omnex_complete_catalog').abortSignal(controller.signal);
   if(seq!==sequence)return;
   if(error||!data?.enabled||!Array.isArray(data.products))throw Error('catalog_unavailable');
   const nextEntries=data.products.filter(p=>/^[a-f0-9]{32}$/.test(String(p.id))&&/^[a-f0-9]{32}$/.test(String(p.category_id))&&Number(p.price)>0&&typeof p.name==='string').map(p=>({...p,group:String(p.group||p.region||''),category_name:String(p.category_name||'منتجات'),available:p.available===true}));
   const changed=!homeReady||JSON.stringify(nextEntries)!==JSON.stringify(entries);
   entries=nextEntries;homeReady=true;
+  setCatalogStatus('ready');
   if(changed)window.dispatchEvent(new Event('l1017n:catalog-updated'));
   if(root&&!root.hidden){draw();root.querySelector('.sc-retry').hidden=true;}
  }catch{
   if(seq!==sequence)return;
+  if(!homeReady)setCatalogStatus('error');
   if(root&&!root.hidden){root.querySelector('.sc-status').textContent='تعذر تحديث المنتجات. أعد المحاولة قبل الشراء.';root.querySelector('.sc-retry').hidden=false;}
  }finally{
+  clearTimeout(deadline);
   if(seq===sequence&&!initialLoadSettled){
    initialLoadSettled=true;
    window.dispatchEvent(new Event('l1017n:supplier-catalog-settled'));
@@ -205,7 +221,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('[data-supplier-all]'))open();
 });
 document.addEventListener('error',e=>{if(e.target.matches?.('.sc-home-art img,.sc-art img,#omnexCheckout .ox-summary img'))fallbackImage(e.target);},true);
-window.L1017nCompleteCatalog={homeCards,open,refresh,categories,imageFor:localImage,groupChoices,groupLabel,productFor:id=>entries.find(p=>p.id===id)};
+window.L1017nCompleteCatalog={homeCards,open,refresh,categories,status:()=>catalogStatus,imageFor:localImage,groupChoices,groupLabel,productFor:id=>entries.find(p=>p.id===id)};
 const boot=()=>{void refresh();setInterval(()=>{if(!document.hidden)void refresh(true);},60000);};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

@@ -484,6 +484,73 @@
  opacity:.8!important;
  font:550 11px/1.6 'IBM Plex Sans Arabic',system-ui,sans-serif!important;
 }
+/* Keep the waiting indicator within its tile before and after the transfer. */
+#topupDedicatedPage #topupForm .dt-purple-form .dt-inline-credit:not([hidden]):is(
+ [data-state="preparing"], [data-state="pending"], [data-state="matched"]
+){
+ display:grid!important;
+ grid-template-columns:38px minmax(0,1fr);
+ align-items:center!important;
+ gap:10px!important;
+ min-height:0!important;
+ padding:10px!important;
+ border-color:#7660ac!important;
+ border-inline-start:3px solid #bb98ff!important;
+ border-radius:12px!important;
+ background:linear-gradient(135deg,#2d214d,#1d1d38)!important;
+ color:#f6eeff!important;
+}
+#topupDedicatedPage #topupForm .dt-purple-form .dt-inline-credit[data-state="matched"]{
+ border-color:#587f8b!important;
+ border-inline-start-color:#8bded1!important;
+ background:linear-gradient(135deg,#253c4b,#1d253d)!important;
+}
+#topupDedicatedPage #topupForm .dt-purple-form .dt-inline-credit-symbol.dt-wait-dots{
+ box-sizing:border-box;
+ position:relative!important;
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ justify-content:center!important;
+ inline-size:38px!important;
+ min-inline-size:38px!important;
+ block-size:38px!important;
+ gap:3px!important;
+ padding:0!important;
+ overflow:hidden!important;
+ border:1px solid #a086e175!important;
+ border-radius:11px!important;
+ background:#3a2b65!important;
+ color:#e1ccff!important;
+}
+#topupDedicatedPage #topupForm .dt-inline-credit-symbol.dt-wait-dots .dt-wait-dot{
+ box-sizing:border-box;
+ display:block!important;
+ position:static!important;
+ flex:0 0 4px!important;
+ width:4px!important;
+ min-width:4px!important;
+ height:4px!important;
+ margin:0!important;
+ border-radius:50%!important;
+ background:currentColor!important;
+ animation:l1017n-inline-transfer-dot 1.15s ease-in-out infinite;
+}
+#topupDedicatedPage #topupForm .dt-wait-dots .dt-wait-dot:nth-child(2){animation-delay:.15s}
+#topupDedicatedPage #topupForm .dt-wait-dots .dt-wait-dot:nth-child(3){animation-delay:.3s}
+@keyframes l1017n-inline-transfer-dot{
+ 0%,60%,100%{transform:translateY(0);opacity:.55}
+ 30%{transform:translateY(-2px);opacity:1}
+}
+#topupDedicatedPage #topupForm .dt-wait-dots + .dt-inline-credit-copy small{
+ opacity:1!important;
+ color:#d7cce8!important;
+ font-size:12px!important;
+ overflow-wrap:anywhere;
+}
+@media(prefers-reduced-motion:reduce){
+ #topupDedicatedPage #topupForm .dt-wait-dots .dt-wait-dot{animation:none!important;opacity:1}
+}
 #topupDedicatedPage .dt-purple-form .dt-inline-credit[data-state="approved"]{
  border-color:rgba(109,230,164,.68)!important;
  background:linear-gradient(115deg,#163e32,#17342d)!important;

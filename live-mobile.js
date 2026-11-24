@@ -33,8 +33,7 @@
       eyebrow:"ROBLOX • GAME TOP-UP",headline:"عالم روبلوكس",highlight:"باقات شحن لكل لاعب",
       description:"روبوكس وألعاب روبلوكس في مكان واحد.",
       action:"roblox",button:"استكشف روبلوكس",theme:"violet",
-      image:"game-covers/mobile/order-robux-premium.webp",
-      imageHigh:"game-covers/4k/order-robux-premium.webp",imageMobileWidth:960,imageHighWidth:3840
+      image:"game-covers/packages/roblox-code-card-20261118.webp"
     },
     {
       eyebrow:"PUBG MOBILE • UC",headline:"شدّات ببجي",highlight:"جهّز حسابك للمعركة",
@@ -396,7 +395,9 @@
       + '<span class="ll-hero-lightning" aria-hidden="true"></span>'
       + '<div class="ll-hero-art-stage" aria-hidden="true"><span class="ll-hero-orbit ll-hero-orbit-one"></span><span class="ll-hero-orbit ll-hero-orbit-two"></span>'
       + '<span class="ll-hero-light-spark"></span>'
-      + '<img class="ll-compact-art" src="' + esc(slide.image) + '" srcset="' + esc(slide.image) + ' ' + slide.imageMobileWidth + 'w, ' + esc(slide.imageHigh) + ' ' + slide.imageHighWidth + 'w" sizes="(max-width: 520px) 178px, (max-width: 1024px) 340px, 490px" alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
+      + '<img class="ll-compact-art" src="' + esc(slide.image) + '"'
+      + (slide.imageHigh ? ' srcset="' + esc(slide.image) + ' ' + slide.imageMobileWidth + 'w, ' + esc(slide.imageHigh) + ' ' + slide.imageHighWidth + 'w" sizes="(max-width: 520px) 178px, (max-width: 1024px) 340px, 490px"' : '')
+      + ' alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
       + '<div class="ll-slide-copy"><span class="ll-hero-eyebrow"><span class="ll-hero-eyebrow-dot"></span>' + esc(slide.eyebrow) + '</span>'
       + '<h2>' + esc(slide.headline) + '<span class="ll-hero-highlight">' + esc(slide.highlight) + '</span></h2>'
       + '<p>' + esc(slide.description) + '</p>'
@@ -548,7 +549,7 @@
       const next = (index + slides.length) % slides.length;
       if(manual)lastManualSlideAt=Date.now();
       updateDot(next);
-      slides[next].scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "nearest", inline: "start" });
+      slides[next].scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "nearest", inline: "center" });
     }
     // Advance only while this banner is visible. Manual swipes/taps pause autoplay.
     let carouselVisible=false;

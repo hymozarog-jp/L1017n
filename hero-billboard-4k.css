@@ -8,18 +8,19 @@ body.l1017-live-ui #llLanding .ll-carousel{
  position:relative!important;
 }
 body.l1017-live-ui #llLanding .ll-carousel-track{
+ --hero-gutter:22px;
  display:flex!important;
  align-items:center!important;
- width:100%!important;
+ width:calc(100% - var(--hero-gutter) - var(--hero-gutter))!important;
  max-width:100%!important;
  box-sizing:border-box!important;
  overflow-x:auto!important;
  overflow-y:hidden!important;
  gap:12px!important;
- padding:7px 22px 6px!important;
- margin:0!important;
+ padding:7px 0 6px!important;
+ margin:0 auto!important;
  scroll-snap-type:x mandatory!important;
- scroll-padding-inline:22px!important;
+ scroll-padding-inline:0!important;
  scrollbar-width:none!important;
  -webkit-overflow-scrolling:touch!important;
  overscroll-behavior-x:contain!important;
@@ -33,8 +34,9 @@ body.l1017-live-ui #llLanding .ll-slide{
  position:relative!important;
  display:flex!important;
  align-items:center!important;
- flex:0 0 calc(100% - 44px)!important;
- width:calc(100% - 44px)!important;
+ box-sizing:border-box!important;
+ flex:0 0 100%!important;
+ width:100%!important;
  max-width:none!important;
  min-width:0!important;
  height:clamp(166px,27vw,252px)!important;
@@ -206,6 +208,10 @@ body.l1017-live-ui #llLanding .ll-compact-art{
  transform:none!important;
  filter:drop-shadow(0 15px 15px #060714ad) drop-shadow(0 0 14px rgba(var(--hero-accent-rgb),.4))!important;
 }
+body.l1017-live-ui #llLanding .ll-hero-violet .ll-compact-art{
+ mask-image:radial-gradient(ellipse 76% 74% at 50% 50%,#000 58%,transparent 96%)!important;
+ -webkit-mask-image:radial-gradient(ellipse 76% 74% at 50% 50%,#000 58%,transparent 96%)!important;
+}
 body.l1017-live-ui #llLanding .ll-hero-gold .ll-compact-art{
  height:112%!important;
  max-height:none!important;
@@ -347,8 +353,8 @@ body.l1017-live-ui #llLanding .ll-dot:focus-visible{
  outline-offset:1px!important;
 }
 @media(min-width:720px){
- body.l1017-live-ui #llLanding .ll-carousel-track{gap:18px!important;padding-inline:36px!important;scroll-padding-inline:36px!important}
- body.l1017-live-ui #llLanding .ll-slide{width:calc(100% - 85px)!important;flex-basis:calc(100% - 85px)!important;height:252px!important}
+ body.l1017-live-ui #llLanding .ll-carousel-track{--hero-gutter:36px;gap:18px!important}
+ body.l1017-live-ui #llLanding .ll-slide{height:252px!important}
  body.l1017-live-ui #llLanding .ll-slide-copy{padding:14px clamp(28px,4vw,52px)!important}
  body.l1017-live-ui #llLanding .ll-compact-art{height:96%!important;max-height:96%!important}
  body.l1017-live-ui #llLanding .ll-hero-gold .ll-compact-art{height:108%!important;max-height:none!important}
@@ -356,13 +362,11 @@ body.l1017-live-ui #llLanding .ll-dot:focus-visible{
 @media(max-width:719px){
  body.l1017-live-ui #llLanding .ll-carousel{margin:0 auto 6px!important}
  body.l1017-live-ui #llLanding .ll-carousel-track{
-  padding:6px 14px 3px!important;
-  scroll-padding-inline:14px!important;
+  --hero-gutter:14px;
+  padding:6px 0 3px!important;
   gap:9px!important;
  }
  body.l1017-live-ui #llLanding .ll-slide{
-  flex:0 0 calc(100% - 28px)!important;
-  width:calc(100% - 28px)!important;
   height:clamp(142px,39vw,176px)!important;
   min-height:0!important;
   border-radius:17px!important;

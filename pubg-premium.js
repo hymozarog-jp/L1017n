@@ -118,10 +118,9 @@
       + '<div class="pubg-pack-cover"><img class="pubg-pack-cover-image" src="' + safe(PACKAGE_ART[mode] || PUBG_ART) + '" alt="" loading="lazy" decoding="async">'
       + (available ? '' : '<span class="pubg-stock-badge">غير متوفر</span>') + '</div>'
       + '<div class="pubg-pack-headline"><span class="pubg-pack-kind">' + delivery + '</span><h3 class="pubg-pack-name">' + name + '</h3>'
-      + '<small class="ll-stock-state" data-available="' + available + '">' + (available?'متوفر':'غير متوفر') + '</small></div>'
-      + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong>'
+      + '</div><div class="pubg-pack-bottom"><div class="ll-pack-meta"><div class="pubg-price"><strong>'
       + (Number.isFinite(price) && price > 0 ? price.toFixed(2) + ' <span>د.ل</span>' : 'عند التوفر')
-      + '</strong></div>'
+      + '</strong></div><small class="ll-stock-state" data-available="' + available + '">' + (available?'متوفر':'غير متوفر') + '</small></div>'
       + (available
         ? '<button type="button" class="pubg-buy" data-pubg-buy="' + safe(product.id) + '" aria-label="شراء ' + name + '">شراء الآن</button>'
         : '<button type="button" class="pubg-buy" disabled>غير متوفر</button>')

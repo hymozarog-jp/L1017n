@@ -156,7 +156,8 @@ function draw(){
   const card=make('article','sc-product');card.dataset.favId=String(p.id||p.name||"");card.append(art(p));
   const stock=make('span','sc-availability ll-stock-state'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر');
   stock.dataset.available=String(p.available);
-  const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),stock,make('strong','sc-price',cash(p.price)));
+  const meta=make('div','ll-pack-meta');meta.append(make('strong','sc-price',cash(p.price)),stock);
+  const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),meta);
   const button=make('button','sc-buy',p.available?'شراء الآن':'غير متوفر');button.type='button';button.disabled=!p.available;
   button.onclick=()=>{if(typeof window.openOmnexProductCheckout==='function')window.openOmnexProductCheckout({...p,region:p.group||p.category_name});};
   info.append(button);card.append(info);grid.append(card);

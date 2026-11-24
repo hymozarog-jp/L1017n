@@ -93,8 +93,8 @@ function getClient(){
         :'<img class="sab-character-image l1017n-catalog-image" src="'+escapeHtml(productPicture)+'" alt="'+escapeHtml(item.name)+'" loading="lazy" decoding="async">')+'<span class="sab-glow" aria-hidden="true"></span></div>'
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
-      +(limitedStock?'<span class="sab-stock-badge '+(available?'in-stock':'out-of-stock')+'">'+(available?'المتوفر: '+remaining:'نفدت الكمية')+'</span>':'')
-      +'<div class="sab-card-footer"><strong>'+priceText(product)+'</strong>'
+      +'<div class="sab-card-footer"><div class="ll-pack-meta"><strong>'+priceText(product)+'</strong>'
+      +'<span class="ll-stock-state" data-available="'+available+'">'+(available?(limitedStock?'المتوفر: '+remaining:'متوفر'):'غير متوفر')+'</span></div>'
       +'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">'+(available?'شراء الآن':'عرض الألوان')+'</button>'
       +'</div></article>';
   }

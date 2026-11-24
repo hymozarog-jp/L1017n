@@ -103,10 +103,11 @@
         art.append(photo,el('span','psn-product-country',countryFlag(selectedRegion)));
         if (!product.available) art.append(el('span','psn-sold-out','غير متوفر'));
         const detail=el('span','psn-product-detail');
-        detail.append(el('strong','',product.name),el('span','psn-price',money(product.price)));
+        const meta=el('span','ll-pack-meta');
         const stock=el('small','ll-stock-state',product.available?'متوفر':'غير متوفر');
         stock.dataset.available=String(product.available);
-        detail.append(stock,el('span','psn-buy',product.available?'شراء الآن':'غير متوفر'));
+        meta.append(el('span','psn-price',money(product.price)),stock);
+        detail.append(el('strong','',product.name),meta,el('span','psn-buy',product.available?'شراء الآن':'غير متوفر'));
         b.append(art,detail);
         if (product.available) b.onclick = () => {
           if (typeof window.openOmnexProductCheckout !== 'function') return;

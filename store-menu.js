@@ -247,10 +247,10 @@ var styleId='robloxGamePageStyles';
           ? '<span class="mm2-item-art"><img class="l1017n-catalog-image" loading="lazy" decoding="async" referrerpolicy="no-referrer" src="'+escapeHtml(image)+'" alt="صورة سلاح '+escapeHtml(x.name)+'"></span>'
           : '';
         return '<button class="rgp-package" type="button" data-mm2-id="'+escapeHtml(x.id)+'">'+art+
-          '<strong>'+escapeHtml(x.name)+'</strong>'+
-          '<span class="mm2-price">'+Number(x.price).toFixed(2)+' د.ل</span>'+
-          '<small class="mm2-delivery">الكمية المتوفرة: 1 · التسليم داخل اللعبة</small>'+
-          '<span class="gb-card-open">شراء الآن</span></button>';
+          '<span class="mm2-pack-info"><strong>'+escapeHtml(x.name)+'</strong>'+
+          '<span class="ll-pack-meta"><span class="mm2-price">'+Number(x.price).toFixed(2)+' د.ل</span>'+
+          '<small class="ll-stock-state" data-available="true" title="التسليم داخل اللعبة">المتوفر: 1</small></span>'+
+          '<span class="gb-card-open">شراء الآن</span></span></button>';
       }).join('');
       grid.addEventListener('click',function(e){
         var b=e.target.closest('[data-mm2-id]');if(!b)return;

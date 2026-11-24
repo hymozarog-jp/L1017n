@@ -208,12 +208,9 @@ function productCard(product, regionLabel) {
  const info = make('span', 'ox-product-info');
  const stock=make('small','ll-stock-state',product.available?'متوفر':'غير متوفر');
  stock.dataset.available=String(product.available);
- info.append(
-  make('strong', '', product.name),
-  make('b', 'ox-product-price', cash(product.price)),
-  stock,
-  make('span', 'ox-buy', availability),
- );
+ const meta=make('span','ll-pack-meta');
+ meta.append(make('b','ox-product-price',cash(product.price)),stock);
+ info.append(make('strong','',product.name),meta,make('span','ox-buy',availability));
  card.append(art, info);
  card.onclick = () => openProduct({...product,game:'roblox'});
  return card;

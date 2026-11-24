@@ -13,11 +13,10 @@
     {selector:"#robloxGamePage .rgp-package",kind:"mm2",mode:"shell"},
     {selector:"#pubgCategoryPage .pubg-pack-detailed",kind:"pubg",mode:"row",action:".pubg-buy"},
     {selector:"#robloxGamePage .sab-item-card",kind:"brainrot",mode:"row",action:".sab-buy"},
-    {selector:"#completeSupplierCatalog .sc-product",kind:"supplier",mode:"row",action:".sc-buy"},
-    {selector:"#llAvailablePackages .ll-available-card",mode:"row",action:".ll-available-buy"}
+    {selector:"#completeSupplierCatalog .sc-product",kind:"supplier",mode:"row",action:".sc-buy"}
   ];
   const star='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.8 2.85 5.88 6.49.94-4.7 4.58 1.11 6.47L12 17.62l-5.75 3.05 1.1-6.47-4.69-4.58 6.49-.94L12 2.8Z" stroke-linejoin="round" stroke-linecap="round"/></svg>';
-  const nameSelector=".pubg-pack-name,.ox-product-info strong,.psn-product-detail strong,.sc-info h2,.sab-item-card h3,.robux-pack-copy strong,.rgp-package strong,.ll-available-copy h3";
+  const nameSelector=".pubg-pack-name,.ox-product-info strong,.psn-product-detail strong,.sc-info h2,.sab-item-card h3,.robux-pack-copy strong,.rgp-package strong";
   let favorites=new Set(),details=new Map(),dialog=null;
   try{
     const value=JSON.parse(localStorage.getItem(STORE_KEY)||"[]");
@@ -165,8 +164,7 @@
   }
   function mount(card,rule){
     if(!card.isConnected||card.dataset.l1017FavMounted==="1")return;
-    const kind=rule.kind||card.dataset.favKind;
-    const id=identity(card,kind);
+    const id=identity(card,rule.kind);
     if(!id)return;
     const button=makeStar(id,card);
     if(favorites.has(id)&&!details.has(id)){rememberCard(id,card);save();}
@@ -175,7 +173,7 @@
       if(!parent||card.closest(".l1017-fav-shell"))return;
       const frame=document.createElement("div");
       frame.className="l1017-fav-shell";
-      frame.dataset.favCard=kind;
+      frame.dataset.favCard=rule.kind;
       parent.insertBefore(frame,card);
       frame.append(card,button);
     }else{

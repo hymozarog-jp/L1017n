@@ -63,7 +63,7 @@ function homeCards(section,query='',chosen='all'){
  }
  return ranked.map(p=>{
   const src=localImage(p);
-  return '<article class="ll-game-section ll-reveal sc-home-card" dir="rtl"><button type="button" class="ll-game-section-link" data-supplier-category="'+escape(p.category_id)+'" aria-label="فتح '+escape(p.category_name)+'"><span class="ll-game-section-art sc-home-art">'+(src?'<img src="'+escape(src)+'" alt="" loading="lazy" decoding="auto" width="480" height="480">':'')+'</span><span class="ll-game-section-details"><strong>'+escape(p.category_name)+'</strong><small>'+p.count+' باقة متوفرة</small></span></button></article>';
+  return '<article class="ll-game-section ll-reveal sc-home-card" dir="rtl"><button type="button" class="ll-game-section-link" data-supplier-category="'+escape(p.category_id)+'" aria-label="فتح '+escape(p.category_name)+'"><span class="ll-game-section-art sc-home-art">'+(src?'<img src="'+escape(src)+'" alt="" loading="lazy" decoding="auto" width="480" height="480">':'')+'</span><span class="ll-game-section-details"><strong>'+escape(p.category_name)+'</strong><small class="ll-stock-count">'+p.count+' باقة متوفرة</small></span></button></article>';
  }).join('');
 }
 function groupChoices(products){
@@ -104,9 +104,8 @@ function mount(){
 }
 function drawGroups(){
  const panel=root.querySelector('.sc-groups');
- const only=root.querySelector('.sc-only').checked;
- const products=entries.filter(p=>(!category||p.category_id===category)&&(!only||p.available));
- const choices=category?groupChoices(products):categories().map(p=>({key:p.category_id,product:p,count:only?p.count:entries.filter(x=>x.category_id===p.category_id).length,available:p.count}));
+ const products=entries.filter(p=>!category||p.category_id===category);
+ const choices=category?groupChoices(products):categories().map(p=>({key:p.category_id,product:p,count:entries.filter(x=>x.category_id===p.category_id).length,available:p.count}));
  const key=JSON.stringify({category,choices:choices.map(x=>[x.key,x.count,x.available])});
  root.querySelector('.sc-status').textContent=!homeReady?'جاري تحميل الأقسام…':choices.length?'':'لا توجد أقسام متاحة حاليًا.';
  if(panel.dataset.renderKey===key)return;
@@ -121,7 +120,7 @@ function drawGroups(){
   button.onclick=()=>{
    if(!category){allScroll=root.scrollTop;category=row.key;groupScroll=0;panel.dataset.renderKey='';draw();root.scrollTop=0;return;}
    groupScroll=root.scrollTop;lastGroupButton=row.key;selectedGroup=row.key;limit=24;renderKey='';
-   root.querySelector('.sc-search').value='';
+   root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=false;
    draw();root.scrollTop=0;root.querySelector('.sc-back').focus({preventScroll:true});
   };
   panel.append(button);
@@ -131,8 +130,7 @@ function drawGroups(){
 function draw(){
  if(!root||root.hidden)return;
  const grouped=selectedGroup===null;
- const only=root.querySelector('.sc-only').checked;
- const categoryName=entries.find(p=>p.category_id===category)?.category_name||(only?'الباقات المتوفرة':'جميع منتجات المتجر');
+ const categoryName=entries.find(p=>p.category_id===category)?.category_name||'جميع منتجات المتجر';
  root.querySelector('h1').textContent=grouped?categoryName:groupLabel(selectedGroup);
  root.querySelector('.sc-tools').hidden=true;
  root.querySelector('.sc-groups').hidden=!grouped;
@@ -140,7 +138,7 @@ function draw(){
  root.querySelector('.sc-more').hidden=grouped;
  root.querySelector('.sc-back').setAttribute('aria-label',!grouped?'العودة إلى اختيار الدولة':!entryCategory&&category?'العودة إلى الأقسام':'العودة إلى المتجر');
  if(grouped){drawGroups();return;}
- const q=root.querySelector('.sc-search').value.trim().toLocaleLowerCase();
+ const q=root.querySelector('.sc-search').value.trim().toLocaleLowerCase(),only=root.querySelector('.sc-only').checked;
  const items=entries.filter(p=>p.category_id===category&&(p.group||'الباقات')===selectedGroup&&(!only||p.available)&&(!q||p.name.toLocaleLowerCase().includes(q)));
  const grid=root.querySelector('.sc-grid');
  const nextKey=JSON.stringify({category,q,selectedGroup,only,limit,items:items.slice(0,limit)});
@@ -164,9 +162,9 @@ function goBack(){
  if(!entryCategory&&category){category=null;root.querySelector('.sc-groups').dataset.renderKey='';draw();root.scrollTop=allScroll;return;}
  close();
 }
-function open(id=null,availableOnly=false){
+function open(id=null){
  mount();entryCategory=id;category=id;selectedGroup=null;limit=24;returnFocus=document.activeElement;groupScroll=0;
- root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=availableOnly;
+ root.querySelector('.sc-search').value='';root.querySelector('.sc-only').checked=false;
  root.querySelector('.sc-groups').dataset.renderKey='';
  root.hidden=false;document.body.classList.add('sc-open');renderKey='';draw();root.scrollTop=scrolls.get(id)||0;
  root.querySelector('.sc-back').focus({preventScroll:true});void refresh(true);
@@ -202,11 +200,10 @@ async function refresh(quiet=false){
 }
 document.addEventListener('click',e=>{
  const button=e.target.closest('[data-supplier-category]');if(button){open(button.dataset.supplierCategory);return;}
- if(e.target.closest('[data-supplier-available]')){open(null,true);return;}
  if(e.target.closest('[data-supplier-all]'))open();
 });
 document.addEventListener('error',e=>{if(e.target.matches?.('.sc-home-art img,.sc-art img,#omnexCheckout .ox-summary img'))fallbackImage(e.target);},true);
-window.L1017nCompleteCatalog={homeCards,open,refresh,categories,imageFor:localImage,groupChoices,groupLabel,availableProducts:()=>entries.filter(p=>p.available),productFor:id=>entries.find(p=>p.id===id)};
+window.L1017nCompleteCatalog={homeCards,open,refresh,categories,imageFor:localImage,groupChoices,groupLabel,productFor:id=>entries.find(p=>p.id===id)};
 const boot=()=>{void refresh();setInterval(()=>{if(!document.hidden)void refresh(true);},60000);};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

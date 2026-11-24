@@ -146,14 +146,14 @@
  box-shadow:0 18px 65px #0009;
 }
 .account-favorites-dialog::backdrop{background:#080610c9}
-.account-favorites-dialog>header,#llAvailablePackages>header{
+.account-favorites-dialog>header{
  display:flex;
  align-items:center;
  justify-content:space-between;
  gap:12px;
  margin-bottom:12px;
 }
-.account-favorites-dialog h2,#llAvailablePackages h2{margin:0;color:#f9f1ff;font-size:clamp(17px,4.5vw,22px)}
+.account-favorites-dialog h2{margin:0;color:#f9f1ff;font-size:clamp(17px,4.5vw,22px)}
 .account-favorites-dialog>header button{
  min-width:40px;
  min-height:40px;
@@ -165,14 +165,12 @@
  cursor:pointer;
 }
 .account-favorites-empty{margin:0;padding:18px 4px;color:#cec0e1}
-.account-favorites-grid,.ll-available-grid{
+.account-favorites-grid{
  display:grid;
  grid-template-columns:repeat(2,minmax(0,1fr));
  gap:9px;
 }
-#llAvailablePackages{margin:18px 0 20px}
-#llAvailablePackages[hidden],#llAvailablePackages [hidden]{display:none!important}
-#llAvailablePackages>header button,.account-favorite-actions>button:first-child,.ll-available-buy{
+.account-favorite-actions>button:first-child{
  padding:5px 8px;
  min-height:37px;
  border:1px solid #7957aa;
@@ -184,7 +182,7 @@
  font-weight:750;
  cursor:pointer;
 }
-.ll-available-card,.account-favorite-card{
+.account-favorite-card{
  display:grid;
  grid-template-rows:auto 1fr;
  min-width:0;
@@ -193,7 +191,7 @@
  border-radius:14px;
  background:linear-gradient(160deg,#302047,#191429 75%);
 }
-.ll-available-card>img,.account-favorite-card>img{
+.account-favorite-card>img{
  display:block;
  width:100%;
  height:clamp(67px,18vw,95px);
@@ -201,31 +199,13 @@
  object-fit:contain;
  object-position:center;
 }
-.ll-available-copy{display:grid;align-content:start;gap:5px;padding:8px;min-width:0}
-.ll-available-copy h3,.account-favorite-card>strong{
+.account-favorite-card>strong{
  margin:0;
  color:#fff5ff;
  font-size:clamp(12px,3.25vw,15px);
  line-height:1.45;
  overflow-wrap:anywhere;
 }
-.ll-available-copy>strong{font-size:13px;color:#f2daff}
-.ll-available-stock{
- width:max-content;
- padding:1px 6px;
- border-radius:5px;
- background:#15342f;
- color:#a9edcc;
- font-size:10px;
-}
 .account-favorite-card>strong{padding:8px 8px 4px}
 .account-favorite-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:4px 8px 8px}
-.l1017-fav-row>.ll-available-buy{width:100%;min-width:0}
-@media(min-width:720px){
- .ll-available-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-}
-
-.ll-available-meta{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.ll-available-category,.account-favorite-category{color:#ccbbdf;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
-.account-favorite-category{display:block;margin-bottom:3px}
-.ll-available-stock{flex:none}
+.account-favorite-category{display:block;margin-bottom:3px;color:#ccbbdf;font-size:11px;line-height:1.4;overflow-wrap:anywhere}

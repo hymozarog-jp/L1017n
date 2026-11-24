@@ -62,23 +62,27 @@ body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::before {
  body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading .ll-category-icon{width:39px!important;height:39px!important;}
  body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::after{width:129px!important;height:112px!important;left:-5px!important;}
 }
-/* Mini jewel icon beside the real live availability count, within each game card. */
-body.l1017-live-ui #llLanding #llGamesSection .sc-home-card .ll-game-section-details small{
+/* A package icon anchors the real availability count on every category tile. */
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-details .ll-stock-count{
  display:inline-flex!important;
  align-items:center!important;
- justify-content:center!important;
- gap:4px!important;
+ justify-content:flex-start!important;
+ gap:5px!important;
+ min-width:0;
+ color:#c8bfd9!important;
+ font-size:clamp(9px,2.6vw,12px)!important;
+ font-variant-numeric:tabular-nums;
 }
-body.l1017-live-ui #llLanding #llGamesSection .sc-home-card .ll-game-section-details small::before{
- content:""!important;
- display:inline-block!important;
- width:12px!important;
- height:12px!important;
- flex:0 0 12px!important;
- background:linear-gradient(140deg,#a5eaff,#35b5ff 47%,#7b66ff 48%,#b78bff)!important;
- clip-path:polygon(50% 0,96% 26%,87% 75%,50% 100%,13% 75%,4% 26%)!important;
- box-shadow:0 0 8px #51bfff!important;
- border-radius:2px!important;
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-stock-count::before{
+ content:"";
+ display:block;
+ width:16px;
+ height:16px;
+ flex:0 0 16px;
+ background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m2 5.8 8-3.5 8 3.5v8.4l-8 3.5-8-3.5z' fill='%237847be' stroke='%23d7b4ff' stroke-width='1.25' stroke-linejoin='round'/%3E%3Cpath d='m2 5.8 8 3.6 8-3.6-8-3.5z' fill='%23c58eff'/%3E%3Cpath d='M10 9.4v8.1M2.5 6l7.5 3.4L17.5 6M6 4l7.8 3.4v2.7' fill='none' stroke='%23f3ddff' stroke-width='1.15' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+  center/contain no-repeat;
+ filter:drop-shadow(0 1px 4px #a475eb79);
 }
 @media(prefers-reduced-motion:no-preference){
  body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::after{animation:l1017n-loot-float 4.8s ease-in-out infinite;}

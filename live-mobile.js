@@ -109,6 +109,22 @@
     if(!includesFilter("cards"))return false;
     return !query || normalize("بطاقات الهدايا أكواد روبلوكس بطاقات روبلوكس روبوكس roblox robux gift cards").includes(query);
   }
+  function packageAvailability(count){
+    return '<small class="ll-stock-count">'+count+' باقة متوفرة</small>';
+  }
+  function robloxPackageCount(madar,supplierCount){
+    const robux=typeof robuxPackagesForWallet==="function"?robuxPackagesForWallet(madar?"almadar":"libyana"):[];
+    const robuxCount=robux.filter(p=>Number(p.price)>0&&Number(p.amount)>0&&
+      (robuxUnlimited||robuxAvailable>=Number(p.amount))).length;
+    if(madar)return robuxCount;
+    const gameItems=catalog().filter(p=>{
+      const game=gameKey(p);
+      return p.active===true&&Number(p.price)>0&&(
+        game==="mm2"||(game==="steal-a-brainrot"&&(p.stock_quantity==null||Number(p.stock_quantity)>0))
+      );
+    }).length;
+    return robuxCount+gameItems+supplierCount;
+  }
   function robloxCodesCard(){
     return '<article class="ll-game-section ll-game-roblox ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="roblox-codes" aria-label="فتح أكواد روبلوكس">'
@@ -116,27 +132,27 @@
       +'<span class="ll-game-section-details"><strong>أكواد روبلوكس</strong></span>'
       +'</button></article>';
   }
-  function psnParentCard(){
+  function psnParentCard(count){
     return '<article class="ll-game-section ll-game-psn ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="psn" aria-label="فتح بطاقات بلايستيشن">'
       +'<span class="ll-game-section-art"><img src="game-covers/packages/psn.webp" alt="PlayStation Store" loading="eager" decoding="async"></span>'
-      +'<span class="ll-game-section-details"><strong>بلايستيشن</strong></span>'
+      +'<span class="ll-game-section-details"><strong>بلايستيشن</strong>' + packageAvailability(count) + '</span>'
       +'</button></article>';
   }
-  function pubgParentCard(){
+  function pubgParentCard(count){
     return '<article class="ll-game-section ll-game-pubg ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="pubg" aria-label="فتح ببجي موبايل">'
       +'<span class="ll-game-section-art"><img src="game-covers/pubg-battlefront.webp" alt="" loading="eager" decoding="async"></span>'
-      +'<span class="ll-game-section-details"><strong>ببجي موبايل</strong></span>'
+      +'<span class="ll-game-section-details"><strong>ببجي موبايل</strong>' + packageAvailability(count) + '</span>'
       +'</button></article>';
   }
-  function robloxParentCard(){
+  function robloxParentCard(count){
     // The original Robux game-tile layout, with only its visible name changed
     // to Roblox. Checkout options remain inside the Roblox section.
     return '<article class="ll-game-section ll-game-roblox ll-reveal" dir="rtl">'
       +'<button type="button" class="ll-game-section-link" data-ll-game="roblox" aria-label="فتح روبلوكس">'
       +'<span class="ll-game-section-art"><img src="game-covers/roblox-mark.svg?v=logo-square1" alt="" loading="eager" decoding="async"></span>'
-      +'<span class="ll-game-section-details"><strong>روبلوكس</strong></span>'
+      +'<span class="ll-game-section-details"><strong>روبلوكس</strong>' + packageAvailability(count) + '</span>'
       +'</button></article>';
   }
   function notify(message) {
@@ -279,34 +295,6 @@
       card.dataset.llAccent=matched ? matched[1] : "other"+(index%6);
     });
   }
-  let lastAvailablePackages="";
-  function renderAvailablePackages(madar,supplier){
-    const section=q("#llAvailablePackages");
-    if(!section)return;
-    const seen=new Set();
-    const items=madar?(typeof robuxPackagesForWallet==="function"?
-      robuxPackagesForWallet("almadar").filter(p=>Number(p.amount)>0&&(robuxUnlimited||robuxAvailable>=Number(p.amount))):[]):
-      (supplier?.availableProducts?.()||[]).filter(p=>{
-        if(seen.has(p.category_id))return false;
-        seen.add(p.category_id);return true;
-      }).slice(0,4);
-    section.hidden=chosen!=="all"||!!query||!items.length;
-    section.querySelector("[data-supplier-available]").hidden=madar;
-    const markup=items.map(item=>{
-      const image=madar?"game-covers/packages/robux-100.webp":supplier.imageFor(item);
-      const action=madar?"data-ll-buy":"data-ll-supplier-package";
-      const category=madar?"روبلوكس":item.category_name;
-      return '<article class="ll-available-card" data-fav-kind="'+(madar?"robux":"supplier")+'" data-fav-id="'+esc(item.id)+'">'
-        +'<img src="'+esc(image)+'" alt="" width="112" height="88" loading="lazy" decoding="async">'
-        +'<div class="ll-available-copy"><div class="ll-available-meta"><small class="ll-available-category">'+esc(category)+'</small>'
-        +'<span class="ll-available-stock">متوفر</span></div><h3>'+esc(item.name)+'</h3>'
-        +'<strong>'+price(item.price)+'</strong><button type="button" class="ll-available-buy" '+action+'="'+esc(item.id)+'">عرض الباقة</button></div></article>';
-    }).join("");
-    if(markup!==lastAvailablePackages){
-      section.querySelector(".ll-available-grid").innerHTML=markup;
-      lastAvailablePackages=markup;
-    }
-  }
   function renderCatalog() {
     const root=q("#llCatalog");
     if(!root)return;
@@ -315,16 +303,18 @@
     const giftSection=q("#llGiftSection");
     const gifts=q("#llGiftCatalog");
     const extra=madar?null:window.L1017nCompleteCatalog;
-    renderAvailablePackages(madar,extra);
     const available=extra?.categories?.()||[];
-    const supplierHas=game=>available.some(p=>p.game===game&&Number(p.count)>0);
-    const visibleRoblox=(madar||matchesSection(SHOP_SECTIONS[0]))&&(madar||catalog().some(p=>gameKey(p)==="roblox")||supplierHas("roblox"));
-    const visiblePubg=!madar&&matchesPubg()&&supplierHas("pubg");
-    const visiblePsn=!madar&&matchesPsn()&&supplierHas("psn");
-    const games=(visibleRoblox?robloxParentCard():"")+(visiblePubg?pubgParentCard():"")+(extra?.homeCards("games",query,chosen)||"");
+    const supplierCount=game=>available.reduce((total,p)=>p.game===game?total+(Number(p.count)||0):total,0);
+    const pubgCount=supplierCount("pubg");
+    const psnCount=supplierCount("psn");
+    const robloxSupplierCount=supplierCount("roblox");
+    const visibleRoblox=(madar||matchesSection(SHOP_SECTIONS[0]))&&(madar||catalog().some(p=>gameKey(p)==="roblox")||robloxSupplierCount>0);
+    const visiblePubg=!madar&&matchesPubg()&&pubgCount>0;
+    const visiblePsn=!madar&&matchesPsn()&&psnCount>0;
+    const games=(visibleRoblox?robloxParentCard(robloxPackageCount(madar,robloxSupplierCount)):"")+(visiblePubg?pubgParentCard(pubgCount):"")+(extra?.homeCards("games",query,chosen)||"");
     // No active Roblox gift-card code products in the verified store inventory.
     // Keep the old code page and data intact; do not promote an unavailable gift card.
-    const giftCards=madar?"":(visiblePsn?psnParentCard():"")+(extra?.homeCards("cards",query,chosen)||"");
+    const giftCards=madar?"":(visiblePsn?psnParentCard(psnCount):"")+(extra?.homeCards("cards",query,chosen)||"");
     // Lower-demand catalogs remain at the supplier/admin level instead of crowding the homepage.
     const moreSections=["local","voice","other"].map(section=>[section,""]);
     const compact=!madar&&chosen==="all"&&!query;
@@ -453,9 +443,6 @@
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
       + FILTERS.map(([key,label,icon]) => '<button type="button" data-ll-category="' + key + '" data-ll-tone="' + icon + '" aria-pressed="' + (key==="all") + '" class="' + (key==="all"?"selected":"") + '"><span class="ll-category-icon">' + SVG(icon) + '</span><span>' + label + '</span></button>').join("") + '</div>'
-      + '<section id="llAvailablePackages" aria-labelledby="llAvailableHeading" hidden>'
-      + '<header><h2 id="llAvailableHeading">الباقات المتوفرة</h2><button type="button" data-supplier-available>عرض الكل</button></header>'
-      + '<div class="ll-available-grid"></div></section>'
       + '<section id="llGamesSection" aria-labelledby="llGamesHeading">' + sectionHeading("llGamesHeading","games","شحن الألعاب")
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div></section>'
       + '<section id="llGiftSection" aria-labelledby="llGiftHeading">' + sectionHeading("llGiftHeading","gift","بطاقات الهدايا")
@@ -631,15 +618,6 @@
       const game=e.target.closest("[data-ll-game]");
       if (game) { openGame(game.dataset.llGame); return; }
       if (e.target.closest("[data-ll-show-orders]")) { routeView("orders"); return; }
-      const supplierButton=e.target.closest("[data-ll-supplier-package]");
-      if(supplierButton){
-        if(document.body.dataset.checkoutWallet==="almadar")return;
-        const item=window.L1017nCompleteCatalog?.productFor(supplierButton.dataset.llSupplierPackage);
-        if(item?.available&&typeof window.openOmnexProductCheckout==="function"){
-          window.openOmnexProductCheckout({...item,region:item.group||item.category_name});
-        }else notify("الباقة مش متاحة توّا. حدّث الصفحة.");
-        return;
-      }
       const buy=e.target.closest("[data-ll-buy]");
       if (!buy || buy.disabled) return;
       const item=catalog().find(p => String(p.id)===String(buy.dataset.llBuy));

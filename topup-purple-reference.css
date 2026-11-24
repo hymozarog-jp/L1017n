@@ -994,3 +994,70 @@ html,body{
   gap: 8px;
   text-align: start;
 }
+
+#topupDedicatedPage .dt-topup-methods {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 16px;
+}
+
+#topupDedicatedPage .dt-topup-methods h2 {
+  margin: 0;
+  color: #f5eeff;
+  font-size: 1.05rem;
+}
+
+#topupDedicatedPage .dt-topup-method-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 8px;
+}
+
+#topupDedicatedPage .dt-topup-method-options button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 62px;
+  padding: 9px 11px;
+  border: 1px solid #6a558d;
+  border-radius: 14px;
+  background: #211b37;
+  color: #f5eeff;
+  text-align: right;
+  font: inherit;
+  cursor: pointer;
+}
+
+#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"] {
+  border-color: #cca8ff;
+  background: #3d2b63;
+}
+
+#topupDedicatedPage .dt-topup-method-options svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  color: #d7b7ff;
+}
+
+#topupDedicatedPage .dt-topup-method-options small {
+  display: block;
+  margin-top: 3px;
+  color: #d4c5e6;
+  font-size: .875rem;
+}
+
+#topupDedicatedPage #dtTransferDetails:not([hidden]) { display: grid; gap: 12px; }
+#topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions)[hidden] { display: none !important; }
+
+#topupDedicatedPage .dt-manual-instructions {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #6a558d;
+  border-radius: 12px;
+  background: #251d3d;
+  color: #efe6ff;
+  font-size: .875rem;
+  line-height: 1.6;
+}

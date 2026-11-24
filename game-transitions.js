@@ -8,9 +8,7 @@
     return button.querySelector("img") || button.querySelector(".game-tile-art") || button;
   }
   function destinationFor(button) {
-    if (button.matches('[data-rgp-choice="robux"]')) return '#robuxModal:not(.hidden) .robux-reference-logo';
     if (button.matches('[data-product="roblox"]')) return '#robloxGamePage .rgp-hero img';
-    if (button.matches('[data-game-open="roblox"]')) return '#robuxModal:not(.hidden) .robux-reference-logo';
     if (button.matches('[data-game-open="pubg"]')) return '#pubgCategoryPage.visible .pubg-hero img';
     if (button.matches('[data-game-open="fortnite"],[data-game-open="freefire"]')) return '#storePurchaseBox .digital-game-preview .digital-game-cover';
     return null;
@@ -30,7 +28,7 @@
     clone.removeAttribute("id");
     clone.setAttribute("aria-hidden", "true");
     clone.classList.add("game-cover-flight");
-    var toRobuxSquare = selector === '#robuxModal:not(.hidden) .robux-reference-logo' || selector === '#storePurchaseBox .digital-game-preview .digital-game-cover';
+    var toRobuxSquare = selector === '#storePurchaseBox .digital-game-preview .digital-game-cover';
     if (toRobuxSquare) clone.classList.add("game-cover-flight--robux");
     var computed = getComputedStyle(src);
     clone.style.cssText += ";left:" + r.left + "px;top:" + r.top +
@@ -85,7 +83,7 @@
   }
   document.addEventListener("click", function(e) {
     if (reduced() || !(e.target instanceof Element)) return;
-    var button = e.target.closest('[data-game-open],[data-rgp-choice],[data-product="roblox"]');
+    var button = e.target.closest('[data-game-open],[data-product="roblox"]');
     if (!button || button.disabled) return;
     var target = destinationFor(button);
     if (target) go(button,target);

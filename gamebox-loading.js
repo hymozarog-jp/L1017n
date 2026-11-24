@@ -102,6 +102,11 @@
   document.addEventListener('click',function(ev){
     var button=ev.target&&ev.target.closest&&ev.target.closest('button,[role="button"],a[href]');
     if(!button||button.disabled||button.closest('#gbActivityLoader'))return;
+    // Opening the Robux catalog refreshes stock, which is a background read.
+    if(button.matches('[data-rgp-choice="robux"]')){
+      gestureButton=null;gestureAt=0;
+      return;
+    }
     gestureButton=button;gestureAt=Date.now();
   },true);
   document.addEventListener('submit',function(ev){

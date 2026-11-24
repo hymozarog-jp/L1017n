@@ -31,7 +31,7 @@
   ['reviews','التقييمات','آراء المشترين'],
   ['wallets','محافظ الزبائن','الأرصدة والمعاملات'],
  ];
- let active=null,nav=null,header=null,panes={},lastVisible=false;
+ let active=null,nav=null,header=null,panes={},lastVisible=false,codeRefreshTimer=null;
  function sectionOf(selector){return $(selector)?.closest('section')||null}
  function addFramePanel(id,url,name,description){
    const section=document.createElement('section');
@@ -181,7 +181,15 @@
    // Panels retain their existing secure refresh handlers and financial actions.
    if(key==='overview')$('#refreshTraffic')?.click();
    document.dispatchEvent(new CustomEvent('l1017n:admin-screen',{detail:{key}}));
-   if(key==='code-delivery'&&typeof loadAdminCodeDeliveries==='function')void loadAdminCodeDeliveries();
+   clearInterval(codeRefreshTimer);
+   if(key==='code-delivery'&&typeof loadAdminCodeDeliveries==='function'){
+     void loadAdminCodeDeliveries();
+     codeRefreshTimer=setInterval(()=>{
+       if(adminIsVisible()&&document.visibilityState==='visible'&&!adminCodeActiveActions){
+         void loadAdminCodeDeliveries();
+       }
+     },6000);
+   }
    if(['orders','topups','stock','products'].includes(key)){
      if(typeof loadAdminDashboard==='function')void loadAdminDashboard();
    }
@@ -199,6 +207,7 @@
    if(pushHistory&&back)back.focus({preventScroll:true});
  }
  function showMenu(){
+   clearInterval(codeRefreshTimer);
    const view=$('#adminView');
    active=null;
    view?.classList.remove('admin-hub-section-open');
@@ -228,6 +237,7 @@
  function toggleAdminBody(){
    const visible=adminIsVisible();
    document.body.classList.toggle('l1017-admin-open',visible);
+   if(!visible)clearInterval(codeRefreshTimer);
    if(visible!==lastVisible){
      lastVisible=visible;
      if(visible){

@@ -1241,23 +1241,29 @@ function compactAdminCode(order){
   const date=Number.isFinite(createdAt)?adminCodeDate.format(createdAt):'';
   const accept=order.can_accept?'<button type="button" class="btn btn-primary" data-code-action="accept" data-id="'+id+'">قبول</button>':'';
   const cancel=order.can_cancel?'<button type="button" class="btn btn-soft" data-code-action="cancel" data-id="'+id+'">إلغاء وإرجاع الرصيد</button>':'';
+  const pendingCheck=state==='review'&&!order.can_cancel&&!order.can_accept?
+    '<p class="muted">بانتظار تأكيد حالة الطلب من المورّد قبل الإلغاء.</p>':'';
   return '<article class="history-item admin-request compact-topup">'+
     '<div class="compact-topup-identity"><b>'+escapeHtml(order.product_name||'طلب كود')+'</b><bdi>'+
     Number(order.total_amount||0).toFixed(2)+' د.ل</bdi></div>'+
     '<div class="compact-topup-info"><span class="status '+color+'">'+status+'</span><span>'+
     escapeHtml(order.customer_name||'زبون')+'</span><small>'+escapeHtml(date)+'</small>'+
     '<bdi>#'+escapeHtml(String(order.order_id).slice(0,8).toUpperCase())+'</bdi></div>'+
-    (accept||cancel?'<div class="admin-request-actions">'+accept+cancel+'</div>':'')+'</article>';
+    pendingCheck+(accept||cancel?'<div class="admin-request-actions">'+accept+cancel+'</div>':'')+'</article>';
 }
 
-let adminCodeLoadVersion=0;
+let adminCodeLoadVersion=0,adminCodeLastMarkup='',adminCodeActiveActions=0;
 async function loadAdminCodeDeliveries(){
   const list=$('#adminCodeDeliveries');
   const version=++adminCodeLoadVersion;
   const {data,error}=await supabaseClient.rpc('admin_list_code_deliveries');
   if(version!==adminCodeLoadVersion)return;
-  list.innerHTML=error?'<p class="muted">تعذّر تحميل طلبات الأكواد. جرّب تحديث السجل.</p>':
+  const markup=error?'<p class="muted">تعذّر تحميل طلبات الأكواد. جرّب تحديث السجل.</p>':
     data?.length?data.map(compactAdminCode).join(''):'<p class="muted">لا توجد طلبات أكواد.</p>';
+  if(markup!==adminCodeLastMarkup){
+    list.innerHTML=markup;
+    adminCodeLastMarkup=markup;
+  }
 }
 
 async function reviewAdminCodeDelivery(button){
@@ -1265,6 +1271,8 @@ async function reviewAdminCodeDelivery(button){
   if(decision==='cancel'&&!window.confirm('إلغاء طلب الكود وإرجاع المبلغ إلى محفظة الزبون؟'))return;
   const actions=Array.from(button.closest('.admin-request-actions').querySelectorAll('button'));
   actions.forEach(control=>{control.disabled=true});
+  adminCodeActiveActions++;
+  adminCodeLoadVersion++;
   try{
     const {error}=await supabaseClient.rpc('admin_review_code_delivery',{
       p_order_id:button.dataset.id,p_decision:decision
@@ -1276,6 +1284,7 @@ async function reviewAdminCodeDelivery(button){
     }
     await loadAdminCodeDeliveries();
   }finally{
+    adminCodeActiveActions--;
     actions.forEach(control=>{control.disabled=false});
   }
 }

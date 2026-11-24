@@ -1013,18 +1013,20 @@ html,body{
 
 #topupDedicatedPage .dt-topup-method-options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
 }
 
 #topupDedicatedPage .dt-topup-method-options button {
   position: relative;
   display: grid;
-  justify-items: start;
-  align-content: start;
-  gap: 12px;
-  min-height: 134px;
-  padding: 13px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 84px;
+  padding: 13px 14px;
+  padding-inline-end: 36px;
   border: 1px solid var(--method-border);
   border-radius: 17px;
   background:
@@ -1061,26 +1063,13 @@ html,body{
 #topupDedicatedPage .dt-topup-method-options button::after {
   content: "";
   position: absolute;
-  inset-block-start: 16px;
-  inset-inline-end: 14px;
-  width: 15px;
-  height: 15px;
-  border: 1px solid var(--method-accent);
-  border-radius: 50%;
-  opacity: .48;
-  transition: opacity .22s ease, box-shadow .22s ease, background-color .22s ease;
-}
-
-#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"] {
-  border-color: var(--method-accent);
-  box-shadow: inset 0 0 0 1px var(--method-accent), 0 7px 18px var(--method-glow);
-  transform: translateY(-2px);
-}
-
-#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"]::after {
-  background: var(--method-accent);
-  box-shadow: inset 0 0 0 3px var(--method-bg);
-  opacity: 1;
+  inset-block-start: calc(50% - 5px);
+  inset-inline-end: 16px;
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid var(--method-accent);
+  border-bottom: 2px solid var(--method-accent);
+  transform: rotate(45deg);
 }
 
 #topupDedicatedPage .dt-topup-method-options button:focus-visible {
@@ -1104,8 +1093,8 @@ html,body{
   transition: transform .26s ease;
 }
 
-#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"] svg {
-  transform: translateY(-2px) rotate(-5deg);
+#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) svg {
+  transform: rotate(-5deg);
 }
 
 #topupDedicatedPage .dt-topup-method-options strong {
@@ -1127,7 +1116,8 @@ html,body{
   animation: libyana-method-enter .32s ease-out both;
 }
 
-#topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions, .dt-purple-guide)[hidden] { display: none !important; }
+#topupDedicatedPage :is(.dt-topup-methods, #dtTransferDetails, .dt-manual-instructions, .dt-purple-guide)[hidden],
+#topupDedicatedPage.libyana-method-active #topupDedicatedCardEntry { display: none !important; }
 
 #topupDedicatedPage .dt-manual-instructions {
   margin: 0;
@@ -1143,16 +1133,6 @@ html,body{
 @keyframes libyana-method-enter {
   from { opacity: 0; translate: 0 9px; }
   to { opacity: 1; translate: 0 0; }
-}
-
-@media (max-width: 350px) {
-  #topupDedicatedPage .dt-topup-method-options { grid-template-columns: 1fr; }
-  #topupDedicatedPage .dt-topup-method-options button {
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    min-height: 76px;
-    padding-inline-end: 36px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

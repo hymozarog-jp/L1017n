@@ -25,12 +25,12 @@
     '<section class="dt-card dt-topup-methods" aria-labelledby="dtMethodTitle">'+
       '<h2 id="dtMethodTitle">اختار طريقة شحن ليبيانا</h2>'+
       '<div class="dt-topup-method-options">'+
-        '<button type="button" data-topup-method="ussd" aria-pressed="false" aria-controls="dtTransferDetails">'+svg('numbers')+'<span><strong>شحن بكود USSD</strong><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
-        '<button type="button" data-topup-method="manual" aria-pressed="false" aria-controls="dtTransferDetails">'+svg('exchange')+'<span><strong>تحويل يدوي</strong><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
+        '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails">'+svg('numbers')+'<span><strong>شحن بكود USSD</strong><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
+        '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails">'+svg('exchange')+'<span><strong>تحويل يدوي</strong><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
       '</div></section>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
-      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
+      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
       '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span>'+svg('chevron')+'</button><button id="dtAddSender" type="button">'+svg('addPhone')+'<span>إضافة رقم</span></button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
@@ -105,6 +105,7 @@
   const confirm=panel.querySelector('#dtConfirm');
   const copy=panel.querySelector('.dt-copy');
   const fallback=panel.querySelector('#dtFallback');
+  const methodMenu=panel.querySelector('.dt-topup-methods');
   const transferDetails=panel.querySelector('#dtTransferDetails');
   const manualInstructions=panel.querySelector('#dtManualInstructions');
   const guide=panel.querySelector('.dt-purple-guide');
@@ -132,15 +133,23 @@
     :'افتح كود USSD من تطبيق الهاتف، وبعد التحويل سنتحقق من وصول الرصيد.';
   function refreshMethodActions(){
     const ready=Boolean(prepared?.link?.isConnected);
-    fallback.hidden=isManual()||!ready;
+    fallback.hidden=!method||isManual()||!ready;
     manualInstructions.hidden=!isManual()||!ready;
     copy.disabled=busy||(isManual()&&!ready);
+  }
+  function updateTopupScreen(){
+    const page=form.closest('#topupDedicatedPage');
+    if(!page)return;
+    const heading=page.querySelector('.topup-dedicated-title');
+    heading.textContent=method?(isManual()?'تحويل يدوي':'شحن بكود USSD'):'شحن المحفظة';
+    page.classList.toggle('libyana-method-active',Boolean(method));
+    page.scrollTop=0;
   }
   methodButtons.forEach(button=>button.addEventListener('click',()=>{
     if(busy)return;
     method=button.dataset.topupMethod;
-    methodButtons.forEach(choice=>choice.setAttribute('aria-pressed',String(choice===button)));
     const manual=isManual();
+    methodMenu.hidden=true;
     transferDetails.hidden=false;
     guide.hidden=manual;
     transferTitle.textContent=manual?'بيانات التحويل اليدوي':'بيانات التحويل';
@@ -153,7 +162,20 @@
     refreshMethodActions();
     if(!confirm.disabled)confirm.querySelector('span').textContent=actionLabel();
     if(!prepared&&!document.getElementById('dtInlineTopupStatus'))message(helperText(),'');
+    updateTopupScreen();
+    transferTitle.focus({preventScroll:true});
   }));
+  form.addEventListener('l1017n:topup-back',event=>{
+    if(!method)return;
+    event.preventDefault();
+    const previous=method;
+    method=null;
+    transferDetails.hidden=true;
+    methodMenu.hidden=false;
+    refreshMethodActions();
+    updateTopupScreen();
+    methodButtons.find(button=>button.dataset.topupMethod===previous)?.focus({preventScroll:true});
+  });
   // Preparing a new USSD intent is not a rejection. Keep a visible loading
   // indicator until the backend either provides the dial link or reports an error.
   function showPreparing(){
@@ -256,6 +278,7 @@
       else refreshMethodActions();
       return;
     }
+    const chosenMethod=method;
     busy=true;confirm.disabled=true;
     methodButtons.forEach(button=>{button.disabled=true});
     enteredAmount.disabled=true;addSender.disabled=true;refreshSenderButton();
@@ -287,7 +310,7 @@
       fallback.href=link.href;
       refreshMethodActions();
       fallback.onclick=(e)=>{e.preventDefault();link.click();};
-      if(!isManual())link.click();
+      if(method===chosenMethod&&!isManual())link.click();
     }catch(err){
       hidePreparing();
       message('تعذّر تجهيز التحويل. تحقق من الاتصال ثم حاول مرة ثانية.','error');

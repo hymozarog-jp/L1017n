@@ -196,13 +196,19 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
  #l1017RankPrivacyPage.is-visible .rank-privacy-lead{animation:l1017RankEnter .3s ease-out both}
  @keyframes l1017RankEnter{from{opacity:.45;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 }
-/* Keep the main bottom navigation accessible while the ranking room is open.
-   Ranking stays scrollable above the bar; privacy overlay still covers both. */
+/* Keep the ranking scroll area and the mobile dock separated on the same viewport. */
 @media(max-width:680px){
-  body.l1017-rank-open.l1017-live-ui #llBottomNav{
+  body.l1017-rank-open{
+    --rank-dock-height:78px;
+    --rank-dock-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    --rank-dock-gap:12px;
+  }
+  html body.l1017-rank-open.l1017-live-ui:not(.auth-screen) #llBottomNav{
     display:flex!important;
     position:fixed!important;
-    bottom:0!important;
+    bottom:var(--rank-dock-bottom)!important;
+    height:var(--rank-dock-height)!important;
+    min-height:var(--rank-dock-height)!important;
     z-index:2147482050!important;
     visibility:visible!important;
     pointer-events:auto!important;
@@ -211,9 +217,8 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
     z-index:2147482050!important;
   }
   body.l1017-rank-open #leaderboardView.l1017-rank-ready:not(.hidden){
-    /* The floating dock sits 12px above the safe area and is 78px tall. */
-    bottom:calc(100px + env(safe-area-inset-bottom,0px))!important;
-    height:calc(100dvh - 100px - env(safe-area-inset-bottom,0px))!important;
+    bottom:calc(var(--rank-dock-height) + var(--rank-dock-bottom) + var(--rank-dock-gap))!important;
+    height:auto!important;
     min-height:0!important;
     padding-bottom:32px!important;
     scroll-padding-bottom:32px;

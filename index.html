@@ -373,6 +373,11 @@
         <button type="button" data-account-action="verify"><span class="account-row-icon account-icon-verify" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2.4"/><path d="M10.5 18.3h3"/></svg></span><span class="account-core-copy"><b>رقم الهاتف</b><small>إضافة رقم للحساب</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="ranking-privacy" aria-label="خصوصية التصنيف وإظهار الاسم والصورة الشخصية"><span class="account-row-icon account-icon-ranking-privacy" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5.2-3.5 8.5-8 10-4.5-1.5-8-4.8-8-10V7l8-4Z"/><path d="M9 12.3l2.1 2.1 4.1-4.4"/></svg></span><span class="account-core-copy"><b>خصوصية التصنيف</b><small>إظهار أو إخفاء اسمك وصورتك وترتيبك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
 
+        <button type="button" id="accountPackageFavorites" aria-haspopup="dialog">
+          <span class="account-row-icon account-favorites-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9Z"/></svg></span>
+          <span class="account-core-copy"><b>المفضلة</b><small>الباقات اللي حفظتها</small></span>
+          <span class="account-row-arrow" aria-hidden="true">‹</span>
+        </button>
         <button type="button" data-account-action="history" aria-label="عرض سجل الشحن والمدفوعات"><span class="account-row-icon account-icon-history" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 13h5M7 16h3M16 13h2"/></svg></span><span class="account-core-copy"><b>سجل الشحن والمدفوعات</b><small>تابع شحن محفظتك ومشترياتك وحالة كل عملية</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
         <button type="button" data-account-action="notifications"><span class="account-row-icon account-icon-notifications" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span><span class="account-core-copy"><b>الإشعارات والتنبيهات</b><small>متابعة حالة طلباتك</small></span><span class="account-row-arrow" aria-hidden="true">‹</span></button>
       </div>
@@ -986,7 +991,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 }
 #llLanding .ll-whatsapp-channel>svg{flex:0 0 13px;width:13px;height:13px;color:#a1edba}
 </style>
-<script src="live-mobile.js?v=wide-billboard-4k-20261122-1&whatsapp-channel-20261124-2&compact-carousel-20261124-2" defer></script>
+<script src="live-mobile.js?v=wide-billboard-4k-20261122-1&whatsapp-channel-20261124-2&compact-carousel-20261124-2&available-packages-20261124-1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=mobile-dock-clearance-20261124-1">
@@ -1299,14 +1304,14 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 <link rel="stylesheet" href="package-spacing.css?v=1">
 <link rel="stylesheet" href="package-catalog.css?v=1">
 <link rel="stylesheet" href="package-products.css?v=1">
-<script src="omnex-complete-store.js?v=popular10-instock-20261120-1&favs-inline=20261122-1&hide-package-tools=20261122-1" defer></script><!-- Previous premium-gold balance design removed at user request; underlying wallet amount and payment methods unchanged. -->
+<script src="omnex-complete-store.js?v=popular10-instock-20261120-1&favs-inline=20261122-1&hide-package-tools=20261122-1&available-packages-20261124-1" defer></script><!-- Previous premium-gold balance design removed at user request; underlying wallet amount and payment methods unchanged. -->
 <link rel="stylesheet" href="header-site-logo.css?v=wordmark-20261120-3">
 <link rel="stylesheet" href="bottom-nav-orange-orb.css?v=nav-loader-on-screen-20261121-2">
 <link rel="stylesheet" href="on-pack-status-icons.css?v=green-blue-red-on-card-20261121-1">
 <link rel="stylesheet" href="games-illustrated-header.css?v=loot-chest-live-20261121-1">
 <link rel="stylesheet" href="package-colorful-edges.css?v=category-specific-glow-20261121-1">
-<link rel="stylesheet" href="package-favorites.css?v=inline-star-favorites-20261122-1">
-<script src="package-favorites.js?v=inline-star-favorites-20261122-1" defer></script>
+<link rel="stylesheet" href="package-favorites.css?v=account-favorites-20261124-1">
+<script src="package-favorites.js?v=account-favorites-20261124-1" defer></script>
 <link rel="stylesheet" href="hero-carousel-premium.css?v=premium-slider-20261122-1">
 <link rel="stylesheet" href="hero-billboard-4k.css?v=compact-carousel-20261124-2">
 <link rel="stylesheet" href="header-balance-violet-choice1.css?v=violet-libyana-green-madar-20261122-2">

@@ -9,7 +9,7 @@
   ];
   const backSelector = [
     '[data-rgp-back]', '[data-close-packages]', '.robux-purchase-back',
-    '.gb-package-back', '[data-pubg-close]', '.psn-back',
+    '.gb-package-back', '[data-pubg-close]', '.psn-back', '#completeSupplierCatalog .sc-back',
     '#omnexCheckout .ox-close', '#closeGamePreview'
   ].join(',');
 
@@ -19,8 +19,12 @@
     for (const button of buttons) {
       if (button.classList.contains('l1017-package-back')) continue;
       button.classList.add('l1017-package-back');
+      if (!button.hasAttribute('aria-label')) {
+        button.setAttribute('aria-label', button.matches('.gb-package-back,.robux-purchase-back')
+          ? 'العودة إلى الباقات' : 'رجوع');
+      }
       if (button.id === 'closeGamePreview') button.parentElement?.prepend(button);
-      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 6 6 6-6 6M20 12H4"/></svg><span class="rgp-back-label" data-pubg-back-label>رجوع</span>';
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 5 7 7-7 7"/></svg><span class="rgp-back-label" data-pubg-back-label>رجوع</span>';
     }
   }
 

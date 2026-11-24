@@ -44,6 +44,7 @@ html body :is(
   #robuxPurchaseScreen.robux-direct-menu,
   #pubgCategoryPage.pubg-premium,
   #psnStoreScreen .psn-head,
+  #completeSupplierCatalog .sc-head,
   #rgpMm2Checkout.gb-package-dialog,
   #sabCheckout.gb-package-dialog,
   #pubgAccountCheckoutOverlay.gb-package-dialog,
@@ -54,23 +55,26 @@ html body :is(
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 6px !important;
-  width: auto !important;
-  min-width: 82px !important;
+  gap: 5px !important;
+  width: max-content !important;
+  min-width: 74px !important;
   height: 44px !important;
   min-height: 44px !important;
   flex: 0 0 auto !important;
-  padding: 0 10px !important;
-  border: 1px solid #b995f3 !important;
-  border-radius: 13px !important;
-  background: linear-gradient(150deg, #7044ba, #4e2b8a) !important;
-  color: #faf5ff !important;
+  padding: 0 11px !important;
+  border: 1px solid #9a72d7 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(145deg, #583983, #3c285e) !important;
+  color: #fcf6ff !important;
   font-size: 13px !important;
   font-weight: 750 !important;
-  box-shadow: 0 3px 10px #27104f55 !important;
+  box-shadow: inset 0 1px #ffffff20, 0 4px 12px #160a2c55 !important;
   direction: rtl;
   white-space: nowrap;
   cursor: pointer;
+  justify-self: start !important;
+  text-align: center !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html body button.l1017-package-back svg {
@@ -79,7 +83,7 @@ html body button.l1017-package-back svg {
   height: 16px !important;
   flex: 0 0 16px;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
@@ -96,6 +100,7 @@ html body :is(
   #robuxPurchaseScreen .robux-menu-top,
   #pubgCategoryPage .pubg-topbar,
   #psnStoreScreen .psn-head,
+  #completeSupplierCatalog .sc-head,
   .gb-package-top,
   #omnexCheckout .ox-dialog-head
 ) {
@@ -106,19 +111,27 @@ html body :is(
   #robuxPurchaseScreen .robux-menu-top,
   #pubgCategoryPage .pubg-topbar,
   #psnStoreScreen .psn-head,
+  #completeSupplierCatalog .sc-head,
   .gb-package-top,
-  #omnexCheckout .ox-dialog-head
+  #omnexCheckout .ox-dialog-head,
+  #robloxGamePage .rgp-top
 ) > button.l1017-package-back {
-  order: -1;
+  order: -1 !important;
 }
 
-html body #robuxModal.robux-fixed-packs .package-close.l1017-package-back {
-  inset: 24px 16px auto auto !important;
+html body #robuxModal.robux-full-page.robux-fixed-packs .robux-store-box .robux-reference-hero {
+  display: none !important;
 }
-
-html body #robuxModal.robux-fixed-packs .robux-reference-section {
-  padding-right: 94px !important;
-  padding-left: 0 !important;
+html body #robuxModal.robux-full-page.robux-fixed-packs .robux-store-box > .package-close.l1017-package-back {
+  display: flex !important;
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  margin: 0 0 14px auto !important;
+}
+html body #robuxModal.robux-full-page.robux-fixed-packs .robux-store-box .robux-reference-section {
+  min-height: 0 !important;
+  padding: 0 !important;
 }
 
 html body #storePurchaseBox .digital-game-preview > #closeGamePreview {

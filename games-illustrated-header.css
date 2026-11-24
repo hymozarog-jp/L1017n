@@ -63,7 +63,10 @@ body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::before {
  body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::after{width:129px!important;height:112px!important;left:-5px!important;}
 }
 /* A package icon anchors the real availability count on every category tile. */
-body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-section-details .ll-stock-count{
+.ll-stock-count,
+.ll-stock-state,
+#robloxGamePage .mm2-delivery,
+#robloxGamePage .sab-stock-badge{
  display:inline-flex!important;
  align-items:center!important;
  justify-content:flex-start!important;
@@ -73,7 +76,10 @@ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-game-secti
  font-size:clamp(9px,2.6vw,12px)!important;
  font-variant-numeric:tabular-nums;
 }
-body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-stock-count::before{
+.ll-stock-count::before,
+.ll-stock-state::before,
+#robloxGamePage .mm2-delivery::before,
+#robloxGamePage .sab-stock-badge::before{
  content:"";
  display:block;
  width:16px;
@@ -84,6 +90,13 @@ body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) .ll-stock-coun
   center/contain no-repeat;
  filter:drop-shadow(0 1px 4px #a475eb79);
 }
+#llLanding .ll-game-section-details .ll-stock-count{
+ display:inline-flex!important;
+}
+.ll-stock-state[data-available="true"]{color:#aee8c9!important}
+.ll-stock-state[data-available="false"]{color:#d2b9c7!important}
+#pubgCategoryPage .pubg-pack-headline .ll-stock-state{align-self:flex-start}
+#robuxModal.robux-fixed-packs .robux-package .ll-stock-state{font-size:11px!important}
 @media(prefers-reduced-motion:no-preference){
  body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::after{animation:l1017n-loot-float 4.8s ease-in-out infinite;}
  @keyframes l1017n-loot-float{0%,100%{transform:translateY(-54%)}50%{transform:translateY(-59%)}}

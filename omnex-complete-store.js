@@ -115,7 +115,7 @@ function drawGroups(){
   button.dataset.groupKey=row.key;
   button.append(art(row.product,true));
   const copy=make('span','sc-group-copy');
-  copy.append(make('strong','',category?groupLabel(row.key):row.product.category_name),make('small','',row.available?row.available+' باقة متوفرة':'غير متوفر حاليًا'));
+  copy.append(make('strong','',category?groupLabel(row.key):row.product.category_name),make('small','ll-stock-count',row.available+' باقة متوفرة'));
   button.append(copy);
   button.onclick=()=>{
    if(!category){allScroll=root.scrollTop;category=row.key;groupScroll=0;panel.dataset.renderKey='';draw();root.scrollTop=0;return;}
@@ -148,7 +148,9 @@ function draw(){
  renderKey=nextKey;grid.replaceChildren();
  for(const p of items.slice(0,limit)){
   const card=make('article','sc-product');card.dataset.favId=String(p.id||p.name||"");card.append(art(p));
-  const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),make('span','sc-availability'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر'),make('strong','sc-price',cash(p.price)));
+  const stock=make('span','sc-availability ll-stock-state'+(p.available?' is-available':''),p.available?'متوفر':'غير متوفر');
+  stock.dataset.available=String(p.available);
+  const info=make('div','sc-info');info.append(make('small','sc-region',groupLabel(selectedGroup)),make('h2','',p.name),stock,make('strong','sc-price',cash(p.price)));
   const button=make('button','sc-buy',p.available?'شراء الآن':'غير متوفر');button.type='button';button.disabled=!p.available;
   button.onclick=()=>{if(typeof window.openOmnexProductCheckout==='function')window.openOmnexProductCheckout({...p,region:p.group||p.category_name});};
   info.append(button);card.append(info);grid.append(card);

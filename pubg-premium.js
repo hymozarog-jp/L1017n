@@ -40,7 +40,7 @@
       if(!root.isConnected||!root.classList.contains("visible")||requestId!==catalogRequest)return;
       root.querySelectorAll("[data-pubg-category]").forEach(button=>{
         const label=button.querySelector("[data-pubg-count]");
-        if(label)label.textContent=catalogError?"تعذر تحديث الباقات":countLabel(categoryProducts(button.dataset.pubgCategory).length);
+        if(label)label.textContent=catalogError?"تعذر تحديث الباقات":countLabel(categoryProducts(button.dataset.pubgCategory).filter(canBuyPubg).length);
       });
       if (root.classList.contains("pubg-inner-page")) setCategory(root,currentCategory,false);
     };
@@ -92,7 +92,7 @@
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
   function countLabel(count) {
-    return count + " باقة";
+    return count + " باقة متوفرة";
   }
   function canBuyPubg(product) {
     return String(product.product_key || "").toLowerCase() !== "pubg-60"
@@ -117,7 +117,8 @@
     return '<article class="pubg-pack pubg-pack-detailed" data-fav-id="' + safe(product.id || product.name || "") + '">'
       + '<div class="pubg-pack-cover"><img class="pubg-pack-cover-image" src="' + safe(PACKAGE_ART[mode] || PUBG_ART) + '" alt="" loading="lazy" decoding="async">'
       + (available ? '' : '<span class="pubg-stock-badge">غير متوفر</span>') + '</div>'
-      + '<div class="pubg-pack-headline"><span class="pubg-pack-kind">' + delivery + '</span><h3 class="pubg-pack-name">' + name + '</h3></div>'
+      + '<div class="pubg-pack-headline"><span class="pubg-pack-kind">' + delivery + '</span><h3 class="pubg-pack-name">' + name + '</h3>'
+      + '<small class="ll-stock-state" data-available="' + available + '">' + (available?'متوفر':'غير متوفر') + '</small></div>'
       + '<div class="pubg-pack-bottom"><div class="pubg-price"><strong>'
       + (Number.isFinite(price) && price > 0 ? price.toFixed(2) + ' <span>د.ل</span>' : 'عند التوفر')
       + '</strong></div>'
@@ -378,7 +379,7 @@
         + '<img class="pubg-choice-battle" src="'+safe(PACKAGE_ART[item.key]||PUBG_ART)+'" alt="" loading="lazy" decoding="async">'
         + '</span>'
         + '<span class="pubg-choice-info"><strong>' + item.title + '</strong>'
-        + '<small class="pubg-package-count"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM3 4h18v3H3zm6 7h6"/></svg><span data-pubg-count>جاري التحميل…</span></small></span>'
+        + '<small class="pubg-package-count ll-stock-count"><span data-pubg-count>جاري التحميل…</span></small></span>'
         + '</button>').join("")
       + '</div></section>'
       + '<div id="pubgCategoryResults" class="pubg-results" aria-live="polite" aria-hidden="true"></div>'

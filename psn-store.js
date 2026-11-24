@@ -78,7 +78,7 @@
         const cover = el('span','psn-region-art'); cover.append(thumb, flag);
         const meta = el('span','psn-region-meta');
         const available = filtered.filter(p=>p.region===region&&p.available).length;
-        meta.append(el('strong','','بلايستيشن '+region),el('small','',available ? available+' باقة متوفرة' : 'غير متوفر حاليًا'));
+        meta.append(el('strong','','بلايستيشن '+region),el('small','ll-stock-count',available+' باقة متوفرة'));
         const footer=el('span','psn-region-footer'); footer.append(meta,el('span','psn-arr','←'));
         b.append(cover, footer);
         b.dataset.region = region;
@@ -104,7 +104,9 @@
         if (!product.available) art.append(el('span','psn-sold-out','غير متوفر'));
         const detail=el('span','psn-product-detail');
         detail.append(el('strong','',product.name),el('span','psn-price',money(product.price)));
-        detail.append(el('span','psn-buy',product.available?'شراء الآن':'غير متوفر'));
+        const stock=el('small','ll-stock-state',product.available?'متوفر':'غير متوفر');
+        stock.dataset.available=String(product.available);
+        detail.append(stock,el('span','psn-buy',product.available?'شراء الآن':'غير متوفر'));
         b.append(art,detail);
         if (product.available) b.onclick = () => {
           if (typeof window.openOmnexProductCheckout !== 'function') return;

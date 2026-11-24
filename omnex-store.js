@@ -206,9 +206,12 @@ function productCard(product, regionLabel) {
  const art = regionArtwork(regionLabel);
  if (!product.available) art.append(make('span', 'ox-sold-out', availability));
  const info = make('span', 'ox-product-info');
+ const stock=make('small','ll-stock-state',product.available?'متوفر':'غير متوفر');
+ stock.dataset.available=String(product.available);
  info.append(
   make('strong', '', product.name),
   make('b', 'ox-product-price', cash(product.price)),
+  stock,
   make('span', 'ox-buy', availability),
  );
  card.append(art, info);
@@ -329,7 +332,7 @@ window.openRobloxCodesPage = async function(root) {
    const button = make('button', 'ox-region-card');
    button.type = 'button';
    const info = make('span', 'ox-region-info');
-   info.append(make('strong', '', region.label), make('small', '', count ? 'المتوفر: ' + count : 'غير متوفر حاليًا'));
+   info.append(make('strong', '', region.label), make('small', 'll-stock-count', count + ' باقة متوفرة'));
    const arrow = make('span', 'ox-region-arrow');
    arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>';
    arrow.setAttribute('aria-hidden', 'true');

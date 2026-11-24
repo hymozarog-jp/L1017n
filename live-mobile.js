@@ -415,7 +415,9 @@
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
       + '<a class="ll-whatsapp-channel" href="https://whatsapp.com/channel/0029VbDtsi87j6g5BpclwU0I" target="_blank" rel="noopener noreferrer">'
-      + SVG("chat") + '<span>لمعلومات أكثر · قناة واتساب</span>' + SVG("chevron") + '</a>'
+      + '<span class="ll-whatsapp-icon">' + SVG("chat") + '</span>'
+      + '<strong>قناة واتساب</strong><span class="ll-whatsapp-info">لمعلومات أكثر</span>'
+      + SVG("chevron") + '</a>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'

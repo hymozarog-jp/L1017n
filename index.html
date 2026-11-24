@@ -952,28 +952,41 @@ window.openDedicatedTopup=openDedicatedTopup;
   box-sizing:border-box;
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:9px;
-  width:fit-content;
-  max-width:100%;
+  gap:8px;
+  direction:rtl;
+  width:min(100%,282px);
   min-height:44px;
-  margin:0 auto 16px;
-  padding:8px 14px;
-  border:1px solid #337753;
-  border-radius:14px;
-  background:#132d24;
-  color:#bcf9d2;
-  font-size:clamp(12px,3.4vw,14px);
-  font-weight:750;
-  line-height:1.4;
+  margin:0 auto 12px;
+  padding:5px 8px;
+  border:1px solid #4a3b60;
+  border-radius:13px;
+  background:linear-gradient(115deg,#191725,#231a30);
+  color:#f8f1ff;
+  font-size:12px;
+  line-height:1.35;
   text-decoration:none;
 }
-#llLanding .ll-whatsapp-channel:hover{background:#1c3a2d}
+#llLanding .ll-whatsapp-channel:hover{border-color:#62ba8b;background:#221d30}
 #llLanding .ll-whatsapp-channel:focus-visible{outline:2px solid #85e7a9;outline-offset:3px}
-#llLanding .ll-whatsapp-channel svg{flex:none;width:18px;height:18px}
-#llLanding .ll-whatsapp-channel svg:last-child{width:14px;height:14px}
+#llLanding .ll-whatsapp-icon{
+  display:grid;
+  place-items:center;
+  flex:0 0 28px;
+  height:28px;
+  border-radius:8px;
+  background:#1c3c2d;
+  color:#94f3b8;
+}
+#llLanding .ll-whatsapp-icon svg{width:16px;height:16px}
+#llLanding .ll-whatsapp-channel strong{white-space:nowrap;font-weight:800}
+#llLanding .ll-whatsapp-info{
+  margin-inline-start:auto;
+  color:#d0c2de;
+  white-space:nowrap;
+}
+#llLanding .ll-whatsapp-channel>svg{flex:0 0 13px;width:13px;height:13px;color:#a1edba}
 </style>
-<script src="live-mobile.js?v=wide-billboard-4k-20261122-1&whatsapp-channel-20261124-1" defer></script>
+<script src="live-mobile.js?v=wide-billboard-4k-20261122-1&whatsapp-channel-20261124-2" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=mobile-dock-clearance-20261124-1">

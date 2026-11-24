@@ -997,67 +997,170 @@ html,body{
 
 #topupDedicatedPage .dt-topup-methods {
   display: grid;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 16px;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: clamp(12px, 3.5vw, 20px);
+  border: 1px solid #6e5c933f;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #201932, #17182b 78%);
 }
 
 #topupDedicatedPage .dt-topup-methods h2 {
   margin: 0;
-  color: #f5eeff;
+  color: #f9f5ff;
   font-size: 1.05rem;
 }
 
 #topupDedicatedPage .dt-topup-method-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 #topupDedicatedPage .dt-topup-method-options button {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-height: 62px;
-  padding: 9px 11px;
-  border: 1px solid #6a558d;
-  border-radius: 14px;
-  background: #211b37;
-  color: #f5eeff;
+  position: relative;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 12px;
+  min-height: 134px;
+  padding: 13px;
+  border: 1px solid var(--method-border);
+  border-radius: 17px;
+  background:
+    radial-gradient(ellipse at 100% 0, var(--method-glow), transparent 78%),
+    linear-gradient(155deg, var(--method-bg), #161828);
+  box-shadow: inset 0 1px 0 #ffffff12, 0 6px 15px #0b091a30;
+  color: #fff;
   text-align: right;
   font: inherit;
   cursor: pointer;
+  transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+  animation: libyana-method-enter .38s cubic-bezier(.2,.7,.25,1) both;
+}
+
+#topupDedicatedPage .dt-topup-method-options [data-topup-method="ussd"] {
+  --method-accent: #e6c6ff;
+  --method-border: #a87be68a;
+  --method-bg: #32214c;
+  --method-glow: #b26cf450;
+  --method-icon-start: #634094;
+  --method-icon-end: #3b275d;
+}
+
+#topupDedicatedPage .dt-topup-method-options [data-topup-method="manual"] {
+  --method-accent: #a3f9e2;
+  --method-border: #5ad4ab75;
+  --method-bg: #193a3c;
+  --method-glow: #3bd6ae3b;
+  --method-icon-start: #247c6b;
+  --method-icon-end: #1b4a49;
+  animation-delay: .07s;
+}
+
+#topupDedicatedPage .dt-topup-method-options button::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 16px;
+  inset-inline-end: 14px;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--method-accent);
+  border-radius: 50%;
+  opacity: .48;
+  transition: opacity .22s ease, box-shadow .22s ease, background-color .22s ease;
 }
 
 #topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"] {
-  border-color: #cca8ff;
-  background: #3d2b63;
+  border-color: var(--method-accent);
+  box-shadow: inset 0 0 0 1px var(--method-accent), 0 7px 18px var(--method-glow);
+  transform: translateY(-2px);
 }
 
+#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"]::after {
+  background: var(--method-accent);
+  box-shadow: inset 0 0 0 3px var(--method-bg);
+  opacity: 1;
+}
+
+#topupDedicatedPage .dt-topup-method-options button:focus-visible {
+  outline: 2px solid var(--method-accent);
+  outline-offset: 3px;
+}
+
+#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) { transform: scale(.98); }
+#topupDedicatedPage .dt-topup-method-options button:disabled { cursor: wait; }
+
 #topupDedicatedPage .dt-topup-method-options svg {
-  width: 22px;
-  height: 22px;
-  flex: 0 0 22px;
-  color: #d7b7ff;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  box-sizing: border-box;
+  border: 1px solid var(--method-border);
+  border-radius: 13px;
+  background: linear-gradient(155deg, var(--method-icon-start), var(--method-icon-end));
+  color: var(--method-accent);
+  box-shadow: inset 0 1px 0 #ffffff1c;
+  transition: transform .26s ease;
+}
+
+#topupDedicatedPage .dt-topup-method-options button[aria-pressed="true"] svg {
+  transform: translateY(-2px) rotate(-5deg);
+}
+
+#topupDedicatedPage .dt-topup-method-options strong {
+  display: block;
+  line-height: 1.45;
 }
 
 #topupDedicatedPage .dt-topup-method-options small {
   display: block;
-  margin-top: 3px;
-  color: #d4c5e6;
+  margin-top: 4px;
+  color: #e3dcef;
   font-size: .875rem;
+  line-height: 1.45;
 }
 
-#topupDedicatedPage #dtTransferDetails:not([hidden]) { display: grid; gap: 12px; }
+#topupDedicatedPage #dtTransferDetails:not([hidden]) {
+  display: grid;
+  gap: 12px;
+  animation: libyana-method-enter .32s ease-out both;
+}
+
 #topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions)[hidden] { display: none !important; }
 
 #topupDedicatedPage .dt-manual-instructions {
   margin: 0;
   padding: 10px 12px;
-  border: 1px solid #6a558d;
+  border: 1px solid #5ad4ab75;
   border-radius: 12px;
-  background: #251d3d;
-  color: #efe6ff;
+  background: #1d363c;
+  color: #d7fff3;
   font-size: .875rem;
   line-height: 1.6;
+}
+
+@keyframes libyana-method-enter {
+  from { opacity: 0; translate: 0 9px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (max-width: 350px) {
+  #topupDedicatedPage .dt-topup-method-options { grid-template-columns: 1fr; }
+  #topupDedicatedPage .dt-topup-method-options button {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    min-height: 76px;
+    padding-inline-end: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #topupDedicatedPage .dt-topup-method-options button,
+  #topupDedicatedPage .dt-topup-method-options button::after,
+  #topupDedicatedPage .dt-topup-method-options svg,
+  #topupDedicatedPage #dtTransferDetails:not([hidden]) {
+    animation: none;
+    transition: none;
+  }
 }

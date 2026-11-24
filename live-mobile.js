@@ -18,6 +18,7 @@
   ICONS.games = '<path d="M8 7h8a4 4 0 0 1 4 3l1 5a2 2 0 0 1-3 2l-2-2H8l-2 2a2 2 0 0 1-3-2l1-5a4 4 0 0 1 4-3Z"/><path d="M8 10v4m-2-2h4m6-1h.01m2 2h.01"/>';
   ICONS.local = '<path d="M3 9 5 4h14l2 5v2a3 3 0 0 1-3 3h-1a3 3 0 0 1-2.5-1.4A3 3 0 0 1 12 14a3 3 0 0 1-2.5-1.4A3 3 0 0 1 7 14H6a3 3 0 0 1-3-3V9Zm2 5v6h14v-6M3 9h18"/>';
   ICONS.voice = '<path d="M3 11v2m4-5v8m5-12v16m5-12v8m4-5v2"/>';
+  ICONS.chat = '<path d="M8 10h8m-8 4h5M5 19l-2 2v-5a4 4 0 0 1-1-3V8a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4H8Z"/>';
   const SVG = name => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
   const GAME_META = {
     roblox: {name:"Roblox",tag:"روبلوكس",color:"purple",art:"R"},
@@ -413,6 +414,8 @@
       + '<div class="ll-dots" role="group" aria-label="اختيار العرض">' + HEROES.map((slide,i) => '<button type="button" class="ll-dot ' + (i===0?'selected':'') + '" data-ll-dot="' + i + '" aria-label="العرض ' + (i+1) + ' من ' + HEROES.length + '" aria-current="' + (i===0) + '"></button>').join("") + '</div>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="-1" aria-label="العرض السابق">' + SVG("chevron") + '</button>'
       + '<button type="button" class="ll-slider-arrow" data-ll-slide-step="1" aria-label="العرض التالي">' + SVG("chevron") + '</button></div></section>'
+      + '<a class="ll-whatsapp-channel" href="https://whatsapp.com/channel/0029VbDtsi87j6g5BpclwU0I" target="_blank" rel="noopener noreferrer">'
+      + SVG("chat") + '<span>لمعلومات أكثر · قناة واتساب</span>' + SVG("chevron") + '</a>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'

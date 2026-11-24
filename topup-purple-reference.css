@@ -1127,7 +1127,7 @@ html,body{
   animation: libyana-method-enter .32s ease-out both;
 }
 
-#topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions)[hidden] { display: none !important; }
+#topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions, .dt-purple-guide)[hidden] { display: none !important; }
 
 #topupDedicatedPage .dt-manual-instructions {
   margin: 0;

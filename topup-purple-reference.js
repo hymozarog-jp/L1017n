@@ -37,14 +37,14 @@
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اختار طريقة شحن ليبيانا أولًا.</p>'+
       '<button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>متابعة الشحن</span></button>'+
       '<a class="dt-purple-fallback" id="dtFallback" hidden>فتح تطبيق الهاتف</a>'+
-      '<p id="dtManualInstructions" class="dt-manual-instructions" hidden>حوّل نفس المبلغ من الرقم المختار إلى رقم المتجر أعلاه عبر قائمة خدمات ليبيانا <bdi dir="ltr">*121#</bdi>. بعد التحويل، تابع الحالة هنا.</p>'+
+      '<p id="dtManualInstructions" class="dt-manual-instructions" hidden>الطلب جاهز. حوّل من الرقم اللي اخترته وبنفس المبلغ، وبعدها تابع الحالة هنا.</p>'+
     '</section>'+
     '<section class="dt-card dt-purple-guide dt-recharge-guide" aria-labelledby="dtPurpleGuideTitle">'+
       '<div class="dt-recharge-head"><span class="dt-recharge-head-icon" aria-hidden="true">'+svg('wallet')+'</span><div><h3 id="dtPurpleGuideTitle">طريقة الشحن</h3><p>اتبع الخطوات بالترتيب لشحن محفظتك بليبيانا</p></div><span class="dt-recharge-count">4 خطوات</span></div>'+
       '<ol class="dt-recharge-timeline">'+
         '<li><span class="dt-recharge-number" aria-hidden="true">1</span><div class="dt-recharge-copy"><strong>اختر رقمك والمبلغ</strong><small>اختر رقمًا من أرقامك المحفوظة وحدّد المبلغ بالدينار.</small></div></li>'+
-        '<li><span class="dt-recharge-number" aria-hidden="true">2</span><div class="dt-recharge-copy"><strong>جهّز طلب الشحن</strong><small>الموقع يسجّل الرقم والمبلغ عشان يطابق التحويل بعد وصوله.</small></div></li>'+
-        '<li><span class="dt-recharge-number" aria-hidden="true">3</span><div class="dt-recharge-copy"><strong>أكمل التحويل من ليبيانا</strong><small>حسب الطريقة اللي اخترتها، كمّل التحويل من نفس رقم ليبيانا وبنفس المبلغ.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">2</span><div class="dt-recharge-copy"><strong>اضغط «التحويل مباشرة»</strong><small>الموقع يجهّز لك تحويل الرصيد إلى رقم المتجر بالمبلغ اللي اخترته.</small></div></li>'+
+        '<li><span class="dt-recharge-number" aria-hidden="true">3</span><div class="dt-recharge-copy"><strong>أكمل التحويل من ليبيانا</strong><small>أكّد التحويل من نفس شريحة ليبيانا وبنفس المبلغ.</small></div></li>'+
         '<li><span class="dt-recharge-number" aria-hidden="true">4</span><div class="dt-recharge-copy"><strong>انتظر التحقق التلقائي</strong><small>الموقع يطابق التحويل مع رقمك والمبلغ، ويضيف الرصيد بعد اعتماده فعليًا.</small></div></li>'+
       '</ol>'+
       '<p class="dt-recharge-hint">'+svg('check')+'<span>لو تأخّر التأكيد، ما تعاودش التحويل. تابع حالة الطلب في المحفظة.</span></p>'+
@@ -107,6 +107,11 @@
   const fallback=panel.querySelector('#dtFallback');
   const transferDetails=panel.querySelector('#dtTransferDetails');
   const manualInstructions=panel.querySelector('#dtManualInstructions');
+  const guide=panel.querySelector('.dt-purple-guide');
+  const transferTitle=panel.querySelector('#dtPurpleTitle');
+  const receiverLabel=panel.querySelector('label[for="dtReceiver"] span:last-child');
+  const receiverField=receiverInput.closest('.dt-purple-field');
+  const senderField=pickSender.closest('.dt-purple-field');
   const methodButtons=Array.from(panel.querySelectorAll('[data-topup-method]'));
   const normalize=(v)=>{
     let d=String(v||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
@@ -121,7 +126,7 @@
   };
   let busy=false,prepared=null,method=null;
   const isManual=()=>method==='manual';
-  const actionLabel=()=>isManual()?'تجهيز التحويل اليدوي':'فتح كود USSD';
+  const actionLabel=()=>isManual()?'تسجيل طلب التحويل':'التحويل مباشرة';
   const helperText=()=>isManual()
     ?'جهّز الطلب أولًا، وبعدها حوّل من نفس الرقم وبنفس المبلغ إلى رقم المتجر.'
     :'افتح كود USSD من تطبيق الهاتف، وبعد التحويل سنتحقق من وصول الرصيد.';
@@ -135,7 +140,16 @@
     if(busy)return;
     method=button.dataset.topupMethod;
     methodButtons.forEach(choice=>choice.setAttribute('aria-pressed',String(choice===button)));
+    const manual=isManual();
     transferDetails.hidden=false;
+    guide.hidden=manual;
+    transferTitle.textContent=manual?'بيانات التحويل اليدوي':'بيانات التحويل';
+    receiverLabel.textContent=manual?'رقم المتجر':'الرقم المحوّل إليه';
+    const firstField=manual?receiverField:senderField;
+    const secondField=manual?senderField:receiverField;
+    if(firstField.nextElementSibling!==secondField){
+      firstField.parentElement.insertBefore(firstField,secondField);
+    }
     refreshMethodActions();
     if(!confirm.disabled)confirm.querySelector('span').textContent=actionLabel();
     if(!prepared&&!document.getElementById('dtInlineTopupStatus'))message(helperText(),'');

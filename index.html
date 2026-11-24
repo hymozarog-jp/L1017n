@@ -232,7 +232,7 @@
     <span>الرصيد المتاح</span>
     <div><strong id="madarWalletBalance">0.000</strong><b>د.ل</b></div>
   </div>
-  <button type="button" class="madar-candy-status" id="madarWalletTopup" aria-haspopup="dialog">شحن المدار +</button>
+  <button type="button" class="madar-candy-status" id="madarWalletTopup" disabled>شحن المدار غير متوفر حاليًا</button>
   <span class="wallet-candy-gain" role="status" aria-live="polite"></span>
 </div></div><div class="wallet-carousel-dots"><span class="active"></span><span></span></div><a class="wallet-madar-logo-credit" href="https://commons.wikimedia.org/wiki/File:Almadar_Aljadid_Logo.png" target="_blank" rel="noopener noreferrer">شعار المدار الجديد: ILibya10 · CC BY-SA 4.0 · مقتطع للبطاقة</a><div class="wallet-actions" aria-label="خيارات المحفظة"><button type="button" class="wallet-action" id="walletActionTopup"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b>شحن</b></button><button type="button" class="wallet-action" id="walletActionTransfer"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h14l-4-4M21 7l-4 4"/><path d="M17 17H3l4 4M3 17l4-4"/></svg></span><b>تحويل</b></button><button type="button" class="wallet-action" id="walletActionSend" aria-haspopup="dialog" aria-controls="walletSendSheet"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></span><b>إرسال</b></button><button type="button" class="wallet-action" id="walletActionPrimary" aria-pressed="false" aria-label="تعيين المحفظة المعروضة كأساسية" title="الأساسية للمحفظة المعروضة"><span class="wallet-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><b>اجعلها أساسية</b></button></div><button type="button" id="walletActionCard" class="wallet-card-topup-entry" aria-haspopup="dialog"><span class="ct-wallet-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h5"/></svg></span><span><b>تعبئة عبر الكروت</b><small>أضف كرت ليبيانا أو أكثر</small></span><span class="ct-wallet-arrow" aria-hidden="true">‹</span></button><div class="wallet-recent-head"><h3>آخر المعاملات</h3><div class="wallet-filter-tabs"><button type="button" class="active" data-wallet-filter="all">الكل</button><button type="button" data-wallet-filter="approved">إيداع</button><button type="button" data-wallet-filter="pending">معلق</button><button type="button" data-wallet-filter="rejected">مرفوض</button></div></div></div><div class="wallet-layout"><div class="panel balance-panel"><div class="balance-top"><span>الرصيد الحالي</span><span class="balance-icon">◈</span></div><div class="balance-amount"><strong id="balanceAmount">0.00</strong><span>د.ل</span></div><div class="balance-line"></div><div class="balance-foot"><span>الحساب</span><b id="walletUserState"><i></i> غير مسجل</b></div></div><div id="topupForm" class="panel topup-form" aria-label="شحن المحفظة من ليبيانا">
   <nav class="tp-progress" aria-label="خطوات الشحن">
@@ -244,7 +244,7 @@
     <button type="button" class="tp-change-provider" aria-expanded="false">تغيير ⇄</button>
     <div class="tp-provider-grid">
       <div class="tp-provider-card is-selected" aria-current="true"><span class="tp-provider-logo tp-libyana-logo">Li<span><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></span><strong>ليبيانا</strong><small>رصيد خطك</small></div>
-      <button type="button" class="tp-provider-card" id="madarTopupProvider" aria-haspopup="dialog"><span class="tp-provider-logo tp-madar-logo">المدار</span><strong>المدار</strong><small>تحويل رصيد</small></button>
+      <button type="button" class="tp-provider-card" id="madarTopupProvider" disabled><span class="tp-provider-logo tp-madar-logo">المدار</span><strong>المدار</strong><small>غير متوفر حاليًا</small></button>
       <div class="tp-provider-card is-disabled" aria-label="التحويل البنكي غير متاح حاليًا"><span class="tp-provider-logo tp-bank-logo">▥</span><strong>المصرف</strong><small>قريبًا</small></div>
     </div>
   </section>
@@ -682,7 +682,7 @@ window.openDedicatedTopup=openDedicatedTopup;
   <button type="button" data-madar-manage hidden>إدارة أرقام الهاتف</button>
 </dialog>
 <link rel="stylesheet" href="madar-topup.css?v=shared-roblox-entry-1">
-<script src="madar-topup.js?v=shared-packages-1" defer></script>
+<script src="madar-topup.js?v=temporarily-unavailable-1" defer></script>
 <style>
 /* Wallet reference-inspired mobile design */
 #walletView{background:#070d19!important;color:#eef3ff!important;padding-bottom:110px!important}

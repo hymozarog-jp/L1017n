@@ -45,6 +45,10 @@
   }
 
   async function open() {
+    if (document.getElementById('madarWalletTopup')?.disabled) {
+      if (typeof toast === 'function') toast('شحن المدار غير متوفر حاليًا');
+      return;
+    }
     if (dialog.open) return;
     const token = ++revision;
     loading = true;

@@ -220,7 +220,8 @@ var styleId='robloxGamePageStyles';
     var grid=document.createElement('div');grid.className='rgp-packages';grid.innerHTML='<div class="rgp-empty">جاري تحميل باقات MM2…</div>';
     var section=document.createElement('section');section.className='rgp-mm2-subcategory';
     var heading=document.createElement('h2');heading.className='rgp-inner-heading';heading.textContent='باقات MM2';
-    section.append(heading,grid);
+    var count=document.createElement('small');count.className='ll-stock-count ll-list-count';count.hidden=true;
+    section.append(heading,count,grid);
     var categoryGrid=p.querySelector('.rgp-grid')||p.querySelector('.rgp-mm2-subcategory');
     if(!categoryGrid)return;
     categoryGrid.replaceWith(section);
@@ -234,6 +235,7 @@ var styleId='robloxGamePageStyles';
       var list=(r.data||[]).filter(function(product){
         return product.active===true&&Number(product.price)>0;
       });
+      count.textContent=list.length+' باقة متوفرة';count.hidden=false;
       if(!list.length){grid.innerHTML='<div class="rgp-empty">ما فيش باقات MM2 متوفرة حالياً.</div>';return}
       // Preserve the existing stock RPC; image URLs are read from public products.
       var images=await client.from('products').select('id,image_url').eq('game','mm2').eq('active',true);

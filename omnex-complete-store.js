@@ -93,7 +93,7 @@ function mount(){
  if(root)return;
  root=make('section','sc-screen');root.id='completeSupplierCatalog';root.hidden=true;root.dir='rtl';
  root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','منتجات المتجر');
- root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><h1>منتجات المتجر</h1></div></header><div class="sc-tools" hidden aria-hidden="true"><input class="sc-search" type="hidden" value=""><input class="sc-only" type="checkbox" hidden></div><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
+ root.innerHTML='<div class="sc-wrap"><header class="sc-head"><button type="button" class="sc-back">رجوع</button><div><h1>منتجات المتجر</h1></div></header><div class="sc-tools" hidden aria-hidden="true"><input class="sc-search" type="hidden" value=""><input class="sc-only" type="checkbox" hidden></div><p class="sc-status" role="status" aria-live="polite"></p><div class="sc-groups"></div><small class="ll-stock-count ll-list-count" data-sc-count hidden></small><div class="sc-grid" hidden></div><button type="button" class="sc-more" hidden>عرض المزيد</button><button type="button" class="sc-retry" hidden>إعادة المحاولة</button></div>';
  document.body.append(root);
  root.querySelector('.sc-back').onclick=goBack;
  for(const selector of ['.sc-search','.sc-only'])root.querySelector(selector).addEventListener(selector==='.sc-search'?'input':'change',()=>{limit=24;draw();});
@@ -142,13 +142,16 @@ function draw(){
  root.querySelector('.sc-groups').hidden=!grouped;
  root.querySelector('.sc-grid').hidden=grouped;
  root.querySelector('.sc-more').hidden=grouped;
+ const count=root.querySelector('[data-sc-count]');
+ count.hidden=grouped;
  root.querySelector('.sc-back').setAttribute('aria-label',!grouped?'العودة إلى اختيار الدولة':!entryCategory&&category?'العودة إلى الأقسام':'العودة إلى المتجر');
  if(grouped){drawGroups();return;}
  const q=root.querySelector('.sc-search').value.trim().toLocaleLowerCase(),only=root.querySelector('.sc-only').checked;
  const items=entries.filter(p=>p.category_id===category&&(p.group||'الباقات')===selectedGroup&&(!only||p.available)&&(!q||p.name.toLocaleLowerCase().includes(q)));
  const grid=root.querySelector('.sc-grid');
  const nextKey=JSON.stringify({category,q,selectedGroup,only,limit,items:items.slice(0,limit)});
- root.querySelector('.sc-status').textContent=items.length?items.length+' باقة':'لا توجد باقات مطابقة حاليًا.';
+ count.textContent=items.filter(p=>p.available).length+' باقة متوفرة';
+ root.querySelector('.sc-status').textContent=items.length?'':'لا توجد باقات مطابقة حاليًا.';
  root.querySelector('.sc-more').hidden=items.length<=limit;
  if(nextKey===renderKey)return;
  renderKey=nextKey;grid.replaceChildren();

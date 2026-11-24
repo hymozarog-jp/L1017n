@@ -115,6 +115,12 @@ function getClient(){
         return {key,name:product.name,latin:"STEAL A BRAINROT",number:String(ITEMS.length+index+1),image:OFFICIAL_FALLBACK};
       });
     const items=[...ITEMS,...extra];
+    const count=section.querySelector('[data-sab-count]');
+    count.hidden=!Array.isArray(catalog);
+    if(!count.hidden){
+      const available=items.filter(item=>MUTATIONS.some(([key])=>quantityLimit(groups.get(item.key)?.get(key))>0)).length;
+      count.textContent=available+' باقة متوفرة';
+    }
     target.innerHTML='<div class="sab-products-grid">'+items.map(item=>{
       const variants=groups.get(item.key);
       const availableProduct=variants&&MUTATIONS.map(([key])=>variants.get(key)).find(product=>quantityLimit(product)>0);
@@ -132,13 +138,13 @@ function getClient(){
     if(!target)return;
     const client=getClient();
     if(!client){
-      renderItems(section,[]);
+      renderItems(section,null);
       return;
     }
     const result=await client.from("products").select("id,product_key,name,game,price,active,stock_quantity,image_url").eq("game","steal-a-brainrot").order("sort_order");
     if(!section.isConnected)return;
     if(result.error){
-      renderItems(section,[]);
+      renderItems(section,null);
       const msg=document.createElement("p");msg.className="sab-info sab-fetch-error";
       msg.textContent="تعذر تحديث الأسعار حاليًا. حاول فتح القسم مرة ثانية.";
       target.appendChild(msg);
@@ -276,14 +282,14 @@ function getClient(){
     section.className="sab-inner";
     // Open directly to the items for sale: omit the original-game link and oversized hero.
     section.innerHTML='<div class="sab-section-title"><div><span>STEAL A BRAINROT</span><h2>شخصيات ماب السرقة</h2></div><small>'+String(ITEMS.length).padStart(2,"0")+' عناصر</small></div>'
-      +'<div id="sabCatalog" aria-live="polite"></div>';
+      +'<small class="ll-stock-count ll-list-count" data-sab-count hidden></small><div id="sabCatalog" aria-live="polite"></div>';
     grid.replaceWith(section);
     if(typeof window.setRobloxInnerHeader==="function"){
       window.setRobloxInnerHeader(root,"ماب السرقة","brainrot");
     }
-    renderItems(section,[]);
+    renderItems(section,null);
     loadItems(section).catch(()=>{
-      if(section.isConnected)renderItems(section,[]);
+      if(section.isConnected)renderItems(section,null);
     });
   }
 

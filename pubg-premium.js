@@ -243,7 +243,7 @@
     const labels = {all:"الكل", available:"متوفر", unavailable:"غير متوفر"};
     const filters = ''; // Display every package; redundant stock filter UI removed.
     panel.innerHTML = '<div class="pubg-results-heading"><div><h2>'
-      + safe(CATEGORIES.find(category => category.key === key).title) + '</h2></div></div>'
+      + safe(CATEGORIES.find(category => category.key === key).title) + '</h2></div></div>' + (catalogReady&&!catalogError?'<small class="ll-stock-count ll-list-count">'+countLabel(available.length)+'</small>':'')
       + (!catalogReady
         ? '<div class="pubg-empty-state" role="status"><strong>جاري تحميل باقات ببجي…</strong></div>'
         : catalogError

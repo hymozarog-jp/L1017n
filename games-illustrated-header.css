@@ -93,6 +93,16 @@ body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::before {
 #llLanding .ll-game-section-details .ll-stock-count{
  display:inline-flex!important;
 }
+.ll-list-count{
+ width:max-content;
+ max-width:100%;
+ margin:0 0 12px;
+ padding:4px 8px;
+ border:1px solid #a47de33b;
+ border-radius:8px;
+ background:#9570d31b;
+}
+.ll-list-count[hidden]{display:none!important}
 .ll-stock-state[data-available="true"]{color:#aee8c9!important}
 .ll-stock-state[data-available="false"]{color:#d2b9c7!important}
 #pubgCategoryPage .pubg-pack-headline .ll-stock-state{align-self:flex-start}

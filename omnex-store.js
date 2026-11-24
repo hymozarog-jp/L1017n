@@ -250,6 +250,8 @@ window.openRobloxCodesPage = async function(root) {
  const menu = page.querySelector('.ox-region-grid');
  const products = page.querySelector('.ox-region-products');
  const grid = page.querySelector('.ox-catalog-grid');
+ const count = make('small','ll-stock-count ll-list-count');
+ grid.before(count);
  const search = page.querySelector('.ox-search');
  const inStock = page.querySelector('.ox-instock');
  const more = page.querySelector('.ox-more');
@@ -262,6 +264,7 @@ window.openRobloxCodesPage = async function(root) {
   const matches = activeRegion.items.filter(product =>
    (!inStock.checked || product.available) && product.name.toLowerCase().includes(query)
   );
+  count.textContent = matches.filter(product=>product.available).length+' باقة متوفرة';
   grid.replaceChildren(...matches.slice(0, limit).map(product => productCard(product, activeRegion.label)));
   status.textContent = matches.length ? '' : 'لا توجد باقات تطابق اختيارك.';
   more.hidden = matches.length <= limit;

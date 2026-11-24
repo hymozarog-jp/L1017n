@@ -1,10 +1,18 @@
-const expectedTestHash = "07d9a39e175d5f08abbc2a40d8a465eb352582c3696b5e904d14c418fd701a71";
+const expectedTestHash = "4a71c83112b99c2199d87bc02a82b2b699b3dd5a65585839b35636b741925e90";
 
-async function isAuthorizedTestMessage(message: string) {
-  const normalized = message.trim().replace(/مدار\s+742/u, "مدار742");
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalized));
-  const hash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
-  return hash === expectedTestHash;
+async function checkTestMessage(message: unknown): Promise<string | null> {
+  if (message == null || message === "") return "message_empty";
+  if (typeof message !== "string") return "message_not_text";
+  const text = message.normalize("NFKC").replace(/[\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/gu, "").trim();
+  if (!text) return "message_empty";
+  // Check the test code independently of Arabic spacing and notification formatting.
+  const codes = text.toLowerCase().match(/\b[0-9a-f]{24}\b/g) ?? [];
+  for (const code of codes) {
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
+    const hash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+    if (hash === expectedTestHash) return null;
+  }
+  return codes.length ? "test_code_mismatch" : "test_code_missing";
 }
 
 Deno.serve(async (request: Request) => {
@@ -34,10 +42,9 @@ Deno.serve(async (request: Request) => {
     }
     raw += decoder.decode();
     const payload = JSON.parse(raw);
-    if (typeof payload?.message === "string" && await isAuthorizedTestMessage(payload.message)) {
-      return Response.json({ ok: true, message: "وصل نص الاختبار" });
-    }
-    return Response.json({ ok: false, error: "test_message_required" }, { status: 422 });
+    const error = await checkTestMessage(payload?.message);
+    if (error) return Response.json({ ok: false, error }, { status: 422 });
+    return Response.json({ ok: true, message: "وصل نص الاختبار" });
   } catch {
     return Response.json({ ok: false, error: "invalid_json" }, { status: 400 });
   }

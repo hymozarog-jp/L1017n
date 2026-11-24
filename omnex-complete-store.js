@@ -19,7 +19,7 @@ function fallbackImage(photo){if(photo.dataset.localFallback==='1'){photo.hidden
 function art(product,categoryArt=false){
  const wrap=make('span','sc-art');
  const src=localImage(product);
- if(src){const photo=make('img');photo.src=src;photo.alt=product.category_name||product.name||'صورة المنتج';photo.loading='eager';photo.decoding='auto';photo.fetchPriority='high';photo.width=640;photo.height=640;wrap.append(photo);}
+ if(src){const photo=make('img');photo.loading='lazy';photo.decoding='async';photo.width=640;photo.height=640;photo.alt=product.category_name||product.name||'صورة المنتج';photo.src=src;wrap.append(photo);}
  if(itunes(product))wrap.classList.add('sc-art-apple');
  return wrap;
 }

@@ -427,7 +427,7 @@
       + '<span class="ll-hero-light-spark"></span>'
       + '<img class="ll-compact-art" src="' + esc(slide.image) + '"'
       + (slide.imageHigh ? ' srcset="' + esc(slide.image) + ' ' + slide.imageMobileWidth + 'w, ' + esc(slide.imageHigh) + ' ' + slide.imageHighWidth + 'w" sizes="(max-width: 520px) 178px, (max-width: 1024px) 340px, 490px"' : '')
-      + ' alt="" loading="' + (index===0?"eager":"lazy") + '" decoding="async"></div>'
+      + ' alt="" loading="eager" fetchpriority="' + (index===0?"high":"low") + '" decoding="async"></div>'
       + '<div class="ll-slide-copy"><span class="ll-hero-eyebrow"><span class="ll-hero-eyebrow-dot"></span>' + esc(slide.eyebrow) + '</span>'
       + '<h2>' + esc(slide.headline) + '<span class="ll-hero-highlight">' + esc(slide.highlight) + '</span></h2>'
       + '<p>' + esc(slide.description) + '</p>'

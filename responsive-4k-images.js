@@ -59,6 +59,14 @@
     const size=Math.max(40,width)+'px';
     if(img.sizes!==size)img.sizes=size;
   }
+  document.addEventListener('error',event=>{
+    const image=event.target;
+    if(image.tagName!=='IMG'||!image.hasAttribute('srcset')||!image.currentSrc||image.currentSrc===image.src)return;
+    if(!image.dataset.gbImageVariant&&!image.matches('.ll-compact-art'))return;
+    // Keep the original image available when a responsive variant fails to load.
+    image.removeAttribute('sizes');
+    image.removeAttribute('srcset');
+  },true);
   let scheduled=false;
   function scan(){
     scheduled=false;

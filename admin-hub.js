@@ -16,14 +16,14 @@
   visitors:'<path d="M4 19V8m5 11V4m5 15v-8m5 8v-5"/><path d="M2 21h20"/>',
   accounts:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M18 8a3 3 0 0 1 0 6M18 16a5 5 0 0 1 4 5"/>'
  };
- const icon=k=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+symbols[k==='topup-history'?'topups':k]+'</svg>';
+ const icon=k=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+symbols[k==='code-delivery'?'orders':k]+'</svg>';
  const tabs=[
   ['overview','نظرة عامة','ملخص زوار المتجر'],
   ['visitors','الزوار','إحصائيات وآخر الزيارات'],
   ['accounts','حسابات الزبائن','المسجلون والطلبات'],
   ['orders','طلبات الشراء','القبول والتسليم'],
   ['topups','طلبات الشحن','التحويلات والمراجعة'],
-  ['topup-history','سجل شحن الرصيد','متابعة حالات الطلبات'],
+  ['code-delivery','تسليم الأكواد','الطلبات والتسليم التلقائي'],
   ['stock','مخزون الروبوكس','الكمية المتوفرة'],
   ['products','المنتجات','الأسعار والباقات'],
   ['omnex','ربط OMNEX','منتجات روبلوكس وأسعار المورد'],
@@ -156,6 +156,7 @@
  // A full-screen page, not an accordion inside the dashboard.
  function openScreen(key,pushHistory){
    if(key==='reports')key='finance';
+   if(key==='topup-history')key='topups';
    if(!Object.prototype.hasOwnProperty.call(panes,key))return;
    active=key;
    const view=$('#adminView');
@@ -180,7 +181,8 @@
    // Panels retain their existing secure refresh handlers and financial actions.
    if(key==='overview')$('#refreshTraffic')?.click();
    document.dispatchEvent(new CustomEvent('l1017n:admin-screen',{detail:{key}}));
-   if(['orders','topups','topup-history','stock','products'].includes(key)){
+   if(key==='code-delivery'&&typeof loadAdminCodeDeliveries==='function')void loadAdminCodeDeliveries();
+   if(['orders','topups','stock','products'].includes(key)){
      if(typeof loadAdminDashboard==='function')void loadAdminDashboard();
    }
    if(key==='finance'||key==='reviews')$('#refreshBusiness')?.click();
@@ -230,7 +232,7 @@
      lastVisible=visible;
      if(visible){
        const requested=new URLSearchParams(location.search).get('section');
-       if(requested==='reports'||requested&&panes[requested])openScreen(requested,false);
+       if(requested==='reports'||requested==='topup-history'||requested&&panes[requested])openScreen(requested,false);
        else showMenu();
      }else showMenu();
    }
@@ -258,12 +260,12 @@
      overview:sectionOf('#adminTraffic'),
      orders:sectionOf('#adminPurchases'),
      topups:sectionOf('#adminTopups'),
-     'topup-history':sectionOf('#adminTopupHistory'),
+     'code-delivery':sectionOf('#adminCodeDeliveries'),
      stock:sectionOf('#adminRobuxStock'),
      products:sectionOf('#adminProducts'),
      finance:$('#l1017BusinessPanel')
    };
-   for(const key of ['overview','orders','topups','topup-history','stock','products']){
+   for(const key of ['overview','orders','topups','code-delivery','stock','products']){
      if(!staticTargets[key]){
        console.warn('[admin-hub] Missing existing panel',key);
        return; // Never hide old admin functionality if the page structure changed.

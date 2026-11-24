@@ -1223,45 +1223,65 @@ function compactAdminTopup(x,name){
  (x.method==='almadar'?'<p>المدار · طابق الرقم والمبلغ مع رسالة التحويل الواردة، وتأكد إنك ما اعتمدتهاش قبل.</p>':'')+
  (pending?'<div class="admin-request-actions"><button class="btn btn-primary" data-topup-action="approved" data-id="'+id+'">موافقة</button><button class="btn btn-soft" data-topup-action="rejected" data-id="'+id+'">رفض</button></div>':'')+'</details></article>';
 }
-const adminTopupDate = new Intl.DateTimeFormat('ar-LY', {
+const adminCodeDate = new Intl.DateTimeFormat('ar-LY', {
   dateStyle:'medium', timeStyle:'short', timeZone:'Africa/Tripoli'
 });
-const adminTopupAmount = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits:2, maximumFractionDigits:3
-});
-const adminTopupStatuses = {approved:'تم الشحن', pending:'بانتظار التحقق', rejected:'مرفوض'};
+const adminCodeStates = {
+  queued:'بانتظار الإرسال', sending:'جارٍ الإرسال', processing:'قيد التنفيذ',
+  review:'قيد المراجعة', unknown:'جارٍ التحقق من المورد', completed:'تم التسليم',
+  refunded:'تم إرجاع الرصيد', cancelled:'أُلغي وأُرجع الرصيد', rejected:'مرفوض'
+};
 
-function compactAdminTopupHistory(request,name){
-  const method=String(request.transfer_reference||'').startsWith('card-batch:')?'بطاقات الشحن':
-    request.method==='libyana'?'ليبيانا':request.method==='almadar'?'المدار':request.method||'غير محدد';
-  const createdAt=Date.parse(request.created_at);
-  const date=Number.isFinite(createdAt)?adminTopupDate.format(createdAt):'الوقت غير متاح';
-  const status=Object.hasOwn(adminTopupStatuses,request.status)?request.status:'';
-  const statusLabel=status?adminTopupStatuses[status]:'حالة غير محددة';
-  return '<article class="history-item admin-request compact-topup" data-admin-topup-status="'+status+'">'+
-    '<div class="compact-topup-identity"><b>'+escapeHtml(name||'اسم الحساب غير متاح')+'</b>'+
-    '<bdi>'+adminTopupAmount.format(Number(request.amount||0))+' د.ل</bdi></div>'+
-    '<div class="compact-topup-info"><span class="status '+status+'">'+statusLabel+'</span>'+
-    '<span>'+escapeHtml(method)+'</span><small>'+escapeHtml(date)+'</small></div>'+
-    '<details class="compact-topup-details"><summary>تفاصيل الطلب</summary>'+
-    '<p>رقم المحوّل: <bdi>'+escapeHtml(request.phone||'غير متاح')+'</bdi></p>'+
-    '<p>رقم الطلب: <bdi>'+escapeHtml(request.id)+'</bdi></p></details></article>';
+function compactAdminCode(order){
+  const id=escapeHtml(order.order_id);
+  const state=order.delivery_state;
+  const status=Object.hasOwn(adminCodeStates,state)?adminCodeStates[state]:'بانتظار التنفيذ';
+  const color=state==='completed'?'approved':['refunded','cancelled','rejected'].includes(state)?'rejected':'pending';
+  const createdAt=Date.parse(order.created_at);
+  const date=Number.isFinite(createdAt)?adminCodeDate.format(createdAt):'';
+  const accept=order.can_accept?'<button type="button" class="btn btn-primary" data-code-action="accept" data-id="'+id+'">قبول</button>':'';
+  const cancel=order.can_cancel?'<button type="button" class="btn btn-soft" data-code-action="cancel" data-id="'+id+'">إلغاء وإرجاع الرصيد</button>':'';
+  return '<article class="history-item admin-request compact-topup">'+
+    '<div class="compact-topup-identity"><b>'+escapeHtml(order.product_name||'طلب كود')+'</b><bdi>'+
+    Number(order.total_amount||0).toFixed(2)+' د.ل</bdi></div>'+
+    '<div class="compact-topup-info"><span class="status '+color+'">'+status+'</span><span>'+
+    escapeHtml(order.customer_name||'زبون')+'</span><small>'+escapeHtml(date)+'</small>'+
+    '<bdi>#'+escapeHtml(String(order.order_id).slice(0,8).toUpperCase())+'</bdi></div>'+
+    (accept||cancel?'<div class="admin-request-actions">'+accept+cancel+'</div>':'')+'</article>';
 }
 
-function filterAdminTopups(){
-  const list=$('#adminTopupHistory');
-  const status=$('#adminTopupStatusFilter').value;
-  const rows=Array.from(list.querySelectorAll('[data-admin-topup-status]'));
-  let visible=0;
-  for(const row of rows){
-    row.hidden=!!status&&row.dataset.adminTopupStatus!==status;
-    if(!row.hidden)visible++;
+let adminCodeLoadVersion=0;
+async function loadAdminCodeDeliveries(){
+  const list=$('#adminCodeDeliveries');
+  const version=++adminCodeLoadVersion;
+  const {data,error}=await supabaseClient.rpc('admin_list_code_deliveries');
+  if(version!==adminCodeLoadVersion)return;
+  list.innerHTML=error?'<p class="muted">تعذّر تحميل طلبات الأكواد. جرّب تحديث السجل.</p>':
+    data?.length?data.map(compactAdminCode).join(''):'<p class="muted">لا توجد طلبات أكواد.</p>';
+}
+
+async function reviewAdminCodeDelivery(button){
+  const decision=button.dataset.codeAction;
+  if(decision==='cancel'&&!window.confirm('إلغاء طلب الكود وإرجاع المبلغ إلى محفظة الزبون؟'))return;
+  const actions=Array.from(button.closest('.admin-request-actions').querySelectorAll('button'));
+  actions.forEach(control=>{control.disabled=true});
+  try{
+    const {error}=await supabaseClient.rpc('admin_review_code_delivery',{
+      p_order_id:button.dataset.id,p_decision:decision
+    });
+    if(error){
+      toast(error.message==='code_delivery_state_changed'?'حالة الطلب تغيّرت. راجع الحالة بعد التحديث.':'تعذّر تحديث طلب الكود.');
+    }else{
+      toast(decision==='accept'?'تمت جدولة التنفيذ التلقائي.':'تم إلغاء الطلب وإرجاع المبلغ.');
+    }
+    await loadAdminCodeDeliveries();
+  }finally{
+    actions.forEach(control=>{control.disabled=false});
   }
-  $('#adminTopupFilterEmpty').hidden=!rows.length||visible>0;
 }
 function compactAdminPurchase(x,name){
  const id=escapeHtml(String(x.id));
- const actionable=['paid_pending_fulfillment','approved','processing','fulfilling'].includes(x.status);
+ const actionable=x.roblox_username!=='DIGITAL_CODE'&&['paid_pending_fulfillment','approved','processing','fulfilling'].includes(x.status);
  const state=x.status==='completed'?'approved':['rejected','refunded'].includes(x.status)?'rejected':'pending';
  const username=String(x.roblox_username||'').replace(/^@/,'');
  return '<article class="history-item admin-request compact-topup compact-purchase"><div class="compact-topup-identity"><b>'+escapeHtml(name||'اسم الحساب غير متاح')+'</b>'+
@@ -1369,9 +1389,6 @@ async function loadAdminDashboard(){
     '<p class="muted">لا توجد طلبات شحن.</p>';
   $('#adminTopups').innerHTML=!topups.error&&topupRows.length?
     topupRows.map(row=>compactAdminTopup(row,topupNames.get(row.user_id))).join(''):topupMessage;
-  $('#adminTopupHistory').innerHTML=!topups.error&&topupRows.length?
-    topupRows.map(row=>compactAdminTopupHistory(row,topupNames.get(row.user_id))).join(''):topupMessage;
-  filterAdminTopups();
   if(orders.error)$('#adminPurchases').innerHTML='<p class="muted">تعذر تحميل طلبات الشراء: '+escapeHtml(orders.error.message)+'</p>';
   else $('#adminPurchases').innerHTML=orders.data?.length?orders.data.map(x=>compactAdminPurchase(x,topupNames.get(x.user_id))).join(''):'<p class="muted">لا توجد طلبات شراء.</p>';
   if(productResult.error)$('#adminProducts').innerHTML='<p class="muted">تعذر تحميل المنتجات: '+escapeHtml(productResult.error.message)+'</p>';
@@ -1566,18 +1583,13 @@ $('#adminProductImageRemove')?.addEventListener('click',()=>{
 updateAdminProductPreview();
 $('#openAdminDashboard')?.addEventListener('click',openAdminDashboard);
 $('#refreshAdmin')?.addEventListener('click',loadAdminDashboard);
-$('#adminTopupStatusFilter')?.addEventListener('change',filterAdminTopups);
-$('#adminTopupRefresh')?.addEventListener('click',async event=>{
-  const button=event.currentTarget;
-  button.disabled=true;
-  try{await loadAdminDashboard();}
-  finally{button.disabled=false;}
-});
+$('#adminCodeRefresh')?.addEventListener('click',()=>void loadAdminCodeDeliveries());
 $('#refreshTraffic')?.addEventListener('click',loadStoreTrafficStats);
 $('#saveAdminRobuxStock')?.addEventListener('click',saveAdminRobuxStock);
 $('#cancelAdminProductEdit')?.addEventListener('click',clearAdminProductForm);
 $('#adminProductForm')?.addEventListener('submit',saveAdminProduct);
 $('#adminView')?.addEventListener('click',e=>{
+  const code=e.target.closest('[data-code-action]');if(code){void reviewAdminCodeDelivery(code);return}
   const topup=e.target.closest('[data-topup-action]');if(topup){reviewTopup(topup.dataset.id,topup.dataset.topupAction);return}
   const order=e.target.closest('[data-order-action]');if(order){reviewPurchase(order.dataset.id,order.dataset.orderAction);return}
   const product=e.target.closest('[data-product-edit]');if(product)editAdminProduct(product.dataset.productEdit);

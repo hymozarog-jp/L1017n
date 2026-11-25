@@ -155,6 +155,8 @@
     const heading=page.querySelector('.topup-dedicated-title');
     heading.textContent=method?(isManual()?'تحويل يدوي':'شحن بكود USSD'):'شحن المحفظة';
     page.classList.toggle('libyana-method-active',Boolean(method));
+    page.classList.toggle('libyana-manual-active',method==='manual');
+    page.classList.toggle('libyana-ussd-active',method==='ussd');
     page.classList.toggle('libyana-picker-open',!method);
     page.scrollTop=0;
   }

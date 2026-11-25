@@ -22,12 +22,14 @@
   panel.className='dt-home dt-purple-home';
   panel.dir='rtl';
   panel.innerHTML=
-    '<section class="dt-card dt-topup-methods" aria-labelledby="dtMethodTitle">'+
-      '<h2 id="dtMethodTitle">اختار طريقة شحن ليبيانا</h2>'+
+    '<dialog class="dt-topup-methods" aria-labelledby="dtMethodTitle">'+
+      '<div class="dt-topup-method-heading"><h2 id="dtMethodTitle">اختار طريقة شحن ليبيانا</h2>'+
+        '<button class="dt-topup-method-close" type="button" aria-label="إغلاق طرق الشحن" autofocus>'+svg('close')+'</button>'+
+      '</div>'+
       '<div class="dt-topup-method-options">'+
         '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>شحن بكود USSD</strong><span class="dt-topup-method-badge">تلقائي</span></span><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
         '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>تحويل رصيد</strong><span class="dt-topup-method-badge">يدوي</span></span><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
-      '</div></section>'+
+      '</div></dialog>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
       '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
@@ -151,13 +153,29 @@
     const heading=page.querySelector('.topup-dedicated-title');
     heading.textContent=method?(isManual()?'تحويل يدوي':'شحن بكود USSD'):'شحن المحفظة';
     page.classList.toggle('libyana-method-active',Boolean(method));
+    page.classList.toggle('libyana-picker-open',!method);
     page.scrollTop=0;
   }
+  function openMethodMenu(){
+    if(method||methodMenu.open||!form.closest('#topupDedicatedPage'))return;
+    updateTopupScreen();
+    methodMenu.showModal();
+  }
+  function closeMethodMenu(){
+    methodMenu.close();
+    form.closest('#topupDedicatedPage')?.querySelector('.topup-dedicated-back')?.click();
+  }
+  form.addEventListener('l1017n:topup-open',openMethodMenu);
+  methodMenu.querySelector('.dt-topup-method-close').addEventListener('click',closeMethodMenu);
+  methodMenu.addEventListener('cancel',event=>{
+    event.preventDefault();
+    closeMethodMenu();
+  });
   methodButtons.forEach(button=>button.addEventListener('click',()=>{
     if(busy)return;
     method=button.dataset.topupMethod;
     const manual=isManual();
-    methodMenu.hidden=true;
+    methodMenu.close();
     transferDetails.hidden=false;
     guide.hidden=manual;
     transferTitle.textContent=manual?'بيانات التحويل اليدوي':'بيانات التحويل';
@@ -179,9 +197,8 @@
     const previous=method;
     method=null;
     transferDetails.hidden=true;
-    methodMenu.hidden=false;
     refreshMethodActions();
-    updateTopupScreen();
+    openMethodMenu();
     methodButtons.find(button=>button.dataset.topupMethod===previous)?.focus({preventScroll:true});
   });
   // Preparing a new USSD intent is not a rejection. Keep a visible loading
@@ -417,4 +434,5 @@
   ensurePhones();
   window.addEventListener('l1017n-direct-ready',sync);
   sync();
+  openMethodMenu();
 })();

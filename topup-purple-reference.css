@@ -995,14 +995,75 @@ html,body{
   text-align: start;
 }
 
-#topupDedicatedPage .dt-topup-methods {
+#topupDedicatedPage.libyana-picker-open {
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+#topupDedicatedPage.libyana-picker-open :is(.tp-dedicated-heading, .tp-clean-header) {
+  display: none !important;
+}
+
+#topupDedicatedPage dialog.dt-topup-methods:not([open]) { display: none !important; }
+
+#topupDedicatedPage dialog.dt-topup-methods[open] {
+  position: fixed;
+  inset: auto 0 0;
   display: grid;
   gap: 14px;
-  margin-bottom: 14px;
-  padding: clamp(12px, 3.5vw, 20px);
-  border: 1px solid #6e5c933f;
-  border-radius: 20px;
-  background: linear-gradient(145deg, #201932, #17182b 78%);
+  box-sizing: border-box;
+  width: min(100%, 525px);
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  margin: 0 auto;
+  padding: 18px clamp(14px, 4vw, 22px) calc(20px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid #8673b679;
+  border-bottom: 0;
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(145deg, #241d38, #15182a 80%);
+  color: #f9f5ff;
+  box-shadow: 0 -14px 50px #08071188;
+  animation: libyana-sheet-rise .34s cubic-bezier(.22,.75,.23,1) both;
+}
+
+#topupDedicatedPage dialog.dt-topup-methods::backdrop {
+  background: #080813ac;
+  animation: libyana-sheet-backdrop .25s ease-out both;
+}
+
+#topupDedicatedPage .dt-topup-method-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#topupDedicatedPage .dt-topup-method-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid #cab8e95e;
+  border-radius: 14px;
+  background: #ffffff12;
+  color: #f9f5ff;
+  cursor: pointer;
+}
+
+#topupDedicatedPage .dt-topup-method-close svg { width: 20px; height: 20px; }
+#topupDedicatedPage .dt-topup-method-close:focus-visible { outline: 2px solid #d7bfff; outline-offset: 2px; }
+
+@keyframes libyana-sheet-rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes libyana-sheet-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 #topupDedicatedPage .dt-topup-methods h2 {
@@ -1141,7 +1202,7 @@ html,body{
   animation: libyana-method-enter .32s ease-out both;
 }
 
-#topupDedicatedPage :is(.dt-topup-methods, #dtTransferDetails, .dt-manual-instructions, .dt-purple-guide)[hidden],
+#topupDedicatedPage :is(#dtTransferDetails, .dt-manual-instructions, .dt-purple-guide)[hidden],
 #topupDedicatedPage.libyana-method-active #topupDedicatedCardEntry { display: none !important; }
 
 #topupDedicatedPage .dt-manual-instructions {
@@ -1161,6 +1222,8 @@ html,body{
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #topupDedicatedPage dialog.dt-topup-methods[open],
+  #topupDedicatedPage dialog.dt-topup-methods::backdrop,
   #topupDedicatedPage .dt-topup-method-options button,
   #topupDedicatedPage .dt-topup-method-options button::after,
   #topupDedicatedPage .dt-topup-method-logo,

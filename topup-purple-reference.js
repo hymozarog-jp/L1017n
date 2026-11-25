@@ -15,7 +15,8 @@
     coins:'<ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>',
     check:'<circle cx="12" cy="12" r="9"/><path d="m7.7 12 2.7 2.7 5.9-6"/>',
     copy:'<rect x="7" y="7" width="13" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/>',
-    wallet:'<rect x="3" y="6.5" width="18" height="13.5" rx="3"/><path d="M3.8 8a3 3 0 0 1 3-4h11M16 13h3"/>'
+    wallet:'<rect x="3" y="6.5" width="18" height="13.5" rx="3"/><path d="M3.8 8a3 3 0 0 1 3-4h11M16 13h3"/>',
+    card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>'
   };
   const svg=(name)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icon[name]+'</svg>';
   const panel=document.createElement('section');
@@ -23,12 +24,13 @@
   panel.dir='rtl';
   panel.innerHTML=
     '<dialog class="dt-topup-methods" aria-labelledby="dtMethodTitle">'+
-      '<div class="dt-topup-method-heading"><h2 id="dtMethodTitle">اختار طريقة شحن ليبيانا</h2>'+
+      '<div class="dt-topup-method-heading"><h2 id="dtMethodTitle">اختار طريقة تعبئة المحفظة</h2>'+
         '<button class="dt-topup-method-close" type="button" aria-label="إغلاق طرق الشحن" autofocus>'+svg('close')+'</button>'+
       '</div>'+
       '<div class="dt-topup-method-options">'+
         '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>شحن بكود USSD</strong><span class="dt-topup-method-badge">تلقائي</span></span><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
         '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>تحويل رصيد</strong><span class="dt-topup-method-badge">يدوي</span></span><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
+        '<button type="button" data-topup-method="cards" aria-label="تعبئة بكروت ليبيانا"><span class="dt-topup-card-icon" aria-hidden="true">'+svg('card')+'</span><span><span class="dt-topup-method-label"><strong>تعبئة الكروت</strong><span class="dt-topup-method-badge">كروت</span></span><small>أدخل قيمة الكرت ورقمه السري</small></span></button>'+
       '</div></dialog>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
@@ -173,6 +175,17 @@
   });
   methodButtons.forEach(button=>button.addEventListener('click',()=>{
     if(busy)return;
+    if(button.dataset.topupMethod==='cards'){
+      if(typeof window.openCardTopupPage!=='function'){
+        message('تعبئة الكروت غير جاهزة الآن. حدّث الصفحة وحاول مرة ثانية.','error');
+        return;
+      }
+      methodMenu.close();
+      method=null;
+      form.closest('#topupDedicatedPage')?.querySelector('.topup-dedicated-back')?.click();
+      window.openCardTopupPage();
+      return;
+    }
     method=button.dataset.topupMethod;
     const manual=isManual();
     methodMenu.close();

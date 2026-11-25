@@ -1042,21 +1042,17 @@ html,body{
 }
 
 #topupDedicatedPage .dt-topup-method-options [data-topup-method="ussd"] {
-  --method-accent: #e6c6ff;
-  --method-border: #a87be68a;
-  --method-bg: #32214c;
-  --method-glow: #b26cf450;
-  --method-icon-start: #634094;
-  --method-icon-end: #3b275d;
+  --method-accent: #a8ffc9;
+  --method-border: #5cd48a88;
+  --method-bg: #174135;
+  --method-glow: #3bd67c45;
 }
 
 #topupDedicatedPage .dt-topup-method-options [data-topup-method="manual"] {
-  --method-accent: #a3f9e2;
-  --method-border: #5ad4ab75;
-  --method-bg: #193a3c;
-  --method-glow: #3bd6ae3b;
-  --method-icon-start: #247c6b;
-  --method-icon-end: #1b4a49;
+  --method-accent: #bbdbff;
+  --method-border: #71a9ff90;
+  --method-bg: #1c355a;
+  --method-glow: #4c8fff48;
   animation-delay: .07s;
 }
 
@@ -1080,21 +1076,50 @@ html,body{
 #topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) { transform: scale(.98); }
 #topupDedicatedPage .dt-topup-method-options button:disabled { cursor: wait; }
 
-#topupDedicatedPage .dt-topup-method-options svg {
-  width: 42px;
-  height: 42px;
-  padding: 9px;
+#topupDedicatedPage .dt-topup-method-logo {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
   box-sizing: border-box;
-  border: 1px solid var(--method-border);
+  padding: 3px;
+  border: 1px solid var(--method-accent);
   border-radius: 13px;
-  background: linear-gradient(155deg, var(--method-icon-start), var(--method-icon-end));
-  color: var(--method-accent);
-  box-shadow: inset 0 1px 0 #ffffff1c;
+  background: #fff;
+  color: #174135;
+  font-size: .75rem;
+  overflow: hidden;
   transition: transform .26s ease;
 }
 
-#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) svg {
+#topupDedicatedPage .dt-topup-method-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 9px;
+}
+
+#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) .dt-topup-method-logo {
   transform: rotate(-5deg);
+}
+
+#topupDedicatedPage .dt-topup-method-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+#topupDedicatedPage .dt-topup-method-badge {
+  padding: 2px 8px;
+  color: var(--method-accent);
+  background: var(--method-bg);
+  border: 1px solid var(--method-border);
+  border-radius: 999px;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 #topupDedicatedPage .dt-topup-method-options strong {
@@ -1122,10 +1147,10 @@ html,body{
 #topupDedicatedPage .dt-manual-instructions {
   margin: 0;
   padding: 10px 12px;
-  border: 1px solid #5ad4ab75;
+  border: 1px solid #71a9ff90;
   border-radius: 12px;
-  background: #1d363c;
-  color: #d7fff3;
+  background: #1c355a;
+  color: #e3efff;
   font-size: .875rem;
   line-height: 1.6;
 }
@@ -1138,7 +1163,7 @@ html,body{
 @media (prefers-reduced-motion: reduce) {
   #topupDedicatedPage .dt-topup-method-options button,
   #topupDedicatedPage .dt-topup-method-options button::after,
-  #topupDedicatedPage .dt-topup-method-options svg,
+  #topupDedicatedPage .dt-topup-method-logo,
   #topupDedicatedPage #dtTransferDetails:not([hidden]) {
     animation: none;
     transition: none;

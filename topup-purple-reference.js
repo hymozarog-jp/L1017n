@@ -25,8 +25,8 @@
     '<section class="dt-card dt-topup-methods" aria-labelledby="dtMethodTitle">'+
       '<h2 id="dtMethodTitle">اختار طريقة شحن ليبيانا</h2>'+
       '<div class="dt-topup-method-options">'+
-        '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails">'+svg('numbers')+'<span><strong>شحن بكود USSD</strong><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
-        '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails">'+svg('exchange')+'<span><strong>تحويل يدوي</strong><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
+        '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>شحن بكود USSD</strong><span class="dt-topup-method-badge">تلقائي</span></span><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
+        '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>تحويل رصيد</strong><span class="dt-topup-method-badge">يدوي</span></span><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
       '</div></section>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
@@ -49,6 +49,14 @@
       '</ol>'+
       '<p class="dt-recharge-hint">'+svg('check')+'<span>لو تأخّر التأكيد، ما تعاودش التحويل. تابع حالة الطلب في المحفظة.</span></p>'+
     '</section></div>';
+  const walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
+  if(walletLogo){
+    for(const slot of panel.querySelectorAll('.dt-topup-method-logo')){
+      const logo=walletLogo.cloneNode(false);
+      logo.alt='';
+      slot.replaceChildren(logo);
+    }
+  }
   form.appendChild(panel);
   form.classList.add('dt-enabled');
   for(const child of form.children){

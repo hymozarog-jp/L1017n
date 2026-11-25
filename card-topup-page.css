@@ -48,11 +48,156 @@ body.card-topup-open{overflow:hidden!important}
 #cardTopupPage .ct-go-wallet{display:block;width:100%;min-height:44px;margin-top:12px;border:1px solid #526b7b;border-radius:12px;background:#162b3d;color:#d1e6f1;font:800 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
 #cardTopupPage .ct-share-fallback{display:block;width:100%;background:#0c1e2b;border:1px solid #50726d;border-radius:12px;padding:12px;color:#f4fbff;font:12px monospace;direction:rtl;margin-top:12px}
 #cardTopupPage .ct-share-fallback[hidden]{display:none!important}
-#walletView .wallet-card-topup-entry{width:calc(100% - 16px);max-width:680px;margin:6px 8px 16px;display:flex;gap:13px;align-items:center;text-align:right;min-height:60px;padding:11px 16px;border:1px solid #6376a688;border-radius:17px;background:linear-gradient(115deg,#25345b,#132640);color:#eff4ff;font:800 13px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
-#walletView .wallet-card-topup-entry .ct-wallet-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;background:#6c74bf45;border:1px solid #b1b1ff4a;border-radius:12px;color:#d3d6ff}
-#walletView .wallet-card-topup-entry small{display:block;margin-top:3px;color:#abbdd9;font-size:10px;font-weight:600}
-#walletView .wallet-card-topup-entry .ct-wallet-arrow{margin-inline-start:auto;color:#b6d3e8;font-size:21px}
-#topupDedicatedPage #topupDedicatedCardEntry{padding:11px 14px;border:1px solid #728fb48a;border-radius:12px;background:#21364b;color:#ecf4ff;font:800 12px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer}
 #topupDedicatedPage .tp-dedicated-heading{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 @media(max-width:380px){#cardTopupPage{padding-inline:10px}#cardTopupPage .ct-card{padding:14px 12px}}
 @media(prefers-reduced-motion:reduce){#cardTopupPage *,#cardTopupPage *::before,#cardTopupPage *::after{animation:none!important;transition:none!important}}
+
+/* Card top-up page polish */
+#cardTopupPage{
+  --ct-accent:#b58aff;--ct-accent-2:#8b5cf6;--ct-green:#79e0b5;
+  background:
+    radial-gradient(ellipse at 88% 4%,#803de232 0,transparent 35%),
+    radial-gradient(ellipse at 4% 46%,#28469a30 0,transparent 42%),
+    linear-gradient(180deg,#0b0c18 0%,#101022 52%,#0a101b 100%);
+  padding:calc(12px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom));
+}
+#cardTopupPage .ct-shell{max-width:560px;padding-bottom:10px}
+#cardTopupPage .ct-head{
+  position:relative;display:flex;align-items:center;gap:11px;margin:0 0 18px;padding:5px 2px 14px;
+  border-bottom:1px solid #a88aff24;color:#c9c2dd;letter-spacing:.02em
+}
+#cardTopupPage .ct-back{
+  width:46px;height:46px;flex:0 0 46px;border:1px solid #b99aff55;border-radius:16px;
+  background:linear-gradient(145deg,#3a2659,#211a38);color:#fff;font-size:27px;
+  box-shadow:0 5px 20px #7b45cc28;transition:transform .18s ease,background .18s ease
+}
+#cardTopupPage .ct-back:active{transform:scale(.94)}
+#cardTopupPage .ct-safe{
+  padding:7px 10px;border-radius:99px;background:#15372f;border:1px solid #56c89b70;
+  color:#a5f4d2;font-size:10px;white-space:nowrap
+}
+#cardTopupPage .ct-hero{
+  position:relative;overflow:hidden;text-align:center;margin:0 0 16px;padding:20px 17px 18px;
+  border:1px solid #a67bdf70;border-radius:25px;
+  background:linear-gradient(145deg,#25183e 0%,#17192f 60%,#142337 100%);
+  box-shadow:inset 0 1px #ffffff12,0 14px 34px #0005
+}
+#cardTopupPage .ct-hero:before{
+  content:"";position:absolute;width:180px;height:180px;border-radius:50%;top:-118px;right:-36px;
+  background:#ad6cff24;filter:blur(5px);pointer-events:none
+}
+#cardTopupPage .ct-hero-art{
+  position:relative;width:72px;height:72px;margin:0 auto 11px;border-radius:22px;
+  color:#ecd8ff;background:linear-gradient(145deg,#a54cf0,#542cb7 62%,#283d8c);
+  border:1px solid #e8c7ff80;box-shadow:0 8px 24px #8f4dde66,inset 0 1px #ffffff55;
+  animation:ctFloat 3.2s ease-in-out infinite
+}
+#cardTopupPage .ct-hero-art svg{width:43px;height:43px;filter:drop-shadow(0 2px 5px #20113b)}
+#cardTopupPage .ct-current-step{
+  position:relative;border:1px solid #c49bff66;background:#4b317544;color:#e0caff;
+  border-radius:99px;padding:6px 11px;font-size:10px
+}
+#cardTopupPage h1{position:relative;font-size:clamp(23px,6vw,29px);line-height:1.35;margin:11px 0 7px}
+#cardTopupPage .ct-hero p{position:relative;max-width:400px;color:#c4bfd4;font-size:12px;line-height:1.8}
+#cardTopupPage .ct-top-alert{
+  display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;padding:12px 13px;
+  border:1px solid #d4a44365;border-radius:16px;background:linear-gradient(120deg,#332619,#241d22);
+  color:#f6dfb1;box-shadow:0 7px 20px #0003
+}
+#cardTopupPage .ct-alert-icon{
+  display:grid;place-items:center;flex:0 0 25px;height:25px;border-radius:50%;
+  background:#f0b847;color:#291d09;font:bold 15px Arial
+}
+#cardTopupPage .ct-top-alert p{margin:0;font-size:11px;line-height:1.85}
+#cardTopupPage .ct-top-alert strong{display:block;color:#ffe5a9;font-size:12px;margin-bottom:2px}
+#cardTopupPage .ct-entry{
+  padding:13px;border:1px solid #66549b;border-radius:23px;
+  background:linear-gradient(155deg,#17172c,#121929 80%);
+  box-shadow:0 14px 32px #0004,inset 0 1px #ffffff0c
+}
+#cardTopupPage .ct-list{gap:12px}
+#cardTopupPage .ct-card{
+  position:relative;overflow:hidden;border:1px solid #725ca5;border-radius:19px;padding:14px;
+  background:linear-gradient(145deg,#211936,#171b31 68%,#14243a);
+  box-shadow:0 8px 21px #0003,inset 0 1px #ffffff0c;
+  animation:ctRise .28s ease both
+}
+#cardTopupPage .ct-card:before{
+  content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,#54dcaf,#bd87ff,#ffd276);opacity:.9
+}
+#cardTopupPage .ct-card-head{margin:3px 0 13px;color:#f5efff;font-size:13px}
+#cardTopupPage .ct-card-count{display:flex;align-items:center;gap:8px}
+#cardTopupPage .ct-card-count:before{
+  content:"";width:8px;height:8px;border-radius:50%;background:var(--ct-green);box-shadow:0 0 10px #79e0b5a0
+}
+#cardTopupPage .ct-remove-card{
+  border-radius:10px;padding:7px 11px;background:#472430;color:#ffc5ce;border-color:#b9556a70
+}
+#cardTopupPage .ct-amount-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;color:#f0eaff;font-size:12px;font-weight:800}
+#cardTopupPage .ct-amount-heading small{color:#aaa2bf;font-size:10px;font-weight:500}
+#cardTopupPage .ct-preset-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+#cardTopupPage .ct-preset{
+  min-height:48px;display:flex;align-items:center;justify-content:center;gap:5px;
+  border:1px solid #66538e;border-radius:13px;background:#221b39;color:#e9dcff;
+  font:800 13px 'IBM Plex Sans Arabic',Tahoma,sans-serif;cursor:pointer;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease
+}
+#cardTopupPage .ct-preset small{font-size:9px;color:#b8a9d3}
+#cardTopupPage .ct-preset.selected{
+  border-color:#79e0b5;background:linear-gradient(145deg,#14503e,#183d3b);
+  color:#d5ffed;box-shadow:0 0 0 2px #79e0b526,0 5px 16px #59cda22b
+}
+#cardTopupPage .ct-preset:active{transform:scale(.96)}
+#cardTopupPage label{color:#e5dff2;font-size:11px;margin-top:13px}
+#cardTopupPage .ct-card-code,#cardTopupPage .ct-card-amount{
+  min-height:50px;margin-top:7px;border:1px solid #52496d;border-radius:13px;
+  background:#0e1020;box-shadow:inset 0 1px 5px #0005;transition:border-color .18s ease,box-shadow .18s ease
+}
+#cardTopupPage .ct-card-code{letter-spacing:.12em}
+#cardTopupPage input:focus{border-color:#bd94ff;box-shadow:0 0 0 3px #a978ff28, inset 0 1px 5px #0005}
+#cardTopupPage .ct-code-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+#cardTopupPage .ct-code-tools small{color:#9290a6;font-size:9px}
+#cardTopupPage .ct-reveal{color:#c9aaff}
+#cardTopupPage .ct-add{
+  min-height:47px;margin-top:12px;border:1px dashed #9a7bd2;border-radius:13px;
+  background:#34254b55;color:#e0caff;transition:background .18s ease,transform .18s ease
+}
+#cardTopupPage .ct-add:active{transform:scale(.985);background:#513a70}
+#cardTopupPage .ct-summary{gap:9px;margin:13px 0 9px}
+#cardTopupPage .ct-summary>div{
+  border:1px solid #7861aa;border-radius:15px;padding:12px;background:linear-gradient(145deg,#28203f,#191d32)
+}
+#cardTopupPage .ct-summary>div:last-child{border-color:#4d927f;background:linear-gradient(145deg,#15382f,#172b32)}
+#cardTopupPage .ct-summary small{color:#b9aecb;font-size:10px}
+#cardTopupPage .ct-summary>div:last-child small{color:#a8d9c6}
+#cardTopupPage .ct-summary strong{font-size:17px}
+#cardTopupPage .ct-warning{
+  margin:12px 0;padding:11px 12px;border:1px solid #906b3e66;border-radius:13px;
+  background:#30251d;color:#e8cea5;font-size:10px;line-height:1.8
+}
+#cardTopupPage .ct-submit{
+  min-height:54px;border:1px solid #d7b6ff;border-radius:15px;
+  background:linear-gradient(105deg,#9a4eea,#7049da 55%,#4d63d8);
+  box-shadow:0 8px 23px #7c4bd858,inset 0 1px #ffffff44;
+  transition:transform .16s ease,filter .16s ease,box-shadow .16s ease
+}
+#cardTopupPage .ct-submit:not(:disabled):active{transform:scale(.985);filter:brightness(1.1)}
+#cardTopupPage .ct-status{font-size:11px;color:#a9f0d3}
+#cardTopupPage .ct-status[data-error="true"]{color:#ffb6bc}
+#cardTopupPage .ct-success{border-color:#58c9a2;background:linear-gradient(145deg,#153c35,#17263a);box-shadow:0 12px 30px #0004}
+#cardTopupPage .ct-ok-icon{box-shadow:0 6px 22px #1db98b55}
+@keyframes ctFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes ctRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:390px){
+ #cardTopupPage{padding-inline:10px}
+ #cardTopupPage .ct-entry{padding:10px}
+ #cardTopupPage .ct-card{padding:13px 11px}
+ #cardTopupPage .ct-preset-grid{gap:6px}
+ #cardTopupPage .ct-preset{min-height:44px;font-size:12px}
+ #cardTopupPage .ct-amount-heading{align-items:flex-start;flex-direction:column;gap:3px}
+}
+@media(prefers-reduced-motion:reduce){
+ #cardTopupPage .ct-hero-art,#cardTopupPage .ct-card{animation:none!important}
+ #cardTopupPage button{transition:none!important}
+}

@@ -66,6 +66,14 @@
    const card=cardByName(name);
    if(card)card.dataset.primarySelected=String(selected[name]===true);
   });
+  const topup=document.getElementById("walletActionTopup");
+  if(topup){
+   const madar=getSelected()==="madar";
+   const label=topup.querySelector("b");
+   if(label)label.textContent=madar?"شحن المدار":"شحن";
+   topup.setAttribute("aria-label",madar?"شحن محفظة المدار":"شحن محفظة ليبيانا");
+   topup.title=madar?"شحن محفظة المدار":"شحن محفظة ليبيانا";
+  }
   const action=document.getElementById("walletActionPrimary");
   if(action){
    action.disabled=saving;

@@ -611,6 +611,12 @@ document.addEventListener('click',async function(e){
 (function(){
 function openDedicatedTopup(e){
   if(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}
+  var selectedWallet=window.L1017nPrimaryWallets?.getSelected?.();
+  if(selectedWallet==='madar'){
+    if(typeof window.openMadarTopup==='function')window.openMadarTopup();
+    else if(typeof window.toast==='function')window.toast('شحن المدار غير متوفر حاليًا');
+    return;
+  }
   var form=document.getElementById('topupForm');
   if(!form)return;
   var page=document.getElementById('topupDedicatedPage');
@@ -968,7 +974,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 <link rel="stylesheet" href="orders-product-art.css?v=libyana-drawn-phone-20261103">
 <link rel="stylesheet" href="wallet-credit-drop.css?v=credit-polish-20261108">
 <script src="wallet-luxe.js?v=arrival-verify-20261108&two-primary-wallets-1&balance-dialog=1" defer></script>
-<script src="wallet-primary-toggle.js?v=checkout-wallet-1" defer></script>
+<script src="wallet-primary-toggle.js?v=checkout-wallet-20261125-1" defer></script>
 <script src="wallet-credit-drop.js?v=arrival-verify-20261108&credit-polish-20261108" defer></script>
 <script src="game-bestsellers.js?v=popular10-games-cards-20261120-2" defer></script>
 <style>

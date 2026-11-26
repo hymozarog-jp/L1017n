@@ -631,6 +631,7 @@ function openPasswordRecovery(){
     document.body.appendChild(modal);
     $('#passwordRecoveryForm').addEventListener('submit',async e=>{
       e.preventDefault();
+      if($('#saveRecoveryPassword').disabled)return;
       const password=$('#recoveryPassword').value;
       const confirm=$('#recoveryPasswordConfirm').value;
       const status=$('#passwordRecoveryStatus');
@@ -1001,7 +1002,112 @@ $('#authModeLogin')?.addEventListener('click',()=>{authMode='login';$('#authMode
 $('#authModeSignup')?.addEventListener('click',()=>{authMode='signup';$('#authModeSignup').classList.add('active');$('#authModeLogin').classList.remove('active');$('#authSubmit').textContent='إنشاء حساب';$('#authPassword').autocomplete='new-password';setEmailSignupFields();});
 setEmailSignupFields();
 $('#authAlternate')?.addEventListener('click',()=>$('#authMode'+(authMode==='signup'?'Login':'Signup'))?.click());
-$('#forgotPassword')?.addEventListener('click',async()=>{const email=$('#authEmail').value.trim();if(!email){toast('اكتب بريدك الإلكتروني أولاً');$('#authEmail').focus();return}const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:new URL('./', window.location.href).href});if(error)toast('تعذر إرسال رابط تغيير كلمة المرور: '+error.message);else toast('لو البريد مسجل، بنرسلوله رابط تغيير كلمة المرور.');});
+function openRecoveryCodeDialog(){
+ let dialog=$('#passwordRecoveryCodeDialog');
+ if(!dialog){
+   dialog=document.createElement('dialog');
+   dialog.id='passwordRecoveryCodeDialog';
+   dialog.dir='rtl';
+   dialog.setAttribute('aria-labelledby','passwordRecoveryCodeTitle');
+   dialog.innerHTML=`
+     <form id="recoveryEmailForm" class="topup-form">
+       <h2 id="passwordRecoveryCodeTitle">استعادة كلمة المرور</h2>
+       <label for="recoveryEmail">البريد الإلكتروني</label>
+       <input id="recoveryEmail" type="email" dir="ltr" autocomplete="email" required>
+       <button class="btn btn-primary full-width" type="submit">أرسل رمز التحقق</button>
+     </form>
+     <form id="recoveryCodeForm" class="topup-form" hidden>
+       <label for="recoveryEmailCode">الرمز اللي وصلك بالإيميل</label>
+       <input id="recoveryEmailCode" type="text" dir="ltr" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
+       <button class="btn btn-primary full-width" type="submit">تحقّق من الرمز</button>
+     </form>
+     <p id="recoveryCodeStatus" class="form-note" role="status"></p>
+     <button type="button" class="text-button" data-recovery-close>إغلاق</button>`;
+   document.body.appendChild(dialog);
+   const sendForm=dialog.querySelector('#recoveryEmailForm');
+   const verifyForm=dialog.querySelector('#recoveryCodeForm');
+   const email=dialog.querySelector('#recoveryEmail');
+   const code=dialog.querySelector('#recoveryEmailCode');
+   const status=dialog.querySelector('#recoveryCodeStatus');
+   const send=sendForm.querySelector('button');
+   const verify=verifyForm.querySelector('button');
+   const close=dialog.querySelector('[data-recovery-close]');
+   let requestedEmail='';
+   let busy=false;
+
+   function setBusy(value){
+     busy=value;
+     email.readOnly=value;
+     code.readOnly=value;
+     send.disabled=value;
+     verify.disabled=value;
+     close.disabled=value;
+   }
+
+   function clearCode(){
+     requestedEmail='';
+     code.value='';
+     verifyForm.hidden=true;
+     send.textContent='أرسل رمز التحقق';
+     status.textContent='';
+   }
+
+   close.addEventListener('click',()=>dialog.close());
+   dialog.addEventListener('cancel',event=>{if(busy)event.preventDefault();});
+   dialog.addEventListener('close',clearCode);
+   email.addEventListener('input',clearCode);
+
+   sendForm.addEventListener('submit',async event=>{
+     event.preventDefault();
+     if(busy)return;
+     const address=email.value.trim();
+     setBusy(true);
+     status.textContent='جارٍ إرسال رسالة الاستعادة…';
+     try{
+       const {error}=await supabaseClient.auth.resetPasswordForEmail(address,{
+         redirectTo:new URL('./',window.location.href).href
+       });
+       if(error)throw error;
+       requestedEmail=address;
+       code.value='';
+       verifyForm.hidden=false;
+       send.textContent='أعد إرسال الرمز';
+       status.textContent='راجع بريدك، بما فيه الرسائل المزعجة. لو وصلتك رسالة فيها رابط استعادة، تقدر تفتحه أيضًا.';
+       code.focus();
+     }catch(error){
+       status.textContent=error?.status===429?'استنَ دقيقة قبل طلب رمز جديد.':'تعذر إرسال رسالة الاستعادة. حاول بعد شوية.';
+     }finally{setBusy(false);}
+   });
+
+   verifyForm.addEventListener('submit',async event=>{
+     event.preventDefault();
+     if(busy||!requestedEmail||email.value.trim()!==requestedEmail)return;
+     const token=code.value.trim().replace(/[٠-٩۰-۹]/g,d=>String(d.charCodeAt(0)-(d<='٩'?0x660:0x6f0)));
+     if(!/^\d{6,10}$/.test(token)){
+       status.textContent='اكتب الأرقام اللي وصلتك في رسالة الاستعادة.';
+       code.focus();
+       return;
+     }
+     setBusy(true);
+     status.textContent='جارٍ التحقق من الرمز…';
+     try{
+       const {data,error}=await supabaseClient.auth.verifyOtp({email:requestedEmail,token,type:'recovery'});
+       if(error)throw error;
+       if(!data?.session)throw Error('Missing recovery session');
+       dialog.close();
+       openPasswordRecovery();
+       $('#recoveryPassword')?.focus();
+     }catch(error){
+       status.textContent=error?.code==='otp_expired'?'الرمز غير صحيح أو انتهت صلاحيته. اطلب رمزًا جديدًا.':
+         error?.status===429?'محاولات كثيرة. حاول بعد شوية.':'تعذر التحقق من الرمز. راجعه وحاول مرة ثانية.';
+     }finally{setBusy(false);}
+   });
+ }
+ if(dialog.open)return;
+ dialog.querySelector('#recoveryEmail').value=$('#authEmail').value.trim();
+ dialog.showModal();
+}
+$('#forgotPassword')?.addEventListener('click',openRecoveryCodeDialog);
 $('#authForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const status=$('#authStatus'),say=msg=>{if(status)status.textContent=msg;toast(msg)};

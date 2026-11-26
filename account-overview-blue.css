@@ -234,7 +234,7 @@
   font-size: 24px;
   text-align: center;
 }
-#accountView #accountModern .account-contact-options > .account-whatsapp-row:not([hidden]) {
+#accountView #accountModern .account-contact-options > a.account-whatsapp-row:not([hidden]):not(.hidden) {
   width: calc(100% - 20px);
   margin: 10px 10px 4px;
   border-radius: 13px;

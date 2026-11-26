@@ -1,0 +1,133 @@
+/* Signed-in account overview. The existing guest form and data renderers stay independent. */
+#accountView .account-panel:has(> #accountModern:not(.hidden)) {
+  padding: clamp(10px, 3vw, 20px) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+#accountModern .account-overview-title {
+  margin: 0 0 16px;
+  text-align: center;
+  color: #e9f3ff;
+  font-size: 1.25rem;
+}
+#accountView #accountModern .account-id-card {
+  --account-cover-height: 112px;
+  margin: 0 0 24px !important;
+  padding: 0 clamp(10px, 3vw, 18px) 15px !important;
+  border: 1px solid #38689d !important;
+  border-radius: 24px !important;
+  background: linear-gradient(165deg, #132c53, #0d2243 66%, #0b1937) !important;
+  box-shadow: 0 12px 32px #050a1c81, 0 0 24px #215eaa25 !important;
+}
+#accountView #accountModern .account-id-card::before {
+  inset: 0 0 auto !important;
+  width: 100% !important;
+  height: var(--account-cover-height) !important;
+  transform: none !important;
+  animation: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: repeating-radial-gradient(ellipse at 8% 120%, #b1d7ff1f 0 13px, transparent 14px 43px),
+              linear-gradient(115deg, #19428d, #2474bc 60%, #428ae0) !important;
+}
+#accountView #accountModern .account-id-card::after { content: none !important; }
+#accountView #accountModern .account-edit-name {
+  width: 44px !important;
+  height: 44px !important;
+  inset: 12px auto auto 12px !important;
+  border-radius: 50% !important;
+  border-color: #b4daff75 !important;
+  background: #0c347a86 !important;
+  color: #fff !important;
+}
+#accountModern .account-edit-name svg,
+#accountModern .account-overview-orders svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#accountView #accountModern .account-id-top { gap: 8px !important; }
+#accountView #accountModern .account-id-portrait {
+  width: 94px;
+  height: 94px;
+  margin: calc(var(--account-cover-height) - 47px) auto 0;
+}
+#accountView #accountModern .account-id-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  box-sizing: border-box;
+  border: 4px solid #102749 !important;
+  background: linear-gradient(140deg, #214b98, #2d6acd) !important;
+  box-shadow: 0 4px 16px #070f2a78 !important;
+  color: #fff !important;
+  font-size: 2.3rem !important;
+  animation: none !important;
+}
+#accountView #accountModern .account-google-badge { width: 28px; height: 28px; font-size: 17px; }
+#accountView #accountModern .account-id-details { gap: 2px !important; }
+#accountView #accountModern .account-id-details strong { font-size: clamp(20px, 5vw, 27px) !important; }
+#accountView #accountModern .account-id-reference {
+  display: flex !important;
+  width: auto !important;
+  gap: 4px;
+  margin: 3px 0 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+#accountView #accountModern :is(.account-id-label, .account-id-reference-icon) { display: none !important; }
+#accountView #accountModern #accountModernId { color: #c0d3ec; font: 500 .88rem system-ui, sans-serif; }
+#accountView #accountModern #accountCopyId { background: transparent; color: #adc9f1; min-width: 44px; min-height: 44px; }
+#accountView #accountModern .account-balance-summary {
+  position: relative;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: clamp(5px, 2vw, 11px) !important;
+  margin: 0 !important;
+}
+#accountView #accountModern .account-balance-tile {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px !important;
+  min-height: 104px !important;
+  padding: 8px 2px !important;
+  border: 1px solid #335888 !important;
+  border-radius: 15px !important;
+  background: #0e2346 !important;
+  color: #eff6ff;
+  box-shadow: none !important;
+}
+#accountView #accountModern .account-balance-icon {
+  width: 28px !important;
+  height: 28px !important;
+  background: none !important;
+  color: #79bdff !important;
+}
+#accountView #accountModern .account-balance-icon svg { width: 23px; height: 23px; }
+#accountView #accountModern .account-balance-details { text-align: center; }
+#accountView #accountModern .account-balance-details strong {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  font-size: clamp(11px, 3.5vw, 16px) !important;
+  overflow-wrap: anywhere; white-space: normal !important;
+}
+#accountView #accountModern .account-balance-details span { color: #bfd4f2; font-size: clamp(10px, 3.1vw, 13px) !important; }
+#accountView #accountModern .account-overview-orders { cursor: pointer; }
+#accountView #accountModern .account-settings-list {
+  background: linear-gradient(160deg, #12274a, #101c37) !important;
+  border-color: #365887 !important;
+}
+#accountView #accountModern .account-settings-list > button:not([hidden]):not(.hidden) {
+  border-bottom-color: #304a70 !important;
+}
+#accountView #accountModern button:focus-visible {
+  outline: 2px solid #a5d8ff !important;
+  outline-offset: 2px;
+}

@@ -150,3 +150,100 @@
   outline: 2px solid #a5d8ff !important;
   outline-offset: 2px;
 }
+
+/* Settings rows echo the blue profile card with inset dividers and distinct icons. */
+#accountView #accountModern .account-group-title {
+  margin: 22px 6px 9px;
+  color: #b4c7e5;
+  font-weight: 650;
+}
+#accountView #accountModern .account-settings-list {
+  overflow: hidden;
+  border: 1px solid #34527f !important;
+  border-radius: 15px;
+  background: linear-gradient(155deg, #101e3b, #101a34) !important;
+}
+#accountView #accountModern .account-settings-list > :is(button, a):not([hidden]):not(.hidden) {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 9px 14px;
+  box-sizing: border-box;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent;
+  color: #f3f7ff;
+  text-align: right;
+  text-decoration: none;
+}
+#accountView #accountModern .account-settings-list > :is(button, a):not([hidden]):not(.hidden):has(~ :is(button, a):not([hidden]):not(.hidden))::after {
+  content: "";
+  position: absolute;
+  inset-inline: 65px 15px;
+  bottom: 0;
+  height: 1px;
+  background: #7797c640;
+  pointer-events: none;
+}
+#accountView #accountModern .account-settings-list > :is(button, a)[hidden],
+#accountView #accountModern .account-settings-list > :is(button, a).hidden {
+  display: none !important;
+}
+#accountView #accountModern .account-settings-list > :is(button, a):active {
+  background-color: #9dcfff13;
+}
+#accountView #accountModern .account-settings-list .account-row-icon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: #368cff20;
+  color: #78baff;
+}
+#accountView #accountModern .account-settings-list .account-row-icon svg {
+  width: 22px;
+  height: 22px;
+}
+#accountView #accountModern .account-settings-list :is(.account-icon-verify, .account-icon-ranking-privacy, .account-icon-history) {
+  background: #fbb45b22;
+  color: #ffc375;
+}
+#accountView #accountModern .account-settings-list :is(.account-favorites-icon, .account-help-icon) {
+  background: #38cd9620;
+  color: #6ce5b4;
+}
+#accountView #accountModern .account-settings-list .account-core-copy,
+#accountView #accountModern .account-settings-list .account-contact-text {
+  flex: 1;
+  min-width: 0;
+}
+#accountView #accountModern .account-settings-list b {
+  font-size: clamp(.85rem, 3.7vw, 1rem);
+  font-weight: 700;
+}
+#accountView #accountModern .account-settings-list small {
+  display: none;
+}
+#accountView #accountModern .account-settings-list .account-row-arrow {
+  flex: 0 0 15px;
+  color: #a4b9db;
+  font-size: 24px;
+  text-align: center;
+}
+#accountView #accountModern .account-contact-options > .account-whatsapp-row:not([hidden]) {
+  width: calc(100% - 20px);
+  margin: 10px 10px 4px;
+  border-radius: 13px;
+  background: linear-gradient(120deg, #12854c, #0b6d3f);
+}
+#accountView #accountModern .account-whatsapp-row .account-row-icon {
+  color: #fff;
+  background: #ffffff26;
+}
+#accountView #accountModern .account-whatsapp-row .account-row-arrow { color: #fff; }
+#accountView #accountModern .account-contact-options > .account-whatsapp-row::after { display: none; }
+#accountView #accountModern .account-settings-list > :focus-visible { outline-offset: -3px; }

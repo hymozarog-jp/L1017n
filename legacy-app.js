@@ -987,7 +987,15 @@ let authMode='login';
 function setEmailSignupFields(){
  const signup=authMode==='signup';
  const group=$('#authPublicProfileSignup');
- if(group){group.classList.toggle('hidden',!signup);const name=$('#authPublicName');if(name)name.required=signup;}
+ if(group){
+   group.classList.toggle('hidden',!signup);
+   const name=$('#authPublicName');
+   if(name)name.disabled=!signup;
+ }
+ const reset=$('#forgotPassword');
+ if(reset)reset.hidden=signup;
+ const status=$('#authStatus');
+ if(status)status.textContent='';
 }
 $('#authModeLogin')?.addEventListener('click',()=>{authMode='login';$('#authModeLogin').classList.add('active');$('#authModeSignup').classList.remove('active');$('#authSubmit').textContent='تسجيل الدخول';$('#authPassword').autocomplete='current-password';setEmailSignupFields();});
 $('#authModeSignup')?.addEventListener('click',()=>{authMode='signup';$('#authModeSignup').classList.add('active');$('#authModeLogin').classList.remove('active');$('#authSubmit').textContent='إنشاء حساب';$('#authPassword').autocomplete='new-password';setEmailSignupFields();});
@@ -997,21 +1005,23 @@ $('#forgotPassword')?.addEventListener('click',async()=>{const email=$('#authEma
 $('#authForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const status=$('#authStatus'),say=msg=>{if(status)status.textContent=msg;toast(msg)};
+ const submit=$('#authSubmit');
+ if(submit.disabled)return;
+ const signingUp=authMode==='signup';
  const email=$('#authEmail').value.trim(),password=$('#authPassword').value;
- const phone=normalizeStorePhoneInput($('#authPhone')?.value);
  if(!email){say('اكتب بريدك الإلكتروني أولاً.');$('#authEmail').focus();return}
- if(!phone){say('رقم الهاتف مطلوب، مثال: 09xxxxxxxx.');$('#authPhone')?.focus();return}
- if(password.length<6){say('كلمة المرور لازم تكون 6 أحرف على الأقل.');$('#authPassword').focus();return}
- const submit=$('#authSubmit');submit.disabled=true;submit.textContent='جاري الاتصال…';
- say('جاري الاتصال بخدمة تسجيل الدخول…');
+ if(signingUp&&password.length<6){say('كلمة المرور لازم تكون 6 أحرف على الأقل.');$('#authPassword').focus();return}
+ submit.disabled=true;
+ submit.textContent=signingUp?'جارٍ إنشاء الحساب…':'جارٍ تسجيل الدخول…';
+ if(status)status.textContent='';
  try{
-   if(authMode==='signup'){
+   if(signingUp){
      const profileName=String($('#authPublicName')?.value||'').trim().replace(/\s+/g,' ');
-     if(profileName.length<2||profileName.length>40)throw Error('اكتب اسمًا للمتجر من حرفين إلى 40 حرفًا.');
+     if(profileName&&(profileName.length<2||profileName.length>40))throw Error('اكتب اسمًا للمتجر من حرفين إلى 40 حرفًا.');
      const sharePublic=$('#authPublicIdentity')?.checked===true;
      const {data,error}=await supabaseClient.auth.signUp({
        email,password,options:{
-        data:{store_phone:phone,full_name:profileName,share_public_profile:sharePublic},
+        data:{...(profileName?{full_name:profileName}:{}),share_public_profile:sharePublic},
         emailRedirectTo:(()=>{
           const url=new URL('./',window.location.href);
           let referral=new URL(window.location.href).searchParams.get('ref');
@@ -1028,37 +1038,26 @@ $('#authForm').addEventListener('submit',async e=>{
      });
      if(error)throw error;
      if(data.session){
-       const {data:w,error:checkError}=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',data.user.id).maybeSingle();
-       if(checkError||w?.libyana_phone!==phone){await supabaseClient.auth.signOut();throw Error('تعذر حفظ رقم الهاتف. لا يمكن إنشاء حساب بدون رقم مسجل.')}
-       say('تم إنشاء الحساب وربط رقم الهاتف وتسجيل الدخول.');
+       say('تم إنشاء الحساب وتسجيل الدخول.');
        await renderAccount();await renderWallet();
-     }else say('تم إرسال تأكيد البريد. رقم الهاتف يُحجز للحساب عند إنشائه، ولا يجوز استخدامه في حساب آخر.');
+     }else say('راجع بريدك لتأكيد الحساب إذا وصلك رابط. لو عندك حساب، سجّل دخولك.');
    }else{
-     const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+     const {error}=await supabaseClient.auth.signInWithPassword({email,password});
      if(error)throw error;
-     const {data:w,error:readError}=await supabaseClient.from('wallet_accounts')
-       .select('libyana_phone').eq('user_id',data.user.id).maybeSingle();
-     if(readError){await supabaseClient.auth.signOut();throw Error('تعذر التحقق من رقم الهاتف. حاول مرة ثانية.')}
-     if(w?.libyana_phone && w.libyana_phone!==phone){
-       await supabaseClient.auth.signOut();
-       throw Error('رقم الهاتف لا يطابق الرقم المسجل لهذا الحساب.');
-     }
-     if(!w?.libyana_phone){
-       const {error:linkError}=await supabaseClient.rpc('save_my_libyana_phone',{p_phone:phone});
-       if(linkError){await supabaseClient.auth.signOut();throw linkError;}
-     }
-     say('تم تسجيل الدخول والتحقق من رقم الحساب.');
+     say('تم تسجيل الدخول.');
      await renderAccount();await renderWallet();await renderOrders();
    }
  }catch(error){
    const m=String(error?.message||'');
-   if(/phone_already_registered|duplicate key|already.*phone|unique constraint|already registered/i.test(m))
-     say('الرقم مستخدم في حساب ثاني، أو البريد مسجل مسبقًا. كل رقم لحساب واحد فقط.');
+   if(error?.code==='user_already_exists'||/already registered/i.test(m))
+     say('هذا البريد مسجل. جرّب تسجيل الدخول أو استعادة كلمة المرور.');
    else if(/invalid login credentials/i.test(m))
      say('البريد أو كلمة المرور غير صحيحة. لو نسيت كلمة المرور استعمل رابط الاستعادة.');
    else if(/Database error saving new user/i.test(m))
-     say('تعذر إنشاء الحساب. تحقق إن الرقم مش مربوط بحساب آخر، أو تواصل مع الإدارة.');
-   else say('تعذر تنفيذ العملية: '+m);
+     say('تعذر إنشاء الحساب الآن. حاول مرة ثانية.');
+   else if(error?.code==='email_not_confirmed')
+     say('أكد بريدك من الرابط اللي وصلك، وبعدها سجّل الدخول.');
+   else say(m?'تعذر تنفيذ العملية: '+m:'تعذر الاتصال، حاول مرة ثانية.');
  }finally{submit.disabled=false;submit.textContent=authMode==='signup'?'إنشاء حساب':'تسجيل الدخول'}
 });
 

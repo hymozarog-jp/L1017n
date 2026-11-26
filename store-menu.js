@@ -275,20 +275,32 @@ var styleId='robloxGamePageStyles';
       '<p style="font-size:13px;line-height:1.8;color:#c1c6d7">اكتب اسم حساب Roblox. بعد إتمام الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام السلاح داخل MM2.</p>'+
       '<form><label for="mm2RobloxName">اسم مستخدم Roblox</label>'+
       '<input id="mm2RobloxName" type="text" pattern="[A-Za-z0-9_]{3,20}" minlength="3" maxlength="20" autocomplete="off" required placeholder="Roblox username">'+
-      '<div class="mm2-actions"><button type="button" data-mm2-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'+
+      '<div class="mm2-actions"><button type="button" data-mm2-cancel>إلغاء</button><button type="submit" disabled>تأكيد الشراء</button></div>'+
       '<div class="mm2-state" role="status" aria-live="polite"></div></form></div>';
     document.body.appendChild(overlay);
     function close(){overlay.remove()}
     overlay.querySelector('[data-mm2-cancel]').addEventListener('click',close);
     overlay.addEventListener('click',function(e){if(e.target===overlay)close()});
     var form=overlay.querySelector('form'),send=form.querySelector('[type="submit"]'),state=form.querySelector('.mm2-state');
+    var client=typeof supabaseClient!=='undefined'?supabaseClient:null;
+    let buying=false, soldOut=false;
+    const verification=window.bindRobloxCheckoutVerification({
+      input:form.querySelector('#mm2RobloxName'),
+      client,
+      onChange:()=>{state.textContent='';syncPurchaseButton();}
+    });
+    function syncPurchaseButton(){
+      send.disabled=buying||soldOut||!verification.getUsername();
+    }
     form.addEventListener('submit',async function(e){
       e.preventDefault();
-      var username=form.querySelector('#mm2RobloxName').value.trim();
-      if(!/^[a-z0-9_]{3,20}$/i.test(username)){state.textContent='اكتب اسم Roblox صحيح من 3 إلى 20 حرف.';return}
-      var client=typeof supabaseClient!=='undefined'?supabaseClient:null;
-      if(!client){state.textContent='تعذر الاتصال بالمتجر، حدّث الصفحة.';return}
-      send.disabled=true;state.textContent='جاري التحقق من الحساب ورصيد المحفظة…';
+      if(buying||soldOut)return;
+      const username=verification.getUsername();
+      if(!username){state.textContent='تحقق من حساب Roblox قبل الشراء.';return}
+      buying=true;
+      verification.setLocked(true);
+      syncPurchaseButton();
+      state.textContent='جارٍ مراجعة الحساب ورصيد المحفظة…';
       try{
         var auth=await client.auth.getUser();
         if(auth.error||!auth.data||!auth.data.user){
@@ -326,11 +338,15 @@ var styleId='robloxGamePageStyles';
           /product_not_available/i.test(msg)?'نفدت الكمية! المنتج أصبح غير متوفر. ما انخصم منك رصيد.':
           'تعذر إكمال الطلب. لم يتم تأكيد أي خصم. حاول لاحقًا.';
         if(/product_not_available/i.test(msg)){
-          send.disabled=true;
+          soldOut=true;
           void showMm2Page().catch(function(){});
           return;
         }
-      }finally{if(!state.textContent.includes('نفدت الكمية'))send.disabled=false}
+      }finally{
+        buying=false;
+        verification.setLocked(false);
+        syncPurchaseButton();
+      }
     });
     form.querySelector('input').focus();
   }

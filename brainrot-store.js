@@ -182,7 +182,7 @@ function getClient(){
       +'<p>بعد الشراء لازم تتواصل مع المتجر عبر واتساب أو تيليجرام وتبعث رقم طلبك لاستلام الغرض داخل اللعبة. لا يتم تسليم كود فوري.</p>'
       +'<form id="sabCheckoutForm"><label for="sabRobloxUsername">اسم مستخدم Roblox</label>'
       +'<input id="sabRobloxUsername" autocomplete="off" minlength="3" maxlength="20" required pattern="[A-Za-z0-9_]{3,20}" placeholder="Roblox username" dir="ltr">'
-      +'<div class="sab-dialog-actions"><button type="button" data-sab-cancel>إلغاء</button><button type="submit">تأكيد الشراء</button></div>'
+      +'<div class="sab-dialog-actions"><button type="button" data-sab-cancel>إلغاء</button><button type="submit" disabled>تأكيد الشراء</button></div>'
       +'<p class="sab-dialog-status" role="status" aria-live="polite"></p></form></div>';
     document.body.appendChild(box);
     box.querySelectorAll("[data-sab-cancel]").forEach(b=>b.addEventListener("click",closeCheckout));
@@ -190,6 +190,12 @@ function getClient(){
     const form=box.querySelector("form");
     const send=form.querySelector('[type="submit"]');
     const status=box.querySelector(".sab-dialog-status");
+    const client=getClient();
+    const verification=window.bindRobloxCheckoutVerification({
+      input:form.querySelector("#sabRobloxUsername"),
+      client,
+      onChange:()=>{status.textContent="";update();}
+    });
     let selected=initial;
     let quantity=1;
     const mutationButtons=[...box.querySelectorAll("[data-sab-mutation]")];
@@ -206,7 +212,7 @@ function getClient(){
       box.querySelector(".sab-dialog-price").textContent=max?"الإجمالي: "+(Number(product.price)*quantity).toFixed(2)+" د.ل":product?priceText(product)+" · غير متوفر للشراء":"غير متوفر للشراء";
       stepButtons[0].disabled=checkoutBusy||!max||quantity<=1;
       stepButtons[1].disabled=checkoutBusy||quantity>=max;
-      send.disabled=checkoutBusy||!max;
+      send.disabled=checkoutBusy||!max||!verification.getUsername();
     }
     mutationButtons.forEach(button=>button.addEventListener("click",()=>{
       if(checkoutBusy)return;
@@ -226,13 +232,11 @@ function getClient(){
       e.preventDefault();
       const product=variants.get(selected);
       if(checkoutBusy||quantity>quantityLimit(product))return;
-      const username=form.querySelector("input").value.trim();
-      if(!/^[A-Za-z0-9_]{3,20}$/.test(username)){
-        status.textContent="أدخل اسم Roblox صحيحًا من 3 إلى 20 حرفًا.";return;
-      }
-      const client=getClient();
-      if(!client){status.textContent="تعذر الاتصال بالمتجر.";return;}
-      checkoutBusy=true;update();
+      const username=verification.getUsername();
+      if(!username){status.textContent="تحقق من حساب Roblox قبل الشراء.";return;}
+      checkoutBusy=true;
+      verification.setLocked(true);
+      update();
       status.textContent="جارٍ مراجعة الحساب والرصيد…";
       try{
         const auth=await client.auth.getUser();
@@ -268,7 +272,13 @@ function getClient(){
           :/product_not_available/i.test(msg)?"المنتج غير متاح حاليًا."
           :/price_changed/i.test(msg)?"تغيّر السعر. ارجع وافتح الشخصية من جديد."
           :"تعذر إكمال الشراء. تحقق من طلباتك قبل المحاولة مجددًا.";
-      }finally{checkoutBusy=false;if(send.isConnected)update();}
+      }finally{
+        checkoutBusy=false;
+        if(send.isConnected){
+          verification.setLocked(false);
+          update();
+        }
+      }
     });
     box.querySelector("[data-sab-cancel]").focus({preventScroll:true});
   }

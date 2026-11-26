@@ -743,15 +743,18 @@ async function renderCustomerHeaderWallet(user){
    logo.alt='شعار '+(isMadar?'المدار':'ليبيانا');
  }
  if(topup){
-   topup.setAttribute('aria-label',isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا');
-   topup.title=isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا';
+   const actionLabel=!user?'تسجيل الدخول لشحن المحفظة':isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا';
+   topup.setAttribute('aria-label',actionLabel);
+   topup.title=actionLabel;
  }
  if(!user){
    // Show a zero Libyana wallet to visitors; the plus shortcut routes them to sign in.
    chip.classList.remove('hidden');
    customerHeaderWalletQuery=null;
    amount.dataset.balanceIdentity='guest:libyana';
-   amount.textContent='0.000 د.ل';
+   amount.textContent='0';
+   amount.style.removeProperty('--l1017-header-balance-scale');
+   amount.style.removeProperty('--l1017-header-balance-font-size');
    amount.setAttribute('aria-label','رصيد ليبيانا صفر دينار ليبي');
    bindCustomerHeaderBalanceFit();
    return;
@@ -1258,7 +1261,22 @@ setInterval(()=>{
    void refreshVisibleOrderStatuses();
 },5000);
 window.addEventListener('l1017n:omnex-order-settled',()=>{void refreshVisibleOrderStatuses()});
-$('#accountBtn').addEventListener('click',()=>switchView('account'));$('#customerTopupShortcut')?.addEventListener('click',async()=>{if($('#customerWalletChip')?.dataset.walletCarrier==='madar')return;const user=await currentUser();if(!user){switchView('account');toast('سجّل دخولك أولاً لشحن المحفظة');return}if(typeof window.openDedicatedTopup==='function'){window.openDedicatedTopup();return}openTopupModal()});$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
+$('#accountBtn').addEventListener('click',()=>switchView('account'));
+$('#customerTopupShortcut')?.addEventListener('click',async()=>{
+ const user=await currentUser();
+ if(!user){
+   $('#authModeLogin')?.click();
+   switchView('account');
+   return;
+ }
+ if($('#customerWalletChip')?.dataset.walletCarrier==='madar')return;
+ if(typeof window.openDedicatedTopup==='function'){
+   window.openDedicatedTopup();
+   return;
+ }
+ openTopupModal();
+});
+$('#year').textContent=new Date().getFullYear();instructions();loadProducts();renderAccount().then(()=>{
  if(OAUTH_RETURN||OAUTH_ERROR){
    switchView('account');
    if(OAUTH_ERROR){

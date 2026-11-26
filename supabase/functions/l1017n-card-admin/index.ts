@@ -5,7 +5,7 @@
  * Redeemable codes are decrypted only on explicit admin reveal and audited.
  */
 import { createClient } from "npm:@supabase/supabase-js@2.75.0";
-const origins=new Set(["https://hymozarog-jp.github.io","https://l1017n.ct.ws","http://localhost:5173","http://127.0.0.1:5500"]);
+const origins=new Set(["https://l1017n.ly","https://hymozarog-jp.github.io","https://l1017n.ct.ws","http://localhost:5173","http://127.0.0.1:5500"]);
 const json=(body:unknown,status=200,origin="")=>new Response(JSON.stringify(body),{
  status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",
   ...(origins.has(origin)?{"access-control-allow-origin":origin,"vary":"Origin",

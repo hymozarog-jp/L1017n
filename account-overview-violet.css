@@ -1,0 +1,41 @@
+/* Violet palette for the signed-in account and its original layout. */
+#accountView:has(#accountModern:not(.hidden)) {
+  background: radial-gradient(ellipse at 55% 0%, #29203e, #101019 68%) !important;
+}
+#accountView #accountModern .account-id-card {
+  background: radial-gradient(ellipse at 50% 0%, #57358e70, transparent 63%),
+              linear-gradient(150deg, #211933, #141320 72%) !important;
+  border-color: #a67ce687 !important;
+  box-shadow: 0 14px 34px #07051088, 0 0 24px #9562de22 !important;
+}
+#accountView #accountModern .account-id-card::before,
+#accountView #accountModern .account-id-card::after {
+  border-color: #b98cf77a;
+  box-shadow: 0 0 24px #aa74ff35;
+}
+#accountView #accountModern .account-gold-crown {
+  color: #d0acff;
+  text-shadow: 0 0 12px #b47cff75;
+}
+#accountView #accountModern .account-id-avatar {
+  border-color: #c096fa !important;
+  background: linear-gradient(145deg, #563b7e, #261d43) !important;
+  box-shadow: 0 0 0 4px #311f4c, 0 0 24px #a66ae679 !important;
+  color: #f4e9ff !important;
+}
+#accountView #accountModern .account-id-reference,
+#accountView #accountModern .account-balance-tile,
+#accountView #accountModern .account-settings-list {
+  background: linear-gradient(145deg, #241b37, #1a1628) !important;
+  border-color: #76599a85 !important;
+}
+#accountView #accountModern #accountCopyId,
+#accountView #accountModern .account-id-reference-icon {
+  color: #ddc3ff;
+}
+#accountView #accountModern .account-settings-list > button {
+  border-bottom-color: #745a923f;
+}
+#accountView #accountModern button:focus-visible {
+  outline-color: #dfc2ff !important;
+}

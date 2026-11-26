@@ -19,6 +19,8 @@
   let submitted = false;
   let reviewing = false;
   let revision = 0;
+  let pausedNoticeTimer;
+  let pausedNotice;
 
   function render() {
     const value = amount.valueAsNumber;
@@ -44,9 +46,40 @@
     render();
   }
 
+  function showPausedNotice() {
+    if (!pausedNotice) {
+      pausedNotice = document.createElement('div');
+      pausedNotice.id = 'madarTopupPausedNotice';
+      pausedNotice.dir = 'rtl';
+
+      const message = document.createElement('span');
+      message.setAttribute('role', 'status');
+      message.textContent = 'شحن المدار متوقف مؤقتًا. جرّب طريقة شحن ثانية.';
+
+      const dismiss = document.createElement('button');
+      dismiss.type = 'button';
+      dismiss.setAttribute('aria-label', 'إغلاق تنبيه شحن المدار');
+      dismiss.textContent = '×';
+      dismiss.addEventListener('click', dismissPausedNotice);
+
+      pausedNotice.append(message, dismiss);
+      document.body.appendChild(pausedNotice);
+    }
+    clearTimeout(pausedNoticeTimer);
+    pausedNoticeTimer = setTimeout(() => {
+      if (!pausedNotice?.contains(document.activeElement)) dismissPausedNotice();
+    }, 7000);
+  }
+
+  function dismissPausedNotice() {
+    clearTimeout(pausedNoticeTimer);
+    pausedNotice?.remove();
+    pausedNotice = null;
+  }
+
   async function open() {
-    if (document.getElementById('madarWalletTopup')?.disabled) {
-      if (typeof toast === 'function') toast('شحن المدار غير متوفر حاليًا');
+    if (document.getElementById('madarWalletTopup')?.hasAttribute('data-topup-paused')) {
+      showPausedNotice();
       return;
     }
     if (dialog.open) return;

@@ -45,3 +45,57 @@ body[data-checkout-wallet="almadar"] #llHeaderSearch { display: none!important; 
 #madarTopupDialog .madar-transfer-fields, #madarTopupDialog .madar-transfer-review { display: grid; gap: 12px; }
 #madarTopupDialog .madar-transfer-receiver { padding: 10px; border-radius: 11px; background: #211b30; text-align: center; }
 #madarTopupDialog [data-madar-prepare]:not(:disabled) { background: #b098f0; color: #181025; font-weight: 700; }
+
+#madarTopupPausedNotice {
+  position: fixed;
+  z-index: 1000010;
+  inset-block-start: calc(env(safe-area-inset-top, 0px) + 16px);
+  inset-inline: 0;
+  width: min(390px, calc(100% - 32px));
+  box-sizing: border-box;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 16px;
+  border: 1px solid #594638;
+  border-inline-start: 3px solid #e7a66a;
+  border-radius: 15px;
+  background: #1a1925;
+  color: #f8f1ff;
+  box-shadow: 0 10px 30px #08060980;
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.55;
+  animation: madar-paused-enter 180ms ease-out;
+}
+
+#madarTopupPausedNotice button {
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #693c48;
+  border-radius: 10px;
+  background: #3d242e;
+  color: #ffabb8;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+#madarTopupPausedNotice button:focus-visible {
+  outline: 2px solid #ffabb8;
+  outline-offset: 2px;
+}
+
+@keyframes madar-paused-enter {
+  from { transform: translateY(-8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #madarTopupPausedNotice { animation: none; }
+}

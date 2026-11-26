@@ -1,4 +1,7 @@
-/* Signed-in account overview. The existing guest form and data renderers stay independent. */
+/* The blue account card is shown when the signed-in overview is visible. */
+#accountView:has(#accountModern:not(.hidden)) {
+  background: #101318 !important;
+}
 #accountView .account-panel:has(> #accountModern:not(.hidden)) {
   padding: clamp(10px, 3vw, 20px) !important;
   background: transparent !important;
@@ -9,10 +12,11 @@
   margin: 0 0 16px;
   text-align: center;
   color: #e9f3ff;
-  font-size: 1.25rem;
+  font-size: clamp(1.2rem, 5vw, 1.45rem);
+  font-weight: 800;
 }
 #accountView #accountModern .account-id-card {
-  --account-cover-height: 112px;
+  --account-cover-height: clamp(100px, 28vw, 122px);
   margin: 0 0 24px !important;
   padding: 0 clamp(10px, 3vw, 18px) 15px !important;
   border: 1px solid #38689d !important;
@@ -74,6 +78,8 @@
 #accountView #accountModern .account-id-details strong { font-size: clamp(20px, 5vw, 27px) !important; }
 #accountView #accountModern .account-id-reference {
   display: flex !important;
+  direction: rtl;
+  align-items: center;
   width: auto !important;
   gap: 4px;
   margin: 3px 0 10px;
@@ -89,6 +95,10 @@
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: clamp(5px, 2vw, 11px) !important;
   margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 #accountView #accountModern .account-balance-tile {
   display: flex !important;
@@ -97,7 +107,8 @@
   justify-content: center;
   text-align: center;
   gap: 6px !important;
-  min-height: 104px !important;
+  min-height: 106px !important;
+  height: 100%;
   padding: 8px 2px !important;
   border: 1px solid #335888 !important;
   border-radius: 15px !important;
@@ -112,7 +123,14 @@
   color: #79bdff !important;
 }
 #accountView #accountModern .account-balance-icon svg { width: 23px; height: 23px; }
-#accountView #accountModern .account-balance-details { text-align: center; }
+#accountView #accountModern .account-balance-details {
+  width: 100%;
+  align-items: center;
+  text-align: center;
+}
+#accountView #accountModern .account-balance-tile .account-balance-icon {
+  box-shadow: none !important;
+}
 #accountView #accountModern .account-balance-details strong {
   display: flex; justify-content: center; flex-wrap: wrap;
   font-size: clamp(11px, 3.5vw, 16px) !important;
@@ -120,6 +138,7 @@
 }
 #accountView #accountModern .account-balance-details span { color: #bfd4f2; font-size: clamp(10px, 3.1vw, 13px) !important; }
 #accountView #accountModern .account-overview-orders { cursor: pointer; }
+#accountView #accountModern .account-overview-orders:active { background: #17325b !important; }
 #accountView #accountModern .account-settings-list {
   background: linear-gradient(160deg, #12274a, #101c37) !important;
   border-color: #365887 !important;

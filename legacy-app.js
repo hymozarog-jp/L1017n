@@ -719,7 +719,7 @@ async function renderCustomerHeaderWallet(user){
  const chip=$('#customerWalletChip'),amount=$('#customerHeaderBalance');
  if(!chip||!amount)return;
  const sequence=++customerHeaderWalletSeq;
- const carrier=window.L1017nPrimaryWallets?.getSelectedFor?.(user?.id)==='madar'?'madar':'libyana';
+ const carrier=user&&window.L1017nPrimaryWallets?.getSelectedFor?.(user.id)==='madar'?'madar':'libyana';
  const isMadar=carrier==='madar';
  // Display only the selected carrier's logo and its own authenticated balance.
  // This is a presentation preference; changing it never moves money.
@@ -746,7 +746,16 @@ async function renderCustomerHeaderWallet(user){
    topup.setAttribute('aria-label',isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا');
    topup.title=isMadar?'شحن محفظة المدار':'شحن محفظة ليبيانا';
  }
- if(!user){chip.classList.add('hidden');customerHeaderWalletQuery=null;return}
+ if(!user){
+   // Show a zero Libyana wallet to visitors; the plus shortcut routes them to sign in.
+   chip.classList.remove('hidden');
+   customerHeaderWalletQuery=null;
+   amount.dataset.balanceIdentity='guest:libyana';
+   amount.textContent='0.000 د.ل';
+   amount.setAttribute('aria-label','رصيد ليبيانا صفر دينار ليبي');
+   bindCustomerHeaderBalanceFit();
+   return;
+ }
  chip.classList.remove('hidden');
  bindCustomerHeaderBalanceFit();
  if(amount.dataset.balanceIdentity!==user.id+':'+carrier)amount.textContent='…';

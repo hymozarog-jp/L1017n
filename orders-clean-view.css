@@ -1,0 +1,68 @@
+/* My Orders: charcoal surfaces and a quiet, readable mobile layout. */
+#ordersView.section {
+  background:#13151c!important;
+  --order-ink:#f5f1ed;
+  --order-muted:#aaaebd;
+  padding-inline:clamp(14px,4.3vw,32px);
+}
+#ordersView .section-head {margin-bottom:22px!important}
+#ordersView .section-head h2 {
+  margin:0!important;
+  font-size:clamp(27px,6vw,39px)!important;
+  color:#f5f1ed;
+}
+#ordersView .orders-search {
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 16px;
+  padding:0 14px;
+  box-sizing:border-box;
+  border:1px solid #323642;
+  border-radius:15px;
+  background:#1c1f28;
+  color:#a3a8b6;
+}
+#ordersView .orders-search:focus-within {border-color:#c7a8f5}
+#ordersView .orders-search svg {
+  flex:0 0 20px;width:20px;height:20px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;
+}
+#ordersView #ordersSearch {
+  flex:1;min-width:0;width:100%;margin:0;padding:10px 0;
+  border:0;background:transparent;color:#f5f1ed;font:inherit;font-size:16px;
+  outline:0;box-shadow:none;border-radius:0;
+}
+#ordersView #ordersSearch::placeholder {color:#a3a8b6;opacity:1}
+#ordersView .orders-filter-tabs {gap:7px;padding:0 0 16px}
+#ordersView .orders-filter-tabs button {
+  flex:1 0 auto;
+  min-height:42px;
+  padding-inline:clamp(9px,2.5vw,16px);
+  border:1px solid transparent!important;
+  background:#20232c!important;
+  color:#e7e5e9!important;
+  font-size:clamp(11px,3.4vw,14px)!important;
+  font-weight:700;
+}
+#ordersView .orders-filter-tabs button.active {
+  background:#eee8f5!important;
+  color:#1b1427!important;
+}
+#ordersView .orders-filter-tabs button:focus-visible {outline:2px solid #c7a8f5;outline-offset:-3px}
+#ordersView .orders-tab-count {display:none!important}
+#ordersView .orders-empty-state {
+  min-height:clamp(230px,46dvh,470px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 12px!important;border:0!important;background:none!important;
+  box-shadow:none!important;text-align:center;
+}
+#ordersView .orders-empty-state .orders-empty-mark {
+  display:grid;place-items:center;width:72px;height:72px;margin:0 0 18px;
+  border-radius:50%;background:#20232c;color:#c1becb;
+}
+#ordersView .orders-empty-mark svg {width:34px;height:34px}
+#ordersView .orders-empty-state h3 {color:#f5f1ed;font-size:clamp(19px,5vw,25px)}
+#ordersView .orders-empty-state p {margin:0;color:#aaaebd;font-size:14px}
+#ordersView .orders-filter-empty[hidden] {display:none!important}

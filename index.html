@@ -276,7 +276,14 @@
   <button id="topupProceed" type="button" class="tp-proceed">متابعة <span aria-hidden="true">←</span></button>
   <div class="transfer-instructions" id="transferInstructions" aria-live="polite">اختار المبلغ واضغط متابعة لعرض كود التحويل.</div>
 </div></div><div class="panel history-panel"><div class="history-head"><h3>طلبات الشحن الأخيرة</h3><span class="muted">حسابك</span></div><div id="topupHistory" class="history-list"></div></div></section>
-<section class="section hidden" id="ordersView"><div class="section-head"><div><span class="eyebrow">ORDER TRACKING</span><h2>طلباتي</h2><p>طلبات الشراء والشحن المرتبطة بحسابك.</p></div></div><div id="ordersList" class="panel history-panel"></div></section>
+<section class="section hidden" id="ordersView" aria-labelledby="ordersHeading">
+  <div class="section-head"><h2 id="ordersHeading">طلباتي</h2></div>
+  <label class="orders-search" for="ordersSearch">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <input id="ordersSearch" type="search" aria-label="ابحث برقم الطلب أو اسم المنتج" placeholder="ابحث برقم الطلب أو اسم المنتج" autocomplete="off" disabled>
+  </label>
+  <div id="ordersList" class="panel history-panel"></div>
+</section>
 <section class="section hidden auth-guest" id="accountView" aria-label="حسابي">
   <div class="auth-decoration" aria-hidden="true"><i></i><i></i><i></i></div>
   <button type="button" class="auth-back" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>العودة للمتجر</button>
@@ -540,7 +547,7 @@
         };
         document.body.appendChild(script);
       }
-      loadApp('app.js?v=20261126-boot2',true);
+      loadApp('app.js?v=orders-search-20261127-1',true);
     }catch(e){showError('خطأ أثناء تشغيل المتجر: '+(e.message||e))}
   }
   var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -1369,4 +1376,5 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 }
 </style>
 <link rel="stylesheet" href="account-overview-violet.css?v=20261126-1">
+<link rel="stylesheet" href="orders-clean-view.css?v=20261127-1">
 </body></html>

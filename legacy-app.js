@@ -157,10 +157,15 @@ function instructions(){if(typeof window.refreshAutoTopup==='function')window.re
 async function renderWallet(){initWalletShowcase();if(typeof window.refreshAutoTopup==='function')window.refreshAutoTopup();const user=await currentUser();const topupForm=$('#topupForm');if(topupForm){let gate=$('#libyanaTopupGate');if(!gate){gate=document.createElement('div');gate.id='libyanaTopupGate';gate.className='panel';gate.style.cssText='padding:20px;text-align:center;border-radius:16px;margin-bottom:14px';topupForm.parentNode.insertBefore(gate,topupForm)}let allowed=false;if(user){const r=await supabaseClient.from('wallet_accounts').select('libyana_phone').eq('user_id',user.id).maybeSingle();allowed=!r.error&&!!r.data?.libyana_phone}topupForm.style.display=allowed?'':'none';gate.style.display=allowed?'none':'';gate.innerHTML='<h3>'+uiIcon('smartphone')+' يجب تسجيل رقم الهاتف أولاً</h3><p>قبل استخدام المحفظة، سجّل رقم هاتفك على حسابك. الرقم لا يمكن تسجيله في حساب ثانٍ.</p><button type="button" class="btn btn-primary" id="goLibyanaSettings">إدخال رقم الهاتف ←</button>';gate.querySelector('button').onclick=()=>switchView('account')} if(!user){$('#balanceAmount').textContent='0.00';if($('#walletShowcaseBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#walletShowcaseBalance'));else $('#walletShowcaseBalance').textContent='0.000';}if($('#madarWalletBalance')){if(window.L1017nWalletLuxe?.resetBalance)window.L1017nWalletLuxe.resetBalance($('#madarWalletBalance'));else $('#madarWalletBalance').textContent='0.000';}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent='0.000 د.ل';$('#walletUserState').innerHTML='<i></i> غير مسجل';$('#topupHistory').innerHTML='<div class="muted">سجّل دخولك أولاً باش تقدر تشحن المحفظة.</div>';return}const {data:wallet}=await supabaseClient.from('wallet_accounts').select('balance,madar_balance,primary_balance').eq('user_id',user.id).maybeSingle();if($('#madarWalletBalance')){const val=Number(wallet?.madar_balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#madarWalletBalance'),val);else $('#madarWalletBalance').textContent=val.toFixed(3);}if($('#primaryWalletBalance'))$('#primaryWalletBalance').textContent=Number(wallet?.primary_balance||0).toFixed(3)+' د.ل';$('#balanceAmount').textContent=Number(wallet?.balance||0).toFixed(2);if($('#walletShowcaseBalance')){const val=Number(wallet?.balance||0);if(window.L1017nWalletLuxe?.animateBalance)window.L1017nWalletLuxe.animateBalance($('#walletShowcaseBalance'),val);else $('#walletShowcaseBalance').textContent=val.toFixed(3);}$('#walletUserState').innerHTML='<i></i> '+escapeHtml(user.email);const {data:list,error}=await supabaseClient.from('topup_requests').select('id,user_id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);if(error){$('#topupHistory').innerHTML='<div class="muted">تعذر تحميل طلبات الشحن. حاول تحديث الصفحة.</div>';return}$('#topupHistory').innerHTML=walletTransactionRows(list);applyWalletTransactionFilter();instructions()}
 async function renderOrders(){
  const root=$('#ordersList');if(!root)return;
+ const search=$('#ordersSearch');
  const previouslyShownId=root.querySelector('.orders-view-dialog[open]')?.closest('.orders-modern-card')?.dataset.orderId||null;
  const priorFilter=root.querySelector('[data-order-filter].active')?.dataset.orderFilter||'all';
  const user=await currentUser();
- if(!user){root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';return}
+ if(!user){
+   if(search){search.disabled=true;search.value='';search.oninput=null;}
+   root.innerHTML='<div class="orders-empty">سجّل دخولك أولاً لمتابعة طلباتك.<br><button type="button" class="btn btn-primary" data-view="account">تسجيل الدخول</button></div>';
+   return;
+ }
  const [pr,tr,verifiedTopups,omnexReceipts]=await Promise.all([
   supabaseClient.from('purchase_orders').select('id,product_id,product_name,total_amount,roblox_username,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
   supabaseClient.from('topup_requests').select('id,amount,method,transfer_reference,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50),
@@ -235,7 +240,7 @@ async function renderOrders(){
    if(['approved','processing','in_processing','fulfilling','in_progress'].includes(x.status))return 1;
    return 0;
  };
- const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتملة</button><button type="button" data-order-filter="refunded">مرفوضة/مسترجعة</button></div>';
+ const tabs='<div class="orders-filter-tabs" role="group" aria-label="تصفية الطلبات"><button class="active" type="button" data-order-filter="all">الكل</button><button type="button" data-order-filter="pending">قيد التنفيذ</button><button type="button" data-order-filter="completed">مكتمل</button><button type="button" data-order-filter="refunded">مسترجع / مرفوض</button></div>';
  const manualOrders=new Map();
  const cards=orders.map(x=>{
    const g=group(x),title=escapeHtml(label(x)),
@@ -490,20 +495,8 @@ async function renderOrders(){
  if(!orders.length){
    const list=root.querySelector('.orders-modern-list');
    if(list)list.innerHTML='<div class="orders-empty-state"><span class="orders-empty-mark" aria-hidden="true">'
-     +'<svg viewBox="0 0 136 116" xmlns="http://www.w3.org/2000/svg" fill="none">'
-     +'<defs><linearGradient id="oEmptyA" x1="26" y1="24" x2="111" y2="90"><stop stop-color="#8D77E8"/><stop offset="1" stop-color="#4C4C9C"/></linearGradient></defs>'
-     +'<circle cx="68" cy="56" r="49" fill="#7358BE" opacity=".13"/><circle cx="68" cy="56" r="44" stroke="#8B79CF" stroke-opacity=".4" stroke-dasharray="3 7"/>'
-     +'<rect x="30" y="23" width="77" height="74" rx="12" fill="#202447" stroke="#7D78D6" stroke-width="2"/>'
-     +'<rect x="40" y="17" width="69" height="74" rx="12" fill="url(#oEmptyA)" stroke="#C3B5FF" stroke-width="2"/>'
-     +'<rect x="49" y="28" width="43" height="6" rx="3" fill="#E8DEFF" opacity=".84"/>'
-     +'<path d="M51 48 75 36l24 12v26L75 86 51 74V48Z" stroke="#F2E7FF" stroke-width="2.7" stroke-linejoin="round"/>'
-     +'<path d="m51 48 24 12 24-12M75 60v26" stroke="#F2E7FF" stroke-width="2.7" stroke-linejoin="round"/>'
-     +'<circle cx="106" cy="85" r="18" fill="#204D51" stroke="#8CEDC3" stroke-width="2.3"/>'
-     +'<path d="m98 85 6 6 11-13" stroke="#A2FCD8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>'
-     +'<path d="M17 47v9m-4.5-4.5h9M112 10v10m-5-5h10" stroke="#F1D38D" stroke-width="2" stroke-linecap="round"/>'
-     +'</svg></span>'
-     +'<h3>ما عندكش طلبات حتى الآن</h3><p>أول ما تشحن محفظتك أو تطلب منتج، بتشوف طلبك هنا.</p>'
-     +'<button type="button" data-orders-shop>تصفح المنتجات</button></div>';
+     +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19V4l2 1.5L11 4l2 1.5L15 4l2 1.5L19 4v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2h11v2a2 2 0 0 0 2 2M10 9h6m-6 4h6"/></svg></span>'
+     +'<h3>لا توجد طلبات بعد</h3><p>شحن محفظتك ومشترياتك وأكوادها تظهر هنا.</p></div>';
  }
  root.querySelectorAll('[data-order-refresh]').forEach(btn=>btn.addEventListener('click',()=>{
    btn.disabled=true;
@@ -528,11 +521,39 @@ async function renderOrders(){
   if(code&&typeof window.showInstantCode==='function')window.showInstantCode('الكود الخاص بطلبك',code);
  }));
 
- root.querySelectorAll('[data-order-filter]').forEach(b=>b.addEventListener('click',()=>{root.querySelectorAll('[data-order-filter]').forEach(t=>t.classList.toggle('active',t===b));let visible=0;root.querySelectorAll('[data-order-status]').forEach(card=>{const show=b.dataset.orderFilter==='all'||card.dataset.orderStatus===b.dataset.orderFilter;card.hidden=!show;if(show)visible++});const empty=root.querySelector('.orders-filter-empty');if(empty)empty.hidden=visible!==0||orders.length===0}));
- if(priorFilter!=='all'&&!window.L1017nJustPlacedOrderId){
-   const tab=root.querySelector('[data-order-filter="'+priorFilter+'"]');
-   if(tab)tab.click();
+ let selectedFilter=window.L1017nJustPlacedOrderId?'all':priorFilter;
+ const filterButtons=[...root.querySelectorAll('[data-order-filter]')];
+ const orderCards=[...root.querySelectorAll('.orders-modern-card')];
+ const normalizeSearch=value=>String(value||'').normalize('NFKC').trim().toLowerCase();
+ function applyOrderFilters(){
+   const query=normalizeSearch(search?.value);
+   filterButtons.forEach(button=>{
+     const selected=button.dataset.orderFilter===selectedFilter;
+     button.classList.toggle('active',selected);
+     button.setAttribute('aria-pressed',String(selected));
+   });
+   let visible=0;
+   orderCards.forEach((card,index)=>{
+     const matchesStatus=selectedFilter==='all'||card.dataset.orderStatus===selectedFilter;
+     const matchesQuery=!query||normalizeSearch(card.dataset.orderId).includes(query)||
+       normalizeSearch(label(orders[index])).includes(query);
+     card.hidden=!(matchesStatus&&matchesQuery);
+     if(!card.hidden)visible++;
+   });
+   const empty=root.querySelector('.orders-filter-empty');
+   empty.hidden=visible>0||orders.length===0;
+   empty.textContent=query?'ما فيش طلبات مطابقة للبحث.':'ما فيش طلبات في هذا التصنيف.';
  }
+ filterButtons.forEach(button=>button.addEventListener('click',()=>{
+   selectedFilter=button.dataset.orderFilter;
+   applyOrderFilters();
+ }));
+ if(search){
+   search.disabled=false;
+   if(window.L1017nJustPlacedOrderId)search.value='';
+   search.oninput=applyOrderFilters;
+ }
+ applyOrderFilters();
  // After a purchase, open the new order's popup immediately.
  // During refresh, reopen the same popup without scrolling the page.
  const justPlacedId=window.L1017nJustPlacedOrderId;

@@ -1,6 +1,6 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=20261126-boot2';
+  s.src='legacy-app.js?v=orders-search-20261127-1';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');

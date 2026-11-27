@@ -118,7 +118,8 @@ body.l1017-live-ui #llLanding #llCategories {
  grid-template-columns:repeat(3,minmax(0,1fr));
  gap:clamp(6px,2vw,18px)!important;
  overflow:visible!important;
- padding:12px 0 9px!important;
+ padding:4px 0 2px!important;
+ margin:0!important;
 }
 body.l1017-live-ui #llLanding #llCategories > button[data-ll-category] {
  position:relative;
@@ -126,10 +127,10 @@ body.l1017-live-ui #llLanding #llCategories > button[data-ll-category] {
  flex-direction:column;
  align-items:center;
  justify-content:flex-start;
- gap:9px;
+ gap:5px;
  min-width:0!important;
  width:100%!important;
- padding:2px 2px 15px!important;
+ padding:2px 2px 10px!important;
  border:0!important;
  background:transparent!important;
  box-shadow:none!important;
@@ -139,7 +140,7 @@ body.l1017-live-ui #llLanding #llCategories > button[data-ll-category] {
 body.l1017-live-ui #llLanding #llCategories > button[data-ll-category] > span:last-child {
  white-space:normal!important;
  text-align:center;
- font-size:clamp(12px,3.7vw,17px)!important;
+ font-size:clamp(11px,3.25vw,15px)!important;
 }
 body.l1017-live-ui #llLanding #llCategories > button[data-ll-category]::after {
  position:absolute!important;
@@ -163,8 +164,8 @@ body.l1017-live-ui #llLanding #llCategories [data-ll-tone="grid"] {--ll-tile-art
 body.l1017-live-ui #llLanding #llCategories [data-ll-tone="games"] {--ll-tile-art:url("game-covers/featured-games-20261127.webp");--ll-tile-glow:#45baf2}
 body.l1017-live-ui #llLanding #llCategories [data-ll-tone="gift"] {--ll-tile-art:url("game-covers/featured-gift-20261127.webp");--ll-tile-glow:#f6b447}
 body.l1017-live-ui #llLanding #llCategories > button[data-ll-category] .ll-category-icon {
- width:clamp(58px,16.5vw,88px)!important;
- height:clamp(58px,16.5vw,88px)!important;
+ width:clamp(43px,11.5vw,63px)!important;
+ height:clamp(43px,11.5vw,63px)!important;
  padding:0!important;
  border:0!important;
  border-radius:26%!important;
@@ -176,24 +177,38 @@ body.l1017-live-ui #llLanding #llCategories > button[aria-pressed="true"] .ll-ca
  box-shadow:0 0 0 3px color-mix(in srgb,var(--ll-tile-glow) 32%,transparent),
             0 0 21px color-mix(in srgb,var(--ll-tile-glow) 43%,transparent)!important;
 }
-body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading {
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) > .ll-section-heading {
+ position:relative!important;
+ isolation:isolate;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:clamp(6px,2vw,10px)!important;
  direction:rtl;
  overflow:hidden!important;
+ border:1px solid transparent!important;
+ border-radius:22px!important;
  padding-left:clamp(106px,31%,205px)!important;
  min-height:clamp(98px,26vw,137px)!important;
  border-color:#9d63f177!important;
  background:radial-gradient(ellipse at 7% 3%,#5d26a95e,transparent 60%),linear-gradient(105deg,#221545,#161429 69%,#22173d)!important;
  box-shadow:inset 0 1px #e5c0ff21,0 8px 23px #0b061746!important;
 }
-body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading h2 {
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) > .ll-section-heading h2 {
  position:relative;
  z-index:1;
  max-width:100%!important;
  min-width:0;
+ margin:0!important;
+ font-weight:900!important;
+ line-height:1.32!important;
+ color:#f8f5ff!important;
  font-size:clamp(14px,4.2vw,29px)!important;
 }
-body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading .ll-category-icon {
+body.l1017-live-ui #llLanding :is(#llGamesSection,#llGiftSection) > .ll-section-heading .ll-category-icon {
  z-index:1;
+ flex:none!important;
+ border-radius:14px!important;
  width:clamp(29px,9vw,52px)!important;
  height:clamp(29px,9vw,52px)!important;
  background:linear-gradient(145deg,#773cd4,#2b1a56)!important;
@@ -209,4 +224,43 @@ body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading::after {
  mask-image:radial-gradient(ellipse at 47% 51%,#000 54%,transparent 86%);
  filter:none!important;
  animation:none!important;
+}
+
+body.l1017-live-ui #llLanding #llGamesSection > .ll-section-heading {
+ margin-top:8px!important;
+}
+body.l1017-live-ui #llLanding #llGiftSection > .ll-section-heading {
+ margin:18px 0 12px!important;
+ border-color:#d99c5473!important;
+ background:radial-gradient(ellipse at 9% 13%,#73451f80,transparent 64%),
+            linear-gradient(105deg,#382515,#211a25 69%,#332316)!important;
+ box-shadow:inset 0 1px #ffe1ad21,0 8px 23px #0b061746!important;
+}
+body.l1017-live-ui #llLanding #llGiftSection > .ll-section-heading .ll-category-icon {
+ color:#ffdb95!important;
+ background:linear-gradient(145deg,#674121,#31231e)!important;
+ border-color:#edb87791!important;
+}
+body.l1017-live-ui #llLanding #llGiftSection > .ll-section-heading::after {
+ content:"";
+ position:absolute;
+ display:block;
+ z-index:0;
+ pointer-events:none;
+ left:clamp(12px,5%,31px);
+ top:50%;
+ width:clamp(66px,21vw,100px);
+ aspect-ratio:1;
+ transform:translateY(-50%) rotate(-9deg);
+ border-radius:25%;
+ background:url("game-covers/featured-gift-20261127.webp") center / 100% 100% no-repeat;
+ box-shadow:0 0 21px #ffaf4f70,8px 7px 0 -2px #9d5c2e66,14px 11px 0 -3px #6d462a69;
+}
+body.l1017-live-ui #llLanding #llGiftSection > .ll-section-heading::before {
+ content:"";
+ position:absolute;
+ pointer-events:none;
+ inset:auto 13px 5px;
+ height:2px;
+ background:linear-gradient(90deg,transparent,#f0ae55a0 34%,#bd7c454d 72%,transparent);
 }

@@ -54,8 +54,6 @@ jobs:
           assert.match(css,/#walletView \.madar-wallet-card \.wallet-primary-toggle/);
           assert.match(css,/\.wallet-primary-toggle\[aria-pressed="false"\]::before/,'Inactive state must show plus icon');
           assert.match(css,/\.wallet-primary-toggle\[aria-pressed="true"\]/,'Active state must be visually highlighted');
-          assert(primary.includes('selected={libyana:activate&&name==="libyana",madar:activate&&name==="madar"}'),
-            'Selecting a primary wallet must automatically deactivate the other');
           assert(primary.includes('const madar=value?.madar===true&&!libyana'),
             'Old dual-primary saved preferences should be normalized');
           assert(primary.includes("button.innerHTML=active?")&&primary.includes("اجعلها أساسية")&&primary.includes(" الأساسية"),
@@ -65,7 +63,7 @@ jobs:
           assert(primary.includes('window.localStorage.setItem(storageKey(),JSON.stringify(selected))'));
           assert(primary.includes('getSelectedFor(userId)'),'Header image must respect the signed-in account');
           assert(primary.includes('refreshTopWallet(user)'),'Changing primary must refresh the header immediately');
-          assert(legacy.includes("window.L1017nPrimaryWallets?.getSelectedFor?.(user?.id)"),
+          assert(legacy.includes("window.L1017nPrimaryWallets?.getSelectedFor?.(user.id)"),
             'Header must use the primary choice for its current user');
           assert(legacy.includes("isMadar?'#walletView .madar-brand-mark img':'#walletView .libyana-brand-mark img'"),
             'Reuse actual carrier logo from existing wallet cards');
@@ -77,7 +75,8 @@ jobs:
             'Do not allow the Madar top-up shortcut to open Libyana charging');
           assert.match(css,/#customerWalletChip\.gb-libyana-wallet-chip\[data-wallet-carrier="madar"\]/);
           assert.match(headerCSS,/#customerWalletChip\.gb-libyana-wallet-chip/);
-          assert(!primary.includes('.rpc('),'Primary preference must not spend or transfer money');
+          assert.deepEqual([...new Set([...primary.matchAll(/\.rpc\("([a-z_]+)"/g)].map(match=>match[1]))].sort(),
+            ['get_checkout_wallet','set_checkout_wallet'],'Primary preference should only call the selection RPCs');
           assert(!primary.includes('.from('),'Primary preference must not update wallet DB tables');
           assert.match(legacy,/from\('wallet_accounts'\)\.select\('balance,madar_balance,primary_balance'\)/,
             'Carrier balances must remain separate server-backed fields');
@@ -86,7 +85,7 @@ jobs:
           assert(luxe.includes('supabaseClient.rpc("send_wallet_balance"'),
             'Keep real wallet-to-wallet sending unchanged');
           assert(luxe.includes('p_request_key:pending.key'));
-          assert(html.includes('شحن المدار قريبًا'));
+          assert.match(html,/madar-topup\.js\?v=/,'Load the existing Madar top-up state handler');
           const sandbox={window:{matchMedia:()=>({matches:true})},document:{readyState:'loading',addEventListener:()=>{}},console};
           vm.runInNewContext(luxe,sandbox);
           assert.equal(typeof sandbox.window.L1017nWalletLuxe.openSend,'function');
@@ -119,17 +118,30 @@ jobs:
             },
             getElementById(id){return id==='walletActionPrimary'?action:null;},
             addEventListener(type,fn){handlers[type]=fn;},
+            body:{dataset:{}},
             hidden:false
           };
           const headerUpdates=[];
+          let savedWallet=null;
           const context={
             renderCustomerHeaderWallet:user=>{headerUpdates.push(user?.id||null)},
             window:{
               localStorage:{getItem:key=>store.get(key)||null,setItem:(key,val)=>store.set(key,val)},
-              addEventListener:()=>{},setTimeout:()=>{}
+              addEventListener:()=>{},setTimeout:()=>{},dispatchEvent:()=>{}
             },
             document:documentMock,
             currentUser:async()=>({id:'test-user'}),
+            Event:class {constructor(type){this.type=type;}},
+            supabaseClient:{
+              auth:{onAuthStateChange:()=>{}},
+              async rpc(name,params){
+                if(name==='get_checkout_wallet')return {data:savedWallet};
+                assert.equal(name,'set_checkout_wallet');
+                assert(['libyana','almadar'].includes(params.p_wallet));
+                if(!params.p_initialize||!savedWallet)savedWallet=params.p_wallet;
+                return {data:savedWallet};
+              }
+            },
             toast:()=>{},
             console
           };
@@ -158,8 +170,8 @@ jobs:
           assert.deepEqual(state(),{libyana:true,madar:false});
           assert.equal(context.window.L1017nPrimaryWallets.getSelectedFor('test-user'),'libyana');
           await clickCarrier('libyana');
-          assert.deepEqual(state(),{libyana:false,madar:false});
-          assert.equal(context.window.L1017nPrimaryWallets.getSelectedFor('test-user'),null);
+          assert.deepEqual(state(),{libyana:true,madar:false});
+          assert.equal(savedWallet,'libyana');
           console.log('Exclusive primary buttons and previous saved preferences verified.');
           })().catch(error=>{console.error(error);process.exitCode=1});
 

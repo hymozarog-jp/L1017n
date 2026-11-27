@@ -671,6 +671,7 @@
     nav.addEventListener("click", e => {
       const btn=e.target.closest("[data-ll-nav]");
       if (!btn) return;
+      if (e.isTrusted && typeof navigator.vibrate === "function") navigator.vibrate(12);
       const wasActive=btn.classList.contains("active");
       if(!wasActive)showNavScreenLoading(btn.getAttribute("aria-label") || btn.dataset.llNav);
       try { routeView(btn.dataset.llNav); }

@@ -14,6 +14,8 @@
     var personalTitle=document.createElement('div');
     personalTitle.className='l1017-rank-mini-heading';
     personalTitle.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3.6-8 8-8s8 3 8 8"/></svg> بطاقة ترتيبك';
+    var privacyActions=page.querySelector('#leaderboardPrivacyActions');
+    if(privacyActions)toolbar.prepend(privacyActions);
     page.prepend(toolbar);
     var own=document.getElementById('lbMyRank');
     if(own)page.insertBefore(personalTitle,own);

@@ -263,10 +263,12 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
   #leaderboardView .l1017-rank-toolbar-brand small{font-size:8px!important}
 }
 
-/* Only refresh remains in the public ranking toolbar. */
+/* Keep purchase privacy and refresh together above the standings. */
 #leaderboardView.l1017-rank-ready:not(.hidden) .l1017-rank-toolbar{
   display:flex!important;
-  justify-content:flex-end;
+  direction:rtl;
+  justify-content:space-between;
+  gap:8px;
   min-height:0!important;
   padding:4px 0!important;
   border:0!important;
@@ -276,3 +278,16 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
   -webkit-backdrop-filter:none;
   backdrop-filter:none;
 }
+
+#leaderboardView .l1017-rank-toolbar > .l1017-rank-privacy-actions{
+  flex:1;
+  min-width:0;
+  margin:0!important;
+}
+#leaderboardView .l1017-rank-toolbar > .l1017-rank-privacy-actions > button[data-account-action="purchase-privacy"]{
+  flex:1 1 0;
+  min-width:0;
+  min-height:44px;
+  padding:6px 10px;
+}
+#leaderboardView .l1017-rank-toolbar > .l1017-rank-refresh{flex:0 0 44px}

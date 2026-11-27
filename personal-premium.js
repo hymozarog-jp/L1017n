@@ -20,18 +20,46 @@ function row(type,label,value,kind){
  return '<div class="premium-info-row"><span class="premium-row-icon premium-icon-'+type+'">'+svg(type)+'</span>'+
  '<span class="premium-row-copy"><small>'+label+'</small><b class="'+(kind||'')+'">'+value+'</b></span></div>';
 }
-function verifiedState(page){
+const phoneRequests=new WeakMap();
+function showRegisteredPhone(page,state,number){
  const badge=page.querySelector('#personalPhoneBadge');
- const state=badge?.dataset.state||'loading';
  const phone=page.querySelector('.premium-phone-value');
- const security=page.querySelector('.premium-security-value');
- if(phone){
-  phone.textContent=state==='verified'?'موثّق':state==='unverified'?'غير موثّق':state==='empty'?'لم يُضف رقم':state==='unknown'?'تعذر التحقق':'جاري التحقق…';
-  phone.dataset.state=state;
+ if(badge){
+  badge.dataset.state=state;
+  badge.textContent=state==='registered'?'مسجّل':state==='empty'?'أضف الرقم':'تعذّر التحميل';
  }
- if(security){
-  security.textContent=state==='verified'?'توثيق SMS مفعّل':state==='unverified'?'يتطلب توثيق الهاتف':state==='empty'?'أضف رقمك أولًا':state==='unknown'?'تعذر فحص الأمان':'جاري الفحص…';
-  security.dataset.state=state;
+ if(phone){
+  phone.dataset.state=state;
+  phone.dir=state==='registered'?'ltr':'auto';
+  phone.textContent=number||(state==='empty'?'لم يُضف رقم':'تعذّر تحميل الرقم');
+ }
+}
+async function loadRegisteredPhone(page,userId){
+ const badge=page.querySelector('#personalPhoneBadge');
+ if(!badge||!userId)return;
+ const previous=phoneRequests.get(page);
+ previous?.abort();
+ const controller=new AbortController();
+ phoneRequests.set(page,controller);
+ const timeout=setTimeout(()=>controller.abort(),8000);
+ const isCurrent=()=>phoneRequests.get(page)===controller&&page.querySelector('#personalPhoneBadge')===badge;
+ try{
+  if(typeof supabaseClient==='undefined')throw Error('phone_status_client_unavailable');
+  const {data,error}=await supabaseClient.from('wallet_accounts')
+   .select('libyana_phone').eq('user_id',userId).abortSignal(controller.signal).maybeSingle();
+  if(error||controller.signal.aborted)throw error||Error('phone_status_timeout');
+  if(!isCurrent())return;
+  const number=String(data?.libyana_phone||'');
+  const valid=/^9[1-4][0-9]{7}$/.test(number);
+  showRegisteredPhone(page,valid?'registered':'empty',valid?'0'+number:'');
+ }catch(error){
+  if(isCurrent()){
+   showRegisteredPhone(page,'unknown');
+   console.warn('[account/personal] Registered phone unavailable',error);
+  }
+ }finally{
+  clearTimeout(timeout);
+  if(phoneRequests.get(page)===controller)phoneRequests.delete(page);
  }
 }
 function openVerification(page){
@@ -41,6 +69,7 @@ function openVerification(page){
 function decorate(page,user,name){
  if(!page||!user)return;
  page.dataset.premiumProfile='ready';
+ page.dataset.phoneUserId=user.id;
  page.classList.add('premium-personal-profile');
  const header=page.querySelector('.personal-page-header > div');
  if(header&&!header.querySelector('p')){
@@ -91,7 +120,9 @@ function decorate(page,user,name){
   phone.addEventListener('click',()=>{if(typeof window.openPhoneRegistrationPage==='function')window.openPhoneRegistrationPage();else openVerification(page);});fields.append(phone);
   const active=document.createElement('div');active.innerHTML=row('shield','حالة الحساب','مسجل الدخول','premium-active-value');
   fields.append(active.firstElementChild);
-  const secure=document.createElement('div');secure.innerHTML=row('lock','حماية الحساب','جاري الفحص…','premium-security-value');
+  const method=user.app_metadata?.provider;
+  const loginMethod=method==='google'?'Google':method==='email'?'البريد الإلكتروني':'حساب مسجّل';
+  const secure=document.createElement('div');secure.innerHTML=row('lock','طريقة تسجيل الدخول',loginMethod,'premium-security-value');
   fields.append(secure.firstElementChild);
   const joined=user.created_at?new Date(user.created_at):null;
   const date=(joined&&!Number.isNaN(joined.getTime()))?joined.toLocaleDateString('ar-LY',{year:'numeric',month:'long',day:'numeric'}):'غير متوفر';
@@ -104,30 +135,24 @@ function decorate(page,user,name){
  const heading=section?.querySelector('.personal-phone-heading');
  if(heading){
   const button=document.createElement('button');button.type='button';button.id='premiumOpenPhone';button.className='personal-phone-heading';
-  button.setAttribute('aria-label','فتح توثيق رقم الهاتف');
+  button.setAttribute('aria-label','إدارة أرقام الهاتف');
   while(heading.firstChild)button.appendChild(heading.firstChild);
+  const phoneTitle=button.querySelector('.personal-phone-heading-text strong');
+  const phoneSubtitle=button.querySelector('.personal-phone-heading-text span');
+  if(phoneTitle)phoneTitle.textContent='أرقام الهاتف';
+  if(phoneSubtitle)phoneSubtitle.textContent='إضافة وإدارة أرقام الحساب';
+  const note=section.querySelector('.personal-phone-security span');
+  if(note)note.textContent='تقدر تدير الأرقام المحفوظة من صفحة أرقام الهاتف.';
   const arrow=document.createElement('span');arrow.className='premium-phone-arrow';arrow.textContent='‹';arrow.setAttribute('aria-hidden','true');
   button.append(arrow);heading.replaceWith(button);
   button.addEventListener('click',()=>openVerification(page));
  }
- const badge=page.querySelector('#personalPhoneBadge');
- if(badge){
-  page._premiumBadgeObserver?.disconnect();
-  const observer=new MutationObserver(()=>verifiedState(page));
-  observer.observe(badge,{attributes:true,attributeFilter:['data-state'],childList:true});
-  page._premiumBadgeObserver=observer;
- }
- verifiedState(page);
+ void loadRegisteredPhone(page,user.id);
 }
-async function refreshFromServer(){
+function refreshFromServer(){
  const page=document.getElementById('personalDetailsPage');
- if(!page?.classList.contains('visible')||typeof window.renderResalaOtp!=='function')return;
- try{
-  const client=typeof supabaseClient==='undefined'?null:supabaseClient;
-  if(!client)return;
-  const {data:{session}}=await client.auth.getSession();
-  if(session?.user)await window.renderResalaOtp(session.user);
- }catch(err){console.warn('[account/personal] Phone status refresh failed',err)}
+ if(page?.classList.contains('visible'))return loadRegisteredPhone(page,page.dataset.phoneUserId);
 }
-window.L1017nPersonalPremium=Object.freeze({decorate,refresh:verifiedState,refreshFromServer});
+window.addEventListener('l1017n:account-phones-updated',()=>void refreshFromServer());
+window.L1017nPersonalPremium=Object.freeze({decorate,refreshFromServer});
 })();

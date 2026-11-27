@@ -103,6 +103,33 @@
    '<strong>لا توجد عمليات في هذا القسم</strong>'+
    '<p>لما تسجل عملية شحن أو شراء، بتظهر هنا بحالتها المسجلة.</p></div>';
  }
+ const topupPageSize=30;
+ function fetchTopupPage(client,userId,offset=0){
+  return client.from('topup_requests').select('id,amount,method,status,created_at,transfer_reference')
+   .eq('user_id',userId).order('created_at',{ascending:false}).order('id',{ascending:false})
+   .range(offset,offset+topupPageSize-1);
+ }
+ async function visibleTopups(client,userId,serial,firstPage){
+  const [visibility,initial]=await Promise.all([
+   client.rpc('get_my_visible_ussd_topup_ids'),
+   firstPage||fetchTopupPage(client,userId)
+  ]);
+  if(visibility.error)return {error:visibility.error};
+  const visibleIds=new Set((visibility.data||[]).map(row=>row.request_id));
+  const items=[];
+  let result=initial;
+  for(let offset=0;serial===state.serial;offset+=topupPageSize){
+   if(result.error)return {error:result.error};
+   const rows=result.data||[];
+   for(const row of rows){
+    if(!String(row.transfer_reference||'').startsWith('ussd-intent:')||
+       row.status==='approved'||visibleIds.has(row.id))items.push(row);
+   }
+   if(items.length>=12||rows.length<topupPageSize)break;
+   result=await fetchTopupPage(client,userId,offset+topupPageSize);
+  }
+  return {data:items.slice(0,12)};
+ }
  async function refresh(){
   if(!page)return;
   const serial=++state.serial;
@@ -121,8 +148,7 @@
    const id=auth.user.id;
    syncNoticeUser(id);
    const [topups,purchases]=await Promise.all([
-    client.from('topup_requests').select('id,amount,method,status,created_at')
-     .eq('user_id',id).order('created_at',{ascending:false}).limit(12),
+    visibleTopups(client,id,serial),
     client.from('purchase_orders').select('id,product_name,total_amount,status,created_at')
      .eq('user_id',id).order('created_at',{ascending:false}).limit(12)
    ]);
@@ -243,8 +269,7 @@
    if(!userId){resetObserved();return;}
    syncNoticeUser(userId);
    const [topups,purchases]=await Promise.all([
-    client.from('topup_requests').select('id,amount,method,status,created_at')
-     .eq('user_id',userId).order('created_at',{ascending:false}).limit(30),
+    fetchTopupPage(client,userId),
     client.from('purchase_orders').select('id,product_name,total_amount,status,created_at')
      .eq('user_id',userId).order('created_at',{ascending:false}).limit(30)
    ]);
@@ -281,8 +306,16 @@
    storeNoticeState();
    paintUnreadBadge();
    if(page&&!state.loading){
-    state.rows=all.slice(0,12);state.errors=[];
-    render();
+    const serial=state.serial;
+    const visible=await visibleTopups(client,userId,serial,topups);
+    if(page&&serial===state.serial&&observedUser===userId&&!state.loading){
+     state.errors=visible.error?['topup']:[];
+     state.rows=[
+      ...(visible.error?[]:visible.data).map(row=>({...row,kind:'topup'})),
+      ...all.filter(row=>row.kind==='purchase')
+     ].sort((a,b)=>(Date.parse(b.created_at)||0)-(Date.parse(a.created_at)||0)).slice(0,12);
+     render();
+    }
    }
    // Avoid flooding the screen if many old records were updated together.
    toastQueue.push(...updates.slice(0,3));

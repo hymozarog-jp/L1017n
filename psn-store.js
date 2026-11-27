@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const db = () => typeof supabaseClient !== 'undefined' ? supabaseClient : null;
+  const supportedRegions = ['أمريكا', 'السعودية', 'الإمارات'];
   let root, entries = [], selectedRegion = null, regionScroll = 0, requestSeq = 0;
   const el = (tag, cls, label) => { const n = document.createElement(tag); if (cls) n.className = cls; if (label !== undefined) n.textContent = label; return n; };
   const cardArt = 'game-covers/packages/psn.webp';
@@ -66,8 +67,7 @@
     regions.replaceChildren(); items.replaceChildren();
     root.querySelector('.psn-back').setAttribute('aria-label', selectedRegion ? 'العودة إلى دول بلايستيشن' : 'العودة إلى المتجر');
     const filtered = entries.filter(p => (!only || p.available) && (p.name+' '+p.region).toLocaleLowerCase().includes(query));
-    const preferredRegions = ['أمريكا','السعودية','الإمارات'];
-    const keys = [...new Set(filtered.map(p => p.region))].sort((a,b)=>{const rank=x=>preferredRegions.includes(x)?preferredRegions.indexOf(x):99;return rank(a)-rank(b)||a.localeCompare(b,'ar');});
+    const keys = supportedRegions.filter(region => filtered.some(product => product.region === region));
     if (!selectedRegion) {
       list.hidden = true;
       regions.hidden = false;
@@ -133,8 +133,9 @@
       if (error) throw error;
       entries = (data?.products || []).filter(p =>
         /^[a-f0-9]{32}$/.test(String(p.id || '')) && typeof p.name === 'string'
-      ).map(p=>({id:p.id,name:p.name,region:String(p.region||'دول أخرى').trim()||'دول أخرى',
-        price:p.price,available:p.available===true}));
+      ).map(p=>({id:p.id,name:p.name,region:String(p.region||'').trim(),
+        price:p.price,available:p.available===true}))
+        .filter(product => supportedRegions.includes(product.region));
       draw();
       if (!data?.enabled) root.querySelector('.psn-status').textContent = 'شراء البطاقات متوقف مؤقتًا.';
     } catch (_) {

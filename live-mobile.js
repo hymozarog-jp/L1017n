@@ -454,7 +454,7 @@
       + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'
       + '<div class="ll-categories" id="llCategories" role="group" aria-label="تصفية الباقات">'
-      + FILTERS.map(([key,label,icon]) => '<button type="button" data-ll-category="' + key + '" data-ll-tone="' + icon + '" aria-pressed="' + (key==="all") + '" class="' + (key==="all"?"selected":"") + '"><span class="ll-category-icon">' + SVG(icon) + '</span><span>' + label + '</span></button>').join("") + '</div>'
+      + FILTERS.map(([key,label,icon]) => '<button type="button" data-ll-category="' + key + '" data-ll-tone="' + icon + '" aria-pressed="' + (key==="all") + '" class="' + (key==="all"?"selected":"") + '"><span class="ll-category-icon">' + SVG(icon) + '</span><span class="ll-category-indicator" aria-hidden="true"></span><span>' + label + '</span></button>').join("") + '</div>'
       + '<div id="llCatalogStatus" class="ll-empty" hidden><p role="status"></p><button type="button" class="btn btn-soft" id="llCatalogRetry" hidden>إعادة المحاولة</button></div>'
       + '<section id="llGamesSection" aria-labelledby="llGamesHeading">' + sectionHeading("llGamesHeading","games","شحن الألعاب")
       + '<div class="ll-catalog" id="llCatalog" aria-live="polite"></div></section>'
@@ -561,9 +561,28 @@
       renderCatalog();
       updateNavigation("home");
     });
+    const categoryTapAnimations = new WeakMap();
+    function animateCategoryTap(element, frames, timing) {
+      if (typeof element?.animate !== "function") return;
+      categoryTapAnimations.get(element)?.cancel();
+      categoryTapAnimations.set(element, element.animate(frames, timing));
+    }
     q("#llCategories").addEventListener("click", e => {
       const b = e.target.closest("[data-ll-category]");
-      if (b) setCategory(b.dataset.llCategory);
+      if (!b) return;
+      setCategory(b.dataset.llCategory);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      animateCategoryTap(b.querySelector(".ll-category-icon"), [
+        {transform:"translateX(0)"},
+        {transform:"translateX(-2px) rotate(-3deg)"},
+        {transform:"translateX(2px) rotate(3deg)"},
+        {transform:"translateX(0)"}
+      ], {duration:220,easing:"ease-out"});
+      animateCategoryTap(b.querySelector(".ll-category-indicator"), [
+        {transform:"translateX(-50%) scaleX(.55)"},
+        {transform:"translateX(-50%) scaleX(1.28)",offset:.58},
+        {transform:"translateX(-50%) scaleX(1)"}
+      ], {duration:280,easing:"ease-out"});
     });
     const track = q("#llSlideTrack");
     const slides = [...track.querySelectorAll("[data-ll-slide]")];

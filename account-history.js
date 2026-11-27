@@ -132,6 +132,27 @@
       status.textContent='';
     }
   }
+  async function loadTopupHistory(client,userId,serial){
+    // The order screen uses the same receipt-backed check for USSD intents.
+    const visibility=await client.rpc('get_my_visible_ussd_topup_ids');
+    if(visibility.error)return {error:visibility.error};
+    const visibleIds=new Set((visibility.data||[]).map(row=>row.request_id));
+    const items=[];
+    for(let offset=0;items.length<limit&&serial===state.serial;offset+=limit){
+      const {data,error}=await client.from('topup_requests')
+        .select('id,amount,method,status,created_at,transfer_reference')
+        .eq('user_id',userId).order('created_at',{ascending:false})
+        .order('id',{ascending:false}).range(offset,offset+limit-1);
+      if(error)return {error};
+      const rows=data||[];
+      for(const row of rows){
+        if(!String(row.transfer_reference||'').startsWith('ussd-intent:')||
+           row.status==='approved'||visibleIds.has(row.id))items.push(row);
+      }
+      if(rows.length<limit)break;
+    }
+    return {data:items.slice(0,limit)};
+  }
   async function refresh(){
     const page=document.getElementById(pageId);
     if(!page||!page.classList.contains('visible'))return;
@@ -154,8 +175,7 @@
       }
       const id=auth.user.id;
       const [topups,purchases]=await Promise.all([
-        client.from('topup_requests').select('id,amount,method,status,created_at,transfer_reference,admin_note')
-          .eq('user_id',id).order('created_at',{ascending:false}).limit(limit),
+        loadTopupHistory(client,id,serial),
         client.from('purchase_orders').select('id,product_name,total_amount,status,created_at,admin_note')
           .eq('user_id',id).order('created_at',{ascending:false}).limit(limit),
       ]);

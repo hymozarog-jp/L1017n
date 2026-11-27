@@ -262,3 +262,17 @@ body.l1017-rank-privacy-open{overflow:hidden!important;overscroll-behavior:none}
   #leaderboardView .l1017-rank-back{min-width:80px!important;padding:0 8px!important}
   #leaderboardView .l1017-rank-toolbar-brand small{font-size:8px!important}
 }
+
+/* Only refresh remains in the public ranking toolbar. */
+#leaderboardView.l1017-rank-ready:not(.hidden) .l1017-rank-toolbar{
+  display:flex!important;
+  justify-content:flex-end;
+  min-height:0!important;
+  padding:4px 0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  margin-bottom:8px!important;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}

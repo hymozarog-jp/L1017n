@@ -1,12 +1,12 @@
 #l1017StoreNotice{
  --notice-accent:#d5c6f5;--notice-bg:#211a30;--notice-ring:#6c538c;
- position:fixed;z-index:2147483646;inset:auto 12px calc(max(18px,env(safe-area-inset-bottom)) + 74px);
- width:max-content;max-width:min(460px,calc(100% - 24px));margin-inline:auto;
+ position:fixed;z-index:2147483646;inset:calc(env(safe-area-inset-top, 0px) + 12px) 12px auto;
+ width:max-content;max-width:min(460px,calc(100% - 24px));margin:0 auto;
  box-sizing:border-box;display:flex;align-items:center;gap:11px;
  direction:rtl;text-align:right;padding:12px 14px;
  border:1px solid var(--notice-ring);border-radius:16px;background:var(--notice-bg);color:#fff;
  box-shadow:0 10px 28px #0007;font:650 14px/1.55 system-ui,sans-serif;
- opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;
+ opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s;
  pointer-events:none;
 }
 #l1017StoreNotice[hidden]{display:none!important}

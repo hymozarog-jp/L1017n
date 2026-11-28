@@ -1814,7 +1814,7 @@ setTimeout(refreshAdminAccess,0);
    if(!navigator.clipboard?.writeText)throw Error('clipboard_unavailable');
    await navigator.clipboard.writeText(identifier);
    toast('تم نسخ معرّف الحساب (رقم الهاتف)');
-  }catch(_){window.prompt('انسخ معرّف حسابك:',identifier)}
+  }catch(_){toast('تعذّر النسخ التلقائي. انسخ الرقم يدويًا.','error');window.prompt('انسخ معرّف حسابك:',identifier)}
   return;
  }
  const edit=e.target.closest('#accountEditName');if(edit){editName();return}

@@ -21,6 +21,7 @@
    node=document.createElement("div");
    node.id="l1017StoreNotice";
    node.hidden=true;
+   if(typeof node.showPopover==='function')node.setAttribute('popover','manual');
    node.innerHTML='<span class="store-notice-mark" aria-hidden="true"></span><span class="store-notice-text"></span>';
   }
   clearTimeout(timer);
@@ -35,10 +36,16 @@
   node.querySelector(".store-notice-mark").innerHTML='<svg viewBox="0 0 24 24">'+marks[tone]+'</svg>';
   node.querySelector(".store-notice-text").textContent=text;
   node.hidden=false;
+  if(node.hasAttribute("popover")&&!node.matches(":popover-open")){
+   try{node.showPopover();}catch(_){node.removeAttribute("popover");}
+  }
   frame=requestAnimationFrame(()=>node.classList.add("is-visible"));
   timer=setTimeout(()=>{
    node.classList.remove("is-visible");
-   hideTimer=setTimeout(()=>{node.hidden=true;},220);
+   hideTimer=setTimeout(()=>{
+    if(node.hasAttribute("popover")&&node.matches(":popover-open"))node.hidePopover();
+    node.hidden=true;
+   },220);
   },tone==="error"?4300:3100);
  }
  window.L1017nToast=Object.freeze({show});

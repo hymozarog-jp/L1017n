@@ -97,12 +97,13 @@
     tg.textContent="التواصل عبر تيليجرام";
     tg.setAttribute("aria-label","نسخ تفاصيل الطلب وفتح بوت متجر L1017n في تيليجرام");
     const draft=textFor(o);
-    function copyDetails(){
+    async function copyDetails(){
       try{
-        if(navigator.clipboard&&navigator.clipboard.writeText){
-          navigator.clipboard.writeText(draft).then(()=>{copy.innerHTML='<svg class="l1017-icon" aria-hidden="true"><use href="#l1017-icon-check"></use></svg> تم نسخ التفاصيل'}).catch(()=>{copy.textContent="حدّد التفاصيل وانسخها"});
-        }else copy.textContent="حدّد التفاصيل وانسخها";
-      }catch(_){copy.textContent="حدّد التفاصيل وانسخها";}
+        await navigator.clipboard.writeText(draft);
+        window.L1017nToast?.show("تم نسخ تفاصيل الطلب","success");
+      }catch(_){
+        window.L1017nToast?.show("تعذّر النسخ. حدّد التفاصيل وانسخها يدويًا.","error");
+      }
     }
     tg.addEventListener("click",copyDetails);
     const hint=document.createElement("p");hint.className="manual-handover-note";

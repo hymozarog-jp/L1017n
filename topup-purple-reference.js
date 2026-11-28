@@ -286,8 +286,8 @@
   copy.addEventListener('click',async()=>{
     const receiver=window.L1017nDirectTransfer?.receiver;
     if(!receiver)return;
-    try{await navigator.clipboard.writeText(receiver);message('تم نسخ رقم المتجر.','success');}
-    catch(_){receiverInput.focus();receiverInput.select();message('حدّد الرقم وانسخه من هاتفك.','');}
+    try{await navigator.clipboard.writeText(receiver);window.L1017nToast?.show("تم نسخ رقم المتجر","success");}
+    catch(_){receiverInput.focus();receiverInput.select();window.L1017nToast?.show("تعذّر النسخ. حدّد الرقم وانسخه يدويًا.","error");}
   });
   function sync(){
     const receiver=window.L1017nDirectTransfer?.receiver;

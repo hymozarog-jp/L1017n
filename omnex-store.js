@@ -44,7 +44,7 @@ function showOrder(order){
  area.append(make('p','',order.product_name));area.append(make('small','ox-order-id','#'+String(order.order_id).slice(0,8).toUpperCase()));
  const msg=order.state==='completed'?'منتجك جاهز. يمكنك الرجوع له من طلباتي.':order.state==='review'?'الطلب قيد المراجعة لدى المورد. لا تعاود الشراء؛ المبلغ محفوظ على نفس الطلب.':'ننتظر تنفيذ المورد، ونتابع حالته تلقائيًا حتى لو أغلقت الصفحة.';
  if(order.state!=='refunded')area.append(make('p','',msg));
- if(order.state==='completed'&&Array.isArray(order.codes))for(const code of order.codes){const value=make('pre','ox-code',String(code)),copy=make('button','ox-soft','نسخ الكود');copy.type='button';copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(code));copy.textContent='تم النسخ ✓'}catch{copy.textContent='اضغط مطولًا على الكود لنسخه'}};area.append(value,copy)}
+ if(order.state==='completed'&&Array.isArray(order.codes))for(const code of order.codes){const value=make('pre','ox-code',String(code)),copy=make('button','ox-soft','نسخ الكود');copy.type='button';copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(code));window.L1017nToast?.show("تم نسخ الكود","success")}catch{window.L1017nToast?.show("تعذّر النسخ. اضغط مطولًا على الكود لنسخه.","error")}};area.append(value,copy)}
  const orders=make('button','ox-primary','فتح طلباتي');orders.type='button';orders.onclick=()=>{close();if(typeof switchView==='function')switchView('orders')};area.append(orders);status('');
  if(final){clearPending();refreshStore()}
 }

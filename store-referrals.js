@@ -526,6 +526,7 @@
     const textNode=button?.querySelector('span');
     const original=textNode?.textContent||'';
     function feedback(ok){
+      window.L1017nToast?.show(ok?'تم نسخ رابط الدعوة':'تعذّر نسخ رابط الدعوة.',ok?'success':'error');
       uiStatus(ok?'تم نسخ رابط الدعوة بنجاح. أرسله لصديقك.':'تعذر النسخ تلقائيًا. اضغط مطولًا على رابط الدعوة لنسخه.',!ok);
       if(!ok)selectReferralLink();
       if(textNode){

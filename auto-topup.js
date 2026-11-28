@@ -467,11 +467,12 @@
       copy.addEventListener('click',async()=>{
         try{
           await navigator.clipboard.writeText(codeFor(amount));
+          window.L1017nToast?.show("تم نسخ كود التحويل","success");
           armDialHandoff(intent.request_id,amount);
           showVerifier(intent.request_id,amount);
           setIconText(copy,'check','تم نسخ الكود — افتح تطبيق المكالمات');
         }
-        catch(_){window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
+        catch(_){window.L1017nToast?.show("تعذّر النسخ التلقائي. انسخ الكود يدويًا.","error");window.prompt('انسخ كود الاتصال إلى تطبيق الهاتف:',codeFor(amount))}
       });
       panel.append(copy);
       const status=el('div','auto-topup-status','⏳ طلب التحويل جاهز. إكمال التحويل مطلوب قبل إضافة الرصيد للمحفظة.');

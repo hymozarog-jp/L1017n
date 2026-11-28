@@ -57,7 +57,7 @@
       finally{field.remove();}
       const feedback=ok=>{
         if(!copy.isConnected)return;
-        copy.textContent=ok?'✓ تم نسخ الكود':'اضغط مطولًا على الكود لنسخه';
+        window.L1017nToast?.show(ok?'تم نسخ الكود':'تعذّر النسخ. اضغط مطولًا على الكود لنسخه.',ok?'success':'error');
         if(!ok){
           try{
             const selection=window.getSelection();

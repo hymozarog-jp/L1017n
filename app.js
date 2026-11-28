@@ -1,10 +1,10 @@
 (function(){
   var s=document.createElement('script');
-  s.src='legacy-app.js?v=store-toast-20261128-1';
+  s.src='legacy-app.js?v=copy-top-20261128-2';
   s.onerror=function(){console.error('تعذر تحميل وظائف المتجر')};
   s.onload=function(){
     var auto=document.createElement('script');
-    auto.src='auto-topup.js?v=restore-transfer-code-20261118&saved-sender-20261118&inline-real-credit-20261108-2&dial-code-telegram-20261105-1&sms-auto-amount-20261109=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1';
+    auto.src='auto-topup.js?v=copy-top-20261128-2&restore-transfer-code-20261118&saved-sender-20261118&inline-real-credit-20261108-2&dial-code-telegram-20261105-1&sms-auto-amount-20261109=1&native-dialer-auto-20261109=1&three-dots-20261109=2-horizontal&no-telegram-approval=20261109-1&direct-transfer-label-20261109-1';
     auto.onerror=function(){console.error('تعذر تحميل الشحن الآلي');var b=document.getElementById('transferInstructions');if(b)b.textContent='تعذر تحميل خدمة الشحن الآلي؛ لا تحوّل حتى يتم إصلاحها.'};
     document.body.appendChild(auto);
     var ranking=document.createElement('script');

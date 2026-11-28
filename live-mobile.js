@@ -156,7 +156,8 @@
       +'<span class="ll-game-section-details"><strong>روبلوكس</strong>' + packageAvailability(count) + '</span>'
       +'</button></article>';
   }
-  function notify(message) {
+  function notify(message, tone) {
+    if (window.L1017nToast) { window.L1017nToast.show(message, tone); return; }
     let n = q("#l1017LiveToast");
     if (!n) return;
     n.textContent = message;

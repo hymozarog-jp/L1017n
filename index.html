@@ -510,25 +510,23 @@
 <div class="topup-modal hidden" id="topupModal" role="dialog" aria-modal="true" aria-labelledby="topupModalTitle" dir="rtl"><div class="topup-modal-sheet"><div class="topup-modal-heading"><button type="button" id="topupModalClose" class="topup-modal-close" aria-label="إغلاق"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-x"></use></svg></button><span class="topup-modal-tag">L1017n WALLET</span></div><div class="topup-modal-hero"><div class="topup-modal-symbol">＋</div><h2 id="topupModalTitle">شحن المحفظة</h2><p>الشحن الآلي متاح لرقم ليبيانا المفعّل في حسابك.</p></div><div class="topup-modal-content"><h3>طريقة الشحن الآلي</h3><button type="button" class="topup-modal-provider selected" data-modal-provider="libyana"><span class="topup-modal-provider-logo libyana">L</span><span><strong>ليبيانا</strong><small>شحن رصيد المحفظة عبر ليبيانا</small></span><span class="topup-modal-check"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-check"></use></svg></span></button><div class="topup-modal-info"><svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-lock"></use></svg> اختار المبلغ، افتح كود USSD وأكد التحويل من ليبيانا. إذا وصل إشعار ليبيانا مطابق للطلب والرقم الموثّق، يُعتمد الشحن المؤهّل تلقائيًا. العمليات غير المطابقة أو الكبيرة تحتاج مراجعة.</div><button type="button" id="topupModalContinue" class="topup-modal-continue">متابعة للشحن الآلي <span>←</span></button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script src="gamebox-loading.js?v=robux-catalog-loading-20261124-1&entry-splash-20261120"></script>
+<link rel="stylesheet" href="store-toast.css?v=20261128-1">
+<script src="store-toast.js?v=20261128-1"></script>
 <script>
 (function(){
-  function showError(text){
-    var box=document.getElementById('site-load-error');
-    if(!box){box=document.createElement('div');box.id='site-load-error';box.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:16px;background:#401818;color:white;border-radius:12px;text-align:center;font:16px sans-serif';document.body.appendChild(box)}
-    box.textContent=text;
-  }
-  window.addEventListener('error',function(e){
-    var message=String(e.message||'');
-    // Browser layout notification, not a failed checkout or an application
-    // exception. Never cover the MM2 quantity/checkout interface with it.
+  function showError(text){window.L1017nToast?.show(text,'error');}
+  window.addEventListener('error',function(event){
+    const message=String(event.message||'');
+    if(!message)return;
     if(/^ResizeObserver loop (?:limit exceeded|completed with undelivered notifications)\.?$/i.test(message)){
-      if(typeof e.preventDefault==='function')e.preventDefault();
+      event.preventDefault();
       return;
     }
-    showError('خطأ JavaScript: '+(e.message||'غير معروف')+(e.filename?' — '+e.filename.split('/').pop():'')+(e.lineno?'، السطر '+e.lineno:''));
+    showError('صار خطأ في المتجر. جرّب مرة ثانية.');
   });
-  window.addEventListener('unhandledrejection',function(e){
-    var reason=e.reason;console.error('[L1017N] Unhandled async error:',reason&&reason.stack||reason);showError('خطأ أثناء تشغيل المتجر: '+(reason&&reason.message?reason.message:String(reason||'غير معروف')));
+  window.addEventListener('unhandledrejection',function(event){
+    console.error('[L1017N] Unhandled async error:',event.reason);
+    showError('تعذّر إكمال العملية. جرّب مرة ثانية.');
   });
   function startApp(){
     if(!window.supabase){showError('مكتبة تسجيل الدخول لم تتحمّل. جرّب تبديل الشبكة أو تعطيل مانع المحتوى.');return}
@@ -546,7 +544,7 @@
         };
         document.body.appendChild(script);
       }
-      loadApp('app.js?v=orders-search-20261127-1',true);
+      loadApp('app.js?v=store-toast-20261128-1',true);
     }catch(e){showError('خطأ أثناء تشغيل المتجر: '+(e.message||e))}
   }
   var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -1023,7 +1021,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 }
 #llLanding .ll-telegram-channel>svg{flex:0 0 13px;width:13px;height:13px;color:#a2e5ff}
 </style>
-<script src="live-mobile.js?v=bottom-nav-haptics-20261127-1&category-tap-20261127-1&domain-load-20261124-1&catalog-loading-20261124-1&wide-billboard-4k-20261122-1&telegram-community-20261126-1&compact-carousel-20261124-2&package-count-box-20261124-1" defer></script>
+<script src="live-mobile.js?v=store-toast-20261128-1&bottom-nav-haptics-20261127-1&category-tap-20261127-1&domain-load-20261124-1&catalog-loading-20261124-1&wide-billboard-4k-20261122-1&telegram-community-20261126-1&compact-carousel-20261124-2&package-count-box-20261124-1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=top-controls-20261127-1">

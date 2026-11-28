@@ -15,7 +15,7 @@ function orderStatusClass(status){return status==='completed'?'approved':(['reje
 let toastTimer,products=[],robuxAvailable=0,robuxUnlimited=false,showTopupCode=false;
 let robuxStockPoller=null;
 let adminRobuxStockWatcher=null;
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}
+function toast(msg,tone){if(window.L1017nToast){window.L1017nToast.show(msg,tone);return}const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const uiIcon=name=>'<svg class="l1017-icon" aria-hidden="true" focusable="false"><use href="#l1017-icon-'+name+'"></use></svg>';
 const PRODUCT_IMAGE_PREFIX=SUPABASE_URL+'/storage/v1/object/public/l1017n-product-images/products/';
@@ -406,8 +406,8 @@ async function renderOrders(){
            try{
              if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
              await navigator.clipboard.writeText(code);
-             copyCode.textContent='تم النسخ ✓';
-           }catch(_){copyCode.textContent='اضغط مطولاً على الكود لنسخه';}
+             toast('تم نسخ الكود','success');
+           }catch(_){toast('تعذّر النسخ. اضغط مطولًا على الكود لنسخه.','error');}
          });
          line.append(number,copyCode);
          receipt.append(line);
@@ -507,9 +507,9 @@ async function renderOrders(){
    const id=button.dataset.orderCopy;
    try{
      if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
-     await navigator.clipboard.writeText(id);button.textContent='تم نسخ الرقم';
-     setTimeout(()=>{if(button.isConnected)button.textContent='نسخ رقم الطلب'},1700);
-   }catch(_){toast('رقم طلبك: '+id)}
+     await navigator.clipboard.writeText(id);
+     toast('تم نسخ رقم الطلب','success');
+   }catch(_){toast('تعذّر نسخ رقم الطلب.','error');}
  }));
 
  root.querySelectorAll('[data-order-contact]').forEach(btn=>btn.addEventListener('click',()=>{

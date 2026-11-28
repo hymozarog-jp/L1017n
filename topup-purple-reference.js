@@ -15,10 +15,15 @@
     coins:'<ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>',
     check:'<circle cx="12" cy="12" r="9"/><path d="m7.7 12 2.7 2.7 5.9-6"/>',
     copy:'<rect x="7" y="7" width="13" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/>',
-    wallet:'<rect x="3" y="6.5" width="18" height="13.5" rx="3"/><path d="M3.8 8a3 3 0 0 1 3-4h11M16 13h3"/>',
-    card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>'
+    wallet:'<rect x="3" y="6.5" width="18" height="13.5" rx="3"/><path d="M3.8 8a3 3 0 0 1 3-4h11M16 13h3"/>'
   };
   const svg=(name)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icon[name]+'</svg>';
+  const methodArt={
+    ussd:'<rect x="9" y="4" width="17" height="27" rx="4" fill="currentColor" fill-opacity=".18"/><path d="M14 8h7m-8 16h9m-9-4h9m-6-3-2 10m7-10-2 10"/><path d="M29 9c2 1.5 3 3.5 3 6m-4-3c1 .7 1.5 1.7 1.5 3" opacity=".8"/>',
+    manual:'<path d="m6 13 18-7a3 3 0 0 1 4 2l1 5" fill="currentColor" fill-opacity=".35"/><rect x="4" y="12" width="26" height="17" rx="4" fill="currentColor" fill-opacity=".2"/><path d="M30 18h-7a3 3 0 0 0 0 6h7a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2Z" fill="currentColor" fill-opacity=".26"/><circle cx="24" cy="21" r="1" fill="currentColor" stroke="none"/><path d="M8 25h6" opacity=".65"/>',
+    cards:'<rect x="6" y="7" width="23" height="15" rx="3" transform="rotate(-14 17.5 14.5)" fill="currentColor" fill-opacity=".25"/><rect x="5" y="13" width="26" height="17" rx="4" fill="var(--art-bg, #362821)"/><path d="M5 18h26M10 24h8m6 0h2"/><path d="m31 5 1 2.5 2.5 1L32 9.5 31 12l-1-2.5-2.5-1 2.5-1Z" fill="currentColor" stroke="none"/>'
+  };
+  const illustration=(method)=>'<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+methodArt[method]+'</svg>';
   const panel=document.createElement('section');
   panel.className='dt-home dt-purple-home';
   panel.dir='rtl';
@@ -28,13 +33,13 @@
         '<button class="dt-topup-method-close" type="button" aria-label="إغلاق طرق الشحن" autofocus>'+svg('close')+'</button>'+
       '</div>'+
       '<div class="dt-topup-method-options">'+
-        '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>شحن بكود USSD</strong><span class="dt-topup-method-badge">تلقائي</span></span><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
-        '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails"><span class="dt-topup-method-logo" aria-hidden="true">ليبيانا</span><span><span class="dt-topup-method-label"><strong>تحويل رصيد</strong><span class="dt-topup-method-badge">يدوي</span></span><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
-        '<button type="button" data-topup-method="cards" aria-label="تعبئة بكروت ليبيانا"><span class="dt-topup-card-icon" aria-hidden="true">'+svg('card')+'</span><span><span class="dt-topup-method-label"><strong>تعبئة الكروت</strong><span class="dt-topup-method-badge">كروت</span></span><small>أدخل قيمة الكرت ورقمه السري</small></span></button>'+
+        '<button type="button" data-topup-method="ussd" aria-controls="dtTransferDetails"><span class="dt-topup-method-art" aria-hidden="true">'+illustration('ussd')+'</span><span><span class="dt-topup-method-label"><strong>شحن بكود USSD</strong><span class="dt-topup-method-badge">تلقائي</span></span><small>افتح تطبيق الهاتف بكود التحويل جاهز</small></span></button>'+
+        '<button type="button" data-topup-method="manual" aria-controls="dtTransferDetails"><span class="dt-topup-method-art" aria-hidden="true">'+illustration('manual')+'</span><span><span class="dt-topup-method-label"><strong>تحويل رصيد</strong><span class="dt-topup-method-badge">يدوي</span></span><small>حوّل بنفسك إلى رقم المتجر</small></span></button>'+
+        '<button type="button" data-topup-method="cards" aria-label="تعبئة بكروت ليبيانا"><span class="dt-topup-method-art" aria-hidden="true">'+illustration('cards')+'</span><span><span class="dt-topup-method-label"><strong>تعبئة الكروت</strong><span class="dt-topup-method-badge">كروت</span></span><small>أدخل قيمة الكرت ورقمه السري</small></span></button>'+
       '</div></dialog>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
-      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><span class="dt-manual-logo" aria-hidden="true" hidden>ليبيانا</span><div class="dt-transfer-heading-copy"><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div><button type="button" class="dt-manual-close" data-manual-back aria-label="الرجوع لطرق الشحن" hidden>'+svg('close')+'</button></div>'+
+      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon" aria-hidden="true">'+illustration('ussd')+'</span><span class="dt-manual-logo" aria-hidden="true" hidden>'+illustration('manual')+'</span><div class="dt-transfer-heading-copy"><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div><button type="button" class="dt-manual-close" data-manual-back aria-label="الرجوع لطرق الشحن" hidden>'+svg('close')+'</button></div>'+
       '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span>'+svg('chevron')+'</button><button id="dtAddSender" type="button">'+svg('addPhone')+'<span>إضافة رقم</span></button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
       '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'<span class="dt-copy-label" hidden>نسخ</span></button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
@@ -53,14 +58,6 @@
       '</ol>'+
       '<p class="dt-recharge-hint">'+svg('check')+'<span>لو تأخّر التأكيد، ما تعاودش التحويل. تابع حالة الطلب في المحفظة.</span></p>'+
     '</section></div>';
-  const walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
-  if(walletLogo){
-    for(const slot of panel.querySelectorAll('.dt-topup-method-logo, .dt-manual-logo')){
-      const logo=walletLogo.cloneNode(false);
-      logo.alt='';
-      slot.replaceChildren(logo);
-    }
-  }
   form.appendChild(panel);
   form.classList.add('dt-enabled');
   for(const child of form.children){

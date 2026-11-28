@@ -1110,10 +1110,10 @@ html,body{
 }
 
 #topupDedicatedPage .dt-topup-method-options [data-topup-method="manual"] {
-  --method-accent: #bbdbff;
-  --method-border: #71a9ff90;
-  --method-bg: #1c355a;
-  --method-glow: #4c8fff48;
+  --method-accent: #e3c5ff;
+  --method-border: #a879d991;
+  --method-bg: #382452;
+  --method-glow: #a16ce052;
   animation-delay: .07s;
 }
 
@@ -1137,32 +1137,28 @@ html,body{
 #topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) { transform: scale(.98); }
 #topupDedicatedPage .dt-topup-method-options button:disabled { cursor: wait; }
 
-#topupDedicatedPage .dt-topup-method-logo {
+#topupDedicatedPage .dt-topup-method-art {
+  --art-bg: var(--method-bg);
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: clamp(46px, 13vw, 58px);
+  aspect-ratio: 1;
   box-sizing: border-box;
-  padding: 3px;
-  border: 1px solid var(--method-accent);
-  border-radius: 13px;
-  background: #fff;
-  color: #174135;
-  font-size: .75rem;
-  overflow: hidden;
+  border: 1px solid var(--method-border);
+  border-radius: 15px;
+  background: radial-gradient(circle at 25% 10%, var(--method-glow), transparent 65%), var(--method-bg);
+  color: var(--method-accent);
+  box-shadow: inset 0 1px #fff3, 0 6px 16px #0b091a55;
   transition: transform .26s ease;
 }
 
-#topupDedicatedPage .dt-topup-method-logo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 9px;
+#topupDedicatedPage .dt-topup-method-art svg {
+  width: 76%;
+  height: 76%;
 }
 
-#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) .dt-topup-method-logo {
-  transform: rotate(-5deg);
+#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) .dt-topup-method-art {
+  transform: rotate(-5deg) scale(.96);
 }
 
 #topupDedicatedPage .dt-topup-method-label {
@@ -1226,7 +1222,7 @@ html,body{
   #topupDedicatedPage dialog.dt-topup-methods::backdrop,
   #topupDedicatedPage .dt-topup-method-options button,
   #topupDedicatedPage .dt-topup-method-options button::after,
-  #topupDedicatedPage .dt-topup-method-logo,
+  #topupDedicatedPage .dt-topup-method-art,
   #topupDedicatedPage #dtTransferDetails:not([hidden]) {
     animation: none;
     transition: none;
@@ -1240,29 +1236,6 @@ html,body{
   --method-bg: #49351d;
   --method-glow: #f2b74742;
   animation-delay: .14s;
-}
-
-#topupDedicatedPage .dt-topup-card-icon {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  box-sizing: border-box;
-  border: 1px solid var(--method-accent);
-  border-radius: 13px;
-  background: linear-gradient(145deg, #79541e, #382a20);
-  color: var(--method-accent);
-  box-shadow: inset 0 1px 0 #ffffff20, 0 4px 14px #f3b74125;
-  transition: transform .26s ease;
-}
-
-#topupDedicatedPage .dt-topup-card-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-#topupDedicatedPage .dt-topup-method-options button:active:not(:disabled) .dt-topup-card-icon {
-  transform: rotate(-5deg) scale(.96);
 }
 
 /* Manual Libyana transfer, with the L1017n palette and stacked payment fields. */
@@ -1323,17 +1296,16 @@ html,body{
   flex: 0 0 44px;
   height: 44px;
   border-radius: 12px;
-  background: #fff;
-  color: #582e76;
-  font-size: .75rem;
+  background: linear-gradient(145deg, #512e75, #302043);
+  border: 1px solid #8b5bb1;
+  color: #e3c5ff;
   overflow: hidden;
 }
 
-#topupDedicatedPage .dt-manual-logo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+#topupDedicatedPage .dt-manual-logo svg,
+#topupDedicatedPage.libyana-ussd-active .dt-purple-form-top .dt-purple-form-icon svg {
+  width: 29px;
+  height: 29px;
 }
 
 #topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-purple-field {

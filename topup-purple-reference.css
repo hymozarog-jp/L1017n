@@ -1306,6 +1306,12 @@ html,body{
   font-size: clamp(16px, 4.8vw, 22px) !important;
 }
 
+/* The heading receives programmatic focus when the manual screen opens. */
+#topupDedicatedPage.libyana-manual-active #dtPurpleTitle:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 #topupDedicatedPage.libyana-manual-active .dt-purple-form-top p {
   font-size: .875rem !important;
   color: #c6b8d4 !important;
@@ -1352,6 +1358,13 @@ html,body{
   border: 1px dashed #9c6ec3 !important;
   border-radius: 15px !important;
   background: #2b1a3b !important;
+}
+
+#topupDedicatedPage.libyana-manual-active #topupForm.dt-enabled .dt-purple-home input:is(#dtReceiver,#dtAmount) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 #topupDedicatedPage.libyana-manual-active #topupForm.dt-enabled .dt-purple-home #dtReceiver {

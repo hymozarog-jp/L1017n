@@ -1265,94 +1265,196 @@ html,body{
   transform: rotate(-5deg) scale(.96);
 }
 
-
-
-/* Manual Libyana transfer uses a cool blue identity distinct from the purple USSD flow. */
+/* Manual Libyana transfer, with the L1017n palette and stacked payment fields. */
 #topupDedicatedPage.libyana-manual-active {
-  --dt-purple: #3f9cff;
-  --dt-purple-soft: #a8d8ff;
-  --dt-border: rgba(77, 166, 255, .48);
-  background:
-    radial-gradient(ellipse at 88% 4%, rgba(30, 115, 215, .22), transparent 38%),
-    radial-gradient(ellipse at 8% 48%, rgba(0, 199, 210, .12), transparent 34%),
-    linear-gradient(160deg, #09182d 0%, #0b1729 62%, #081a24 100%) !important;
+  --manual-border: #413653;
+  --manual-surface: #201a2c;
+  --manual-accent: #d8bbff;
+  background: radial-gradient(ellipse at 50% 0%, #2e1c42 0%, #100d17 65%) !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-purple-form {
-  border-color: rgba(76, 169, 255, .68) !important;
-  background: linear-gradient(148deg, #102744 0%, #101d34 62%, #102630 100%) !important;
-  box-shadow: inset 0 1px #d9f1ff18, 0 12px 34px #001b3838, 0 0 0 1px #44c4ff16 !important;
-  animation: libyana-manual-card-in .38s cubic-bezier(.2,.75,.25,1) both;
-}
+
+#topupDedicatedPage.libyana-manual-active :is(.tp-dedicated-heading, .tp-clean-header),
 #topupDedicatedPage.libyana-manual-active .dt-purple-form-top .dt-purple-form-icon,
 #topupDedicatedPage.libyana-manual-active .dt-purple-field-icon {
-  border: 1px solid #57b8ff80 !important;
-  background: linear-gradient(145deg, #174d78, #123451) !important;
-  color: #9bddff !important;
-  box-shadow: inset 0 1px #ffffff1c, 0 4px 14px #098dcb25 !important;
+  display: none !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-form-top h2 { color: #f1f9ff !important; }
-#topupDedicatedPage.libyana-manual-active .dt-purple-form-top p,
-#topupDedicatedPage.libyana-manual-active .dt-purple-field label,
-#topupDedicatedPage.libyana-manual-active .dt-sender-count { color: #c8dff4 !important; }
-#topupDedicatedPage.libyana-manual-active .dt-purple-home input:is(#dtSender,#dtReceiver,#dtAmount),
-#topupDedicatedPage.libyana-manual-active .dt-sender-picker button,
-#topupDedicatedPage.libyana-manual-active .dt-sender-picker select {
-  border-color: #4388bb85 !important;
-  background: linear-gradient(145deg, #142b46, #12243b) !important;
-  color: #f1f8ff !important;
+
+#topupDedicatedPage.libyana-manual-active #topupForm.dt-enabled .dt-purple-form {
+  gap: 14px !important;
+  padding: clamp(12px, 4vw, 22px) !important;
+  border-color: var(--manual-border) !important;
+  border-radius: 24px !important;
+  background: #17131f !important;
+  box-shadow: 0 16px 42px #08060eb0 !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-home input:is(#dtSender,#dtReceiver,#dtAmount):focus,
-#topupDedicatedPage.libyana-manual-active .dt-sender-picker button:focus-visible,
-#topupDedicatedPage.libyana-manual-active .dt-sender-picker select:focus-visible,
-#topupDedicatedPage.libyana-manual-active .dt-purple-receiver:focus-within {
-  border-color: #57d3e6 !important;
-  box-shadow: 0 0 0 3px #35bce62c !important;
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-form-top {
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 11px;
+  border: 1px solid var(--manual-border);
+  border-radius: 17px;
+  background: var(--manual-surface);
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-receiver,
-#topupDedicatedPage.libyana-manual-active .dt-purple-amount {
-  border-color: #4388bb85 !important;
-  background: linear-gradient(145deg, #142b46, #12243b) !important;
+
+#topupDedicatedPage.libyana-manual-active .dt-transfer-heading-copy {
+  flex: 1;
+  min-width: 0;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-amount span { color: #9bddff !important; }
-#topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-copy,
-#topupDedicatedPage.libyana-manual-active .dt-purple-home #dtAddSender {
-  border-color: #4ba9e68c !important;
-  background: linear-gradient(145deg, #174d78, #123451) !important;
-  color: #c5ecff !important;
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-form-top h2 {
+  font-size: clamp(16px, 4.8vw, 22px) !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-message {
-  border-color: #3187b74d !important;
-  background: #0e2b43 !important;
-  color: #c5e9ff !important;
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-form-top p {
+  font-size: .875rem !important;
+  color: #c6b8d4 !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-submit {
-  border-color: #57cfed !important;
-  background: linear-gradient(105deg, #087eae 0%, #147ed0 48%, #2b62c2 100%) !important;
-  box-shadow: inset 0 1px #ffffff52, 0 8px 23px #087dbb45 !important;
+
+#topupDedicatedPage .dt-manual-logo:not([hidden]) {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #fff;
+  color: #582e76;
+  font-size: .75rem;
+  overflow: hidden;
+}
+
+#topupDedicatedPage .dt-manual-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-purple-field {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-field label {
+  color: #e8dcf2 !important;
+  font-size: .9rem !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-receiver {
+  direction: rtl !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center;
+  gap: 4px !important;
+  padding: 5px 8px;
+  border: 1px dashed #9c6ec3 !important;
+  border-radius: 15px !important;
+  background: #2b1a3b !important;
+}
+
+#topupDedicatedPage.libyana-manual-active #topupForm.dt-enabled .dt-purple-home #dtReceiver {
+  padding: 4px !important;
+  text-align: right !important;
   color: #fff !important;
+  font-size: clamp(17px, 5.2vw, 26px) !important;
 }
-#topupDedicatedPage.libyana-manual-active .dt-purple-submit:hover:not(:disabled) {
-  filter: brightness(1.1);
-  box-shadow: inset 0 1px #ffffff68, 0 10px 26px #087dbb5c !important;
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-copy,
+#topupDedicatedPage.libyana-manual-active #dtAddSender,
+#topupDedicatedPage [data-manual-back]:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border: 1px solid #59456d;
+  border-radius: 12px;
+  background: var(--manual-surface);
+  color: #f5eaff;
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 700;
+  cursor: pointer;
 }
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-copy {
+  display: inline-flex !important;
+  width: auto !important;
+  min-height: 38px;
+  padding-inline: 8px !important;
+  border: 1px solid #72568a !important;
+  border-radius: 10px !important;
+  background: #20162d !important;
+  color: #f5eaff !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-copy:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+#topupDedicatedPage.libyana-manual-active [data-manual-back]:focus-visible {
+  outline-color: var(--manual-accent) !important;
+}
+
+#topupDedicatedPage.libyana-manual-active #dtPickSender,
+#topupDedicatedPage.libyana-manual-active .dt-purple-amount {
+  border-color: var(--manual-border) !important;
+  background: #110e18 !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-amount span {
+  order: -1;
+  align-self: stretch;
+  padding-inline: 13px !important;
+  border-inline-end: 1px solid var(--manual-border);
+  color: var(--manual-accent);
+  font-size: 1rem !important;
+}
+
+#topupDedicatedPage.libyana-manual-active #topupForm.dt-enabled .dt-purple-home #dtAmount {
+  min-height: 56px !important;
+  padding: 8px !important;
+  text-align: center !important;
+  font-size: 1.5rem !important;
+}
+
+#topupDedicatedPage.libyana-manual-active :is(.dt-purple-amount, .dt-purple-receiver):focus-within {
+  border-color: var(--manual-accent) !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-message {
+  margin: 0 !important;
+  color: #c6b8d4 !important;
+  font-size: .875rem !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-message[data-kind="error"] {
+  color: #ffc6c4 !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-message[data-kind="success"] {
+  color: #abf1cd !important;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-transfer-actions {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+#topupDedicatedPage.libyana-manual-active .dt-purple-submit {
+  flex: 1;
+  min-width: 0;
+  padding-inline: 8px !important;
+  font-size: clamp(.875rem, 4vw, 1rem) !important;
+}
+
 #topupDedicatedPage.libyana-manual-active .dt-manual-instructions {
-  border-color: #4fb8e588 !important;
-  background: linear-gradient(120deg, #103958, #103147) !important;
-  color: #d7f2ff !important;
-}
-#topupDedicatedPage.libyana-manual-active #dtTransferDetails:not([hidden]) {
-  animation-name: libyana-manual-enter;
-}
-@keyframes libyana-manual-enter {
-  from { opacity: 0; transform: translateY(12px) scale(.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes libyana-manual-card-in {
-  from { opacity: .82; transform: translateY(7px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  #topupDedicatedPage.libyana-manual-active .dt-purple-home .dt-purple-form {
-    animation: none !important;
-  }
+  border-color: #7659a4;
+  background: #291e3a;
+  color: #f0e5ff;
 }

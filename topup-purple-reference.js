@@ -34,12 +34,12 @@
       '</div></dialog>'+
     '<div id="dtTransferDetails" hidden>'+
     '<section class="dt-card dt-purple-form" aria-labelledby="dtPurpleTitle">'+
-      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><div><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div></div>'+
+      '<div class="dt-purple-form-top"><span class="dt-purple-form-icon">'+svg('wallet')+'</span><span class="dt-manual-logo" aria-hidden="true" hidden>ليبيانا</span><div class="dt-transfer-heading-copy"><h2 id="dtPurpleTitle" tabindex="-1">بيانات التحويل</h2><p>اختر رقمك وحدّد مبلغ التحويل</p></div><button type="button" class="dt-manual-close" data-manual-back aria-label="الرجوع لطرق الشحن" hidden>'+svg('close')+'</button></div>'+
       '<div class="dt-purple-field dt-sender-field"><label for="dtPickSender"><span class="dt-purple-field-icon">'+svg('user')+'</span><span>الرقم المحوّل منه</span></label><div class="dt-sender-picker"><select id="dtSender" hidden disabled><option value="">جاري تحميل أرقامك…</option></select><button id="dtPickSender" type="button" aria-haspopup="dialog" aria-describedby="dtSenderCount" disabled><span>جاري تحميل أرقامك…</span>'+svg('chevron')+'</button><button id="dtAddSender" type="button">'+svg('addPhone')+'<span>إضافة رقم</span></button></div><small id="dtSenderCount" class="dt-sender-count" role="status"></small></div>'+
-      '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'</button></div></div>'+
+      '<div class="dt-purple-field"><label for="dtReceiver"><span class="dt-purple-field-icon">'+svg('exchange')+'</span><span>الرقم المحوّل إليه</span></label><div class="dt-purple-receiver"><input id="dtReceiver" type="text" dir="ltr" value="—" readonly aria-label="رقم المتجر المحوّل إليه"><button class="dt-copy" type="button" aria-label="نسخ رقم المتجر" title="نسخ الرقم">'+svg('copy')+'<span class="dt-copy-label" hidden>نسخ</span></button></div></div>'+
       '<div class="dt-purple-field"><label for="dtAmount"><span class="dt-purple-field-icon">'+svg('coins')+'</span><span>المبلغ المحوّل</span></label><div class="dt-purple-amount"><input id="dtAmount" type="text" inputmode="numeric" autocomplete="off" dir="ltr" placeholder="مثال: 10" maxlength="5" aria-label="قيمة المبلغ بالدينار الليبي"><span>د.ل</span></div></div>'+
       '<p class="dt-purple-message" id="dtPhoneStatus" role="status" aria-live="polite">اختار طريقة شحن ليبيانا أولًا.</p>'+
-      '<button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>متابعة الشحن</span></button>'+
+      '<div class="dt-transfer-actions"><button class="dt-purple-submit" id="dtConfirm" type="button">'+svg('check')+'<span>متابعة الشحن</span></button><button type="button" class="dt-manual-cancel" data-manual-back hidden>إلغاء</button></div>'+
       '<a class="dt-purple-fallback" id="dtFallback" hidden>فتح تطبيق الهاتف</a>'+
       '<p id="dtManualInstructions" class="dt-manual-instructions" hidden>الطلب جاهز. حوّل من الرقم اللي اخترته وبنفس المبلغ، وبعدها تابع الحالة هنا.</p>'+
     '</section>'+
@@ -55,7 +55,7 @@
     '</section></div>';
   const walletLogo=document.querySelector('#walletView .libyana-brand-mark img');
   if(walletLogo){
-    for(const slot of panel.querySelectorAll('.dt-topup-method-logo')){
+    for(const slot of panel.querySelectorAll('.dt-topup-method-logo, .dt-manual-logo')){
       const logo=walletLogo.cloneNode(false);
       logo.alt='';
       slot.replaceChildren(logo);
@@ -122,9 +122,13 @@
   const manualInstructions=panel.querySelector('#dtManualInstructions');
   const guide=panel.querySelector('.dt-purple-guide');
   const transferTitle=panel.querySelector('#dtPurpleTitle');
+  const transferSubtitle=panel.querySelector('.dt-transfer-heading-copy p');
+  const manualButtons=panel.querySelectorAll('[data-manual-back]');
+  const manualElements=panel.querySelectorAll('.dt-manual-logo, .dt-copy-label, [data-manual-back]');
   const receiverLabel=panel.querySelector('label[for="dtReceiver"] span:last-child');
   const receiverField=receiverInput.closest('.dt-purple-field');
   const senderField=pickSender.closest('.dt-purple-field');
+  const amountLabel=panel.querySelector('label[for="dtAmount"] span:last-child');
   const methodButtons=Array.from(panel.querySelectorAll('[data-topup-method]'));
   const normalize=(v)=>{
     let d=String(v||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
@@ -160,6 +164,9 @@
     page.classList.toggle('libyana-picker-open',!method);
     page.scrollTop=0;
   }
+  for(const button of manualButtons){
+    button.addEventListener('click',()=>form.closest('#topupDedicatedPage')?.querySelector('.topup-dedicated-back')?.click());
+  }
   function openMethodMenu(){
     if(method||methodMenu.open||!form.closest('#topupDedicatedPage'))return;
     updateTopupScreen();
@@ -193,8 +200,12 @@
     methodMenu.close();
     transferDetails.hidden=false;
     guide.hidden=manual;
-    transferTitle.textContent=manual?'بيانات التحويل اليدوي':'بيانات التحويل';
-    receiverLabel.textContent=manual?'رقم المتجر':'الرقم المحوّل إليه';
+    for(const element of manualElements)element.hidden=!manual;
+    transferTitle.textContent=manual?'تحويل ليبيانا اليدوي':'بيانات التحويل';
+    transferSubtitle.textContent=manual?'اشحن محفظة L1017n برصيد ليبيانا':'اختر رقمك وحدّد مبلغ التحويل';
+    receiverLabel.textContent=manual?'رقم ليبيانا للمتجر':'الرقم المحوّل إليه';
+    amountLabel.textContent=manual?'مبلغ التحويل':'المبلغ المحوّل';
+    enteredAmount.placeholder=manual?'0':'مثال: 10';
     const firstField=manual?receiverField:senderField;
     const secondField=manual?senderField:receiverField;
     if(firstField.nextElementSibling!==secondField){

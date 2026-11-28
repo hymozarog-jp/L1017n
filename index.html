@@ -161,7 +161,7 @@
     if(failed.id!=='l1017LiveEntryScript')return;
     document.removeEventListener('error',retryShell,true);
     var script=document.createElement('script');
-    script.src='live-mobile.js?v=entry-retry-20261128-1';
+    script.src='live-mobile.js?v=tiktok-quote-20261128-1&entry-retry-20261128-1';
     script.addEventListener('error',function(){if(!closed)retry.hidden=false;},{once:true});
     document.head.appendChild(script);
   },true);
@@ -1022,7 +1022,7 @@ window.openDedicatedTopup=openDedicatedTopup;
 }
 #llLanding .ll-telegram-channel>svg{flex:0 0 13px;width:13px;height:13px;color:#a2e5ff}
 </style>
-<script id="l1017LiveEntryScript" src="live-mobile.js?v=entry-shell-ready-20261128-1&store-toast-20261128-1&bottom-nav-haptics-20261127-1&category-tap-20261127-1&domain-load-20261124-1&catalog-loading-20261124-1&wide-billboard-4k-20261122-1&telegram-community-20261126-1&compact-carousel-20261124-2&package-count-box-20261124-1" defer></script>
+<script id="l1017LiveEntryScript" src="live-mobile.js?v=tiktok-quote-20261128-1&entry-shell-ready-20261128-1&store-toast-20261128-1&bottom-nav-haptics-20261127-1&category-tap-20261127-1&domain-load-20261124-1&catalog-loading-20261124-1&wide-billboard-4k-20261122-1&telegram-community-20261126-1&compact-carousel-20261124-2&package-count-box-20261124-1" defer></script>
 <link rel="stylesheet" href="account-identity-gold.css?v=gold-avatar1">
 <link rel="stylesheet" href="account-balance-summary.css?v=account-wallet-summary1">
 <link rel="stylesheet" href="ranking-room.css?v=top-controls-20261127-1">
@@ -1373,4 +1373,27 @@ html body #l1017PublicReviews #publicReviewsStatus.e-warning{color:#ffcd8c}
 </style>
 <link rel="stylesheet" href="account-overview-violet.css?v=20261126-1">
 <link rel="stylesheet" href="orders-clean-view.css?v=20261127-1">
+<dialog id="tiktokQuote" aria-labelledby="tiktokQuoteTitle" dir="rtl">
+  <header class="tiktok-quote-head">
+    <h2 id="tiktokQuoteTitle">رشق تيك توك</h2>
+    <button type="button" class="tiktok-quote-close" aria-label="إغلاق" data-close-tiktok-quote>×</button>
+  </header>
+  <p>اختار الخدمة وأرسل طلب تسعيرة. السعر والتوفّر يتأكدوا على واتساب.</p>
+  <form id="tiktokQuoteForm">
+    <label for="tiktokQuoteService">الخدمة</label>
+    <select id="tiktokQuoteService" name="service" required>
+      <option value="مشاهدات الفيديو">مشاهدات الفيديو</option>
+      <option value="إعجابات الفيديو">إعجابات الفيديو</option>
+      <option value="متابعين">متابعين</option>
+    </select>
+    <label for="tiktokQuoteLink" id="tiktokQuoteLinkLabel">رابط الفيديو</label>
+    <input id="tiktokQuoteLink" name="link" type="url" inputmode="url" autocomplete="off" dir="ltr" maxlength="500" placeholder="https://www.tiktok.com/…" required>
+    <label for="tiktokQuoteQuantity">الكمية المطلوبة</label>
+    <input id="tiktokQuoteQuantity" name="quantity" type="number" min="1" max="1000000" step="1" inputmode="numeric" dir="ltr" required>
+    <p class="tiktok-quote-error" role="status" aria-live="polite"></p>
+    <button type="submit" class="tiktok-quote-submit">افتح الطلب على واتساب</button>
+  </form>
+</dialog>
+<link rel="stylesheet" href="tiktok-quote.css?v=20261128-1">
+<script src="tiktok-quote.js?v=20261128-1" defer></script>
 </body></html>

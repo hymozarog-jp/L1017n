@@ -1,0 +1,39 @@
+#llLanding .ll-promo-request{
+ display:flex;align-items:center;gap:12px;width:100%;min-height:62px;
+ margin:0 0 10px;padding:9px 12px;text-align:right;
+ border:1px solid #896add7a;border-radius:16px;
+ background:linear-gradient(130deg,#271e3b,#1a1728);color:#f8f1ff;
+ cursor:pointer;
+}
+#llLanding .ll-promo-icon{
+ flex:0 0 36px;height:36px;display:grid;place-items:center;
+ border-radius:10px;background:#6345a74d;color:#dac4fe;
+}
+#llLanding .ll-promo-icon svg{width:21px;height:21px}
+#llLanding .ll-promo-request strong,#llLanding .ll-promo-request small{display:block}
+#llLanding .ll-promo-request strong{font-size:15px}
+#llLanding .ll-promo-request small{color:#cbbadf;font-size:12px;margin-top:2px}
+#llLanding .ll-promo-arrow{margin-inline-start:auto;font-size:22px;color:#d2b5ff}
+#tiktokQuote{
+ width:min(480px,calc(100% - 28px));max-height:calc(100dvh - 30px);overflow:auto;
+ box-sizing:border-box;padding:20px;border:1px solid #8666bf;border-radius:22px;
+ background:#191528;color:#faf4ff;box-shadow:0 18px 50px #020105a8;
+}
+#tiktokQuote::backdrop{background:#0b0716b8}
+#tiktokQuote .tiktok-quote-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#tiktokQuote h2{margin:0;font-size:24px}
+#tiktokQuote p{color:#d3c4e5;font-size:14px;line-height:1.65;margin:8px 0 15px}
+#tiktokQuote .tiktok-quote-close{width:44px;height:44px;border:0;border-radius:12px;background:#35284d;color:#fff;font-size:24px}
+#tiktokQuote form{display:grid;gap:7px}
+#tiktokQuote label{font-size:14px;font-weight:700}
+#tiktokQuote :is(input,select){
+ width:100%;min-height:44px;box-sizing:border-box;margin:0 0 6px;padding:8px 10px;
+ border:1px solid #5c4d76;border-radius:10px;background:#221b34;color:#fff;font-size:16px;
+}
+#tiktokQuote p.tiktok-quote-error{margin:0;color:#ffb0bc}
+#tiktokQuote p.tiktok-quote-error:empty{display:none}
+#tiktokQuote .tiktok-quote-submit{
+ min-height:46px;border:0;border-radius:12px;color:white;
+ background:#7049b8;font:750 15px system-ui,sans-serif;cursor:pointer;
+}
+#tiktokQuote :focus-visible,#llLanding .ll-promo-request:focus-visible{outline:2px solid #d7bcff;outline-offset:2px}

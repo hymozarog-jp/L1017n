@@ -451,6 +451,7 @@
       + '<span class="ll-telegram-icon">' + SVG("telegram") + '</span>'
       + '<strong>تيليجرام المتجر</strong><span class="ll-telegram-info">انضم الآن</span>'
       + SVG("chevron") + '</a>'
+      + '<button type="button" class="ll-promo-request" data-open-tiktok-quote><span class="ll-promo-icon" aria-hidden="true">' + SVG("subscriptions") + '</span><span><strong>رشق تيك توك</strong><small>اطلب تسعيرة للمتابعين أو تفاعل الفيديو</small></span><span class="ll-promo-arrow" aria-hidden="true">‹</span></button>'
       + '<div class="ll-search-wrap" id="llSearchWrap">' + SVG("search")
       + '<label class="ll-sr-only" for="llSearch">ابحث عن منتج أو خدمة</label>'
       + '<input id="llSearch" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="ابحث عن منتج أو خدمة…"></div>'

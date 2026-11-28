@@ -537,7 +537,6 @@
     nav.dataset.scrollMotion='visible';
     bindEvents(container, nav, showNavScreenLoading, navScreenLoader);
     renderCatalog();
-    q("#storeStartupFallback")?.remove();
     window.dispatchEvent(new Event("l1017n:catalog-shell-ready"));
     reveal([...container.querySelectorAll(".ll-reveal:not(.ll-shown)")]);
 

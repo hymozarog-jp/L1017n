@@ -27,9 +27,24 @@
   ];
   const mutationRank = new Map(MUTATIONS.map(([key], index)=>[key,index]));
   const baseIncome = {"steal-garama":50};
+  function recordedQuantity(product){
+    const raw=product.stock_quantity;
+    if(raw==null || (typeof raw==="string"&&!/^\d+$/.test(raw)))return null;
+    if(typeof raw!=="number"&&typeof raw!=="string")return null;
+    const quantity=Number(raw);
+    return Number.isSafeInteger(quantity)&&quantity>=0?quantity:null;
+  }
   function quantityLimit(product){
-    if(!product?.active || !(Number(product.price)>0)) return 0;
-    return product.stock_quantity==null ? 1 : Math.max(0,Number(product.stock_quantity)||0);
+    if(!product?.active || !(Number(product.price)>0))return 0;
+    return product.stock_quantity==null?1:(recordedQuantity(product)??0);
+  }
+  function characterStock(variants,catalogLoaded){
+    if(!catalogLoaded)return {available:false,label:"الكمية غير مؤكدة"};
+    const available=[...(variants?.values()||[])].filter(product=>quantityLimit(product)>0);
+    if(!available.length)return {available:false,label:"غير متوفر"};
+    const quantities=available.map(recordedQuantity);
+    const total=quantities.reduce((sum,quantity)=>sum+(quantity??0),0);
+    return {available:true,label:quantities.includes(null)||!Number.isSafeInteger(total)?"متوفر":"المتوفر: "+total};
   }
   let officialIcon = OFFICIAL_FALLBACK;
   let iconFetchStarted = false;
@@ -80,12 +95,10 @@ function getClient(){
     const prefix='https://cmtxsjlehjworqypbxjz.supabase.co/storage/v1/object/public/l1017n-product-images/products/';
     return image.startsWith(prefix)&&/^[a-z0-9_/-]+\.(?:png|jpe?g|webp)$/i.test(image.slice(prefix.length))?image:'';
   }
-  function productCard(item,product){
+  function productCard(item,product,stock){
     const customImage=productImageSrc(product?.image_url);
     const productPicture=customImage||item.image||'game-covers/official/mobile/brainrot.webp';
-    const limitedStock=product?.stock_quantity!=null || ["steal-garama","steal-dragon"].includes(item.key);
-    const remaining=Number(product?.stock_quantity);
-    const available=quantityLimit(product)>0;
+    const {available,label}=stock;
     return '<article class="sab-item-card '+(available?'sab-available':'sab-pending')+'" data-fav-id="'+escapeHtml(item.key)+'">'
       +'<div class="sab-card-top"><small>STEAL A BRAINROT</small><span>'+item.number+'</span></div>'
       +'<div class="sab-card-art">'+(item.emoji&&!customImage
@@ -94,7 +107,7 @@ function getClient(){
       +'<span class="sab-card-label">'+escapeHtml(item.latin)+'</span>'
       +'<h3>'+escapeHtml(item.name)+'</h3>'
       +'<div class="sab-card-footer"><div class="ll-pack-meta"><strong>'+priceText(product)+'</strong>'
-      +'<span class="ll-stock-state" data-available="'+available+'">'+(available?(limitedStock?'المتوفر: '+remaining:'متوفر'):'غير متوفر')+'</span></div>'
+      +'<span class="ll-stock-state" data-available="'+available+'">'+label+'</span></div>'
       +'<button type="button" class="sab-buy" data-steal-buy="'+escapeHtml(item.key)+'">'+(available?'شراء الآن':'عرض الألوان')+'</button>'
       +'</div></article>';
   }
@@ -119,12 +132,12 @@ function getClient(){
     count.hidden=!Array.isArray(catalog);
     if(!count.hidden){
       const available=items.filter(item=>MUTATIONS.some(([key])=>quantityLimit(groups.get(item.key)?.get(key))>0)).length;
-      count.textContent=available+' باقة متوفرة';
+      count.textContent=available+' شخصية متوفرة';
     }
     target.innerHTML='<div class="sab-products-grid">'+items.map(item=>{
       const variants=groups.get(item.key);
       const availableProduct=variants&&MUTATIONS.map(([key])=>variants.get(key)).find(product=>quantityLimit(product)>0);
-      return productCard(item,availableProduct||variants?.get("normal")||variants?.values().next().value);
+      return productCard(item,availableProduct||variants?.get("normal")||variants?.values().next().value,characterStock(variants,Array.isArray(catalog)));
     }).join("")+'</div><p class="sab-info">اختر الشخصية لعرض الألوان والوزن والكمية المتوفرة.</p>';
     target.querySelectorAll("[data-steal-buy]").forEach(button=>{
       button.addEventListener("click",()=>{
@@ -146,7 +159,7 @@ function getClient(){
     if(result.error){
       renderItems(section,null);
       const msg=document.createElement("p");msg.className="sab-info sab-fetch-error";
-      msg.textContent="تعذر تحديث الأسعار حاليًا. حاول فتح القسم مرة ثانية.";
+      msg.textContent="تعذر تحديث الأسعار والكميات حاليًا. حاول فتح القسم مرة ثانية.";
       target.appendChild(msg);
       return;
     }
